@@ -282,3 +282,114 @@ movie for optical flow evaluation", ECCV 2012, LNCS 7577, pp. 611–625). The wo
 **Consequence.** The data never enter this repository — not the archive, not a frame, not a
 `.flo` file; the data root is ignored and sits beside the repository, not inside it. Any
 article that uses the flow task cites Butler et al. 2012.
+
+---
+
+## H. The second kind of cheap evaluation (read at source, 2026-09-14)
+
+**AlphaGenome Atlas team (Google DeepMind, with Exeter, Broad, Boston Children's, Stowers, MSK) —
+"AlphaGenome Atlas: in silico mutagenesis of the entire human genome improves prioritization and
+interpretation of non-coding variants"**, preprint PDF at Mike's link
+(<https://storage.googleapis.com/deepmind-media/DeepMind.com/Blog/alphagenome-atlas-a-predictive-map-of-every-possible-dna-letter-change-in-the-human-genome/alphagenome-atlas.pdf>,
+83 pages, 14,647,436 bytes), and the DeepMind blog post of the same name, **"AlphaGenome Atlas:
+A predictive map of every possible DNA letter change in the human genome"**, dated
+*"September 8, 2026"*, byline *"AlphaGenome Atlas team"*
+(<https://deepmind.google/blog/alphagenome-atlas-a-predictive-map-of-every-possible-dna-letter-change-in-the-human-genome/>).
+Brought in by Mike (DPC Research chat, 2026-09-13 17:50 UTC). **Full text** of both, read at
+source by CC's subagent 2026-09-14: the PDF fetched with curl and its text extracted with pypdf
+(263,411 characters); the blog fetched with curl and grepped. The PDF carries **no date line of
+its own**; the date above is the blog's. Lead authors (PDF, first line): *"Jun Cheng, Kyle R.
+Taylor, Lauren Nicolaisen, Joshua Pan, Clare Bycroft, Matteo Perino, Tom Ward, Gareth Hawkes,
+Laura E. Covill, Melanie Weilert, Raina W. Thomas, Natasha Latysheva"*; the supervising-author
+line ends with *"Pushmeet Kohli, Žiga Avsec"*.
+
+**The sentence Ark quoted is on the blog, not in the PDF** — the words "practically impossible"
+do not occur in the PDF text. Blog, verbatim: *"With roughly 9 billion possible single-letter
+mutations in the human genome, testing each one in the lab is practically impossible."*
+Confirmed word for word.
+
+Numbers, verbatim:
+- PDF §2: *"we calculated the difference between reference and alternate allele predictions for
+  all **~9 billion** SNVs in hg38 using AlphaGenome"*; *"We also scored **>100 million** indels
+  observed in major biobanks (gnomAD, UK Biobank, All of Us)"*.
+- Size — blog only: *"AlphaGenome Atlas is a massive **1-petabyte** dataset, more than 30 times
+  larger than the AlphaFold Database."* No TB/PB figure is in the PDF text.
+- AVI — PDF abstract: *"These predictions were then used to derive a unified and interpretable
+  AlphaGenome Variant Impact (AVI) score"*; blog: *"The AVI combines the strengths of AlphaGenome
+  and AlphaMissense … condensing both models' predictions into a single number. Now, researchers
+  can rapidly rank variants and interpret their molecular effects at the same time."*
+- The source's own top-K metric — PDF, Fig. 3A legend: *"AVI and CADD v1.7 were evaluated on
+  **112** likely pathogenic variants from solved cases, ranked against intra-patient background
+  variants. Curves plot the cumulative recall (y-axis) of causal variants captured within the
+  top K prioritized candidates (x-axis)."* Panel labels (fig. S9A): *"Top 10: 36.2% vs 27.6%
+  Top 50: 74.3% vs 61.0% Top 100: 86.7% vs 78.1%"* (AVI vs CADD v1.7).
+
+Validation at the top of the ranking, verbatim:
+- Blog (Ark's quote, confirmed): *"Our trusted external collaborators have already used
+  AlphaGenome Atlas to identify and **experimentally verify** key variants in unsolved rare
+  disease research and find rare variants associated with common traits."*
+- Blog, DNM1: *"the team discovered a variant affecting a gene called DNM1, which is strongly
+  linked to epileptic encephalopathy. Crucially, the AlphaGenome predictions underlying the AVI
+  score showed exactly how the variant functioned: it created an incorrect splice site … that led
+  to an abnormal extension of the resulting protein. Experimental screens validated the research
+  prediction"*.
+- PDF, the same case: *"For a proband with epileptic encephalopathy (Fig. 3B), the **top ranked**
+  variant by AVI was a heterozygous noncoding VUS in intron 10 of DNM1 (chr9:128225994:G>A …)"*;
+  *"We then performed high-throughput experiments in which the 265 nucleotides upstream of exon
+  10a were mutagenized and assayed in a minigene reporter assay across 5 cell lines … We
+  identified 12 intronic variants that led to in-frame exon extensions, including all three of
+  the likely pathogenic variants we and others have reported"*; *"Together, this evidence was
+  sufficient to recommend Likely Pathogenic classification of chr9:128225994:G>A."*
+- PDF, motif maps: *"For three TFs, we experimentally validated the mapped motif instances by
+  performing high-resolution ChIP-nexus binding experiments"*.
+
+Predictions versus validation — the source's own words:
+- PDF, Discussion: *"Atlas and AVI are research tools that predict molecular effects, and
+  therefore can only act as part of the evidence chain leading to clinical diagnoses, and are
+  not sufficient evidence on their own."* Data Availability: *"AlphaGenome Atlas and AVI
+  predictions are provided for research purposes only. Not for use in diagnostic procedures for
+  medical decision-making."*
+- Blog: *"AlphaGenome has not been validated for, and is not approved for, any clinical use."*
+
+Not found in the fetched text: a date line in the PDF; a dataset-size figure in the PDF; the
+"practically impossible" sentence in the PDF (blog only, as above).
+
+**The distinction — Reported: Ark, DPC Research chat 2026-09-13 17:51 UTC** (the analysis is
+his; this file records it). There are two kinds of "cheap evaluation", and they are not the
+same claim:
+
+- **(i) A trained surrogate.** A model fitted once on a large corpus of expensive measurements,
+  then predicting cheaply. AlphaGenome's kind. Validated not over the whole population but at
+  the **top of its ranking**, by an external experiment — the DNM1 case above, as the source
+  states it.
+- **(ii) A prefix of the same process.** Nothing is trained; the expensive procedure is stopped
+  early (here 1k / 5k / 25k iterations instead of 250k). This project's pre-registration's kind
+  — and the kind arXiv 2508.17464 (§D) measured and found **not to rank**.
+
+AlphaGenome's success is evidence for (i). It does not license (ii). Three conditions it had
+that this project lacks (Ark's reading, Reported): a surrogate trained on real measurements
+(here there are no fitness measurements — only the simulator, so a surrogate would have to be
+trained on N expensive runs of that same simulator, deferring the saving); a finite,
+enumerable space (3 alternatives × 3 billion positions, so "compute everything instead of
+searching" is feasible; genomes and morphologies are unbounded); one fixed genome (individuals
+here are unbounded and do not lie ready). And a fourth, structural (Ark, same message): their
+expensive check is external and independent of the model; ours is the same simulator run
+longer — **no independent arbiter exists anywhere in the programme**, not only in the test.
+
+**What it changes here — proposed, not registered.** 2508.17464 tested whether a cheap ranking
+agrees with the expensive ranking over the whole population (rank correlation). DeepMind never
+tested that and did not need to; what was checked, and held, is whether the cheap score **finds
+the top**. That is a second, weaker hypothesis for (b): *does the cheap evaluation find the
+top-k of the expensive ranking?* — distinct from rank correlation, and 2508.17464 did not test
+it. Whether it enters `docs/preregistration-cheap-vs-expensive.md` as a secondary hypothesis
+is **Mike's decision**; nothing in that file changes with this entry. What the source *does*
+show, as a fact about method (Observed above, inference ours): a top-K recall curve against an
+independent truth is what a "finds the top" test looks like when it is done.
+
+**What it gives us:** the largest current example of the "expensive is unreachable → cheap
+proxy" move, done in a way that works; a named reason it works; and a second hypothesis
+shape for (b) that the existing counterexample leaves untouched.
+
+**What it does not give us:** a licence for a prefix-of-the-process proxy; a reason to build
+an "atlas" of morphologies (§D's 1,305,840-morphology map was that, and the top still did not
+rank); or an arbiter — the top of our ranking has nothing external to be checked against.

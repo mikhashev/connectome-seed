@@ -75,6 +75,27 @@ language_cutoff: 2026-09-13
   is what bounds N per night.
 - **axis:** knowledge
 
+### A-TRAINED-SURROGATE-IS-NOT-A-PREFIX-OF-THE-SAME-PROCESS: AlphaGenome Atlas shows a cheap evaluation that works, but it is a trained surrogate validated at the top of its ranking, while this project's cheap evaluation is a prefix of the expensive process, the kind 2508.17464 found not to rank (MEDIUM, open, 2026-09-13 — Ark, 17:51 UTC, on Mike's link of 17:50 UTC; source read by CC 2026-09-14)
+
+- **Observed.** Source read at source 2026-09-14 (`literature.md` §H): the blog says
+  *"testing each one in the lab is practically impossible"* and that collaborators
+  *"experimentally verify key variants"*; the PDF says the DNM1 variant was *"the top ranked
+  variant by AVI"* and a minigene assay across 5 cell lines confirmed it. What was validated is
+  the top of a trained model's ranking against an external experiment, not agreement over a
+  population.
+- **Reported.** Ark, 17:51 UTC: two kinds of cheap evaluation — a trained surrogate
+  (AlphaGenome's; works) versus a prefix of the same process (ours; what 2508.17464 measured
+  and found not to rank). Three conditions they had and we lack: a surrogate trained on real
+  measurements, a finite enumerable space, one fixed genome. Their success does not license
+  our kind.
+- **Inferred.** Hypothesis (b) as registered asks for rank agreement over the whole
+  population; a weaker, untested-by-2508.17464 form is "does the cheap evaluation find the
+  top-k of the expensive ranking?". Proposed, not registered.
+- **First step.** Mike decides whether "finds the top-k" enters the pre-registration as a
+  secondary hypothesis before the N runs; run 0 is unaffected. Parent task
+  [[PRE-REGISTER-THE-CHEAP-VERSUS-EXPENSIVE-TEST]].
+- **axis:** knowledge
+
 
 ## BLOCKED ON DECISION
 

@@ -123,7 +123,7 @@ one that can be trusted to be current.
 | axis | decisions | board entries | awaiting observation |
 |---|---|---|---|
 | **collective** | — | 1 | 0 |
-| **knowledge** | — | 1 | 0 |
+| **knowledge** | — | 2 | 0 |
 | **network** | — | 0 | 0 |
 | **honesty** | ADR-002 accepted | 4 | 0 |
 | **reach** | ADR-001 accepted | 2 | 0 |
