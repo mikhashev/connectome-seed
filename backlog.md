@@ -96,6 +96,8 @@ language_cutoff: 2026-09-13
   overnight. K bounds the statistic in the pre-registration, so it is needed *before* the
   file is final, not after.
 - **First step.** Mike names K. Parent task [[PRE-REGISTER-THE-CHEAP-VERSUS-EXPENSIVE-TEST]].
+- **Decided 2026-09-13 (Mike): K = 1 to begin with.** Run 0 only; N for the test follows from
+  its measured cost by the rule in ADR-002 Q1. Entry stays open until N is set.
 - **axis:** honesty
 
 ### THE-ATTRIBUTION-STRING-FOR-CC-BY-IS-NOT-WRITTEN: the licence is chosen and the LICENSE file cannot be written without saying who the author is (MEDIUM, open, 2026-09-13 — Mike, 06:55 UTC: «ок CC BY 4.0»)
@@ -106,14 +108,3 @@ language_cutoff: 2026-09-13
   Child of [[ADR-001]].
 - **axis:** reach
 
-### THE-SECOND-VOICE-IN-THE-IDEA-TRANSCRIPT-IS-GROK-AND-UNNAMED: the review pasted inside the idea's transcript is a model's output that the public documents cite without a source (MEDIUM, open, 2026-09-13 — Mike, 06:53 UTC, on who the second voice is)
-
-- **Observed.** All three entries in the transcript are attributed to `Mike Shevchenko`; Mike
-  stated he showed the idea to Grok. The name «Безногим» does not occur anywhere in this
-  repository. README and `idea.md` say "the second voice".
-- **Inferred.** It is Mike's own conversation with a model and his to publish; the standard
-  that a quote carries its source (Johnny) is what is unmet. CC's recommendation: drop it from
-  the public version — each of its points is either superseded by the reviews or wrong.
-- **First step.** Mike: name it as *Grok, 2026-09-12, shown the idea by Mike*, or drop it.
-  Child of [[ADR-001]].
-- **axis:** reach

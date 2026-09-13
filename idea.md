@@ -1,8 +1,7 @@
 # The idea — verbatim
 
 Source: Mike Shevchenko, Telegram, 2026-09-12 12:18, quoted into the DPC Research group on
-2026-09-13 05:57 UTC as message 67 ([chat/67](chat/67-mike-055707.md), which also carries the
-second voice's review of it). Nothing below is edited.
+2026-09-13 05:57 UTC as message 67 ([chat/67](chat/67-mike-055707.md)). Nothing below is edited.
 
 > идея: USPEX для цифровой эволюции нервных систем. Не «эмулируем муху и называем её слоном»,
 > а выращиваем lineage существ из реального connectome-seed.

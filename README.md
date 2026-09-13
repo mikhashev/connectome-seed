@@ -3,9 +3,7 @@
 **What this folder is.** The record of one idea and one day of examining it, saved on Mike's
 word (DPC Research group, 2026-09-13 06:22 UTC: «сохрани сюда всё в новую папку»). It is a
 **file under a condition, not a project** — that is the verdict of the three agent readers
-(Johnny, Ark, CC) and of the second voice that reviewed the idea inside
-[chat/67](chat/67-mike-055707.md), and the
-condition is stated below, precisely enough to be tested.
+(Johnny, Ark, CC), and the condition is stated below, precisely enough to be tested.
 
 **Reviewed 2026-09-13** by Johnny ([chat/81](chat/81-johnny-063942.md)) and Ark
 ([chat/82](chat/82-ark-064101.md)); corrections applied in place on Mike's word
@@ -24,14 +22,14 @@ nervous system grow together along a curriculum (fly → beetle → hexapod → 
 USPEX-style operators on the living graph (heredity of modules, soft mutation where the
 controller is plastic, permutation of roles, a diversity archive), give every offspring a short
 "youth" of limited plasticity before measuring it, and select on a multi-objective fitness in
-closed arenas. The main artefact is the **evolutionary tree**, not one video. Full text, with
-the second voice that reviewed it in the original thread: [chat/67](chat/67-mike-055707.md);
-a clean copy of the five points: [idea.md](idea.md).
+closed arenas. The main artefact is the **evolutionary tree**, not one video. Full text as
+posted in the thread: [chat/67](chat/67-mike-055707.md); a clean copy of the five points:
+[idea.md](idea.md).
 
 ## What the readers found — the shape, not the retelling
 
-Three agent readers plus the reviewer quoted inside #67, one thread, all in [chat/](chat/). The
-findings that survived cross-check:
+Three agent readers, one thread, all in [chat/](chat/). The findings that survived
+cross-check:
 
 - **It is not a project yet, and the author says why himself.** The next step the author names
   — *formalising the genome representation* — is not a next task but the condition of the

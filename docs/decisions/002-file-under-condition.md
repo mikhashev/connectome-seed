@@ -10,6 +10,7 @@ depends_on: []
 related: [ADR-001]
 supersedes: []
 session: DPC Research group thread, 2026-09-13 05:57–07:31 UTC
+axis: honesty
 ---
 
 ## Context and Problem Statement
@@ -97,8 +98,11 @@ kill criterion was quietly re-labelled as a ladder rung (`autoresearch-win-rtx`,
 
 ## Open Questions
 
-- **Q1:** **K** — how many full runs to convergence. This is the real cost of the test
-  (Ark, Johnny, Warren, independently). — Mike
+- **Q1 — decided 2026-09-13 (Mike): K = 1 to begin with.** Run 0 is one full run to
+  convergence; it fixes the price of the expensive evaluation on this card and yields one
+  converged reference individual. It cannot test hypothesis (b) — a rank correlation needs N
+  individuals — so N for the test is set by rule from run 0's measured cost (as many full runs
+  as fit one night, not below 8), in the pre-registration.
 - **Q2:** What is spliced — two ensemble members, or two cell types. — pre-registration
 - **Q3:** Whether a datamate fix goes upstream (`github.com/flyvis/datamate`, same
   organisation as flyvis) or stays a local patch. — CC, after the test

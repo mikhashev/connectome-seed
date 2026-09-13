@@ -92,12 +92,11 @@ one that can be trusted to be current.
 | **collective** | — | 0 | 0 |
 | **knowledge** | — | 0 | 0 |
 | **network** | — | 0 | 0 |
-| **honesty** | — | 5 | 0 |
-| **reach** | — | 5 | 0 |
+| **honesty** | ADR-002 accepted | 5 | 0 |
+| **reach** | ADR-001 accepted | 4 | 0 |
 
 **Observation debt: 0 under an axis + 0 in entries that carry none = 0.** Work finished and never seen working; per axis it says which direction is running ahead of its evidence.
 
-Accepted decisions with no axis: ADR-001, ADR-002 — these are a refusal in `--check`, not a gap to live with.
 
 Rendered from `docs/decisions/*.md` front matter and `backlog.md`. Nothing here is written by hand; correct it at the source and re-run `uv run python tools/backlog/build.py --roadmap`.
 

@@ -10,6 +10,7 @@ depends_on: []
 related: [ADR-002]
 supersedes: []
 session: DPC Research group thread, 2026-09-13 06:22–07:31 UTC
+axis: reach
 ---
 
 ## Context and Problem Statement
@@ -18,7 +19,7 @@ The folder was created as a record and will become a public repository: private 
 later, English throughout at the moment it opens (Mike, 06:46 UTC). Three things in the record
 did not fit that: the licence had not been chosen; half of the folder by character count is
 Russian because it is verbatim (`idea.md`, `chat/`); and the idea's transcript carries a
-second voice's review whose provenance was not written down.
+review whose provenance was not written down.
 
 ## Decision Drivers
 
@@ -73,12 +74,8 @@ links were a convenience for the private folder, not information.
 
 - **Q1:** The **attribution string** for CC BY 4.0 — who is named as author. The README
   currently names Mike and three agents by role. — Mike
-- **Q2:** The **second voice inside `chat/67`**. By the transcript's own attribution lines all
-  three entries are `Mike Shevchenko`; Mike stated (06:53 UTC) he showed the idea to Grok, so
-  the review is a model's output pasted by him — his to publish, but unnamed in the current
-  README and `idea.md`. Name it as *Grok, 2026-09-12, shown the idea by Mike*, or drop it from
-  the public version. CC's recommendation: drop — every point in it is either superseded by
-  the reviews or wrong. — Mike
+- **Q2 — decided 2026-09-13 (Mike): dropped.** The review Grok gave the idea stays only in
+  the local transcript; no public file names or quotes it.
 
 ## Scope
 
