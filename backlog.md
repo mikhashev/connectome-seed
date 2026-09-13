@@ -16,25 +16,6 @@ language_cutoff: 2026-09-13
 
 ## OPEN
 
-### PRE-REGISTER-THE-CHEAP-VERSUS-EXPENSIVE-TEST: the test has a verified flow and no written reading, so a run today would produce a number nobody could interpret (HIGH, open, 2026-09-13 — Mike, 07:27 UTC: «всё ты делаешь, мы ревьювим»; the demand for numbers first is Johnny's, Ark's and Warren's, independently)
-
-- **Observed.** Three reviewers converged on the same missing file: what *cheap* and
-  *expensive* are in iterations, the number of individuals and seeds, the statistic and its
-  threshold, the decision rule per outcome, and a named prediction for composition. None of
-  the five exists in writing. The only number already fixed is flyvis's default for
-  *expensive*: `n_iters: 250000`, batch 4, lr 5e-5 → 5e-6.
-- **Inferred.** Hypotheses (a) "a spliced module behaves predictably" and (b) "cheap agrees
-  with expensive" must be registered separately with separate rules, or a month from now it
-  will not be possible to say which one fell. A splice of two identical copies is a control
-  that can only pass — the same shape as a zero-initialised adapter — so the splice joins two
-  *different* members or types, and the prediction is written before the run.
-- **First step.** One file in this repository with the five items as numbers; two of the
-  numbers are not the writer's — K (Mike) and what is spliced (Ark's proposal, in review).
-  Child of [[ADR-002]]. Blocks [[ONE-GPU-ITERATION-BEFORE-ANY-OVERNIGHT-RUN]].
-- **2026-09-13:** draft in the repository (`docs/preregistration-cheap-vs-expensive.md`), scripts beside it; seven marked proposals open for review (source of variation; splice pair and cell type — Ark; ladder and prefix definition; held-out split and metric; N = 10 minimum and the N rule; the 5 % tolerance for (a); the 1 % replicate tolerance). Entry stays open until reviewed.
-- **axis:** honesty
-
-
 ### DATAMATE-UNLINKS-AN-OPEN-HDF5-FILE-AND-WINDOWS-REFUSES: flyvis does not build its connectome on Windows because its storage layer deletes a file while an h5py handle is still open (MEDIUM, open, 2026-09-13 — found by CC while verifying the flow)
 
 - **Observed.** `datamate/io.py`, `_write_h5`: `h5.File(path, mode="w")` is opened, the
@@ -66,13 +47,29 @@ language_cutoff: 2026-09-13
   `flyvis-probe/gpu_concb_*`, via `gpu_concb_analyze.py`; pre-registration §4, m = 1 fixed).
   3,104 kernel launches per iteration and GPU busy 45 % single-process — CC, 2026-09-13,
   not yet in a committed log.
-- **Inferred.** Time-slicing shares a card that is already launch-bound, so k processes take
-  turns; the only lever is fewer launches per iteration — CUDA graphs around the 40-step
-  Euler loop, or batching N seeds into one process (the same kernels, N× the work in each).
-  Not before run 0: the change needs a control, and run 0 is that control.
-- **First step.** After run 0, a 1,000-iteration batched-seeds prototype compared to run 0's
-  hook trajectory. See also [[HOW-MANY-FULL-RUNS-THE-TEST-IS-ALLOWED]] — this measurement
-  is what bounds N per night.
+- **Observed, batching proxy (2026-09-13).** Batch 4 / 8 / 16 in one process → 0.0654 /
+  0.1215 / 0.2261 s/iter, 240 iterations each (`flyvis-probe/gpu_batch_9987_000..002.json`):
+  3.46× the time for 4× the samples, a 16 % per-sample gain and no more. Batch 24 and 32 fail
+  before the first iteration on flyvis's 16-sequence validation split (`RuntimeError: size of
+  tensor a (32) must match … (16)`; `gpu_batch_9987_003/004.json`, `iteration_after: 0`).
+  flyvis trains ensembles one process per member (`compute_cloud_utils.py:427-449`); no
+  `vmap` / `functional_call` anywhere in the package. From both sides — processes and batch —
+  the card's ceiling is ≈ 65–70 stimulus-samples/s.
+- **Observed, extent 5 (2026-09-13).** `extent_probe/ext5_9986-*.json` against
+  `ext15_9985-*.json`, 1,008 iterations × 4 runs per extent: extent 5 = 5,759 nodes /
+  171,471 edges and still 734 free parameters (65 types, 604 pairs, none missing);
+  0.0443 vs 0.0648 s/iter → 1.46× (3.08 h vs 4.50 h per run); GPU util 18–25 % at extent 5
+  against 62–71 % at extent 15 — a fixed ≈ 40 ms per iteration (the 40-step Python loop,
+  ~3,100 launches) that does not shrink with the lattice. Seeds spread on both extents at
+  1,000 iterations (sd 0.29 / 0.52) against a replicate difference of 1–2e-5 (determinism
+  off). Decision (CC's recommendation, sent 17:50 UTC; the ≥ 3× condition not met): the night
+  stays on extent 15, extent 5 not adopted.
+- **Inferred.** The one lever left is the fixed ≈ 40 ms: CUDA graphs or `torch.compile`
+  around the simulation loop — up to ~1.6× at extent 15, ~3× at extent 5. Not before run 0:
+  the change needs a control, and run 0 is that control.
+- **First step.** After run 0, a 1,000-iteration CUDA-graph prototype compared to run 0's
+  hook trajectory. See also [[HOW-MANY-FULL-RUNS-THE-TEST-IS-ALLOWED]], closed 2026-09-13 —
+  this measurement is what bounds N per night.
 - **axis:** knowledge
 
 ### A-TRAINED-SURROGATE-IS-NOT-A-PREFIX-OF-THE-SAME-PROCESS: AlphaGenome Atlas shows a cheap evaluation that works, but it is a trained surrogate validated at the top of its ranking, while this project's cheap evaluation is a prefix of the expensive process, the kind 2508.17464 found not to rank (MEDIUM, open, 2026-09-13 — Ark, 17:51 UTC, on Mike's link of 17:50 UTC; source read by CC 2026-09-14)
@@ -93,22 +90,59 @@ language_cutoff: 2026-09-13
   top-k of the expensive ranking?". Proposed, not registered.
 - **First step.** Mike decides whether "finds the top-k" enters the pre-registration as a
   secondary hypothesis before the N runs; run 0 is unaffected. Parent task
-  [[PRE-REGISTER-THE-CHEAP-VERSUS-EXPENSIVE-TEST]].
+  [[PRE-REGISTER-THE-CHEAP-VERSUS-EXPENSIVE-TEST]], closed 2026-09-13.
+- **axis:** knowledge
+
+### THE-NIGHT-TOOLING-LIVES-IN-A-TEMPORARY-SCRATCHPAD: the runner, the launcher and the patched environment sit in a session temp directory that nothing in the repository points at, and the venv cannot be moved (HIGH, open, 2026-09-14 — CC, on finishing the night tooling; instructions sent 2026-09-13 17:55 UTC)
+
+- **Observed.** `flyvis-probe/night/run_individual.py`, `launch_wave.py`, `start_night.ps1`
+  and the environment `flyvis-probe/.venv` (torch 2.9.1+cu128, flyvis 1.2.0, datamate with
+  the close-before-unlink patch) are all under `AppData/Local/Temp/claude/…/scratchpad/`;
+  the repository holds none of them; a uv venv is not relocatable.
+- **Inferred.** The night can run from there once. The next night cannot if the scratchpad
+  is gone, and the datamate patch goes with it —
+  [[DATAMATE-UNLINKS-AN-OPEN-HDF5-FILE-AND-WINDOWS-REFUSES]].
+- **First step.** After the night, on Mike's word: copy `night/` into the repository as
+  `tools/night/` (scripts only, no logs); write the venv recipe beside them (uv venv, torch
+  2.9.1+cu128, flyvis 1.2.0, the datamate patch); re-create the environment outside the
+  scratchpad and re-patch it; one 24-iteration dry run from the new location.
+- **axis:** collective
+
+### FLYVIS-RESUME-AND-RECOVER-ARE-BROKEN-IN-1-2-0: five defects found by execution in the installed flyvis stand between anyone and a resumed run, and none of them is reported upstream (MEDIUM, open, 2026-09-14 — CC, from the interrupt-and-resume test of 2026-09-13)
+
+- **Observed.** `night/resA_9989-000.json` and `night/resA_9989-000.resume2.stdout.log`
+  (scratchpad): (1) `solver.recover()` cannot run — `resolve_checkpoints` signature
+  `TypeError` at `solver.py:598`; (2) datamate refuses to re-open a NetworkDir
+  (`FileExistsError` on `delete_if_exists`); (3) the checkpoint stores `iteration − 1`, so a
+  48-iteration budget ran to 59; (4) no RNG or data-order state is saved — the first 12
+  post-resume losses correlate 1.0000 with epoch 0's; (5) a penalty optimizer key mismatch
+  (`activity_optim` vs `penalty_optims`) leaves it unrecovered. A sixth is already on the
+  board: [[DATAMATE-UNLINKS-AN-OPEN-HDF5-FILE-AND-WINDOWS-REFUSES]].
+- **Inferred.** The consequence for this test is registered: §7 counts an interrupted run
+  as failed ([[RESUME-OF-AN-INTERRUPTED-RUN-IS-UNVALIDATED]], closed 2026-09-13). Upstream
+  fixes would not change that rule; they change what the next user of flyvis 1.2.0 inherits.
+- **First step.** On Mike's word, an upstream issue at `flyvis/flyvis` with the
+  48-iteration minimal reproduction; until then the §7 rule stands.
+- **axis:** knowledge
+
+### RUN-0-SHOWS-WHERE-THE-LOSS-PLATEAUS: run 0's rungs and checkpoints will show where held-out loss stops moving, and if that is far before 250,000 the expensive evaluation could be redefined cheaper — only by a new pre-registration written before the N runs (LOW, open, 2026-09-14 — Ark, chat 2026-09-13; filed by CC)
+
+- **Observed.** Nothing yet: run 0 has not started. The hook records held-out loss at
+  1,000 / 5,000 / 25,000 / 250,000 (§3) and the checkpoint cadence adds ≈ 70 points.
+- **Reported.** Ark: a free lever — run 0's plateau could redefine "expensive" together with
+  the ladder.
+- **Inferred.** The redefinition is a change to §3 after seeing run 0 — allowed for the
+  population only if registered anew *before* the N runs, and not available at all once (b)
+  has been seen.
+- **First step.** After run 0, plot held-out loss against iteration from the rung and
+  checkpoint metrics; if a plateau sits far before 250,000, propose a new pre-registration
+  to Mike before any N run starts. Parent task
+  [[PRE-REGISTER-THE-CHEAP-VERSUS-EXPENSIVE-TEST]], closed 2026-09-13.
 - **axis:** knowledge
 
 
 ## BLOCKED ON DECISION
 
-
-### HOW-MANY-FULL-RUNS-THE-TEST-IS-ALLOWED: K runs to convergence is the whole cost of Phase 2, and it is not a hardware question (HIGH, open, 2026-09-13 — asked by Ark, Johnny and Warren independently, 07:16–07:20 UTC)
-
-- **Observed.** The GPU is local and the money is zero; the cost is K × 250,000 iterations,
-  overnight. K bounds the statistic in the pre-registration, so it is needed *before* the
-  file is final, not after.
-- **First step.** Mike names K. Parent task [[PRE-REGISTER-THE-CHEAP-VERSUS-EXPENSIVE-TEST]].
-- **Decided 2026-09-13 (Mike): K = 1 to begin with.** Run 0 only; N for the test follows from
-  its measured cost by the rule in ADR-002 Q1. Entry stays open until N is set.
-- **axis:** honesty
 
 ### N-EQUALS-EIGHT-IS-BELOW-THE-FILES-OWN-MINIMUM: §4 calls N = 10 the minimum at which the test is meaningful and in the same section lets N fall to 8, where power at a true rho of 0.5 is about a third (MEDIUM, open, 2026-09-13 — Zcode 3.3 and Ark 6, chat; filed by CC)
 
@@ -122,8 +156,8 @@ language_cutoff: 2026-09-13
 - **Reported.** Zcode 3.3, Ark 6.
 - **First step.** Mike chooses: floor 10 (11 runs incl. run 0′, six nights) or floor 8 with
   `inconclusive — underpowered` registered as the expected outcome. Parent task
-  [[HOW-MANY-FULL-RUNS-THE-TEST-IS-ALLOWED]]; one of the fifteen in
-  [[PRE-LAUNCH-EDITS-TO-THE-PRE-REGISTRATION-BEFORE-RUN-0]].
+  [[HOW-MANY-FULL-RUNS-THE-TEST-IS-ALLOWED]], closed 2026-09-13; one of the fifteen in
+  [[PRE-LAUNCH-EDITS-TO-THE-PRE-REGISTRATION-BEFORE-RUN-0]], closed 2026-09-13.
 - **axis:** honesty
 
 ### THE-NIGHT-RUN-STARTS-ONLY-ON-MIKES-EXPLICIT-WORD: the launcher is ready and dry-printed, and nothing starts until Mike says so (HIGH, open, 2026-09-13 — Mike, 16:22 UTC: «полный ночной прогон не запускаем пока я явно это не скажу»)
@@ -134,6 +168,14 @@ language_cutoff: 2026-09-13
   off decided by Mike at 16:20 UTC.
 - **Observed, 17:07 UTC.** Mike asks for console progress logging so he can launch from
   PowerShell himself and watch; being added to the launcher.
+- **Observed, 2026-09-13 late.** Extent 5 measured and rejected — 1.46×, not the ≥ 3× that
+  would have moved the night ([[EIGHT-PROCESSES-SHARE-THE-CARD-NO-FASTER-THAN-ONE]]); the
+  night stays on extent 15. Tooling final: `night/run_individual.py` (rung hook, progress
+  lines, `--override`), `night/launch_wave.py` (`--sequential --detach`, replicate right
+  after seed 0), `night/start_night.ps1` (`-DryRun`, `-FollowOnly`, `-Extent`), all
+  exercised on 24–48-iteration runs; launch instructions sent to Mike 17:55 UTC; the launch
+  is Mike's own PowerShell command. Everything sits in the session scratchpad —
+  [[THE-NIGHT-TOOLING-LIVES-IN-A-TEMPORARY-SCRATCHPAD]].
 - **First step.** The word. Then launch, and the PID and the first rung (1,000) reported to
   the chat. Was blocked by [[PRE-LAUNCH-EDITS-TO-THE-PRE-REGISTRATION-BEFORE-RUN-0]] and by
   [[RESUME-OF-AN-INTERRUPTED-RUN-IS-UNVALIDATED]], both closed 2026-09-13.

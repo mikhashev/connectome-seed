@@ -2,6 +2,18 @@
 
 ## 2026-09-13 — closed by CC
 
+### HOW-MANY-FULL-RUNS-THE-TEST-IS-ALLOWED: K runs to convergence is the whole cost of Phase 2, and it is not a hardware question (HIGH, closed, 2026-09-13 — asked by Ark, Johnny and Warren independently, 07:16–07:20 UTC)
+
+**Closed:** S2026-09-11.1 · 2026-09-13 · fixed · K = 1 decided by Mike 2026-09-13 (run 0 only); N is no longer a number to name but a rule in docs/preregistration-cheap-vs-expensive.md §4, N = floor(m · H_avail / h_run) − 1 with m = 1 measured (e797f02) and h_run from run 0; the floor 8 vs 10 remains Mike's choice as [[N-EQUALS-EIGHT-IS-BELOW-THE-FILES-OWN-MINIMUM]] · commit: (this commit) · closed by CC
+
+- **Observed.** The GPU is local and the money is zero; the cost is K × 250,000 iterations,
+  overnight. K bounds the statistic in the pre-registration, so it is needed *before* the
+  file is final, not after.
+- **First step.** Mike names K. Parent task [[PRE-REGISTER-THE-CHEAP-VERSUS-EXPENSIVE-TEST]].
+- **Decided 2026-09-13 (Mike): K = 1 to begin with.** Run 0 only; N for the test follows from
+  its measured cost by the rule in ADR-002 Q1. Entry stays open until N is set.
+- **axis:** honesty
+
 ### IDEA-MD-IS-VERBATIM-RUSSIAN-IN-A-REPOSITORY-THAT-OPENS-IN-ENGLISH: the idea is 62 % Cyrillic by character because it is the author's text as written, and the public version must be English without ceasing to be the record (LOW, closed, 2026-09-13 — Mike, 06:46 UTC: «там всё на английском должно быть»)
 
 **Closed:** S2026-09-11.1 · 2026-09-13 · fixed · commit 30dc626: idea_en.md is in the repository as a marked English translation beside idea.md, and idea.md stays verbatim as the record · closed by CC
@@ -48,6 +60,26 @@
 - **First step.** Mike says which edits go in; CC applies them by exact replacement and
   commits before the launch word. Parent task [[PRE-REGISTER-THE-CHEAP-VERSUS-EXPENSIVE-TEST]].
   Blocks [[THE-NIGHT-RUN-STARTS-ONLY-ON-MIKES-EXPLICIT-WORD]].
+- **axis:** honesty
+
+### PRE-REGISTER-THE-CHEAP-VERSUS-EXPENSIVE-TEST: the test has a verified flow and no written reading, so a run today would produce a number nobody could interpret (HIGH, closed, 2026-09-13 — Mike, 07:27 UTC: «всё ты делаешь, мы ревьювим»; the demand for numbers first is Johnny's, Ark's and Warren's, independently)
+
+**Closed:** S2026-09-11.1 · 2026-09-13 · fixed · docs/preregistration-cheap-vs-expensive.md written 2026-09-13, reviewed by Ark (15:45 UTC) and Zcode (16:24 UTC), the fifteen edits applied on Mike's word in 5175239; the two decisions still open live in their own entries — the floor 8 vs 10 ([[N-EQUALS-EIGHT-IS-BELOW-THE-FILES-OWN-MINIMUM]]) and top-k as a secondary hypothesis ([[A-TRAINED-SURROGATE-IS-NOT-A-PREFIX-OF-THE-SAME-PROCESS]]); Johnny and Warren have not reviewed, noted and not waited on · commit: (this commit) · closed by CC
+
+- **Observed.** Three reviewers converged on the same missing file: what *cheap* and
+  *expensive* are in iterations, the number of individuals and seeds, the statistic and its
+  threshold, the decision rule per outcome, and a named prediction for composition. None of
+  the five exists in writing. The only number already fixed is flyvis's default for
+  *expensive*: `n_iters: 250000`, batch 4, lr 5e-5 → 5e-6.
+- **Inferred.** Hypotheses (a) "a spliced module behaves predictably" and (b) "cheap agrees
+  with expensive" must be registered separately with separate rules, or a month from now it
+  will not be possible to say which one fell. A splice of two identical copies is a control
+  that can only pass — the same shape as a zero-initialised adapter — so the splice joins two
+  *different* members or types, and the prediction is written before the run.
+- **First step.** One file in this repository with the five items as numbers; two of the
+  numbers are not the writer's — K (Mike) and what is spliced (Ark's proposal, in review).
+  Child of [[ADR-002]]. Blocks [[ONE-GPU-ITERATION-BEFORE-ANY-OVERNIGHT-RUN]].
+- **2026-09-13:** draft in the repository (`docs/preregistration-cheap-vs-expensive.md`), scripts beside it; seven marked proposals open for review (source of variation; splice pair and cell type — Ark; ladder and prefix definition; held-out split and metric; N = 10 minimum and the N rule; the 5 % tolerance for (a); the 1 % replicate tolerance). Entry stays open until reviewed.
 - **axis:** honesty
 
 ### RESUME-OF-AN-INTERRUPTED-RUN-IS-UNVALIDATED: the night plan kills run 0′ at a checkpoint and resumes it the next night, and nobody has checked what a resumed replicate restores or what §7 counts it as (HIGH, closed, 2026-09-13 — Zcode review 3.4, 16:24 UTC; filed by CC)
