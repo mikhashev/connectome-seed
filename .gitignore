@@ -13,3 +13,6 @@ __pycache__/
 backlog.html
 graph.html
 graph.json
+
+# full-text copies with no confirmed redistribution licence (2026-09-13/14 import)
+sources/local/
