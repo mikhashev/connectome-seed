@@ -34,19 +34,6 @@ language_cutoff: 2026-09-13
 - **2026-09-13:** draft in the repository (`docs/preregistration-cheap-vs-expensive.md`), scripts beside it; seven marked proposals open for review (source of variation; splice pair and cell type — Ark; ladder and prefix definition; held-out split and metric; N = 10 minimum and the N rule; the 5 % tolerance for (a); the 1 % replicate tolerance). Entry stays open until reviewed.
 - **axis:** honesty
 
-### ONE-GPU-ITERATION-BEFORE-ANY-OVERNIGHT-RUN: the price of the expensive evaluation on this card is an estimate until one training iteration has been timed here (HIGH, open, 2026-09-13 — Mike, 07:20 UTC: «сначала весь флоу проверить, а долгие прогоны ночью»)
-
-- **Observed.** The flow runs on this machine on CPU: `Network()` builds in 13.1 s; a
-  full-node synthetic stimulus (5,768 photoreceptors, 20 frames) runs forward in 0.06 s and
-  backward in 0.05 s with non-zero gradients. No GPU iteration has run. The card is occupied
-  by production (28,395 of 32,623 MiB at last check), so this needs a maintenance window.
-  Warren's 10–50 ms per GPU iteration is Inferred by its author and is not adopted here.
-- **First step.** In a window with production down: one iteration of the stock training loop
-  on the GPU, its wall-clock and VRAM recorded. Only then is K × 250,000 iterations turned into
-  a night. Blocked by [[PRE-REGISTER-THE-CHEAP-VERSUS-EXPENSIVE-TEST]]; was blocked by
-  [[SINTEL-IS-THE-ONE-UNVERIFIED-LINK-IN-THE-FLOW]], closed 2026-09-13.
-- **2026-09-13:** dataset on disk and the flow task builds and yields samples on CPU (see the closed Sintel entry). This entry is now blocked only by the pre-registration review and the maintenance window.
-- **axis:** honesty
 
 ### DATAMATE-UNLINKS-AN-OPEN-HDF5-FILE-AND-WINDOWS-REFUSES: flyvis does not build its connectome on Windows because its storage layer deletes a file while an h5py handle is still open (MEDIUM, open, 2026-09-13 — found by CC while verifying the flow)
 
@@ -72,14 +59,6 @@ language_cutoff: 2026-09-13
   done in the same pass as the LICENSE and the translation. Child of [[ADR-001]].
 - **axis:** reach
 
-### IDEA-MD-IS-VERBATIM-RUSSIAN-IN-A-REPOSITORY-THAT-OPENS-IN-ENGLISH: the idea is 62 % Cyrillic by character because it is the author's text as written, and the public version must be English without ceasing to be the record (LOW, open, 2026-09-13 — Mike, 06:46 UTC: «там всё на английском должно быть»)
-
-- **Observed.** Measured 2026-09-13: README 0.5 % Cyrillic, `literature.md` 1.0 %,
-  `idea.md` 62.4 %, `chat/` 70–95 %, whole folder 50.5 %.
-- **First step.** Publish `idea.md` as a marked translation with the Russian original kept
-  beside it — a translation labelled as one is not a retelling passed off as the source.
-  Child of [[ADR-001]].
-- **axis:** reach
 
 ## BLOCKED ON DECISION
 

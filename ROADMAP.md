@@ -29,9 +29,10 @@ transcripts never enter history). [002 — file under a condition](docs/decision
 its storage layer `datamate` fails on Windows by unlinking an HDF5 file that still has an
 open handle (`io.py`, `_write_h5` / `_extend_h5`); a close-before-unlink patch holds —
 `Network()` builds in 13.1 s; a full-node synthetic stimulus (5,768 photoreceptors, 20
-frames) runs forward in 0.06 s and backward in 0.05 s with non-zero gradients. The one
-unverified link is the dataset (Sintel, ~5 GB: images + ground-truth flow; flyvis downloads it
-itself).
+frames) runs forward in 0.06 s and backward in 0.05 s with non-zero gradients. The dataset
+(Sintel, ~5 GB: images + ground-truth flow) is on disk since `866b968` — 23/23 sequences, the
+flow task builds and yields samples — and the price of a GPU iteration is measured (Phase 2,
+item 1).
 
 **Pre-registration, written before any run** — one file, with numbers:
 1. what *cheap* is and what *expensive* is, in iterations (expensive: flyvis default
@@ -50,12 +51,26 @@ A splice of two *identical* copies is a control that can only pass; the test spl
 
 **Exit:** the pre-registration file exists and has been reviewed (draft in repo, review open); the dataset is on disk — done 2026-09-13 (23/23 sequences, flow task builds and yields samples).
 
-## Phase 2 — The test (NOT STARTED; long runs overnight)
+## Phase 2 — The test (IN PROGRESS — item 1 done 2026-09-13; long runs overnight)
 
 **Goal:** the condition, measured.
 
 1. **One training iteration on the GPU**, in a maintenance window with production down — this
    gives the price of *expensive* on this card. Nothing is scheduled from an estimate.
+   **Done 2026-09-13** (Mike, 11:19 UTC: «карта свободна, можно делать прогоны»). Two runs of
+   24 iterations of the stock `flow` config (batch 4, extent 15), `flyvis train-single` and the
+   same config in-process with timing after `torch.cuda.synchronize()`, RTX PRO 4500 Blackwell,
+   torch 2.9.1+cu128. Observed: **0.0619 s per training iteration** within an epoch (n = 22,
+   min 0.0589, max 0.0694); checkpoint 0.73–0.90 s, post-epoch writes 0.30 s; peak VRAM
+   **1,402 MiB** torch-allocated (1,512 MiB reserved), 4,568 MiB on the card over a 2,565 MiB
+   desktop baseline; GPU utilization samples peaked at 42 % / 71 %; loss finite, 24/24. Cold
+   solver init 28.4 s, warm 4.3 s. Inferred: 250,000 iterations = 15,475 s = **4.30 h**, ≈
+   **4.6 h** all-in with ~70 checkpoints at `chkpt_every_epoch: 300`. Consequence for the
+   pre-registration's N rule (N = floor(H_avail / h_run), ≥ 8): one ~10 h night holds **2
+   sequential runs**; N = 8 is ~37 h ≈ 4 nights. Utilization ≤ 71 % and 1.5 GB per run suggest
+   several runs could share the card — a hypothesis, **not measured**; that concurrency probe
+   is the next step. Logs in the scratchpad (`flyvis-probe/gpu_price_probe_instrumented.json`
+   and siblings), outside the repository.
 2. **K full runs to convergence**, overnight, per the pre-registration. K is Mike's number and
    is the real cost of this phase; the GPU is local and the money is zero.
 3. The cheap evaluation of the same individuals, and the rank correlation between the two.
@@ -94,8 +109,8 @@ one that can be trusted to be current.
 | **collective** | — | 0 | 0 |
 | **knowledge** | — | 0 | 0 |
 | **network** | — | 0 | 0 |
-| **honesty** | ADR-002 accepted | 4 | 0 |
-| **reach** | ADR-001 accepted | 3 | 0 |
+| **honesty** | ADR-002 accepted | 3 | 0 |
+| **reach** | ADR-001 accepted | 2 | 0 |
 
 **Observation debt: 0 under an axis + 0 in entries that carry none = 0.** Work finished and never seen working; per axis it says which direction is running ahead of its evidence.
 
