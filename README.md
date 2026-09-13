@@ -147,3 +147,10 @@ on 2026-09-13, which is 12:57–13:43 local.
 
 **Not done, deliberately.** No repository initialised, no backlog entry, no card in
 `autoresearch-win-rtx/docs/articles/` — those are Mike's calls and none was given.
+
+## Licence
+
+This repository is licensed under the Creative Commons Attribution 4.0 International License
+(CC BY 4.0, [LICENSE](LICENSE)); attribution is required as "Mike Shevchenko, DPC Research —
+https://github.com/mikhashev/". The PDF in `sources/` carries its own CC BY 4.0 attribution
+to its authors (Shuvaev et al., PNAS 2024), stated on its first page.

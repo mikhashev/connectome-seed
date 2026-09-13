@@ -2,6 +2,16 @@
 
 ## 2026-09-13 — closed by CC
 
+### THE-ATTRIBUTION-STRING-FOR-CC-BY-IS-NOT-WRITTEN: the licence is chosen and the LICENSE file cannot be written without saying who the author is (MEDIUM, closed, 2026-09-13 — Mike, 06:55 UTC: «ок CC BY 4.0»)
+
+**Closed:** S2026-09-11.1 · 2026-09-13 · fixed · LICENSE at repo root with the string; README ## Licence; commit: (this commit) · closed by CC
+
+- **Observed.** README names Mike and three agents by role. CC BY 4.0 requires an
+  attribution; the string is a decision, not a default.
+- **First step.** Mike names it; the LICENSE file follows in the same pass as the links.
+  Child of [[ADR-001]].
+- **axis:** reach
+
 ### THE-SECOND-VOICE-IN-THE-IDEA-TRANSCRIPT-IS-GROK-AND-UNNAMED: the review pasted inside the idea's transcript is a model's output that the public documents cite without a source (MEDIUM, closed, 2026-09-13 — Mike, 06:53 UTC, on who the second voice is)
 
 **Closed:** S2026-09-11.1 · 2026-09-13 · fixed · commit: (this commit); git grep for 'second voice' in tracked files returns only the ADR-001 decided line · closed by CC

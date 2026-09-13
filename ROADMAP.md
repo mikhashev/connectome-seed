@@ -43,6 +43,8 @@ itself).
    **(a)** does a spliced module behave predictably, **(b)** does cheap evaluation agree with
    expensive. A result on one says nothing about the other.
 
+**Draft:** [docs/preregistration-cheap-vs-expensive.md](docs/preregistration-cheap-vs-expensive.md) — in the repository since 2026-09-13, marked proposals await review; critical ρ values recomputed independently by CC (N=8: 0.6429, N=10: 0.5636).
+
 A splice of two *identical* copies is a control that can only pass; the test splices two
 *different* things (two ensemble members, or two cell types), with the prediction stated first.
 
@@ -93,7 +95,7 @@ one that can be trusted to be current.
 | **knowledge** | — | 0 | 0 |
 | **network** | — | 0 | 0 |
 | **honesty** | ADR-002 accepted | 5 | 0 |
-| **reach** | ADR-001 accepted | 4 | 0 |
+| **reach** | ADR-001 accepted | 3 | 0 |
 
 **Observation debt: 0 under an axis + 0 in entries that carry none = 0.** Work finished and never seen working; per axis it says which direction is running ahead of its evidence.
 

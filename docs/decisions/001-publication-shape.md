@@ -72,14 +72,14 @@ links were a convenience for the private folder, not information.
 
 ## Open Questions
 
-- **Q1:** The **attribution string** for CC BY 4.0 — who is named as author. The README
-  currently names Mike and three agents by role. — Mike
+- **Q1 — decided 2026-09-13 (Mike): attribution is "Mike Shevchenko, DPC Research —
+  https://github.com/mikhashev/".** LICENSE written; README carries it.
 - **Q2 — decided 2026-09-13 (Mike): dropped.** The review Grok gave the idea stays only in
   the local transcript; no public file names or quotes it.
 
 ## Scope
 
-- `LICENSE` — CC BY 4.0 text, with Q1's string. Not yet written.
+- `LICENSE` — CC BY 4.0 text, with Q1's string. Done (this commit).
 - `.gitignore` — `chat/` plus scratch patterns. Done, `8695d26`.
 - `README.md`, `literature.md`, `idea.md` — thirteen links into `chat/` to become attributions.
   Not yet done.

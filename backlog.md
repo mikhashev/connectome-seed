@@ -31,6 +31,7 @@ language_cutoff: 2026-09-13
 - **First step.** One file in this repository with the five items as numbers; two of the
   numbers are not the writer's — K (Mike) and what is spliced (Ark's proposal, in review).
   Child of [[ADR-002]]. Blocks [[ONE-GPU-ITERATION-BEFORE-ANY-OVERNIGHT-RUN]].
+- **2026-09-13:** draft in the repository (`docs/preregistration-cheap-vs-expensive.md`), scripts beside it; seven marked proposals open for review (source of variation; splice pair and cell type — Ark; ladder and prefix definition; held-out split and metric; N = 10 minimum and the N rule; the 5 % tolerance for (a); the 1 % replicate tolerance). Entry stays open until reviewed.
 - **axis:** honesty
 
 ### ONE-GPU-ITERATION-BEFORE-ANY-OVERNIGHT-RUN: the price of the expensive evaluation on this card is an estimate until one training iteration has been timed here (HIGH, open, 2026-09-13 — Mike, 07:20 UTC: «сначала весь флоу проверить, а долгие прогоны ночью»)
@@ -100,11 +101,4 @@ language_cutoff: 2026-09-13
   its measured cost by the rule in ADR-002 Q1. Entry stays open until N is set.
 - **axis:** honesty
 
-### THE-ATTRIBUTION-STRING-FOR-CC-BY-IS-NOT-WRITTEN: the licence is chosen and the LICENSE file cannot be written without saying who the author is (MEDIUM, open, 2026-09-13 — Mike, 06:55 UTC: «ок CC BY 4.0»)
-
-- **Observed.** README names Mike and three agents by role. CC BY 4.0 requires an
-  attribution; the string is a decision, not a default.
-- **First step.** Mike names it; the LICENSE file follows in the same pass as the links.
-  Child of [[ADR-001]].
-- **axis:** reach
 
