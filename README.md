@@ -114,11 +114,24 @@ first did not survive intact, and the way it failed is the useful part:
   idea specifies does not, as shown.
 
 What still stands: validity by construction (SELFIES) as the design rule for whatever the
-grammar is; flyvis as the circuit to start from; and Ark's one-run test — splice two copies,
-check the behaviour is *predictable*, not merely alive. That test now doubles as the check on
-the condition above: if two spliced copies cannot be evaluated cheaply *and* consistently, the
-loop has no middle. Marked **Inferred** — a synthesis, not a paper, and thinner than it was
-this morning.
+grammar is; flyvis as the circuit to start from; and Ark's one-run test on composition.
+
+**Corrected after the second review (Ark, 07:16 UTC).** An earlier version of this paragraph
+said the composition test "doubles as the check on the condition". It does not. There are two
+hypotheses and they are registered separately: **(a)** a spliced module behaves predictably;
+**(b)** a cheap evaluation agrees with an expensive one. A negative on (a) says nothing about
+(b), and the reverse. And a splice of two *identical* copies is a control that can only pass —
+if the copies do not interact the composite is trivially "predictable", the same shape as a
+zero-initialised adapter — so the test splices two *different* things (two ensemble members, or
+two cell types) and names its prediction before it runs. What is spliced, and the numbers
+for (b), live in the pre-registration file, not here. Marked **Inferred** — a synthesis, not a
+paper, and thinner than it was this morning.
+
+**Project files, added 2026-09-13 on Mike's word:** [VISION.md](VISION.md) (what we are trying
+to find out), [ROADMAP.md](ROADMAP.md) (phases, ordered by what blocks them),
+[decisions/](decisions/) (ADR-001 publication shape, ADR-002 file under a condition),
+[backlog.md](backlog.md) (tasks, validated with the shared backlog tool). Roles as of that day:
+CC executes everything, Ark, Johnny and Warren review.
 
 ## Files
 
