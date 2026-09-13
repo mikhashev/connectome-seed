@@ -1,0 +1,10 @@
+# The thread transcripts stay local: they are verbatim internal discussion, not a
+# publication artefact (Mike, 2026-09-13 06:50 UTC). Nothing under chat/ ever
+# enters history, which is the property a repo that will later go public needs.
+chat/
+
+# scratch / local
+.env
+__pycache__/
+*.pyc
+.venv/
