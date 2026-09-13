@@ -29,6 +29,45 @@
 - **2026-09-13:** dataset on disk and the flow task builds and yields samples on CPU (see the closed Sintel entry). This entry is now blocked only by the pre-registration review and the maintenance window.
 - **axis:** honesty
 
+### PRE-LAUNCH-EDITS-TO-THE-PRE-REGISTRATION-BEFORE-RUN-0: two reviews asked for fifteen text edits before run 0, and any of them applied after the run would be indistinguishable from an edit made after looking (HIGH, closed, 2026-09-13 — Ark 15:45 UTC and Zcode 16:24 UTC, chat; the K1 lesson)
+
+**Closed:** S2026-09-11.1 · 2026-09-13 · fixed · 24 exact replacements applied to docs/preregistration-cheap-vs-expensive.md on Mike's word 17:06 UTC; floor 8/10 left as Mike's choice in §4 · commit: (this commit) · closed by CC
+
+- **Observed.** The fifteen: the N-rule off-by-one and the "four nights" prose; the H_avail
+  horizon; floor 8 vs 10 (Mike chooses); C3 as the primary rung with Holm for C1/C2; the
+  inconclusive band by permutation CI; the negative branch narrowed and the positive one
+  sharpened; a two-sided (a) criterion with the self-splice as instrument control; σ instead
+  of range in §7; the determinism sentence, false since Mike's 16:20 UTC decision; a resume
+  rule; one h_run definition; the 4.6 h arithmetic; exact rows N = 12/16/20 and the two
+  tails; the "independent re-run" line; the status line. Commit e797f02 applied the measured
+  facts and left every semantic edit for Mike's word. A scratchpad draft of the edits was
+  named (`prereg-edits-draft.md`); draft written 23:29 local and applied (CC,
+  2026-09-13).
+- **Inferred.** "Decided in advance" stays distinguishable from "decided after looking" only
+  if the edits land in a commit that precedes run 0's first checkpoint.
+- **First step.** Mike says which edits go in; CC applies them by exact replacement and
+  commits before the launch word. Parent task [[PRE-REGISTER-THE-CHEAP-VERSUS-EXPENSIVE-TEST]].
+  Blocks [[THE-NIGHT-RUN-STARTS-ONLY-ON-MIKES-EXPLICIT-WORD]].
+- **axis:** honesty
+
+### RESUME-OF-AN-INTERRUPTED-RUN-IS-UNVALIDATED: the night plan kills run 0′ at a checkpoint and resumes it the next night, and nobody has checked what a resumed replicate restores or what §7 counts it as (HIGH, closed, 2026-09-13 — Zcode review 3.4, 16:24 UTC; filed by CC)
+
+**Closed:** S2026-09-11.1 · 2026-09-13 · fixed · 48-iteration interrupt-and-resume test 2026-09-13: flyvis recover() fails as installed (resolve_checkpoints TypeError, datamate FileExistsError); replica restores no RNG/data order, penalty optimizer not recovered, counter off by one (48 → 59); resumed − uninterrupted at rungs 24/36/48 = −0.096/−0.141/−0.187 vs replicate noise ≤ 1.1e-4; rule registered in §7: interrupted run = failed run, re-run from the same seed, resume never used · commit: (this commit) · closed by CC
+
+- **Observed.** The night plan is run 0 then run 0′, 8.6–9.2 h together at the measured
+  4.3–4.6 h per run, inside an 8–9 h window — so run 0′ is interrupted at a checkpoint and
+  resumed the following night. `docs/preregistration-cheap-vs-expensive.md` §7 has no rule
+  for what a resumed replicate is, and what flyvis `resume=true` restores — optimizer state,
+  scheduler, RNG, data order — has not been checked.
+- **Inferred.** Until both are settled, a resumed run 0′ is not the replicate §7 describes,
+  and the 1 % replicate tolerance would be measured against the wrong object.
+- **Reported.** Zcode 3.4 (chat, 16:24 UTC).
+- **First step.** A 48-iteration interrupt-and-resume test against an uninterrupted control,
+  both with determinism off; compare the hook trajectories at rungs 24/36/48 against the
+  replicate noise. Running now (CC subagent). The resume rule itself is one of the fifteen
+  edits in [[PRE-LAUNCH-EDITS-TO-THE-PRE-REGISTRATION-BEFORE-RUN-0]].
+- **axis:** honesty
+
 ### SINTEL-IS-THE-ONE-UNVERIFIED-LINK-IN-THE-FLOW: everything up to the dataset runs on this machine, and the dataset is five gigabytes of a third party's data under its own terms (HIGH, closed, 2026-09-13 — CC, 07:26 UTC, asked before pulling it)
 
 **Closed:** S2026-09-11.1 · 2026-09-13 · fixed · archive 5,627,783,629 B = server size, CRC clean over 8,753 members; 23/23 sequences in training/final and training/flow; MultiTaskSintel(tasks=[flow]) builds (69 items) and yields lum (9,1,721) / flow (9,2,721); no licence file in the tree, README carries copyright 2012 Butler et al. and a cite request only; commit: (this commit) · closed by CC

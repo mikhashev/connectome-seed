@@ -76,7 +76,8 @@ A splice of two *identical* copies is a control that can only pass; the test spl
    on Windows). Observed: per process 0.2281 s/iter at k = 4 (3.69×) and 0.4502 s/iter at k = 8
    (7.27×); aggregate saturates at ≈ 17.5 it/s for any k (solo 16.2); card peak 10,116 / 17,542
    MiB, util peak 91 / 92 %. The hypothesis above is refuted: **m = 1**, the N rule reads
-   N = floor(H_avail / h_run), a night holds two sequential runs, N = 8 needs four nights. Ark
+   N = floor(H_avail / h_run), a night holds two sequential runs, N = 8 means nine runs, five
+   nights at two per night (floor 8 vs 10 is Mike's open choice, §4). Ark
    (chat, 15:45 UTC): «a gate for (b), not an optimisation». **Determinism flags**
    (`CUBLAS_WORKSPACE_CONFIG=:4096:8`, cudnn deterministic, `use_deterministic_algorithms(True,
    warn_only=True)`) cost 3.77×: 0.2335 s/iter ≈ 16.2 h per run against 0.0620 s without; losses
@@ -86,7 +87,8 @@ A splice of two *identical* copies is a control that can only pass; the test spl
 2. **K full runs to convergence**, overnight, per the pre-registration. K is Mike's number and
    is the real cost of this phase; the GPU is local and the money is zero. **Night plan (planned,
    not done):** run 0, then run 0′ (seed 0 twice, pre-registration §7), sequentially, ≈ 8.6–9.2 h
-   together at the measured 4.3–4.6 h per run; launched on Mike's command.
+   together at the measured 4.3–4.6 h per run; launched on Mike's command. Resume is not
+   used — an interrupted run is a failed run (§7, measured 2026-09-13).
 3. The cheap evaluation of the same individuals, and the rank correlation between the two.
 
 **Outcomes, both of them results:** cheap ranking *disagrees* with expensive → the 2508.17464
@@ -123,7 +125,7 @@ one that can be trusted to be current.
 | **collective** | — | 1 | 0 |
 | **knowledge** | — | 1 | 0 |
 | **network** | — | 0 | 0 |
-| **honesty** | ADR-002 accepted | 6 | 0 |
+| **honesty** | ADR-002 accepted | 4 | 0 |
 | **reach** | ADR-001 accepted | 2 | 0 |
 
 **Observation debt: 0 under an axis + 0 in entries that carry none = 0.** Work finished and never seen working; per axis it says which direction is running ahead of its evidence.

@@ -59,22 +59,6 @@ language_cutoff: 2026-09-13
   done in the same pass as the LICENSE and the translation. Child of [[ADR-001]].
 - **axis:** reach
 
-### RESUME-OF-AN-INTERRUPTED-RUN-IS-UNVALIDATED: the night plan kills run 0′ at a checkpoint and resumes it the next night, and nobody has checked what a resumed replicate restores or what §7 counts it as (HIGH, open, 2026-09-13 — Zcode review 3.4, 16:24 UTC; filed by CC)
-
-- **Observed.** The night plan is run 0 then run 0′, 8.6–9.2 h together at the measured
-  4.3–4.6 h per run, inside an 8–9 h window — so run 0′ is interrupted at a checkpoint and
-  resumed the following night. `docs/preregistration-cheap-vs-expensive.md` §7 has no rule
-  for what a resumed replicate is, and what flyvis `resume=true` restores — optimizer state,
-  scheduler, RNG, data order — has not been checked.
-- **Inferred.** Until both are settled, a resumed run 0′ is not the replicate §7 describes,
-  and the 1 % replicate tolerance would be measured against the wrong object.
-- **Reported.** Zcode 3.4 (chat, 16:24 UTC).
-- **First step.** A 48-iteration interrupt-and-resume test against an uninterrupted control,
-  both with determinism off; compare the hook trajectories at rungs 24/36/48 against the
-  replicate noise. Running now (CC subagent). The resume rule itself is one of the fifteen
-  edits in [[PRE-LAUNCH-EDITS-TO-THE-PRE-REGISTRATION-BEFORE-RUN-0]].
-- **axis:** honesty
-
 ### EIGHT-PROCESSES-SHARE-THE-CARD-NO-FASTER-THAN-ONE: aggregate throughput saturates near 17.5 it/s whatever the process count, so only fewer kernel launches per iteration can shorten a night (MEDIUM, open, 2026-09-13 — CC, from the concurrency measurement committed in e797f02)
 
 - **Observed.** Per process 0.0619 / 0.228 / 0.450 s/iter at k = 1 / 4 / 8; aggregate
@@ -105,25 +89,6 @@ language_cutoff: 2026-09-13
   its measured cost by the rule in ADR-002 Q1. Entry stays open until N is set.
 - **axis:** honesty
 
-### PRE-LAUNCH-EDITS-TO-THE-PRE-REGISTRATION-BEFORE-RUN-0: two reviews asked for fifteen text edits before run 0, and any of them applied after the run would be indistinguishable from an edit made after looking (HIGH, open, 2026-09-13 — Ark 15:45 UTC and Zcode 16:24 UTC, chat; the K1 lesson)
-
-- **Observed.** The fifteen: the N-rule off-by-one and the "four nights" prose; the H_avail
-  horizon; floor 8 vs 10 (Mike chooses); C3 as the primary rung with Holm for C1/C2; the
-  inconclusive band by permutation CI; the negative branch narrowed and the positive one
-  sharpened; a two-sided (a) criterion with the self-splice as instrument control; σ instead
-  of range in §7; the determinism sentence, false since Mike's 16:20 UTC decision; a resume
-  rule; one h_run definition; the 4.6 h arithmetic; exact rows N = 12/16/20 and the two
-  tails; the "independent re-run" line; the status line. Commit e797f02 applied the measured
-  facts and left every semantic edit for Mike's word. A scratchpad draft of the edits was
-  named (`prereg-edits-draft.md`) and was not on disk when this entry was filed (CC,
-  2026-09-13).
-- **Inferred.** "Decided in advance" stays distinguishable from "decided after looking" only
-  if the edits land in a commit that precedes run 0's first checkpoint.
-- **First step.** Mike says which edits go in; CC applies them by exact replacement and
-  commits before the launch word. Parent task [[PRE-REGISTER-THE-CHEAP-VERSUS-EXPENSIVE-TEST]].
-  Blocks [[THE-NIGHT-RUN-STARTS-ONLY-ON-MIKES-EXPLICIT-WORD]].
-- **axis:** honesty
-
 ### N-EQUALS-EIGHT-IS-BELOW-THE-FILES-OWN-MINIMUM: §4 calls N = 10 the minimum at which the test is meaningful and in the same section lets N fall to 8, where power at a true rho of 0.5 is about a third (MEDIUM, open, 2026-09-13 — Zcode 3.3 and Ark 6, chat; filed by CC)
 
 - **Observed.** `docs/preregistration-cheap-vs-expensive.md` §4: "N = 10 is the minimum at
@@ -146,7 +111,9 @@ language_cutoff: 2026-09-13
   2026-09-13); command `launch_wave.py --tag night1 --ensemble 9991 --seeds 0 --replicate
   --sequential --detach --no-determinism`, dry-printed; ensemble 9991 unused; determinism
   off decided by Mike at 16:20 UTC.
+- **Observed, 17:07 UTC.** Mike asks for console progress logging so he can launch from
+  PowerShell himself and watch; being added to the launcher.
 - **First step.** The word. Then launch, and the PID and the first rung (1,000) reported to
-  the chat. Blocked by [[PRE-LAUNCH-EDITS-TO-THE-PRE-REGISTRATION-BEFORE-RUN-0]]; blocked by
-  [[RESUME-OF-AN-INTERRUPTED-RUN-IS-UNVALIDATED]].
+  the chat. Was blocked by [[PRE-LAUNCH-EDITS-TO-THE-PRE-REGISTRATION-BEFORE-RUN-0]] and by
+  [[RESUME-OF-AN-INTERRUPTED-RUN-IS-UNVALIDATED]], both closed 2026-09-13.
 - **axis:** collective
