@@ -2,6 +2,17 @@
 
 ## 2026-09-13 — closed by CC
 
+### SINTEL-IS-THE-ONE-UNVERIFIED-LINK-IN-THE-FLOW: everything up to the dataset runs on this machine, and the dataset is five gigabytes of a third party's data under its own terms (HIGH, closed, 2026-09-13 — CC, 07:26 UTC, asked before pulling it)
+
+**Closed:** S2026-09-11.1 · 2026-09-13 · fixed · archive 5,627,783,629 B = server size, CRC clean over 8,753 members; 23/23 sequences in training/final and training/flow; MultiTaskSintel(tasks=[flow]) builds (69 items) and yields lum (9,1,721) / flow (9,2,721); no licence file in the tree, README carries copyright 2012 Butler et al. and a cite request only; commit: (this commit) · closed by CC
+
+- **Observed.** flyvis's flow task reads `training/final` (images, 1.7 GB) and
+  `training/flow` (ground truth, 3.1 GB) from MPI-Sintel and downloads them itself via
+  `download_sintel()`; the depth split is only needed for a depth task. Disk free: 516 GB.
+  The dataset's README carries its own terms; they were not read.
+- **First step.** Mike's word; then one call, and the flow is verified end to end.
+- **axis:** honesty
+
 ### THE-ATTRIBUTION-STRING-FOR-CC-BY-IS-NOT-WRITTEN: the licence is chosen and the LICENSE file cannot be written without saying who the author is (MEDIUM, closed, 2026-09-13 — Mike, 06:55 UTC: «ок CC BY 4.0»)
 
 **Closed:** S2026-09-11.1 · 2026-09-13 · fixed · LICENSE at repo root with the string; README ## Licence; commit: (this commit) · closed by CC

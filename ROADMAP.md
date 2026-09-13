@@ -48,7 +48,7 @@ itself).
 A splice of two *identical* copies is a control that can only pass; the test splices two
 *different* things (two ensemble members, or two cell types), with the prediction stated first.
 
-**Exit:** the pre-registration file exists and has been reviewed; the dataset is on disk.
+**Exit:** the pre-registration file exists and has been reviewed (draft in repo, review open); the dataset is on disk — done 2026-09-13 (23/23 sequences, flow task builds and yields samples).
 
 ## Phase 2 — The test (NOT STARTED; long runs overnight)
 
@@ -94,7 +94,7 @@ one that can be trusted to be current.
 | **collective** | — | 0 | 0 |
 | **knowledge** | — | 0 | 0 |
 | **network** | — | 0 | 0 |
-| **honesty** | ADR-002 accepted | 5 | 0 |
+| **honesty** | ADR-002 accepted | 4 | 0 |
 | **reach** | ADR-001 accepted | 3 | 0 |
 
 **Observation debt: 0 under an axis + 0 in entries that carry none = 0.** Work finished and never seen working; per axis it says which direction is running ahead of its evidence.

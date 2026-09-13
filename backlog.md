@@ -43,8 +43,9 @@ language_cutoff: 2026-09-13
   Warren's 10–50 ms per GPU iteration is Inferred by its author and is not adopted here.
 - **First step.** In a window with production down: one iteration of the stock training loop
   on the GPU, its wall-clock and VRAM recorded. Only then is K × 250,000 iterations turned into
-  a night. Blocked by [[PRE-REGISTER-THE-CHEAP-VERSUS-EXPENSIVE-TEST]] and by
-  [[SINTEL-IS-THE-ONE-UNVERIFIED-LINK-IN-THE-FLOW]].
+  a night. Blocked by [[PRE-REGISTER-THE-CHEAP-VERSUS-EXPENSIVE-TEST]]; was blocked by
+  [[SINTEL-IS-THE-ONE-UNVERIFIED-LINK-IN-THE-FLOW]], closed 2026-09-13.
+- **2026-09-13:** dataset on disk and the flow task builds and yields samples on CPU (see the closed Sintel entry). This entry is now blocked only by the pre-registration review and the maintenance window.
 - **axis:** honesty
 
 ### DATAMATE-UNLINKS-AN-OPEN-HDF5-FILE-AND-WINDOWS-REFUSES: flyvis does not build its connectome on Windows because its storage layer deletes a file while an h5py handle is still open (MEDIUM, open, 2026-09-13 — found by CC while verifying the flow)
@@ -82,14 +83,6 @@ language_cutoff: 2026-09-13
 
 ## BLOCKED ON DECISION
 
-### SINTEL-IS-THE-ONE-UNVERIFIED-LINK-IN-THE-FLOW: everything up to the dataset runs on this machine, and the dataset is five gigabytes of a third party's data under its own terms (HIGH, open, 2026-09-13 — CC, 07:26 UTC, asked before pulling it)
-
-- **Observed.** flyvis's flow task reads `training/final` (images, 1.7 GB) and
-  `training/flow` (ground truth, 3.1 GB) from MPI-Sintel and downloads them itself via
-  `download_sintel()`; the depth split is only needed for a depth task. Disk free: 516 GB.
-  The dataset's README carries its own terms; they were not read.
-- **First step.** Mike's word; then one call, and the flow is verified end to end.
-- **axis:** honesty
 
 ### HOW-MANY-FULL-RUNS-THE-TEST-IS-ALLOWED: K runs to convergence is the whole cost of Phase 2, and it is not a hardware question (HIGH, open, 2026-09-13 — asked by Ark, Johnny and Warren independently, 07:16–07:20 UTC)
 

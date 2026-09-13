@@ -260,3 +260,25 @@ unproven step.**
   readme.
 - Neuron counts and the connectome release behind entry 5 are not in its abstract.
 - No paper below was read for its methods beyond what is quoted. Entries 6–8 are abstracts.
+
+## G. Dataset — MPI-Sintel (rights, read at source)
+
+**Observed** (files read 2026-09-13). On disk, outside the repository by design, at
+`connectome-seed-data/SintelDataSet`: archive `MPI-Sintel-complete.zip`, 5,627,783,629 bytes
+(= server Content-Length), `zipfile.testzip()` clean over all 8,753 members; extracted
+`training/final` 23 sequences / 1,064 files, `training/flow` 23 / 1,041 (`.flo`),
+`training/clean` 23 / 1,064, `test/final` and `test/clean` 12 sequences each. flyvis resolves
+it (`download_sintel()` → "Found Sintel at"); `MultiTaskSintel(tasks=["flow"], n_frames=4)`
+yields 69 items, sample 0 `lum (9, 1, 721)`, `flow (9, 2, 721)`, float32. CPU only.
+
+**Rights.** No LICENSE or COPYING file exists anywhere in the extracted tree. `README.txt`
+line 3: *"Copyright (c) 2012 Daniel Butler, Jonas Wulff, Garrett Stanley, Michael Black,
+Max-Planck Institute for Intelligent Systems, Tuebingen"*; line 155: *"If you use this work,
+please cite:"* followed by the bibtex entry `Butler:ECCV:2012` ("A naturalistic open source
+movie for optical flow evaluation", ECCV 2012, LNCS 7577, pp. 611–625). The words "license",
+"licence", "terms" and "permission" do not occur in `README.txt`. The website's terms
+(sintel.is.tue.mpg.de) were **not** read.
+
+**Consequence.** The data never enter this repository — not the archive, not a frame, not a
+`.flo` file; the data root is ignored and sits beside the repository, not inside it. Any
+article that uses the flow task cites Butler et al. 2012.
