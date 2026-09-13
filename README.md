@@ -24,7 +24,7 @@ controller is plastic, permutation of roles, a diversity archive), give every of
 "youth" of limited plasticity before measuring it, and select on a multi-objective fitness in
 closed arenas. The main artefact is the **evolutionary tree**, not one video. Full text as
 posted in the thread: [chat/67](chat/67-mike-055707.md); a clean copy of the five points:
-[idea.md](idea.md).
+[idea.md](idea.md); in English, [idea_en.md](idea_en.md).
 
 ## What the readers found — the shape, not the retelling
 
@@ -135,7 +135,8 @@ CC executes everything, Ark, Johnny and Warren review.
 
 ```
 README.md          this
-idea.md            the five points, verbatim
+idea.md            the five points, verbatim (Russian, the record)
+idea_en.md         English translation of idea.md, 2026-09-13 — not the record
 literature.md      every source, what was verified how, numbers and quotes
 chat/              the thread, one file per message, 67 → 84, UTC timestamps
                    (79–84 = the review round: Johnny 81, Ark 82, Mike's "доделай" 83)
