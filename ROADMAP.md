@@ -68,11 +68,25 @@ A splice of two *identical* copies is a control that can only pass; the test spl
    **4.6 h** all-in with ~70 checkpoints at `chkpt_every_epoch: 300`. Consequence for the
    pre-registration's N rule (N = floor(H_avail / h_run), ≥ 8): one ~10 h night holds **2
    sequential runs**; N = 8 is ~37 h ≈ 4 nights. Utilization ≤ 71 % and 1.5 GB per run suggest
-   several runs could share the card — a hypothesis, **not measured**; that concurrency probe
-   is the next step. Logs in the scratchpad (`flyvis-probe/gpu_price_probe_instrumented.json`
-   and siblings), outside the repository.
+   several runs could share the card — a hypothesis, **not measured** at that point. Logs in the
+   scratchpad (`flyvis-probe/gpu_price_probe_instrumented.json` and siblings), outside the
+   repository.
+   **Concurrency, measured later the same day (m = 1, a gate for the N rule):** barrier-synchronised
+   waves of 4 and 8 processes, 240 iterations each, `Compute Mode: Default` (time-sliced, no MPS
+   on Windows). Observed: per process 0.2281 s/iter at k = 4 (3.69×) and 0.4502 s/iter at k = 8
+   (7.27×); aggregate saturates at ≈ 17.5 it/s for any k (solo 16.2); card peak 10,116 / 17,542
+   MiB, util peak 91 / 92 %. The hypothesis above is refuted: **m = 1**, the N rule reads
+   N = floor(H_avail / h_run), a night holds two sequential runs, N = 8 needs four nights. Ark
+   (chat, 15:45 UTC): «a gate for (b), not an optimisation». **Determinism flags**
+   (`CUBLAS_WORKSPACE_CONFIG=:4096:8`, cudnn deterministic, `use_deterministic_algorithms(True,
+   warn_only=True)`) cost 3.77×: 0.2335 s/iter ≈ 16.2 h per run against 0.0620 s without; losses
+   differ at the 7th significant digit; decision pending Mike (pre-registration §7). Logs
+   `flyvis-probe/gpu_concb_*`, `flyvis-probe/night/dry_9990-000.json`, `night/nodet_9990-010.json`
+   in the scratchpad.
 2. **K full runs to convergence**, overnight, per the pre-registration. K is Mike's number and
-   is the real cost of this phase; the GPU is local and the money is zero.
+   is the real cost of this phase; the GPU is local and the money is zero. **Night plan (planned,
+   not done):** run 0, then run 0′ (seed 0 twice, pre-registration §7), sequentially, ≈ 8.6–9.2 h
+   together at the measured 4.3–4.6 h per run; launched on Mike's command.
 3. The cheap evaluation of the same individuals, and the rank correlation between the two.
 
 **Outcomes, both of them results:** cheap ranking *disagrees* with expensive → the 2508.17464
