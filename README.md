@@ -129,7 +129,7 @@ paper, and thinner than it was this morning.
 
 **Project files, added 2026-09-13 on Mike's word:** [VISION.md](VISION.md) (what we are trying
 to find out), [ROADMAP.md](ROADMAP.md) (phases, ordered by what blocks them),
-[decisions/](decisions/) (ADR-001 publication shape, ADR-002 file under a condition),
+[docs/decisions/](docs/decisions/) (ADR-001 publication shape, ADR-002 file under a condition),
 [backlog.md](backlog.md) (tasks, validated with the shared backlog tool). Roles as of that day:
 CC executes everything, Ark, Johnny and Warren review.
 

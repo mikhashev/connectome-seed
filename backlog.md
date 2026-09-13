@@ -9,7 +9,7 @@ language_cutoff: 2026-09-13
 
 > Mike decides. CC executes. Ark, Johnny and Warren review.
 > Direction lives in `VISION.md`, the order of work in `ROADMAP.md`, the decisions in
-> `decisions/`. Format and validator: dpc-messenger `docs/BACKLOG_FORMAT.md`; check and rebuild
+> `docs/decisions/`. Format and validator: dpc-messenger `docs/BACKLOG_FORMAT.md`; check and rebuild
 > the views from the dpc-messenger checkout with the path given explicitly and `--out` set to
 > this directory. The `axis:` vocabulary (collective / knowledge / network / honesty / reach)
 > is dpc-messenger's, adopted as-is because the checker is shared.

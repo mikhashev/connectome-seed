@@ -3,7 +3,7 @@
 **Date:** 2026-09-13
 **Authors:** Mike Shevchenko (the idea, every decision), CC (this text), Ark / Johnny / Warren (review)
 **Source:** the DPC Research group thread of 2026-09-13, saved verbatim under `chat/` (local only)
-**Status:** living document. What is decided lives in `decisions/`; what is being done lives in
+**Status:** living document. What is decided lives in `docs/decisions/`; what is being done lives in
 `ROADMAP.md` and `backlog.md`; what is known lives in `literature.md`. This file says what we
 are trying to find out and why, and nothing else.
 
@@ -49,7 +49,7 @@ others (flyvis; the whole-brain connectomic controller of a biomechanical fly). 
 > an expensive one.** If it is not, the loop has no middle and nothing above it is worth
 > building.
 
-That is the condition in [decisions/002](decisions/002-file-under-condition.md). It is one
+That is the condition in [docs/decisions/002](docs/decisions/002-file-under-condition.md). It is one
 experiment, it is pre-registered before it runs, and both of its outcomes are results.
 
 ## What "expert", "module" and "seed" mean here
