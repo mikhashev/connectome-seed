@@ -1,5 +1,30 @@
 # Closed entries
 
+## 2026-09-15 — closed by CC
+
+### A-TRAINED-SURROGATE-IS-NOT-A-PREFIX-OF-THE-SAME-PROCESS: AlphaGenome Atlas shows a cheap evaluation that works, but it is a trained surrogate validated at the top of its ranking, while this project's cheap evaluation is a prefix of the expensive process, the kind 2508.17464 found not to rank (MEDIUM, closed, 2026-09-13 — Ark, 17:51 UTC, on Mike's link of 17:50 UTC; source read by CC 2026-09-14)
+
+**Closed:** S2026-09-13.1 · 2026-09-15 · fixed · Mike decided yes 2026-09-15 18:05 local, DPC Research chat: «ок давай впишем»; the form is written into docs/preregistration-cheap-vs-expensive.md as secondary hypothesis (b2) — §1 bullet, §4 statistic X = |Top-k(C3) ∩ Top-k(250,000)| with exact hypergeometric tails for N = 8/10/12/16/20 and k = 2/3 from docs/prereg-scripts/topk_tail.py (8!-permutation self-check passed, Python 3.12.10), §5 decision rule and timing rule, §7 measurability paragraph, §8 exclusions, §9 provenance; k = 2 fixed, marked (proposed — fix in review) until seeds 1 and 2 start · commit: (this commit) · closed by CC
+
+- **Observed.** Source read at source 2026-09-14 (`literature.md` §H): the blog says
+  *"testing each one in the lab is practically impossible"* and that collaborators
+  *"experimentally verify key variants"*; the PDF says the DNM1 variant was *"the top ranked
+  variant by AVI"* and a minigene assay across 5 cell lines confirmed it. What was validated is
+  the top of a trained model's ranking against an external experiment, not agreement over a
+  population.
+- **Reported.** Ark, 17:51 UTC: two kinds of cheap evaluation — a trained surrogate
+  (AlphaGenome's; works) versus a prefix of the same process (ours; what 2508.17464 measured
+  and found not to rank). Three conditions they had and we lack: a surrogate trained on real
+  measurements, a finite enumerable space, one fixed genome. Their success does not license
+  our kind.
+- **Inferred.** Hypothesis (b) as registered asks for rank agreement over the whole
+  population; a weaker, untested-by-2508.17464 form is "does the cheap evaluation find the
+  top-k of the expensive ranking?". Proposed, not registered.
+- **First step.** Mike decides whether "finds the top-k" enters the pre-registration as a
+  secondary hypothesis before the N runs; run 0 is unaffected. Parent task
+  [[PRE-REGISTER-THE-CHEAP-VERSUS-EXPENSIVE-TEST]], closed 2026-09-13.
+- **axis:** knowledge
+
 ## 2026-09-13 — closed by CC
 
 ### HOW-MANY-FULL-RUNS-THE-TEST-IS-ALLOWED: K runs to convergence is the whole cost of Phase 2, and it is not a hardware question (HIGH, closed, 2026-09-13 — asked by Ark, Johnny and Warren independently, 07:16–07:20 UTC)

@@ -13,8 +13,9 @@ missed at 1.1104 %. Full record: `docs/experiments/001-run0-and-replicate.md`. T
 2. **Night 2 = seeds 1 and 2, sequential, to 250,000, no replicate** — yes/no.
 3. **Floor N: 8 or 10** (`docs/preregistration-cheap-vs-expensive.md` §4,
    [[N-EQUALS-EIGHT-IS-BELOW-THE-FILES-OWN-MINIMUM]]).
-4. **Top-k as a secondary hypothesis** — enters the pre-registration or not
-   ([[A-TRAINED-SURROGATE-IS-NOT-A-PREFIX-OF-THE-SAME-PROCESS]]).
+4. ~~**Top-k as a secondary hypothesis** — enters the pre-registration or not
+   ([[A-TRAINED-SURROGATE-IS-NOT-A-PREFIX-OF-THE-SAME-PROCESS]]).~~ Decided 2026-09-15,
+   Mike «ок давай впишем»; form in §4/§5 of the pre-registration.
 5. ~~Who fixes the PNAS line numbers in `research/analysis-cheap-step.md`.~~ Done in `dbeb878`
    (Ark's own correction applied by CC; verified lines 848–851 and 851–856).
 

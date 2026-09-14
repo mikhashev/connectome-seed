@@ -1,6 +1,6 @@
 # Pre-registration — does a cheap evaluation of a flyvis individual agree with an expensive one?
 
-**Date:** 2026-09-13 · **Status:** DRAFT v2; reviewed by Ark (15:45 UTC) and Zcode (16:24 UTC) 2026-09-13; pre-launch edits applied on Mike's word 2026-09-13 17:06 UTC; run 0 not yet started; run 0 and run 0′ completed 2026-09-14 02:39 UTC · **Substrate:** flyvis 1.2.0 (Lappalainen et al., Nature 2024)
+**Date:** 2026-09-13 · **Status:** DRAFT v2; reviewed by Ark (15:45 UTC) and Zcode (16:24 UTC) 2026-09-13; pre-launch edits applied on Mike's word 2026-09-13 17:06 UTC; run 0 not yet started; run 0 and run 0′ completed 2026-09-14 02:39 UTC; (b2) top-k secondary hypothesis added 2026-09-15 before seeds 1 and 2 · **Substrate:** flyvis 1.2.0 (Lappalainen et al., Nature 2024)
 
 Every number below carries its origin. **[FIXED]** = verified on this machine or in the flyvis defaults on 2026-09-13, not to be altered. **(proposed — fix in review)** = a choice made in this draft that the reviewers (Johnny, Ark, Warren) confirm or replace *before* the first GPU iteration. Once run 0 starts, nothing in §3–§5 changes; see §7.
 
@@ -12,6 +12,7 @@ Two independent sources place the unproven step of an evolutionary loop at the s
 
 - **(a) Composition.** A module spliced from one individual into another behaves predictably — the host's behaviour changes by less than a stated tolerance (§5).
 - **(b) Evaluation.** A cheap evaluation ranks N individuals the same way an expensive one does (§3–§5).
+- **(b2) Top-k, secondary to (b).** **Added 2026-09-15 (b2, secondary; Mike's word 18:05 local «ок давай впишем»; written before seeds 1 and 2 started):** the cheap evaluation *finds the top-k* of the expensive ranking — the set of k individuals with the lowest held-out loss at the primary rung C3 (25,000 iterations) equals the set of k individuals with the lowest held-out loss at 250,000. **k = 2** (proposed — fix in review; k = 3 is the alternative the reviewers may substitute, and only before seeds 1 and 2 start — after that k does not change). b2 is **secondary to (b)** and shares (b)'s population, its metric and its held-out split exactly: the same N individuals varying by seed only, the same flyvis `flow` held-out loss on the same six held-out scenes (§3). It is a second *statistic* over the same numbers, not a second experiment and not a second metric. Its statistic and threshold are in §4, its decision rule in §5. b2 never relabels the (b) outcome and (b) never relabels b2. Origin: board entry `A-TRAINED-SURROGATE-IS-NOT-A-PREFIX-OF-THE-SAME-PROCESS` (Ark, 2026-09-13 17:51 UTC) — AlphaGenome's cheap evaluation was validated at the *top* of its ranking, not over a population, and the top-k question is the form 2508.17464 did not measure.
 
 A result on (a) says nothing about (b), and the reverse. Each has its own decision rule (§5) and its own invalidation conditions (§7). They share the trained individuals and nothing else.
 
@@ -82,6 +83,86 @@ Method: for N ≤ 10 the full permutation distribution of Σd² under H0 (unifor
 
 The chosen N is written into this file, with the arithmetic, before any run after run 0 is started. The critical ρ for that N is read from the table above (or computed by the same script if N is not in the table) and written next to it.
 
+**Statistic and threshold for (b2).** **Added 2026-09-15 (b2, secondary; Mike's word 18:05 local «ок давай впишем»; written before seeds 1 and 2 started):** the paragraphs from here to the end of this section register the secondary hypothesis (b2) of §1. Nothing above them is changed by them: the (b) statistic, its critical values, the N rule and the floor stand exactly as written.
+
+**Statistic (b2):** X = |Top-k(C3) ∩ Top-k(250,000)| — the number of individuals common to the k lowest held-out losses at the primary rung C3 (25,000 iterations) and the k lowest held-out losses at 250,000, over the same N individuals, the same metric and the same held-out split as (b) (§3). **k = 2** (proposed — fix in review; k = 3 is the alternative, substitutable only before seeds 1 and 2 start). Evaluated **at the primary rung C3 only**: C1 and C2 are not scored for b2, and no other rung is.
+
+**Null (b2):** uniform random ranking — the same H0 as (b). Under it the expensive top-k is a uniformly random k-subset of the N individuals, so X is hypergeometric:
+
+> X ~ Hypergeometric(N, k, k), P(X = x) = C(k, x) · C(N − k, k − x) / C(N, k).
+
+**Test (b2):** one-sided, H1: X larger than chance, α = 0.05. Reject if P(X ≥ x_obs) ≤ 0.05. **One test, not a family**: b2 is scored at one rung, so it carries no Holm correction of its own, and it is **not** joined to the (b) Holm family over the three rungs — that family stays exactly as registered in §3 and §5, three rungs and nothing else.
+
+**Exact tails, computed 2026-09-15, not quoted from a table.** Script: `topk_tail.py` in `docs/prereg-scripts/` ([topk_tail.py](prereg-scripts/topk_tail.py)) — pure standard library (`fractions.Fraction`, `math.comb`; no numpy, no scipy), so every decimal below is rounded from an exact rational. Run with the same interpreter as `crit_rho.py`, `C:/Users/mikha/AppData/Local/Programs/Python/Python312/python.exe` (Python 3.12.10). The script carries its own control: it enumerates all 8! = 40,320 permutations, counts the overlap in each, and asserts the enumerated distribution equals the formula term by term for N = 8 at both k = 2 and k = 3 — it passed on the run whose output is pasted below. Fractions print in lowest terms, so the k = 3 tails at N = 8 and N = 10 appear as 2/7 and 11/60 rather than the unreduced 16/56 and 22/120.
+
+The table below is the script's printed output, pasted verbatim from that run:
+
+```
+   N  k  x          P(X = x)   decimal         P(X >= x)   decimal  reject at 0.05?
+  ---------------------------------------------------------------------------------
+   8  2  0             15/28    0.5357               1/1    1.0000  no
+   8  2  1               3/7    0.4286             13/28    0.4643  no
+   8  2  2              1/28    0.0357              1/28    0.0357  yes
+  ---------------------------------------------------------------------------------
+  10  2  0             28/45    0.6222               1/1    1.0000  no
+  10  2  1             16/45    0.3556             17/45    0.3778  no
+  10  2  2              1/45    0.0222              1/45    0.0222  yes
+  ---------------------------------------------------------------------------------
+  12  2  0             15/22    0.6818               1/1    1.0000  no
+  12  2  1             10/33    0.3030              7/22    0.3182  no
+  12  2  2              1/66    0.0152              1/66    0.0152  yes
+  ---------------------------------------------------------------------------------
+  16  2  0            91/120    0.7583               1/1    1.0000  no
+  16  2  1              7/30    0.2333            29/120    0.2417  no
+  16  2  2             1/120    0.0083             1/120    0.0083  yes
+  ---------------------------------------------------------------------------------
+  20  2  0           153/190    0.8053               1/1    1.0000  no
+  20  2  1             18/95    0.1895            37/190    0.1947  no
+  20  2  2             1/190    0.0053             1/190    0.0053  yes
+  ---------------------------------------------------------------------------------
+   8  3  0              5/28    0.1786               1/1    1.0000  no
+   8  3  1             15/28    0.5357             23/28    0.8214  no
+   8  3  2             15/56    0.2679               2/7    0.2857  no
+   8  3  3              1/56    0.0179              1/56    0.0179  yes
+  ---------------------------------------------------------------------------------
+  10  3  0              7/24    0.2917               1/1    1.0000  no
+  10  3  1             21/40    0.5250             17/24    0.7083  no
+  10  3  2              7/40    0.1750             11/60    0.1833  no
+  10  3  3             1/120    0.0083             1/120    0.0083  yes
+  ---------------------------------------------------------------------------------
+  12  3  0             21/55    0.3818               1/1    1.0000  no
+  12  3  1             27/55    0.4909             34/55    0.6182  no
+  12  3  2            27/220    0.1227              7/55    0.1273  no
+  12  3  3             1/220    0.0045             1/220    0.0045  yes
+  ---------------------------------------------------------------------------------
+  16  3  0           143/280    0.5107               1/1    1.0000  no
+  16  3  1           117/280    0.4179           137/280    0.4893  no
+  16  3  2            39/560    0.0696              1/14    0.0714  no
+  16  3  3             1/560    0.0018             1/560    0.0018  yes
+  ---------------------------------------------------------------------------------
+  20  3  0             34/57    0.5965               1/1    1.0000  no
+  20  3  1             34/95    0.3579             23/57    0.4035  no
+  20  3  2            17/380    0.0447            13/285    0.0456  yes
+  20  3  3            1/1140    0.0009            1/1140    0.0009  yes
+  ---------------------------------------------------------------------------------
+
+Smallest x that rejects at alpha = 0.05, per (N, k):
+  N =  8, k = 2: x >= 2  (P = 1/28 = 0.0357)  - only X = k rejects
+  N = 10, k = 2: x >= 2  (P = 1/45 = 0.0222)  - only X = k rejects
+  N = 12, k = 2: x >= 2  (P = 1/66 = 0.0152)  - only X = k rejects
+  N = 16, k = 2: x >= 2  (P = 1/120 = 0.0083)  - only X = k rejects
+  N = 20, k = 2: x >= 2  (P = 1/190 = 0.0053)  - only X = k rejects
+  N =  8, k = 3: x >= 3  (P = 1/56 = 0.0179)  - only X = k rejects
+  N = 10, k = 3: x >= 3  (P = 1/120 = 0.0083)  - only X = k rejects
+  N = 12, k = 3: x >= 3  (P = 1/220 = 0.0045)  - only X = k rejects
+  N = 16, k = 3: x >= 3  (P = 1/560 = 0.0018)  - only X = k rejects
+  N = 20, k = 3: x >= 2  (P = 13/285 = 0.0456)
+```
+
+**What the table says, stated plainly, because it is the whole shape of this test.** At the two N values this experiment can actually reach — N = 8 and N = 10 (§4's floor, Mike's choice A or B) — **only X = k rejects**, at either k. So b2 is positive only if the two best individuals by the cheap evaluation are *exactly* the two best by the expensive one (or, under k = 3, the three best exactly the three best). One miss and the test does not reject at any N in the table below 20. The single exception in the whole table is N = 20 with k = 3, where X = 2 also rejects (13/285 = 0.0456); N = 20 is far above the budget the N rule (§4) yields at h_run = 4.00 h, and no plan in this file reaches it. That coarseness is a property of a set-overlap statistic at small N and is registered here as such, not discovered afterwards.
+
+**Measurability of the top-k boundary** (mirrors §7's unmeasurable clause, and is stated as a rule now, applied once, when all N individuals are in): the top-k *set* of a ranking exists only if the k-th and (k+1)-th lowest losses are further apart than the instrument can resolve at that rung. The resolution at a rung is the replicate difference recorded in §7 — **12.7279 at 250,000, 0.3365 at C3 = 25,000** (run 0 vs run 0′, §7). Both sides must clear it: the gap between the k-th and (k+1)-th lowest held-out losses must exceed 12.7279 on the expensive side and 0.3365 on the cheap side. If either does not, b2 is reported ***unmeasurable*** at that boundary — not negative, and not a failure of the surrogate.
+
 ## 5. Decision rules, both outcomes
 
 **(b) Evaluation.** For each rung C*k* compute ρ_k and compare with the critical value for the registered N.
@@ -89,7 +170,17 @@ The chosen N is written into this file, with the arithmetic, before any run afte
 - The primary rung decides. If ρ at the primary rung C3 (25,000 iterations, 10 %) reaches its critical value: **"A cheap surrogate exists at 10 % of expensive."** Report all three ρ values with their exact tail probabilities; C1 and C2 are secondary and their tail probabilities are reported with Holm correction over the three rungs. Secondary rungs are reported, never used to relabel the result. (review 2026-09-13: Ark 15:45 UTC, point 5; applied on Mike's word 2026-09-13 17:06 UTC: «ну давай вноси все правки»)
 - If ρ at the primary rung does not reach critical: the outcome is **"No cheap surrogate at ≤ 10 % of expensive on this substrate"** only if the upper bound of the one-sided 95 % permutation confidence interval on ρ at the primary rung is below 0.6; otherwise the outcome is **`inconclusive — underpowered`** (ρ below critical, but the data do not exclude a useful surrogate). The interval is computed by `docs/prereg-scripts/rho_ci.py` — **not written yet**; it is added to `docs/prereg-scripts/` before any analysis, and no ρ is analysed without it. (review 2026-09-13: Ark 15:45 UTC, point 6; applied on Mike's word 2026-09-13 17:06 UTC: «ну давай вноси все правки») The negative statement extends 2508.17464 from a 3×3 voxel grid and a 1,417-parameter controller to a connectome-constrained circuit on 65 cell types with 734 free core parameters, and it is narrowed to what was varied: *on this population (variation by seed only) the prefix evaluation does not rank*. The extension to structural variation (mutants, splices) is a separate, untested step (§8). All three ρ values are reported; a ρ that is large but below critical is reported as below critical. (review 2026-09-13: Ark 15:45 UTC, point 3; applied on Mike's word 2026-09-13 17:06 UTC: «ну давай вноси все правки»)
 - What a positive result licenses: **early cut-off — a kill-switch inside the expensive run** (stop an individual whose rank at the primary rung is already poor), not skipping training. (review 2026-09-13: Ark 15:45 UTC, point 3; applied on Mike's word 2026-09-13 17:06 UTC: «ну давай вноси все правки»)
-- Not reported as a result: any ρ from a rung not in §3, any ρ over a subset of the N individuals, any second metric.
+- Not reported as a result: any ρ from a rung not in §3, any ρ over a subset of the N individuals, any second metric. **Added 2026-09-15 (b2, secondary; Mike's word 18:05 local «ок давай впишем»; written before seeds 1 and 2 started):** (b2) is the one registered *second statistic* — the same metric and the same held-out split as (b), a different statistic over the same numbers (§4) — and it is the only exception to this line. This line is otherwise unchanged and still binds: no ρ from an unregistered rung, no ρ over a subset, no second *metric*, and no third statistic.
+
+**(b2) Top-k, secondary.** **Added 2026-09-15 (b2, secondary; Mike's word 18:05 local «ок давай впишем»; written before seeds 1 and 2 started):** X = |Top-k(C3) ∩ Top-k(250,000)| at the primary rung C3 only, k = 2 (§4; proposed — fix in review).
+
+- **X = k** (P(X ≥ k) ≤ 0.05 at both N = 8 and N = 10, §4's table): **"the prefix evaluation at 10 % of expensive identifies the k best of this population."** What that licenses: **selecting the survivors of a generation cheaply** — pick the k best by the cheap evaluation and let only those go on. That is a *weaker* operation than the full ranking (b) licenses, and it is the one an evolutionary loop actually needs; it is not a licence to rank, to interpolate, or to skip training for anything outside the chosen k.
+- **X < k**: **"top-k not found at N = …"**, with the N written in. b2 has **no inconclusive band**, because only one outcome rejects (§4): there is no interval of X between "rejects" and "excluded", so nothing can be graded. For the same reason a negative b2 is **"not detected"** and never **"no surrogate"** — the negative statement about a surrogate belongs to (b) alone and to its own confidence-interval rule above.
+- **Unmeasurable** if either side's k-th to (k+1)-th gap fails the §4 measurability rule (12.7279 at 250,000, 0.3365 at C3): reported as *unmeasurable at that boundary*, which is neither a positive nor a negative b2.
+- **b2 never relabels the (b) outcome, and (b) never relabels b2.** They are reported side by side, each with its own statement. A positive b2 beside a negative (b) is a coherent pair — "the cheap evaluation picks the best two but does not order the population" — and is reported as exactly that, not as a rescue of (b).
+- Not reported as a result: any other k, any other rung, any subset of the N individuals.
+
+**Timing rule for this amendment.** It counts as pre-registered **only if it is committed before any file `wave_night2.*` exists in the night tooling and before results for ids 9991/001 and 9991/002 exist.** If either exists first, this amendment is not pre-registered and must be reported as written after the fact. The orchestrator verifies this at commit time and puts the commit hash in the chat.
 
 **(a) Composition.** Named prediction (proposed — fix in review): after splicing the chosen module from B into A (§2), A's held-out task loss (§3 metric, same held-out split, no retraining after the splice) changes by **less than 5 % relative** to A's own held-out loss at 250,000 iterations **and by more than the instrument floor** — the criterion is two-sided. The instrument floor is 3 × the replicate difference |loss₀ − loss₀′| / loss₀ at 250,000 measured by run 0 / run 0′ (§7): **[to be filled from run 0′]** — the rule is fixed now, the number is written in before the splice is evaluated and never after. The 5 % is fixed now. Interpretation: floor < |Δloss| < 5 % → "the type-level module composes predictably for this pair"; |Δloss| ≥ 5 % → "it does not; the module's meaning depends on its host"; |Δloss| ≤ floor → "effect not measurable on this module — uninformative", which is not "passed". The self-splice A←A is the mandatory instrument control of §7 and is never reported as an (a) outcome. (review 2026-09-13: Ark 15:45 UTC, point 2; applied on Mike's word 2026-09-13 17:06 UTC: «ну давай вноси все правки») Either way the statement is about *one* pair and *one* cell type and is reported at that size; it is neither a statement about (b) nor about within-type specificity (§8). If Ark's proposal names a different observable than task loss (e.g. a cell-type response to a fixed stimulus set), the observable and its tolerance replace this paragraph in review, before run 0.
 
@@ -144,6 +235,8 @@ Plateau facts (run 0): minimum held-out (checkpoint) loss 1141.0463 at iteration
 
 **No tolerance, metric, ladder, or decision rule is changed by this record.** The 1 % tolerance stands as registered; its outcome at 250,000 is FAIL, recorded as such, and the void conditions above (an unchanged ladder, an unchanged N, an unchanged metric) continue to bind. Any change to the tolerance, the ladder, or how the 250,000 rung is treated for (b) requires a new pre-registration, written before any of the N runs starts — not an edit to this one after the result was seen.
 
+**Added 2026-09-15 (b2, secondary; Mike's word 18:05 local «ок давай впишем»; written before seeds 1 and 2 started) — measurability of a top-k boundary.** The secondary hypothesis (b2) registered in §1/§4/§5 takes its instrument floor from the two replicate differences recorded in the table above, and adds nothing to this section's own rules. The rule: the top-k *set* of a ranking is defined only if the gap between the k-th and the (k+1)-th lowest held-out losses exceeds the replicate difference at that rung — **12.7279 at 250,000** and **0.3365 at C3 = 25,000**, both read from the table above, run 0 vs run 0′. Both sides must clear it, the expensive one and the cheap one; if either does not, b2 is reported *unmeasurable* at that boundary, not negative — the same shape as this section's clause that a rung whose between-seed standard deviation does not exceed the replicate difference is *unmeasurable* rather than a failed surrogate. Stated as a rule now, applied once, when all N individuals are in. **This paragraph changes no tolerance, no number, no ladder rung and no decision rule of (a) or (b); the 1 % tolerance and its recorded FAIL at 250,000 stand exactly as written above.**
+
 **Proposed (CC), decision Mike + reviewers:** run seeds 1 and 2 to 250,000 next night (≈ 4 h each at run 0's price) to obtain the first between-seed distances at the plateau, to compare against the 12.64 mean replicate offset above.
 
 **Resume rule** (review 2026-09-13: Zcode 16:24 UTC, point 3.4; applied on Mike's word 2026-09-13 17:06 UTC: «ну давай вноси все правки»): a resumed run would keep its identity as the same individual only if resume were validated to reproduce the hook trajectory within the replicate tolerance; the validation is a 48-iteration interrupt-and-resume test run before run 0. **Observed 2026-09-13 (CC, `night/resA_9989-000.json`, `night/resB_9989-001.json`, `night/nodet_9990-010.json`, scratchpad): the test FAILED validation.** flyvis 1.2.0 `solver.recover()` cannot run as installed (`resolve_checkpoints` signature TypeError at `solver.py:598`; re-opening the NetworkDir raises datamate `FileExistsError` on `delete_if_exists`). With an in-script replica of `recover()` the resumed run restores network, decoder, Adam, iteration and scheduler but no RNG state and no dataloader order — the RNG restarts from the seed, and the first 12 post-resume training losses correlate 1.0000 with epoch 0's; the penalty optimizer is not recovered ("Could not recover penalty optimizer states"); and the stored iteration counter is off by one (the checkpoint stores iteration − 1, so a 48-iteration budget ran to 59). Held-out loss at rungs 24 / 36 / 48, resumed − uninterrupted: −0.096 / −0.141 / −0.187 (relative −8e-5 … −1.5e-4), against replicate noise uninterrupted − reference ≤ 1.1e-4 absolute (0.0 / −7.2e-5 / +4e-6) — the resumed trajectory departs by ~1000× the replicate noise and the gap grows. **Registered rule: an interrupted run is a failed run; it is re-run from the same seed; resume is not used for any individual or replicate; any run with `resume_count > 0` is excluded from N and from the replicate.** A run interrupted before 250,000 iterations is a failed run under the void conditions below — re-run from the same seed.
@@ -162,6 +255,9 @@ Plateau facts (run 0): minimum held-out (checkpoint) loss 1141.0463 at iteration
 - **Standalone short training** with its own compressed schedule as the cheap evaluation (§3). A negative here says the *prefix* of expensive does not rank; it does not say that no cheap procedure could.
 - **Structural variation.** The population for (b) varies by seed only; whether the prefix evaluation ranks mutants or spliced individuals is a separate, untested step. (review 2026-09-13: Ark 15:45 UTC, point 3; applied on Mike's word 2026-09-13 17:06 UTC: «ну давай вноси все правки»)
 - **Generalisation beyond this substrate**: one connectome release, one task, one loss, one card.
+- **Whether the top-k coincidence of (b2) would hold under structural variation.** **Added 2026-09-15 (b2, secondary; Mike's word 18:05 local «ок давай впишем»; written before seeds 1 and 2 started):** b2 is scored on the same seed-only population as (b), so a positive b2 says the prefix picks the k best *among individuals differing by seed* — nothing about mutants or spliced individuals, exactly as for (b) above.
+- **Whether b2 holds for any k other than the registered one.** k is fixed before seeds 1 and 2 start (k = 2, or k = 3 if the reviewers substitute it) and is never re-chosen afterwards. A top-k agreement at some other k, computed after the fact, is not a result of this experiment and is not reported as one.
+- **Anything about (a).** b2 is a second statistic inside (b); it touches neither the composition test, its tolerance, nor its instrument control.
 
 ## 9. Provenance
 
@@ -170,4 +266,5 @@ Plateau facts (run 0): minimum held-out (checkpoint) loss 1141.0463 at iteration
 - **Design:** Ark — the composition test (a), the separation of (a) from (b), the identical-copies objection, the second ground for the condition (PNAS p. 9). Reviewers' five-item demand (Johnny, Ark, Warren): cheap/expensive in iterations; number of individuals and seeds; statistic and threshold at that N; decision rule per outcome; named prediction for composition.
 - **Sources:** `README.md`, `VISION.md`, `ROADMAP.md`, `literature.md` §D and §F, `docs/decisions/002-file-under-condition.md` of `connectome-seed`, read 2026-09-13.
 - **This draft:** written by CC's subagent to the scratchpad; placed in the repository on 2026-09-13 for review, with its scripts beside it in `docs/prereg-scripts/`. It becomes the pre-registration only after review and only in the version committed before run 0.
+- **The (b2) amendment, 2026-09-15.** Origin: board entry `A-TRAINED-SURROGATE-IS-NOT-A-PREFIX-OF-THE-SAME-PROCESS`, raised by **Ark on 2026-09-13 17:51 UTC** (on Mike's link of 17:50 UTC; the AlphaGenome source was read at source by CC on 2026-09-14) — its *Inferred* bullet proposed "does the cheap evaluation find the top-k of the expensive ranking?" as the weaker, untested-by-2508.17464 form of (b). Decided by **Mike, 2026-09-15 18:05 local, DPC Research chat: «ок давай впишем»**. Design fixed by CC, the orchestrator; text (§1 bullet, §4 statistic and table, §5 decision rule, §7 measurability paragraph, §8 exclusions, this line) written by **CC's subagent on Opus, 2026-09-15**, and verified by CC. The exact tails in §4 were computed on this machine by `docs/prereg-scripts/topk_tail.py` on 2026-09-15 with `C:/Users/mikha/AppData/Local/Programs/Python/Python312/python.exe` (Python 3.12.10), whose 8!-permutation self-check passed; no number in §4's table is quoted from memory or from a printed table. **k = 2 and every other mark carrying "(proposed — fix in review)" in the b2 material may still be replaced by the reviewers, but only before seeds 1 and 2 start.** The amendment is pre-registered only under the timing rule at the end of §5.
 - **Open for review, with the marks above:** source of variation (§2); the splice — pair and cell type (§2, Ark); ladder rungs and prefix definition (§3); held-out split and metric (§3); N = 10 minimum and the N rule (§4); the 5 % tolerance and the (a) observable (§5); the 1 % replicate tolerance (§7).
