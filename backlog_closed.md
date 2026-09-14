@@ -134,3 +134,35 @@
 - **First step.** Mike: name it as *Grok, 2026-09-12, shown the idea by Mike*, or drop it.
   Child of [[ADR-001]].
 - **axis:** reach
+
+## 2026-09-14 — closed by CC
+
+### THE-NIGHT-RUN-STARTS-ONLY-ON-MIKES-EXPLICIT-WORD: the launcher is ready and dry-printed, and nothing starts until Mike says so (HIGH, closed, 2026-09-13 — Mike, 16:22 UTC: «полный ночной прогон не запускаем пока я явно это не скажу»)
+
+**Closed:** S2026-09-13.1 · 2026-09-14 · fixed · launched by Mike 18:40 UTC (run 0), sequential replicate run 0′ followed automatically; both runs exit ok, 0 errors, 250,008 iterations each; WAVE DONE 2/2 ok at 2026-09-14T02:39:52Z; results recorded in `results/night1/` · commit: (this commit) · closed by CC
+
+- **Observed.** Launcher `flyvis-probe/night/launch_wave.py` in the scratchpad (8,643 B,
+  2026-09-13); command `launch_wave.py --tag night1 --ensemble 9991 --seeds 0 --replicate
+  --sequential --detach --no-determinism`, dry-printed; ensemble 9991 unused; determinism
+  off decided by Mike at 16:20 UTC.
+- **Observed, 17:07 UTC.** Mike asks for console progress logging so he can launch from
+  PowerShell himself and watch; being added to the launcher.
+- **Observed, 2026-09-13 late.** Extent 5 measured and rejected — 1.46×, not the ≥ 3× that
+  would have moved the night ([[EIGHT-PROCESSES-SHARE-THE-CARD-NO-FASTER-THAN-ONE]]); the
+  night stays on extent 15. Tooling final: `night/run_individual.py` (rung hook, progress
+  lines, `--override`), `night/launch_wave.py` (`--sequential --detach`, replicate right
+  after seed 0), `night/start_night.ps1` (`-DryRun`, `-FollowOnly`, `-Extent`), all
+  exercised on 24–48-iteration runs; launch instructions sent to Mike 17:55 UTC; the launch
+  is Mike's own PowerShell command. Everything sits in the session scratchpad —
+  [[THE-NIGHT-TOOLING-LIVES-IN-A-TEMPORARY-SCRATCHPAD]].
+- **Observed, 2026-09-14.** Run 0 (`9991/000`) started 2026-09-13T18:40:31Z, finished
+  2026-09-13T22:40:56Z, 250,008 iterations, exit ok, 0 errors. Run 0′ (`9991/900`, the §7
+  replicate) started 2026-09-13T22:40:59Z, finished 2026-09-14T02:39:51Z, 250,008
+  iterations, exit ok, 0 errors. `wave_night1.json`: `"finished_utc": "2026-09-14T02:39:52Z"`;
+  progress log: `WAVE DONE 2/2 ok`. Results and the pre-registration §3/§6/§7 record in
+  `docs/preregistration-cheap-vs-expensive.md` and `results/night1/`.
+- **First step.** The word. Then launch, and the PID and the first rung (1,000) reported to
+  the chat. Was blocked by [[PRE-LAUNCH-EDITS-TO-THE-PRE-REGISTRATION-BEFORE-RUN-0]] and by
+  [[RESUME-OF-AN-INTERRUPTED-RUN-IS-UNVALIDATED]], both closed 2026-09-13. Done — see Closed
+  line above.
+- **axis:** collective

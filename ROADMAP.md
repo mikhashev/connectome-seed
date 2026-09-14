@@ -85,10 +85,9 @@ A splice of two *identical* copies is a control that can only pass; the test spl
    `flyvis-probe/gpu_concb_*`, `flyvis-probe/night/dry_9990-000.json`, `night/nodet_9990-010.json`
    in the scratchpad.
 2. **K full runs to convergence**, overnight, per the pre-registration. K is Mike's number and
-   is the real cost of this phase; the GPU is local and the money is zero. **Night plan (planned,
-   not done):** run 0, then run 0′ (seed 0 twice, pre-registration §7), sequentially, ≈ 8.6–9.2 h
-   together at the measured 4.3–4.6 h per run; launched on Mike's command. Resume is not
-   used — an interrupted run is a failed run (§7, measured 2026-09-13).
+   is the real cost of this phase; the GPU is local and the money is zero. **run 0 and run 0′
+   done 2026-09-14 (h_run 4.00 h; replicate tolerance at 250,000 not met: 1.11 %); N runs not
+   started.** Resume is not used — an interrupted run is a failed run (§7, measured 2026-09-13).
 3. The cheap evaluation of the same individuals, and the rank correlation between the two.
 
 **Outcomes, both of them results:** cheap ranking *disagrees* with expensive → the 2508.17464
@@ -122,10 +121,10 @@ one that can be trusted to be current.
 
 | axis | decisions | board entries | awaiting observation |
 |---|---|---|---|
-| **collective** | — | 2 | 0 |
+| **collective** | — | 1 | 0 |
 | **knowledge** | — | 4 | 0 |
 | **network** | — | 0 | 0 |
-| **honesty** | ADR-002 accepted | 2 | 0 |
+| **honesty** | ADR-002 accepted | 3 | 0 |
 | **reach** | ADR-001 accepted | 2 | 0 |
 
 **Observation debt: 0 under an axis + 0 in entries that carry none = 0.** Work finished and never seen working; per axis it says which direction is running ahead of its evidence.

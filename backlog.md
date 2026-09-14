@@ -99,6 +99,8 @@ language_cutoff: 2026-09-13
   and the environment `flyvis-probe/.venv` (torch 2.9.1+cu128, flyvis 1.2.0, datamate with
   the close-before-unlink patch) are all under `AppData/Local/Temp/claude/…/scratchpad/`;
   the repository holds none of them; a uv venv is not relocatable.
+- **Observed 2026-09-14.** Scripts copied to `tools/night/` in commit (this commit); the
+  venv recipe still to be documented.
 - **Inferred.** The night can run from there once. The next night cannot if the scratchpad
   is gone, and the datamate patch goes with it —
   [[DATAMATE-UNLINKS-AN-OPEN-HDF5-FILE-AND-WINDOWS-REFUSES]].
@@ -127,8 +129,12 @@ language_cutoff: 2026-09-13
 
 ### RUN-0-SHOWS-WHERE-THE-LOSS-PLATEAUS: run 0's rungs and checkpoints will show where held-out loss stops moving, and if that is far before 250,000 the expensive evaluation could be redefined cheaper — only by a new pre-registration written before the N runs (LOW, open, 2026-09-14 — Ark, chat 2026-09-13; filed by CC)
 
-- **Observed.** Nothing yet: run 0 has not started. The hook records held-out loss at
-  1,000 / 5,000 / 25,000 / 250,000 (§3) and the checkpoint cadence adds ≈ 70 points.
+- **Observed 2026-09-14 (run 0).** Plateau reached: minimum held-out (checkpoint) loss
+  1141.0463 at iteration 219,612; relative drop over the last 50,000 iterations (checkpoint
+  near 200,000 → checkpoint near 250,000) −0.11 %. Rung-vs-checkpoint jitter: the
+  evaluation-hook rung at iteration 250,000 (1146.1958) and the checkpoint at iteration
+  250,008 (1148.8075) differ by 2.61 over the 8 extra iterations. Full trajectory in
+  `results/night1/night_report.md` and `results/night1/night_report_checkpoints.csv`.
 - **Reported.** Ark: a free lever — run 0's plateau could redefine "expensive" together with
   the ladder.
 - **Inferred.** The redefinition is a change to §3 after seeing run 0 — allowed for the
@@ -160,23 +166,29 @@ language_cutoff: 2026-09-13
   [[PRE-LAUNCH-EDITS-TO-THE-PRE-REGISTRATION-BEFORE-RUN-0]], closed 2026-09-13.
 - **axis:** honesty
 
-### THE-NIGHT-RUN-STARTS-ONLY-ON-MIKES-EXPLICIT-WORD: the launcher is ready and dry-printed, and nothing starts until Mike says so (HIGH, open, 2026-09-13 — Mike, 16:22 UTC: «полный ночной прогон не запускаем пока я явно это не скажу»)
+### THE-REPLICATE-DIFFERS-BY-ONE-POINT-ONE-PERCENT-AT-THE-TOP-RUNG: seed 0 trained twice (run 0, run 0′) lands 1.11 % apart in held-out loss at iteration 250,000, past this file's own 1 % replicate tolerance (HIGH, open, 2026-09-14 — CC, from run 0 / run 0′ per §7)
 
-- **Observed.** Launcher `flyvis-probe/night/launch_wave.py` in the scratchpad (8,643 B,
-  2026-09-13); command `launch_wave.py --tag night1 --ensemble 9991 --seeds 0 --replicate
-  --sequential --detach --no-determinism`, dry-printed; ensemble 9991 unused; determinism
-  off decided by Mike at 16:20 UTC.
-- **Observed, 17:07 UTC.** Mike asks for console progress logging so he can launch from
-  PowerShell himself and watch; being added to the launcher.
-- **Observed, 2026-09-13 late.** Extent 5 measured and rejected — 1.46×, not the ≥ 3× that
-  would have moved the night ([[EIGHT-PROCESSES-SHARE-THE-CARD-NO-FASTER-THAN-ONE]]); the
-  night stays on extent 15. Tooling final: `night/run_individual.py` (rung hook, progress
-  lines, `--override`), `night/launch_wave.py` (`--sequential --detach`, replicate right
-  after seed 0), `night/start_night.ps1` (`-DryRun`, `-FollowOnly`, `-Extent`), all
-  exercised on 24–48-iteration runs; launch instructions sent to Mike 17:55 UTC; the launch
-  is Mike's own PowerShell command. Everything sits in the session scratchpad —
-  [[THE-NIGHT-TOOLING-LIVES-IN-A-TEMPORARY-SCRATCHPAD]].
-- **First step.** The word. Then launch, and the PID and the first rung (1,000) reported to
-  the chat. Was blocked by [[PRE-LAUNCH-EDITS-TO-THE-PRE-REGISTRATION-BEFORE-RUN-0]] and by
-  [[RESUME-OF-AN-INTERRUPTED-RUN-IS-UNVALIDATED]], both closed 2026-09-13.
-- **axis:** collective
+- **Observed.** Rung table (run 0 / run 0′ held-out loss): 1,000 → 1208.9363 / 1208.9363
+  (|Δ| 0.0000); 5,000 → 1207.7673 / 1207.7698 (0.0025); 25,000 → 1191.7375 / 1192.0739
+  (0.3365, rel 2.8e-4); **250,000 → 1146.1958 / 1158.9237 (|Δ| 12.7279, rel 1.1104 % →
+  FAIL, §7 tolerance is < 1 %)**. Over the 29 common checkpoints after iteration 150,000,
+  run 0′ is above run 0 in 29 of 29; mean (run 0′ − run 0) = +12.64 (min 3.68, max 17.82);
+  within-run checkpoint standard deviation 6.02 (run 0) / 3.30 (run 0′); the two replicates
+  settle on different plateaus, ≈ 1151.7 vs ≈ 1164.3; divergence visible from roughly
+  iteration 60,000. Run 0's own minimum held-out loss is 1141.0463 at iteration 219,612,
+  −0.11 % over the last 50,000 iterations (plateau reached). Full tables:
+  `results/night1/night_report.md`, `results/night1/night_report_checkpoints.csv`.
+- **Inferred.** The instrument floor of the expensive evaluation is ≈ 1.1 % relative, set
+  by trajectory divergence under non-deterministic training (determinism flags off, §7),
+  not by single-iteration jitter. Per §7 as written, a rung whose between-seed standard
+  deviation does not exceed the replicate difference is reported as *unmeasurable*, not as
+  a failure of the surrogate — whether the 250,000 rung is measurable for hypothesis (b)
+  depends on the between-seed spread at that iteration, unknown until further seeds run
+  there (at iteration 1,000 it was 0.52 across 3 seeds, extent probe — a different
+  population, not the N population).
+- **First step.** Mike + reviewers decide: proceed as registered (the top rung may come out
+  *unmeasurable* rather than a surrogate failure) or write a new pre-registration for the
+  expensive metric before the N runs. **Proposed (CC), decision Mike + reviewers:** run
+  seeds 1 and 2 to 250,000 next night (≈ 4 h each) to get the first between-seed distances
+  at the plateau against the 12.64 mean replicate offset above.
+- **axis:** honesty
