@@ -51,7 +51,12 @@ Sequential, run 0′ launched automatically right after run 0 (`WAVE DONE 2/2 ok
 
 **Two-phase price** (`activity_penalty.stop_iter = 150000` removes the activity-penalty backward
 pass after iteration 150,000): median 0.0644 s/iter over iterations 1–150,000, 0.0452 s/iter over
-150,001–250,008 (run 0; run 0′ 0.0639 / 0.0451). 72 checkpoints each run.
+150,001–250,008 (run 0; run 0′ 0.0639 / 0.0451). 72 checkpoints each run. Source:
+`results/night1/iter_wall_s_9991-000.csv.gz` / `iter_wall_s_9991-900.csv.gz` (per-iteration wall
+times, committed derivatives of the full run jsons; recomputed medians match to printed
+precision). Independent recomputation from `results/night1/wave_night1.progress.log` (Zcode,
+100-iteration timestamps): 0.0653 / 0.0461 s/iter (run 0) — 1.5–2 % higher, because the log's
+100-iteration stamps include hook/logging overhead.
 
 **Rung table** (held-out loss, evaluation hook):
 
@@ -71,17 +76,25 @@ checkpoint standard deviation 6.02 (run 0) / 3.30 (run 0′). Divergence is visi
 iteration 60,000; the two replicates settle on different plateaus, ≈ 1151.7 (run 0) vs ≈ 1164.3
 (run 0′).
 
+Late-phase replicate offset (29 checkpoints after 150,000): min +3.68, median +12.25, max +17.82,
+mean +12.64; the pre-registered scalar for §7 is the hook value at 250,000 (12.7279). (Ark, chat
+2026-09-14 05:12 UTC; recorded here, no rule changes.)
+
 **Plateau facts (run 0).** Minimum held-out (checkpoint) loss **1141.0463 at iteration 219,612**;
-relative drop over the last 50,000 iterations (checkpoint near 200,000 → near 250,000) **−0.11 %**
-— plateau reached by this heuristic.
+relative change of held-out loss over the last 50,000 iterations (checkpoint near 200,000 → near
+250,000, positive = rose) rose by **+0.11 %** (1147.5358 → 1148.8075); plateau: |change| < 0.2 %.
 
 **Rung-vs-checkpoint jitter.** The evaluation-hook rung at iteration 250,000 (1146.1958) and the
 checkpoint at iteration 250,008 (1148.8075) differ by **2.6117** over the 8 extra iterations;
 training-loss standard deviation over the last 100 iterations ≈ 680 on a mean ≈ 1283, for scale —
-the jitter is well inside iteration-to-iteration training noise.
+the jitter is well inside iteration-to-iteration training noise. Source:
+`results/night1/train_loss_last1000_9991-000.csv` (last-100 mean 1283.4386 / std 679.6031,
+matches to printed precision).
 
 Sources for this section: `results/night1/night_report.md`,
-`results/night1/night_report_checkpoints.csv`.
+`results/night1/night_report_checkpoints.csv`, `results/night1/iter_wall_s_9991-000.csv.gz`,
+`results/night1/iter_wall_s_9991-900.csv.gz`, `results/night1/train_loss_last1000_9991-000.csv`,
+`results/night1/train_loss_last1000_9991-900.csv`, `results/night1/wave_night1.progress.log`.
 
 ## 5. Verdict against the pre-registration
 

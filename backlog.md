@@ -136,8 +136,9 @@ language_cutoff: 2026-09-13
 ### RUN-0-SHOWS-WHERE-THE-LOSS-PLATEAUS: run 0's rungs and checkpoints will show where held-out loss stops moving, and if that is far before 250,000 the expensive evaluation could be redefined cheaper — only by a new pre-registration written before the N runs (LOW, open, 2026-09-14 — Ark, chat 2026-09-13; filed by CC)
 
 - **Observed 2026-09-14 (run 0).** Plateau reached: minimum held-out (checkpoint) loss
-  1141.0463 at iteration 219,612; relative drop over the last 50,000 iterations (checkpoint
-  near 200,000 → checkpoint near 250,000) −0.11 %. Rung-vs-checkpoint jitter: the
+  1141.0463 at iteration 219,612; held-out loss rose by +0.11 % (1147.5358 → 1148.8075) over
+  the last 50,000 iterations (checkpoint near 200,000 → checkpoint near 250,000); plateau:
+  |change| < 0.2 %. Rung-vs-checkpoint jitter: the
   evaluation-hook rung at iteration 250,000 (1146.1958) and the checkpoint at iteration
   250,008 (1148.8075) differ by 2.61 over the 8 extra iterations. Full trajectory in
   `results/night1/night_report.md` and `results/night1/night_report_checkpoints.csv`.
@@ -193,8 +194,9 @@ language_cutoff: 2026-09-13
   run 0′ is above run 0 in 29 of 29; mean (run 0′ − run 0) = +12.64 (min 3.68, max 17.82);
   within-run checkpoint standard deviation 6.02 (run 0) / 3.30 (run 0′); the two replicates
   settle on different plateaus, ≈ 1151.7 vs ≈ 1164.3; divergence visible from roughly
-  iteration 60,000. Run 0's own minimum held-out loss is 1141.0463 at iteration 219,612,
-  −0.11 % over the last 50,000 iterations (plateau reached). Full tables:
+  iteration 60,000. Run 0's own minimum held-out loss is 1141.0463 at iteration 219,612;
+  held-out loss rose by +0.11 % (1147.5358 → 1148.8075) over the last 50,000 iterations
+  (plateau: |change| < 0.2 %). Full tables:
   `results/night1/night_report.md`, `results/night1/night_report_checkpoints.csv`.
 - **Inferred.** The instrument floor of the expensive evaluation is ≈ 1.1 % relative, set
   by trajectory divergence under non-deterministic training (determinism flags off, §7),

@@ -1,4 +1,5 @@
 <!-- imported from Ark's sandbox C:/Users/mikha/.dpc/agents/agent_001/research/analysis-cheap-step.md, sha256 007dbf5976a272cd9c5be639a1d9dafaf46504cfd8d30684ac289c4d9d0b83b4, mtime 2026-09-13 18:02:00 UTC, imported by CC on Mike's word 2026-09-13 18:09 UTC; content unchanged below -->
+<!-- line references to S2 corrected to 848–852 on 2026-09-14 (Ark's own correction, chat 2026-09-13 18:25 UTC; verified by CC) -->
 
 
 # The cheap step in the middle of the loop
@@ -40,13 +41,13 @@ And the contribution bullet, line 30:
 > this need, combined with fragile co-adaptation, hinders the optimization of morphologies in evolutionary
 > brain-body co-optimization by creating dynamics leading to first-mover advantage."*
 
-S2 (Observed). Local copy lines 1663–1667:
+S2 (Observed). Local copy lines 851–856:
 
 > *"The feedback in our algorithm that guides the gradient from each generation—the fact that the trained
 > weight matrix in the kth generation is used to modify the genome in the (k + 1)st generation—can be viewed
 > as a form of Lamarckian evolution, and is, as such, biologically unrealistic."*
 
-and lines 1651–1656:
+and lines 848–851:
 
 > *"…of optimization that does not exploit a gradient, is in general a relatively slow and inefficient
 > algorithm, successful because it operates on massive numbers of individuals in parallel over [hundreds of
@@ -194,7 +195,7 @@ not development; the link between them is the form of the loop, not the object (
 ## 7. Verification log for this file
 
 **Re-verified in the final pass** (pattern searched in the local copies, line numbers as reported):
-S1 lines 15, 30, 32, 72, 125, 176, 184, 190; S2 lines 1651–1656, 1663–1667, 1667–1679, 1779–1781.
+S1 lines 15, 30, 32, 72, 125, 176, 184, 190; S2 lines 848–851, 851–856, 1667–1679, 1779–1781.
 
 **Quoted from the earlier full read of the same file, not re-checked in the final pass** (marked in place):
 S1 population size 20; controller parameter count; 94,201 morphologies in the §4.1 update; per-algorithm

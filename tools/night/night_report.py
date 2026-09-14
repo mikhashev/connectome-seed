@@ -295,15 +295,25 @@ def print_checkpoint_trajectory(label_a, label_b, run_a, run_b, csv_path, lines)
         final_cp = nearest_checkpoint(run_a, final_target)
         earlier_cp = nearest_checkpoint(run_a, earlier_target)
         if final_cp is not None and earlier_cp is not None and earlier_cp["val_loss"]:
-            rel_drop = (earlier_cp["val_loss"] - final_cp["val_loss"]) / earlier_cp["val_loss"]
+            rel_change = (final_cp["val_loss"] - earlier_cp["val_loss"]) / earlier_cp["val_loss"]
+            if abs(rel_change) < 0.01:
+                trend = "plateauing"
+            elif rel_change < 0:
+                trend = "still decreasing"
+            else:
+                trend = "still increasing"
             lines.append(
-                f"- relative drop over last 50,000 iterations (checkpoint near {earlier_target} -> "
-                f"checkpoint near {final_target}): {r4(rel_drop)} "
+                f"- relative change of held-out loss over the last 50,000 iterations "
+                f"(checkpoint near {earlier_target} -> checkpoint near {final_target}, "
+                f"positive = rose): {r4(rel_change)} "
                 f"({r4(earlier_cp['val_loss'])} -> {r4(final_cp['val_loss'])}; "
-                f"{'plateauing' if rel_drop < 0.01 else 'still decreasing'} by a <1% heuristic)"
+                f"{trend} by a <1% heuristic)"
             )
         else:
-            lines.append("- relative drop over last 50,000 iterations: n/a (missing checkpoints)")
+            lines.append(
+                "- relative change of held-out loss over the last 50,000 iterations "
+                "(positive = rose): n/a (missing checkpoints)"
+            )
 
         # rung@250000 vs checkpoint@final_iteration discrepancy
         ra = rungs_by_iter(run_a)

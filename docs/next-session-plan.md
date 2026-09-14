@@ -48,7 +48,8 @@ replicate difference is *unmeasurable*, not a failed surrogate.
   chosen floor (8 or 10, decision 3 above).
 - **(b) Not measurable** → a new pre-registration for the expensive metric is required before any
   further N run. Candidates to be reviewed, not decided here: the mean over the plateau
-  checkpoints (run 0's plateau: 1141.0463 at iteration 219,612, −0.11 % over the last 50,000); the
+  checkpoints (run 0's plateau: 1141.0463 at iteration 219,612; rose by +0.11 % over the last
+  50,000, |change| < 0.2 %); the
   median of ≥ 2 replicates per seed; both cost extra wall-clock and neither is registered yet.
   The lower rungs (1,000 / 5,000 / 25,000) are clean under either branch and do not need this
   decision.

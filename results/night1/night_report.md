@@ -142,7 +142,7 @@ Compact view (every 5th checkpoint by A's index; full 72-row list -> `C:\Users\m
 - loss near iteration 150000: 1152.8307 (nearest checkpoint at iteration 151212)
 - loss near iteration 200000: 1147.5358 (nearest checkpoint at iteration 201612)
 - loss near iteration 250000: 1148.8075 (nearest checkpoint at iteration 250008)
-- relative drop over last 50,000 iterations (checkpoint near 200000 -> checkpoint near 250000): -0.0011 (1147.5358 -> 1148.8075; plateauing by a <1% heuristic)
+- relative change of held-out loss over the last 50,000 iterations (checkpoint near 200000 -> checkpoint near 250000, positive = rose): 0.0011 (1147.5358 -> 1148.8075; plateauing by a <1% heuristic)
 - discrepancy: rung val_loss at iteration 250,000 (1146.1958) vs checkpoint val_loss at iteration 250008 (1148.8075) = 2.6117 over 8 extra iteration(s)
 - training-loss (train_loss_per_iter) std over last 100 iterations: 679.6031 (mean 1283.4386) -- for judging whether the discrepancy above is within iteration-to-iteration noise
 
