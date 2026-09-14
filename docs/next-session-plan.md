@@ -25,11 +25,10 @@ Nothing below runs before 1–4 are answered; night 2 specifically waits on Mike
 Seeds 1 and 2 to 250,000, sequential, **no replicate**, determinism off, extent 15. At run 0's
 price (h_run 4:00:17 + wall between runs), ≈ 8.0 h total for two runs.
 
-Command (from `tools/night/`, the venv re-created per `tools/night/README.md`):
+Command. Until the venv is re-created outside the scratchpad (per `tools/night/README.md`), night 2 runs from the same scratchpad copy as night 1 — the scripts in `tools/night/` are byte-identical to it. This is what Mike types, one line, `-DryRun` first:
 
 ```powershell
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools\night\start_night.ps1 `
-    -Tag night2 -Ensemble 9991 -Seeds 1,2 -NoReplicate
+powershell -ExecutionPolicy Bypass -File "C:\Users\mikha\AppData\Local\Temp\claude\c--Users-mikha-Documents-dpc-research-autoresearch-win-rtx\63f3961a-96ce-4048-8338-72c162ea66f8\scratchpad\flyvis-probe\night\start_night.ps1" -Tag night2 -Seeds 1,2 -NoReplicate
 ```
 
 (`-DryRun` first to confirm the command and ids before launching; ids will be `9991/001` and
