@@ -9,7 +9,9 @@ Parameters
   -DryRun          print the launcher command and the launcher's own --dry listing; start nothing
   -FollowOnly      do not launch; only follow an existing wave_<tag>.progress.log
   -Tag / -Ensemble / -Seeds / -NIters / -Rungs / -ProgressEvery   launcher overrides (defaults = the night run)
-  -Seeds "0,1,2,3,4,5"  comma list and/or ranges ("0-5"); the replicate 0' (id <ENS>/900) always runs right after seed 0
+  -Seeds "0,1,2,3,4,5"  comma list and/or ranges ("0-5"); the replicate 0' (id <ENS>/900) runs right after seed 0
+                   unless -NoReplicate is given
+  -NoReplicate     omit --replicate from the launcher args: no run 0' (id <ENS>/900) is queued
   -Extent N        flyvis hexagonal extent (default 15 = the flyvis default). When not 15 BOTH Hydra overrides are
                    passed: network.connectome.extent=N (config/network/connectome/connectome.yaml) and
                    task.dataset.boxfilter.extent=N (config/task/task.yaml) -- the task rendering does not
@@ -22,6 +24,7 @@ Windows PowerShell 5.1 compatible (no &&, no ??, no ternary).
 param(
     [switch]$DryRun,
     [switch]$FollowOnly,
+    [switch]$NoReplicate,
     [string]$Tag = "night1",
     [string]$Ensemble = "9991",
     [string]$Seeds = "0",
@@ -56,12 +59,14 @@ $launchArgs = @(
     "--tag", $Tag,
     "--ensemble", $Ensemble,
     "--seeds", $Seeds,
-    "--replicate",
     "--n-iters", "$NIters",
     "--rungs", $Rungs,
     "--progress-every", "$ProgressEvery",
     "--sequential", "--detach", "--no-determinism"
 )
+if (-not $NoReplicate) {
+    $launchArgs += "--replicate"
+}
 if ($Extent -ne 15) {
     # both keys are required: the connectome extent and the task's boxfilter (rendering) extent are set separately
     $launchArgs += @("--override", ("network.connectome.extent=" + $Extent),
@@ -79,7 +84,11 @@ if ($Extent -eq 15) {
 } else {
     Write-Output ("extent          : " + $Extent + "  (overrides network.connectome.extent=" + $Extent + " task.dataset.boxfilter.extent=" + $Extent + ")")
 }
-Write-Output ("seeds           : " + $Seeds + " + replicate 0' (id " + $Ensemble + "/900, runs right after seed 0)")
+if ($NoReplicate) {
+    Write-Output ("seeds           : " + $Seeds + " (no replicate)")
+} else {
+    Write-Output ("seeds           : " + $Seeds + " + replicate 0' (id " + $Ensemble + "/900, runs right after seed 0)")
+}
 Write-Output ("PID file        : " + $pidFile)
 Write-Output ("wave progress   : " + $progressLog + "   (START/EXIT + iter/RUNG/CHECKPOINT/DONE of the running job)")
 Write-Output ("launcher log    : " + $launcherLog)

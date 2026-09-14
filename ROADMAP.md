@@ -88,6 +88,8 @@ A splice of two *identical* copies is a control that can only pass; the test spl
    is the real cost of this phase; the GPU is local and the money is zero. **run 0 and run 0′
    done 2026-09-14 (h_run 4.00 h; replicate tolerance at 250,000 not met: 1.11 %); N runs not
    started.** Resume is not used — an interrupted run is a failed run (§7, measured 2026-09-13).
+   Full record: [docs/experiments/001-run0-and-replicate.md](docs/experiments/001-run0-and-replicate.md);
+   next session: [docs/next-session-plan.md](docs/next-session-plan.md).
 3. The cheap evaluation of the same individuals, and the rank correlation between the two.
 
 **Outcomes, both of them results:** cheap ranking *disagrees* with expensive → the 2508.17464
@@ -121,7 +123,7 @@ one that can be trusted to be current.
 
 | axis | decisions | board entries | awaiting observation |
 |---|---|---|---|
-| **collective** | — | 1 | 0 |
+| **collective** | — | 2 | 0 |
 | **knowledge** | — | 4 | 0 |
 | **network** | — | 0 | 0 |
 | **honesty** | ADR-002 accepted | 3 | 0 |

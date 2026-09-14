@@ -101,6 +101,12 @@ language_cutoff: 2026-09-13
   the repository holds none of them; a uv venv is not relocatable.
 - **Observed 2026-09-14.** Scripts copied to `tools/night/` in commit (this commit); the
   venv recipe still to be documented.
+- **Observed 2026-09-14 (this commit).** Scripts and recipe now in `tools/night/`:
+  `run_individual.py`, `launch_wave.py`, `start_night.ps1` (with the new `-NoReplicate`
+  switch), `night_report.py`, and `tools/night/README.md` (python/torch/flyvis/datamate
+  versions, the datamate Windows patch extracted from the live venv's `io.py`,
+  `FLYVIS_ROOT_DIR`, both launch commands). Remaining: re-create the venv outside the
+  scratchpad from that recipe.
 - **Inferred.** The night can run from there once. The next night cannot if the scratchpad
   is gone, and the datamate patch goes with it —
   [[DATAMATE-UNLINKS-AN-OPEN-HDF5-FILE-AND-WINDOWS-REFUSES]].
@@ -145,6 +151,18 @@ language_cutoff: 2026-09-13
   to Mike before any N run starts. Parent task
   [[PRE-REGISTER-THE-CHEAP-VERSUS-EXPENSIVE-TEST]], closed 2026-09-13.
 - **axis:** knowledge
+
+### NIGHT-2-RUNS-SEEDS-1-AND-2-ON-MIKES-WORD: seeds 1 and 2 trained to 250,000, sequential, no replicate, are the first between-seed distances against the run 0 / run 0′ replicate offset (HIGH, open, 2026-09-14 — CC, from the experiment record and next-session plan)
+
+- **Observed.** Tooling ready: `tools/night/start_night.ps1` takes `-NoReplicate` (this
+  commit), dry-run quoted (ids `9991/001`, `9991/002`; ensemble 9991 already holds `000` and
+  `900` — the ids differ, no collision). Command in `docs/next-session-plan.md` §2.
+- **First step.** Mike's word (the standing rule,
+  [[THE-NIGHT-RUN-STARTS-ONLY-ON-MIKES-EXPLICIT-WORD]], closed), then launch by Mike; morning
+  comparison against the replicate offset (+12.64 mean / 1.11 % at 250,000,
+  `docs/experiments/001-run0-and-replicate.md` §4) per the decision rule already registered
+  in `docs/preregistration-cheap-vs-expensive.md` §7.
+- **axis:** collective
 
 
 ## BLOCKED ON DECISION
@@ -191,4 +209,6 @@ language_cutoff: 2026-09-13
   expensive metric before the N runs. **Proposed (CC), decision Mike + reviewers:** run
   seeds 1 and 2 to 250,000 next night (≈ 4 h each) to get the first between-seed distances
   at the plateau against the 12.64 mean replicate offset above.
+- **Experiment record:** `docs/experiments/001-run0-and-replicate.md`; plan:
+  `docs/next-session-plan.md`.
 - **axis:** honesty

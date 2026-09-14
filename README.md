@@ -129,7 +129,10 @@ paper, and thinner than it was this morning.
 to find out), [ROADMAP.md](ROADMAP.md) (phases, ordered by what blocks them),
 [docs/decisions/](docs/decisions/) (ADR-001 publication shape, ADR-002 file under a condition),
 [backlog.md](backlog.md) (tasks, validated with the shared backlog tool). Roles as of that day:
-CC executes everything, Ark, Johnny and Warren review.
+CC executes everything, Ark, Johnny and Warren review. **Experiment record, added 2026-09-14:**
+[docs/experiments/001-run0-and-replicate.md](docs/experiments/001-run0-and-replicate.md) (run 0
+and its replicate, against the pre-registration); next session:
+[docs/next-session-plan.md](docs/next-session-plan.md).
 
 ## Files
 
