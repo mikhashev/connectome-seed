@@ -15,7 +15,8 @@ missed at 1.1104 %. Full record: `docs/experiments/001-run0-and-replicate.md`. T
    [[N-EQUALS-EIGHT-IS-BELOW-THE-FILES-OWN-MINIMUM]]).
 4. **Top-k as a secondary hypothesis** — enters the pre-registration or not
    ([[A-TRAINED-SURROGATE-IS-NOT-A-PREFIX-OF-THE-SAME-PROCESS]]).
-5. **Who fixes the PNAS line numbers in `research/analysis-cheap-step.md` (848–852).**
+5. ~~Who fixes the PNAS line numbers in `research/analysis-cheap-step.md`.~~ Done in `dbeb878`
+   (Ark's own correction applied by CC; verified lines 848–851 and 851–856).
 
 Nothing below runs before 1–4 are answered; night 2 specifically waits on Mike's explicit word
 (the standing rule, board: [[THE-NIGHT-RUN-STARTS-ONLY-ON-MIKES-EXPLICIT-WORD]]).
