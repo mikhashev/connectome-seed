@@ -1,0 +1,61 @@
+{
+ "meta": {
+  "flyvis": "1.2.0",
+  "torch": "2.9.1+cu128",
+  "python": "3.10.20",
+  "gpu": "NVIDIA RTX PRO 4500 Blackwell",
+  "netdir": "C:\\Users\\mikha\\AppData\\Local\\Temp\\claude\\c--Users-mikha-Documents-dpc-research-autoresearch-win-rtx\\03852100-01fd-45ef-82c3-e22ac607b0f7\\scratchpad\\diag\\netdir\\flow\\9991\\000",
+  "task": "paths",
+  "utc": "2026-09-15T06:31:25Z"
+ },
+ "rows": [
+  {
+   "run": "000",
+   "label": "seed0",
+   "chkpt_index": 71,
+   "chkpt_file": "chkpt_00071",
+   "chkpt_iter_h5": 250007,
+   "solver_iteration": 250008,
+   "hook_path_value": "1148.8073825836182",
+   "stored_checkpoint_val_loss": "1148.8074851036072",
+   "hook_minus_stored": "-0.00010251998901367188",
+   "eval_wall_s": 0.466
+  },
+  {
+   "run": "900",
+   "label": "seed0prime",
+   "chkpt_index": 71,
+   "chkpt_file": "chkpt_00071",
+   "chkpt_iter_h5": 250007,
+   "solver_iteration": 250008,
+   "hook_path_value": "1160.9823927879333",
+   "stored_checkpoint_val_loss": "1160.9823441505432",
+   "hook_minus_stored": "4.863739013671875e-05",
+   "eval_wall_s": 0.271
+  },
+  {
+   "run": "001",
+   "label": "seed1",
+   "chkpt_index": 71,
+   "chkpt_file": "chkpt_00071",
+   "chkpt_iter_h5": 250007,
+   "solver_iteration": 250008,
+   "hook_path_value": "1144.6362748146057",
+   "stored_checkpoint_val_loss": "1144.636233329773",
+   "hook_minus_stored": "4.1484832763671875e-05",
+   "eval_wall_s": 0.374
+  },
+  {
+   "run": "002",
+   "label": "seed2",
+   "chkpt_index": 71,
+   "chkpt_file": "chkpt_00071",
+   "chkpt_iter_h5": 250007,
+   "solver_iteration": 250008,
+   "hook_path_value": "1147.7179126739502",
+   "stored_checkpoint_val_loss": "1147.717873096466",
+   "hook_minus_stored": "3.9577484130859375e-05",
+   "eval_wall_s": 0.275
+  }
+ ]
+}

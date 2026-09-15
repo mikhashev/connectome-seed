@@ -1,0 +1,43 @@
+{
+ "pair": "(0,0')",
+ "iteration": 250008,
+ "total_distance_all_params": 4.237198318522082,
+ "groups": {
+  "nodes_bias": {
+   "dist": 3.337735121961166,
+   "norm_a": 4.724472565791869,
+   "norm_b": 4.817290784669627,
+   "mean_norm": 4.770881675230748,
+   "dist_over_mean_norm": 0.6996055130207632,
+   "numel": 65,
+   "share_of_squared_distance": 0.6205062423089693
+  },
+  "nodes_time_const": {
+   "dist": 0.5657916646241248,
+   "norm_a": 0.8167035166954241,
+   "norm_b": 0.7819263210085682,
+   "mean_norm": 0.7993149188519961,
+   "dist_over_mean_norm": 0.7078457455000771,
+   "numel": 65,
+   "share_of_squared_distance": 0.017830170969448687
+  },
+  "edges_syn_strength": {
+   "dist": 1.7996097874500359,
+   "norm_a": 2.3013811573416123,
+   "norm_b": 2.3450168133940457,
+   "mean_norm": 2.3231989853678288,
+   "dist_over_mean_norm": 0.7746257633480785,
+   "numel": 604,
+   "share_of_squared_distance": 0.1803844557549416
+  },
+  "decoder": {
+   "dist": 1.8040671415635108,
+   "norm_a": 6.104370240488752,
+   "norm_b": 6.177788146943028,
+   "mean_norm": 6.14107919371589,
+   "dist_over_mean_norm": 0.2937703756384702,
+   "numel": 7427,
+   "share_of_squared_distance": 0.18127913096664022
+  }
+ }
+}

@@ -1,0 +1,87 @@
+{
+ "network": [
+  {
+   "key": "nodes_bias",
+   "numel": 65,
+   "requires_grad": true
+  },
+  {
+   "key": "nodes_time_const",
+   "numel": 65,
+   "requires_grad": true
+  },
+  {
+   "key": "edges_sign",
+   "numel": 604,
+   "requires_grad": false
+  },
+  {
+   "key": "edges_syn_count",
+   "numel": 2355,
+   "requires_grad": false
+  },
+  {
+   "key": "edges_syn_strength",
+   "numel": 604,
+   "requires_grad": true
+  }
+ ],
+ "decoder": [
+  {
+   "decoder": "flow",
+   "key": "base.0.weight",
+   "numel": 6800,
+   "requires_grad": true
+  },
+  {
+   "decoder": "flow",
+   "key": "base.0.bias",
+   "numel": 8,
+   "requires_grad": true
+  },
+  {
+   "decoder": "flow",
+   "key": "base.1.weight",
+   "numel": 8,
+   "requires_grad": true
+  },
+  {
+   "decoder": "flow",
+   "key": "base.1.bias",
+   "numel": 8,
+   "requires_grad": true
+  },
+  {
+   "decoder": "flow",
+   "key": "decoder.0.weight",
+   "numel": 600,
+   "requires_grad": true
+  },
+  {
+   "decoder": "flow",
+   "key": "decoder.0.bias",
+   "numel": 3,
+   "requires_grad": true
+  }
+ ],
+ "network_buffers": [],
+ "decoder_buffers": [
+  {
+   "decoder": "flow",
+   "key": "base.1.running_mean",
+   "numel": 8
+  },
+  {
+   "decoder": "flow",
+   "key": "base.1.running_var",
+   "numel": 8
+  },
+  {
+   "decoder": "flow",
+   "key": "base.1.num_batches_tracked",
+   "numel": 1
+  }
+ ],
+ "network_trainable_total": 734,
+ "decoder_trainable_total": 7427
+}

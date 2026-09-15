@@ -1,0 +1,174 @@
+{
+ "0_vs_0prime_250008": {
+  "pair": "(0,0')",
+  "iteration": 250008,
+  "total_distance_all_params": 4.237198318522082,
+  "groups": {
+   "nodes_bias": {
+    "dist": 3.337735121961166,
+    "norm_a": 4.724472565791869,
+    "norm_b": 4.817290784669627,
+    "mean_norm": 4.770881675230748,
+    "dist_over_mean_norm": 0.6996055130207632,
+    "numel": 65,
+    "share_of_squared_distance": 0.6205062423089693
+   },
+   "nodes_time_const": {
+    "dist": 0.5657916646241248,
+    "norm_a": 0.8167035166954241,
+    "norm_b": 0.7819263210085682,
+    "mean_norm": 0.7993149188519961,
+    "dist_over_mean_norm": 0.7078457455000771,
+    "numel": 65,
+    "share_of_squared_distance": 0.017830170969448687
+   },
+   "edges_syn_strength": {
+    "dist": 1.7996097874500359,
+    "norm_a": 2.3013811573416123,
+    "norm_b": 2.3450168133940457,
+    "mean_norm": 2.3231989853678288,
+    "dist_over_mean_norm": 0.7746257633480785,
+    "numel": 604,
+    "share_of_squared_distance": 0.1803844557549416
+   },
+   "decoder": {
+    "dist": 1.8040671415635108,
+    "norm_a": 6.104370240488752,
+    "norm_b": 6.177788146943028,
+    "mean_norm": 6.14107919371589,
+    "dist_over_mean_norm": 0.2937703756384702,
+    "numel": 7427,
+    "share_of_squared_distance": 0.18127913096664022
+   }
+  }
+ },
+ "0_vs_0prime_0": {
+  "pair": "(0,0')",
+  "iteration": 0,
+  "total_distance_all_params": 0.0,
+  "groups": {
+   "nodes_bias": {
+    "dist": 0.0,
+    "norm_a": 4.041359323578281,
+    "norm_b": 4.041359323578281,
+    "mean_norm": 4.041359323578281,
+    "dist_over_mean_norm": 0.0,
+    "numel": 65,
+    "share_of_squared_distance": 0.0
+   },
+   "nodes_time_const": {
+    "dist": 0.0,
+    "norm_a": 0.4031128934217776,
+    "norm_b": 0.4031128934217776,
+    "mean_norm": 0.4031128934217776,
+    "dist_over_mean_norm": 0.0,
+    "numel": 65,
+    "share_of_squared_distance": 0.0
+   },
+   "edges_syn_strength": {
+    "dist": 0.0,
+    "norm_a": 0.16605746978514266,
+    "norm_b": 0.16605746978514266,
+    "mean_norm": 0.16605746978514266,
+    "dist_over_mean_norm": 0.0,
+    "numel": 604,
+    "share_of_squared_distance": 0.0
+   },
+   "decoder": {
+    "dist": 0.0,
+    "norm_a": 2.829423086167104,
+    "norm_b": 2.829423086167104,
+    "mean_norm": 2.829423086167104,
+    "dist_over_mean_norm": 0.0,
+    "numel": 7427,
+    "share_of_squared_distance": 0.0
+   }
+  }
+ },
+ "0_vs_1_0": {
+  "pair": "(0,1)",
+  "iteration": 0,
+  "total_distance_all_params": 0.556595243308302,
+  "groups": {
+   "nodes_bias": {
+    "dist": 0.556595243308302,
+    "norm_a": 4.041359323578281,
+    "norm_b": 4.018573214619689,
+    "mean_norm": 4.029966269098985,
+    "dist_over_mean_norm": 0.13811411960843656,
+    "numel": 65,
+    "share_of_squared_distance": 1.0
+   },
+   "nodes_time_const": {
+    "dist": 0.0,
+    "norm_a": 0.4031128934217776,
+    "norm_b": 0.4031128934217776,
+    "mean_norm": 0.4031128934217776,
+    "dist_over_mean_norm": 0.0,
+    "numel": 65,
+    "share_of_squared_distance": 0.0
+   },
+   "edges_syn_strength": {
+    "dist": 0.0,
+    "norm_a": 0.16605746978514266,
+    "norm_b": 0.16605746978514266,
+    "mean_norm": 0.16605746978514266,
+    "dist_over_mean_norm": 0.0,
+    "numel": 604,
+    "share_of_squared_distance": 0.0
+   },
+   "decoder": {
+    "dist": 0.0,
+    "norm_a": 2.829423086167104,
+    "norm_b": 2.829423086167104,
+    "mean_norm": 2.829423086167104,
+    "dist_over_mean_norm": 0.0,
+    "numel": 7427,
+    "share_of_squared_distance": 0.0
+   }
+  }
+ },
+ "0_vs_2_0": {
+  "pair": "(0,2)",
+  "iteration": 0,
+  "total_distance_all_params": 0.5383561516467549,
+  "groups": {
+   "nodes_bias": {
+    "dist": 0.5383561516467549,
+    "norm_a": 4.041359323578281,
+    "norm_b": 4.070840615331814,
+    "mean_norm": 4.0560999694550475,
+    "dist_over_mean_norm": 0.13272753524343855,
+    "numel": 65,
+    "share_of_squared_distance": 1.0
+   },
+   "nodes_time_const": {
+    "dist": 0.0,
+    "norm_a": 0.4031128934217776,
+    "norm_b": 0.4031128934217776,
+    "mean_norm": 0.4031128934217776,
+    "dist_over_mean_norm": 0.0,
+    "numel": 65,
+    "share_of_squared_distance": 0.0
+   },
+   "edges_syn_strength": {
+    "dist": 0.0,
+    "norm_a": 0.16605746978514266,
+    "norm_b": 0.16605746978514266,
+    "mean_norm": 0.16605746978514266,
+    "dist_over_mean_norm": 0.0,
+    "numel": 604,
+    "share_of_squared_distance": 0.0
+   },
+   "decoder": {
+    "dist": 0.0,
+    "norm_a": 2.829423086167104,
+    "norm_b": 2.829423086167104,
+    "mean_norm": 2.829423086167104,
+    "dist_over_mean_norm": 0.0,
+    "numel": 7427,
+    "share_of_squared_distance": 0.0
+   }
+  }
+ }
+}

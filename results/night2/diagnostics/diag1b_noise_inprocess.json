@@ -1,0 +1,26 @@
+{
+ "meta": {
+  "flyvis": "1.2.0",
+  "torch": "2.9.1+cu128",
+  "python": "3.10.20",
+  "gpu": "NVIDIA RTX PRO 4500 Blackwell",
+  "netdir": "C:\\Users\\mikha\\AppData\\Local\\Temp\\claude\\c--Users-mikha-Documents-dpc-research-autoresearch-win-rtx\\03852100-01fd-45ef-82c3-e22ac607b0f7\\scratchpad\\diag\\netdir\\flow\\9991\\000",
+  "task": "noise5",
+  "utc": "2026-09-15T06:33:03Z"
+ },
+ "run": "000",
+ "chkpt_index": 71,
+ "solver_iteration": 250008,
+ "stored_checkpoint_val_loss": "1148.8074851036072",
+ "values": [
+  "1148.807430267334",
+  "1148.807454586029",
+  "1148.8074460029602",
+  "1148.807448387146",
+  "1148.8074297904968"
+ ],
+ "min": "1148.8074297904968",
+ "max": "1148.807454586029",
+ "spread": "2.47955322265625e-05",
+ "n_distinct": 5
+}

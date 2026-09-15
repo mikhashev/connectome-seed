@@ -111,6 +111,9 @@ is a new seed, to separate a pair-random sign from a within-wave position effect
 (solo in `night2b`) is no witness to position. Full detail:
 `docs/experiments/002-night2-seeds-1-and-2.md` §5a items 9–13.
 
+**Diagnostics done 2026-09-15 — see 002 §5b; the sequence's step (i) is complete, steps (ii) night 3
+and (iii) night 4 wait on Mike.**
+
 ## 4. Side tasks (board entry names)
 
 - **[[THE-NIGHT-TOOLING-LIVES-IN-A-TEMPORARY-SCRATCHPAD]]** — environment out of the scratchpad:
@@ -126,10 +129,12 @@ is a new seed, to separate a pair-random sign from a within-wave position effect
   action on that sub-item.
 - **[[THIRTEEN-LINKS-POINT-INTO-A-DIRECTORY-THAT-WILL-NOT-BE-PUSHED]]** — the 13 `chat/` links
   before the repo opens.
-- Diagnostics from saved checkpoints — starting with one saved checkpoint through both reporting
-  paths (hook vs checkpoint; the two disagree by 0.7–2.6 at the top rung, second pass item 10),
-  then evaluation-noise re-scoring and weight distance 0↔0′ — proposed by Ark, feasible per Zcode's
-  disk check; on Mike's word.
+- ~~Diagnostics from saved checkpoints~~ — **Done 2026-09-15**, on Mike's word 06:22 «делай
+  диагностики». Result: the two reporting paths agree to ≈1e-4 (the 0.7–2.6 top-rung gaps are 8
+  iterations of weight movement, not two instruments); the twin (0,0′) weight-space gap at 250,008
+  is 4.2372 = 0.52 of its own mean parameter norm, about three-quarters of the 0.59–0.78 spread
+  between different-seed pairs; the loss gap is spread over 14 of 16 held-out items, not
+  concentrated in one. Full detail: `docs/experiments/002-night2-seeds-1-and-2.md` §5b.
 
 ## 5. What not to do
 

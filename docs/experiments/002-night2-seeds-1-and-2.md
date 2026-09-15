@@ -307,6 +307,120 @@ construction; what remains is "property of the pair (sign random pair to pair)" 
 SECOND in a wave whose FIRST job is a new seed — high → position; near seed 1 → pair-random. Night
 2's seed 2 ran solo in `night2b`, so it is no witness to position.
 
+## 5b. Diagnostics from saved checkpoints, 2026-09-15 (Mike's word 06:22 «делай диагностики»; run by CC's subagent on Opus; verified by CC)
+
+**Observed**, from `results/night2/diagnostics/` (`diag1_eval_paths.py`, `diag2_weight_distance.py`,
+their README, and the JSON/CSV outputs listed there) — the reviewers' sequence item (i) from §5a.7.
+
+**(a) Two reporting paths agree.** Hook-path evaluation of checkpoint 250,008 vs flyvis's own
+stored checkpoint `val_loss`, four runs (`diag1a_paths.json`):
+
+| run | label | hook-path value | stored checkpoint `val_loss` | hook − stored |
+|---|---|---|---|---|
+| 000 | seed 0 | 1148.8074 | 1148.8075 | −1.0e-4 |
+| 900 | seed 0′ | 1160.9824 | 1160.9823 | +4.9e-5 |
+| 001 | seed 1 | 1144.6363 | 1144.6362 | +4.1e-5 |
+| 002 | seed 2 | 1147.7179 | 1147.7179 | +4.0e-5 |
+
+All four differences sit inside a 1.5e-4 band. Consequence: the 0.7–2.6 gaps between hook@250,000
+and checkpoint@250,008 recorded in §5a item 10 are weight movement over 8 iterations, not two
+instruments — this resolves that item the first way. Checkpoint-index mapping (not guessed):
+`chkpt_iter.h5` stores iteration−1 (`flyvis/solver.py:453,463`) while the CSV stores
+`solver.iteration` (`night/run_individual.py:498`), so `chkpt_00071` ↔ 250,008.
+
+**(b) Evaluation noise.** Seed 0, checkpoint 250,008: 5 evaluations in one process spread 2.48e-5
+(`diag1b_noise_inprocess.json`); 3 evaluations in fresh processes spread 3.77e-5
+(`diag1b_noise_proc1/2/3.json`); across those 8 evaluations plus the stored checkpoint value, max
+deviation 6.72e-5 (5.9e-8 relative to the ~1148.8 loss value) — float-level, not zero. The diag1a
+hook-path run for this same checkpoint (task `paths`, row (a) above) read 1148.8074, 1.03e-4 below
+the stored value — the same order as this noise floor, and already counted in (a), not a ninth
+independent noise draw.
+
+**(c) Per-item breakdown at 250,008** (16 held-out items × 4 runs, `per_item_250008.csv`):
+
+| item | seed 0 | seed 0′ | seed 1 | seed 2 | seed0′ − seed0 |
+|---|---|---|---|---|---|
+| ambush_2_split_00 | 4048.8452 | 4068.6584 | 3935.1770 | 4112.5483 | +19.8132 |
+| ambush_2_split_01 | 4363.8145 | 4381.7363 | 4312.6338 | 4363.9736 | +17.9219 |
+| ambush_2_split_02 | 4764.6211 | 4782.3843 | 4714.0996 | 4701.6055 | +17.7632 |
+| bamboo_1_split_00 | 93.3649 | 92.4739 | 105.0628 | 95.6211 | −0.8910 |
+| bamboo_1_split_01 | 79.3864 | 82.7176 | 103.0105 | 79.4038 | +3.3312 |
+| bamboo_1_split_02 | 104.8982 | 111.8489 | 123.5876 | 106.5946 | +6.9507 |
+| bandage_1_split_00 | 687.7188 | 708.2150 | 692.6054 | 679.2449 | +20.4962 |
+| bandage_1_split_01 | 690.9063 | 721.4998 | 706.9354 | 675.3077 | +30.5935 |
+| bandage_1_split_02 | 546.3441 | 586.8903 | 559.3323 | 539.7303 | +40.5461 |
+| cave_4_split_00 | 1181.2325 | 1184.1031 | 1190.2057 | 1183.8409 | +2.8706 |
+| market_2_split_00 | 679.7902 | 669.8835 | 678.2033 | 663.8284 | −9.9067 |
+| market_2_split_01 | 445.0692 | 450.3483 | 446.2205 | 459.8250 | +5.2791 |
+| market_2_split_02 | 208.0599 | 219.4831 | 230.7196 | 222.8501 | +11.4232 |
+| mountain_1_split_00 | 183.4995 | 184.9997 | 184.6738 | 166.6170 | +1.5002 |
+| mountain_1_split_01 | 101.5424 | 115.1892 | 121.1735 | 107.9500 | +13.6468 |
+| mountain_1_split_02 | 201.8258 | 215.2858 | 210.5390 | 204.5459 | +13.4601 |
+
+Mean of the last column = +12.1749 — the checkpoint-path replicate already on record (§5a item 4,
++12.64 by the hook path over the 29 late checkpoints). 14 of 16 rows are positive. `bandage_1`'s
+three rows sum to +91.64, 47 % of the total +194.80 across all 16; `ambush_2`'s three rows sum to
++55.50, 28 %. Loss scale ranges from ≈ 80–125 (`bamboo_1`) to ≈ 3,900–4,800 (`ambush_2`). At 25,212
+(`per_item_25212.csv`) the same column is two-sided and small: mean +0.0756, min −2.9945
+(`bandage_1_split_01`), max +4.9414 (`ambush_2_split_00`), 8 of 16 rows positive.
+
+**(d) Same-evaluator trajectory**, all 72 checkpoints of seeds 0 and 0′ (`diag1d_trajectory_summary.json`,
+`hook_path_trajectory_0_vs_0prime.csv`): max |hook − stored| over the 144 evaluations = 8.39e-5.
+(0′ − 0) by the hook path, over the 29 checkpoints after iteration 150,000: mean +12.6406, min
++3.6803, max +17.8152 — the stored-path figures already in §5a item 9 reproduce under independent
+re-evaluation.
+
+**(e) Weight-space distances** (Euclidean, float64, `weight_distance_at_iterations.csv`;
+trainable set verified by `requires_grad` in `diag2_requires_grad.json`: core 734 =
+`nodes_bias` 65 + `nodes_time_const` 65 + `edges_syn_strength` 604; decoder 7,427; `edges_sign` /
+`edges_syn_count` fixed; BatchNorm buffers excluded):
+
+| pair | iter | d(core) | d(decoder) | d(all) | d(all)/mean‖·‖ |
+|---|---|---|---|---|---|
+| (0,0′) | 250,008 | 3.8340 | 1.8041 | 4.2372 | 0.5196 |
+| (0,1) | 250,008 | 4.0554 | 3.7337 | 5.5124 | 0.6932 |
+| (0,2) | 250,008 | 5.5598 | 3.1405 | 6.3855 | 0.7788 |
+| (1,2) | 250,008 | 3.5274 | 3.9577 | 5.3014 | 0.6581 |
+| (0′,1) | 250,008 | 2.8923 | 3.7155 | 4.7085 | 0.5877 |
+| (0′,2) | 250,008 | 3.7421 | 3.2396 | 4.9496 | 0.5993 |
+| (0,0′) | 0 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
+| (0,1) | 0 | 0.5566 | 0.0000 | 0.5566 | 0.1126 |
+| (0,2) | 0 | 0.5384 | 0.0000 | 0.5384 | 0.1084 |
+| (1,2) | 0 | 0.6072 | 0.0000 | 0.6072 | 0.1225 |
+| (0′,1) | 0 | 0.5566 | 0.0000 | 0.5566 | 0.1126 |
+| (0′,2) | 0 | 0.5384 | 0.0000 | 0.5384 | 0.1084 |
+
+(0,0′) is the positive control: 0 at iteration 0 in every group. Its trajectory across the five
+saved-checkpoint sample points: 0 → 0.4203 (25,212) → 2.9690 (82,812) → 3.9929 (151,212) → 4.2372
+(250,008). Group breakdown of (0,0′) at 250,008
+(`diag2_group_breakdown_0_vs_0prime_250008.json`): `nodes_bias` 3.3377 (62.1 % of squared
+distance), `edges_syn_strength` 1.7996 (18.0 %), `decoder` 1.8041 (18.1 %), `nodes_time_const`
+0.5658 (1.8 %).
+
+**(f) What the numbers show, stated without mechanism.** The twin pair (0,0′) ends 0.52 of its own
+mean parameter norm apart — about three-quarters of the 0.59–0.78 range separating different-seed
+pairs at the same iteration — with a loss gap (§5a item 4, +12.64 by the hook path, +12.1749 by the
+per-item mean here) that the same evaluator reproduces to ≈1e-4 and that is spread over 14 of 16
+held-out items, not concentrated in one. I.e., the replicate difference is a difference between two
+end states of the weights, not evaluation noise. This is the reading Ark's §5a item 9 predicted; it
+is recorded here as Observed. The mechanism — two basins vs a steep landscape — is not decided by
+these numbers.
+
+**(g)** An incidental Observed fact for §2 of the pre-registration: at iteration 0, seeds 0, 1 and 2
+differ **only** in `nodes_bias` (distance 0.5384–0.6072 across the three pairs); `nodes_time_const`,
+`edges_syn_strength` and the whole decoder are bit-identical across seeds at iteration 0
+(`diag2_group_breakdowns.json`: `dist: 0.0`, `share_of_squared_distance: 1.0` on `nodes_bias` for
+every iteration-0 pair). Mechanism not investigated.
+
+**(h) Provenance.** Scripts and README in `results/night2/diagnostics/`; interpreter the night venv
+(Python 3.10.20, torch 2.9.1+cu128, flyvis 1.2.0); run dirs verified unchanged by a before/after
+listing of all 396 files under `results/flow/9991/{000,900,001,002}` (`diff` empty, both after
+diagnostic 1 and after diagnostic 2); evaluator = a fresh solver built in a scratch datamate root
+via `recover_network`/`recover_decoder`, `solver.test(track_loss=False)`
+(`flyvis/solver.py:543-552`, the only form of the call that writes nothing); per-item losses from a
+copy of `flyvis/solver.py:474-556` returning per-item values instead of only their mean, which
+agrees with the hook value to < 7e-5 in all eight cases it was cross-checked against.
+
 ## 6. Provenance
 
 - `results/night2/extract_night2.py` — this session's script; builds the slim jsons, the two
