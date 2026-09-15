@@ -508,6 +508,201 @@ agrees with the hook value to < 7e-5 in all eight cases it was cross-checked aga
 are complementary (the interval says σ is not sampling luck; the decomposition says what it is made
 of); the seed also drives data order (run_individual.py:208-210, 623-625).
 
+## 5d. Linear mode connectivity 0↔0′ (design Ark 06:52 / Zcode 07:05; run by CC's subagent on Opus; verified by CC)
+
+**Design as run.** Variant 2 (primary): interpolate the 8,161 trainable weights linearly,
+θ(α) = (1−α)θ_A + α·θ_B, and recompute the 17 BatchNorm buffers by a forward pass over the 51
+training items (13 batches, `IndexSampler`, batch_size 4, drop_last False), augmentation off,
+`momentum = None` (cumulative average, buffers reset first), `t_pre = 0.5` (the training value).
+Variant 1: weights and the 17 BatchNorm buffers both interpolated linearly (a path in
+stored-parameter space). Variant 3 (buffers from one end) was not run, per the design. Four
+paths: self (0→0), main (0→0′), control (0→1), extra (0′→1, unregistered context). 21 points,
+α = 0, 0.05, …, 1.0 on every path; the primary (main) path refined to a 0.025 step (41 points
+total).
+
+**Controls.** The self-path (0→0) is flat to ≈1e-4 under both variants (barrier 8.7e-5 variant
+1, 6.0e-5 variant 2, largest inter-point change ≤1.2e-4). Variant-1 endpoints reproduce the
+stored checkpoint `val_loss` to ≤7.9e-5 at every path's every endpoint. Variant-2 endpoints do
+**not**: they land −3.3996 (seed 0), −1.5498 (seed 0′), −0.6592 (seed 1) below stored —
+investigated before the grid was reported: the stored buffers are flyvis's own momentum-0.1 EMA
+over 250,008 augmented training batches (effectively the last ~10 augmented batches), while the
+recompute is the mean over one clean, unaugmented pass of all 51 training items — two different
+estimators of the same statistic. Turning augmentation on for the recompute moves the offset to
+−2.12/−0.58/−1.06 over three draws (spread 1.54, roughly two-thirds of −3.40). The offset is
+identical at every α on a given path (the self-path proves it) and is therefore a constant of
+the estimator, not entering the barrier (barrier = max along path − max(endpoints), within one
+variant).
+
+**Summary (path × variant):**
+
+| path | variant | L(0) | L(1) | max | α at max | barrier |
+|---|---|---|---|---|---|---|
+| main (0→0′) | 2 | 1145.4078 | 1159.4325 | 1256.0185 | 0.10 | 96.5859 |
+| main (0→0′) | 1 | 1148.8074 | 1160.9824 | 1535.0339 | 0.60 | 374.0515 |
+| control (0→1) | 2 | 1145.4079 | 1143.9771 | 1260.6187 | 0.10 | 115.2108 |
+| control (0→1) | 1 | 1148.8074 | 1144.6362 | 2936.7040 | 0.85 | 1787.8966 |
+| extra (0′→1) | 2 | 1159.4325 | 1143.9770 | 1294.6970 | 0.05 | 135.2645 |
+| extra (0′→1) | 1 | 1160.9824 | 1144.6362 | 1218.9421 | 0.05 | 57.9597 |
+| self (0→0) | 2 | — | — | — | — | 6.0e-5 |
+| self (0→0) | 1 | — | — | — | — | 8.7e-5 |
+
+**Per-item barrier, main path, variant 2 (all 16 positive):** ambush_2 184.17 / 173.47 / 176.89;
+bamboo_1 102.36 / 114.47 / 112.60; bandage_1 103.31 / 94.67 / 81.29; cave_4 47.12; market_2
+139.03 / 97.26 / 70.50; mountain_1 93.46 / 91.95 / 89.98.
+
+**Resolution caveat.** The design's own criterion — a resolution fine enough that a barrier of
+order 12.7 cannot hide between points — is **not met**: the largest inter-point change is 63–82
+on the main path (both variants) and 1,496.88 on the control path (variant 1, between α = 0.80
+and 0.85), so a feature of size 12.7 can hide between points on all six non-self path×variant
+combinations, and the reported barriers are lower bounds. Refining the primary path from 0.05 to
+0.025 steps (41 points) left both barriers unchanged (96.5859 v2, 374.0515 v1, same α_max).
+
+**Statement without mechanism.** The twins are not connected by a low-loss linear path: the
+main-path barrier (96.6, variant 2) is 7.6× the endpoint difference itself (12.7), and the path
+is not better connected than a different-seed pair — the control (0→1) carries a barrier of
+115.2 at the same α. The self-path (≈1e-4 under both variants) shows that neither the
+interpolation nor the BatchNorm recompute manufactures a barrier on its own. No mechanism
+(basins vs. resolution) is decided by these numbers.
+
+**Files:** `results/night2/diagnostics/connectivity/{connectivity.py, connectivity_profiles.csv,
+connectivity_summary.json, README.md}`.
+
+## 5e. Ranking robustness to item composition, drop-k (Ark 06:47; CC's subagent on Sonnet; verified by CC)
+
+**Observed** (`results/night2/diagnostics/dropk/dropk_results.json`, `dropk_summary.md`).
+Full-set order over the 16 held-out items: **1 < 2 < 0** at iteration 250,008 (the primary
+rung's endpoint) and **1 < 0 < 2** at iteration 25,212 (C3 context) — the two rungs disagree even
+before any item is dropped.
+
+**Exhaustive drop-k, rung 250,008.** Fraction of subsets that reproduce the full-set order
+exactly: k = 1 **0.8125** (13/16 subsets), k = 2 **0.6750** (81/120), k = 3 **0.5054**
+(283/560); the most common alternative order at k = 3 is **1 < 0 < 2** (152 of 560 subsets).
+
+**Scene-level drops (rung 250,008).** Dropping `ambush_2` entirely flips the order to
+**2 < 0 < 1**; dropping `bandage_1` flips it to **1 < 0 < 2**; the other four scene drops
+(`bamboo_1`, `cave_4`, `market_2`, `mountain_1`) leave the order unchanged at 1 < 2 < 0.
+
+**Twin sign** (sign of seed0′ − seed0 over the remaining items, fraction positive over all
+subsets of a given k): preserved in **100 %** of subsets for k = 1, 2 and 3 at rung 250,008; at
+rung 25,212 it degrades to **0.875 / 0.700 / 0.643** for k = 1 / 2 / 3.
+
+**Per-item pairwise wins** (16 items, no aggregation, rung 250,008): seed 1 beats seed 0 on
+**4/16** items, seed 2 beats seed 0 on **6/16**, seed 1 beats seed 2 on **3/16**.
+
+Ark's pre-stated consequence (`docs/experiments/002-night2-seeds-1-and-2.md` §5c item 5) has
+occurred: the order survives drop-one but is only modal, not universal, at drop-3 (0.5054, just
+over half). Consequence, as pre-registered: any new pre-registration for the expensive metric
+must carry the item list and the aggregation rule explicitly, not the words "held-out loss".
+
+**Files:** `results/night2/diagnostics/dropk/`.
+
+## 5f. Cell-type ablation profiles (Ark 07:39, Zcode 07:43; unregistered diagnostic; CC's subagent on Opus; verified by CC)
+
+**Status: unregistered diagnostic**, not a test of hypothesis (b)/(b2) and not a rung.
+
+**The intervention**, fixed before any profile was run: `Network.register_state_hook`
+(`flyvis/network/network.py:444-469`) masks `state.nodes.activity` to zero for one cell type at
+every Euler step and at the initial state. Zero is the rectification point at both places
+activity leaves the node — the synaptic current `weight * relu(source.activity)`
+(`dynamics.py:214`) and the decoder's own rectification (`task/decoder.py:288`) — so
+clamp-to-zero means "this cell type is silent" rather than "frozen at rest". Rule fixed before
+running: clamp to 0.0, all 65 types, every integration step.
+
+**Controls.** P0 (the evaluator reproduces the stored checkpoint `val_loss`): all four runs
+inside **2.4e-5** of stored. P1 (ablating an empty set is a no-op): aggregate shift **≤2.9e-5**
+across the four runs — passes as a no-op at the measurement's own precision, but is **not
+bit-identical** (the masked path allocates a fresh contiguous tensor, changing which reduction
+kernels run), recorded as measured rather than assumed. P2 (the instrument can see something):
+silencing the 8 photoreceptor types R1–R8 costs **+58.4 / +47.0 / +64.9 / +30,626** for seeds
+0 / 0′ / 1 / 2; silencing the 34 decoder-input types costs **+208.6 / +181.4 / +258.9 / +187.6**
+— orders of magnitude above the noise floor on every run.
+
+**Repeatability** (post-hoc, added after the profiles existed, `ablation_repeatability.json`):
+all 260 single-type profiles recomputed in a fresh process repeat to **≤6.1e-4** per Δ_T,
+Spearman **ρ = 1.0000** on every run — six to seven orders of magnitude below the smallest
+between-run distance, so the between-run structure below is not measurement noise.
+
+**The twin-trap distances** (Euclidean | 1−ρ, three item subsets):
+
+| pair | 16 items | 13 items | 10 items |
+|---|---|---|---|
+| **(0, 0′)** | **4798.0 \| 0.285** | **5336.2 \| 0.297** | **5622.8 \| 0.317** |
+| (0, 1) | 6059.4 \| 0.524 | 6888.9 \| 0.546 | 6951.7 \| 0.624 |
+| (0, 2) | 22254.3 \| 0.647 | 23092.0 \| 0.605 | 22981.5 \| 0.584 |
+| (1, 2) | 22627.2 \| 0.560 | 23606.1 \| 0.643 | 23558.0 \| 0.613 |
+| (0′, 1) | 5006.7 \| 0.559 | 5880.7 \| 0.614 | 6048.5 \| 0.595 |
+| (0′, 2) | 21632.8 \| 0.557 | 22379.7 \| 0.554 | 22202.0 \| 0.543 |
+
+**Twin-trap verdict.** Passed on both pre-declared metrics (Euclidean and Spearman) in all three
+item subsets — d(0,0′) is the smallest of the six pairs, every time. But the Euclidean margin
+over (0′,1) is only 4 % (4798.0 vs 5006.7 on 16 items), and a post-hoc Pearson r (not
+pre-declared) reverses it: (0′,1) r = 0.588 vs the twins' r = 0.351. The supported claim is
+therefore the weaker one — **the rank order of the 65 types' importance is more similar between
+twins than between different-seed pairs** (ρ 0.72 vs 0.35–0.48) — not that the twins agree on
+their largest effects: seed 0's top type is Tm5c at +2,616.8, and the same type in seed 0′ is
++34.6.
+
+**Sign agreement** (same sign of Δ_T across all four runs): 44 of 65 types on 16 items, 51 of 65
+on 13 items, 43 of 65 on 10 items.
+
+**R2 alone silenced:** +459 / +680 / **−1.0** / **+21,157** for seeds 0 / 0′ / 1 / 2 — seed 2's
+end state collapses without photoreceptor type R2 while its un-ablated loss (1147.72) is
+indistinguishable from the others.
+
+**Mi4** is top-3 by |Δ_T| in all four runs.
+
+**Caveat.** One configuration, two twins, one comparison — no null distribution under which to
+judge how surprising the twin margin is.
+
+**Files:** `results/night2/diagnostics/ablation/`.
+
+## 5g. Composition (a): registered splice T2 B→A with instrument control and null-shift calibration (Zcode 07:43 bundle, Ark's calibration; CC's subagent on Opus; verified by CC)
+
+**Module identification** (`results/night2/diagnostics/splice_a/t2_module_indices.json`): cell
+type T2 = type index 32; `nodes_bias[32]`, `nodes_time_const[32]`, and 24 `edges_syn_strength`
+slots (flat indices listed in the file); the source-type set matches §2 of the pre-registration
+exactly; **k = 26**. Ordering from `network.py:167,199` and `initialization.py:345-356,
+496-515`.
+
+**Reference.** L_A (unmodified seed 0, checkpoint 250,008) = **1148.807409** (stored checkpoint
+`val_loss` 1148.807485). Self-splice A←A (the registered instrument control): Δ = **+1.38e-5** —
+a no-op.
+
+**Calibration** (Ark's null-shift, not part of the registered test; written
+**2026-09-15T07:54:06Z**, before the registered splice was evaluated at **07:55:37Z**): r =
+‖T2_B − T2_A‖ = **0.38185**. 20 isotropic random directions of the same norm r were drawn and
+evaluated: **4 diverge** (two `inf`, one 5.29e18, one 3.41e11); the **16 finite** |Δ| values
+range **10.70 … 69.55**, mean **44.44**, median **46.07**, and **10 of the 16** sit above the
+floor 38.18 (14 of 20 counting the divergent draws as above-floor). The two real-direction
+reference shifts: −v (A shifted away from B) gives Δ = **+61.60**; +2v gives Δ = **+53.49**. The
+isotropic null in raw parameter space is not free of artefact: it sends 4–12 of the 24
+synapse-strength slots negative on a given draw — values training's own clamp could never reach
+— recorded as a property of this null, not corrected for.
+
+**The registered splice, T2_A ← T2_B:** L = **1187.387355**, Δ = **+38.579946**, **3.3583 %** of
+L_A (1148.8074), **3.3659 %** of **1146.1958** (§5(a)'s literal basis). Reading it on the basis
+§5 names literally — 1146.1958, floor 38.18, 5 % bound 57.31 — **38.18 < 38.58 < 57.31**: the
+registered rule reads **"composes predictably for this pair"**, margin **0.40** above the floor.
+On the same-weights basis (L_A itself; floor 38.269, 5 % bound 57.440): same category, margin
+**0.311**.
+
+**Per-item Δ** (registered splice, vs the same-process A baseline): ambush_2 +28.73 / +55.88 /
++79.53; bamboo_1 −9.17 / −18.40 / −16.76; bandage_1 +106.42 / +118.25 / +114.31; cave_4 +17.88;
+market_2 +46.79 / +31.56 / +11.94; mountain_1 −22.79 / +18.38 / +54.72; three items improve.
+
+**Outside the registered test.** Reverse splice A→B (T2_B ← T2_A): L_B 1144.6362 →
+**3173.6401**, Δ = **+2029.00** (**+177.3 %**) — the module does not compose the other
+direction. B←B self-splice is a no-op (Δ ≈ 2.5e-5).
+
+**Statement.** The registered category is recorded as the pre-registration's rule reads it —
+"composes predictably for this pair" — but the calibration sitting beside it shows a
+meaningless isotropic shift of the same norm moves the loss *more* on the median draw (46.07)
+than the registered splice does (38.58), and the reverse direction explodes. Whether the (a)
+outcome stands as read, is relabelled uninformative, or the floor itself needs re-registration
+from the operation's own null is a decision for Mike and the reviewers, not made here.
+
+**Files:** `results/night2/diagnostics/splice_a/`.
+
 ## 6. Provenance
 
 - `results/night2/extract_night2.py` — this session's script; builds the slim jsons, the two

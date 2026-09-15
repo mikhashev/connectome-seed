@@ -1,0 +1,1135 @@
+{
+  "250008": {
+    "rung": "250008",
+    "n_items": 16,
+    "scenes": {
+      "sequence_02_ambush_2": [
+        "sequence_02_ambush_2_split_00",
+        "sequence_02_ambush_2_split_01",
+        "sequence_02_ambush_2_split_02"
+      ],
+      "sequence_07_bamboo_1": [
+        "sequence_07_bamboo_1_split_00",
+        "sequence_07_bamboo_1_split_01",
+        "sequence_07_bamboo_1_split_02"
+      ],
+      "sequence_09_bandage_1": [
+        "sequence_09_bandage_1_split_00",
+        "sequence_09_bandage_1_split_01",
+        "sequence_09_bandage_1_split_02"
+      ],
+      "sequence_12_cave_4": [
+        "sequence_12_cave_4_split_00"
+      ],
+      "sequence_13_market_2": [
+        "sequence_13_market_2_split_00",
+        "sequence_13_market_2_split_01",
+        "sequence_13_market_2_split_02"
+      ],
+      "sequence_16_mountain_1": [
+        "sequence_16_mountain_1_split_00",
+        "sequence_16_mountain_1_split_01",
+        "sequence_16_mountain_1_split_02"
+      ]
+    },
+    "full_set": {
+      "order": [
+        1,
+        2,
+        0
+      ],
+      "order_label": "1 < 2 < 0",
+      "means": {
+        "seed0": 1148.8074402809143,
+        "seed1": 1144.6362371444702,
+        "seed2": 1147.7179498672485
+      }
+    },
+    "dropk": {
+      "1": {
+        "n_subsets": 16,
+        "frac_preserve_exact": 0.8125,
+        "frac_best_preserved": 0.875,
+        "order_distribution": {
+          "2 < 0 < 1": 1,
+          "2 < 1 < 0": 1,
+          "1 < 0 < 2": 1,
+          "1 < 2 < 0": 13
+        },
+        "pairwise_win_fractions": {
+          "1_beats_0": 0.9375,
+          "2_beats_0": 0.9375,
+          "1_beats_2": 0.875
+        },
+        "all_16_drop_one": [
+          {
+            "dropped": "sequence_02_ambush_2_split_00",
+            "order": [
+              2,
+              0,
+              1
+            ],
+            "order_label": "2 < 0 < 1",
+            "flips": true
+          },
+          {
+            "dropped": "sequence_02_ambush_2_split_01",
+            "order": [
+              2,
+              1,
+              0
+            ],
+            "order_label": "2 < 1 < 0",
+            "flips": true
+          },
+          {
+            "dropped": "sequence_02_ambush_2_split_02",
+            "order": [
+              1,
+              0,
+              2
+            ],
+            "order_label": "1 < 0 < 2",
+            "flips": true
+          },
+          {
+            "dropped": "sequence_07_bamboo_1_split_00",
+            "order": [
+              1,
+              2,
+              0
+            ],
+            "order_label": "1 < 2 < 0",
+            "flips": false
+          },
+          {
+            "dropped": "sequence_07_bamboo_1_split_01",
+            "order": [
+              1,
+              2,
+              0
+            ],
+            "order_label": "1 < 2 < 0",
+            "flips": false
+          },
+          {
+            "dropped": "sequence_07_bamboo_1_split_02",
+            "order": [
+              1,
+              2,
+              0
+            ],
+            "order_label": "1 < 2 < 0",
+            "flips": false
+          },
+          {
+            "dropped": "sequence_09_bandage_1_split_00",
+            "order": [
+              1,
+              2,
+              0
+            ],
+            "order_label": "1 < 2 < 0",
+            "flips": false
+          },
+          {
+            "dropped": "sequence_09_bandage_1_split_01",
+            "order": [
+              1,
+              2,
+              0
+            ],
+            "order_label": "1 < 2 < 0",
+            "flips": false
+          },
+          {
+            "dropped": "sequence_09_bandage_1_split_02",
+            "order": [
+              1,
+              2,
+              0
+            ],
+            "order_label": "1 < 2 < 0",
+            "flips": false
+          },
+          {
+            "dropped": "sequence_12_cave_4_split_00",
+            "order": [
+              1,
+              2,
+              0
+            ],
+            "order_label": "1 < 2 < 0",
+            "flips": false
+          },
+          {
+            "dropped": "sequence_13_market_2_split_00",
+            "order": [
+              1,
+              2,
+              0
+            ],
+            "order_label": "1 < 2 < 0",
+            "flips": false
+          },
+          {
+            "dropped": "sequence_13_market_2_split_01",
+            "order": [
+              1,
+              2,
+              0
+            ],
+            "order_label": "1 < 2 < 0",
+            "flips": false
+          },
+          {
+            "dropped": "sequence_13_market_2_split_02",
+            "order": [
+              1,
+              2,
+              0
+            ],
+            "order_label": "1 < 2 < 0",
+            "flips": false
+          },
+          {
+            "dropped": "sequence_16_mountain_1_split_00",
+            "order": [
+              1,
+              2,
+              0
+            ],
+            "order_label": "1 < 2 < 0",
+            "flips": false
+          },
+          {
+            "dropped": "sequence_16_mountain_1_split_01",
+            "order": [
+              1,
+              2,
+              0
+            ],
+            "order_label": "1 < 2 < 0",
+            "flips": false
+          },
+          {
+            "dropped": "sequence_16_mountain_1_split_02",
+            "order": [
+              1,
+              2,
+              0
+            ],
+            "order_label": "1 < 2 < 0",
+            "flips": false
+          }
+        ]
+      },
+      "2": {
+        "n_subsets": 120,
+        "frac_preserve_exact": 0.675,
+        "frac_best_preserved": 0.8583333333333333,
+        "order_distribution": {
+          "2 < 0 < 1": 15,
+          "0 < 1 < 2": 1,
+          "1 < 2 < 0": 81,
+          "2 < 1 < 0": 1,
+          "1 < 0 < 2": 22
+        },
+        "pairwise_win_fractions": {
+          "1_beats_0": 0.8666666666666667,
+          "2_beats_0": 0.8083333333333333,
+          "1_beats_2": 0.8666666666666667
+        },
+        "n_flipping_pairs": 39
+      },
+      "3": {
+        "n_subsets": 560,
+        "frac_preserve_exact": 0.5053571428571428,
+        "frac_best_preserved": 0.7767857142857143,
+        "order_distribution": {
+          "2 < 0 < 1": 105,
+          "0 < 1 < 2": 12,
+          "0 < 2 < 1": 1,
+          "1 < 2 < 0": 283,
+          "2 < 1 < 0": 7,
+          "1 < 0 < 2": 152
+        },
+        "pairwise_win_fractions": {
+          "1_beats_0": 0.7892857142857143,
+          "2_beats_0": 0.7053571428571429,
+          "1_beats_2": 0.7982142857142858
+        },
+        "top_10_most_different_triples": [
+          {
+            "dropped": [
+              "sequence_02_ambush_2_split_01",
+              "sequence_02_ambush_2_split_02",
+              "sequence_13_market_2_split_01"
+            ],
+            "order": [
+              0,
+              2,
+              1
+            ],
+            "order_label": "0 < 2 < 1",
+            "tau_distance": 3
+          },
+          {
+            "dropped": [
+              "sequence_02_ambush_2_split_00",
+              "sequence_02_ambush_2_split_01",
+              "sequence_02_ambush_2_split_02"
+            ],
+            "order": [
+              2,
+              0,
+              1
+            ],
+            "order_label": "2 < 0 < 1",
+            "tau_distance": 2
+          },
+          {
+            "dropped": [
+              "sequence_02_ambush_2_split_00",
+              "sequence_02_ambush_2_split_01",
+              "sequence_07_bamboo_1_split_00"
+            ],
+            "order": [
+              2,
+              0,
+              1
+            ],
+            "order_label": "2 < 0 < 1",
+            "tau_distance": 2
+          },
+          {
+            "dropped": [
+              "sequence_02_ambush_2_split_00",
+              "sequence_02_ambush_2_split_01",
+              "sequence_07_bamboo_1_split_01"
+            ],
+            "order": [
+              2,
+              0,
+              1
+            ],
+            "order_label": "2 < 0 < 1",
+            "tau_distance": 2
+          },
+          {
+            "dropped": [
+              "sequence_02_ambush_2_split_00",
+              "sequence_02_ambush_2_split_01",
+              "sequence_07_bamboo_1_split_02"
+            ],
+            "order": [
+              2,
+              0,
+              1
+            ],
+            "order_label": "2 < 0 < 1",
+            "tau_distance": 2
+          },
+          {
+            "dropped": [
+              "sequence_02_ambush_2_split_00",
+              "sequence_02_ambush_2_split_01",
+              "sequence_09_bandage_1_split_00"
+            ],
+            "order": [
+              2,
+              0,
+              1
+            ],
+            "order_label": "2 < 0 < 1",
+            "tau_distance": 2
+          },
+          {
+            "dropped": [
+              "sequence_02_ambush_2_split_00",
+              "sequence_02_ambush_2_split_01",
+              "sequence_09_bandage_1_split_01"
+            ],
+            "order": [
+              2,
+              0,
+              1
+            ],
+            "order_label": "2 < 0 < 1",
+            "tau_distance": 2
+          },
+          {
+            "dropped": [
+              "sequence_02_ambush_2_split_00",
+              "sequence_02_ambush_2_split_01",
+              "sequence_09_bandage_1_split_02"
+            ],
+            "order": [
+              2,
+              0,
+              1
+            ],
+            "order_label": "2 < 0 < 1",
+            "tau_distance": 2
+          },
+          {
+            "dropped": [
+              "sequence_02_ambush_2_split_00",
+              "sequence_02_ambush_2_split_01",
+              "sequence_12_cave_4_split_00"
+            ],
+            "order": [
+              2,
+              0,
+              1
+            ],
+            "order_label": "2 < 0 < 1",
+            "tau_distance": 2
+          },
+          {
+            "dropped": [
+              "sequence_02_ambush_2_split_00",
+              "sequence_02_ambush_2_split_01",
+              "sequence_13_market_2_split_00"
+            ],
+            "order": [
+              2,
+              0,
+              1
+            ],
+            "order_label": "2 < 0 < 1",
+            "tau_distance": 2
+          }
+        ]
+      }
+    },
+    "scene_level_drop": [
+      {
+        "scene_dropped": "sequence_02_ambush_2",
+        "n_items_dropped": 3,
+        "n_items_remaining": 13,
+        "order": [
+          2,
+          0,
+          1
+        ],
+        "order_label": "2 < 0 < 1",
+        "flips": true
+      },
+      {
+        "scene_dropped": "sequence_07_bamboo_1",
+        "n_items_dropped": 3,
+        "n_items_remaining": 13,
+        "order": [
+          1,
+          2,
+          0
+        ],
+        "order_label": "1 < 2 < 0",
+        "flips": false
+      },
+      {
+        "scene_dropped": "sequence_09_bandage_1",
+        "n_items_dropped": 3,
+        "n_items_remaining": 13,
+        "order": [
+          1,
+          0,
+          2
+        ],
+        "order_label": "1 < 0 < 2",
+        "flips": true
+      },
+      {
+        "scene_dropped": "sequence_12_cave_4",
+        "n_items_dropped": 1,
+        "n_items_remaining": 15,
+        "order": [
+          1,
+          2,
+          0
+        ],
+        "order_label": "1 < 2 < 0",
+        "flips": false
+      },
+      {
+        "scene_dropped": "sequence_13_market_2",
+        "n_items_dropped": 3,
+        "n_items_remaining": 13,
+        "order": [
+          1,
+          2,
+          0
+        ],
+        "order_label": "1 < 2 < 0",
+        "flips": false
+      },
+      {
+        "scene_dropped": "sequence_16_mountain_1",
+        "n_items_dropped": 3,
+        "n_items_remaining": 13,
+        "order": [
+          1,
+          2,
+          0
+        ],
+        "order_label": "1 < 2 < 0",
+        "flips": false
+      }
+    ],
+    "twin_sign_robustness": {
+      "full_set_mean_diff": 12.174890041351318,
+      "full_set_sign_positive": true,
+      "by_k": {
+        "1": {
+          "n_subsets": 16,
+          "frac_positive": 1.0
+        },
+        "2": {
+          "n_subsets": 120,
+          "frac_positive": 1.0
+        },
+        "3": {
+          "n_subsets": 560,
+          "frac_positive": 1.0
+        }
+      }
+    },
+    "per_item_pairwise_counts": {
+      "seed1_lt_seed0": 4,
+      "seed2_lt_seed0": 6,
+      "seed1_lt_seed2": 3,
+      "n_items": 16
+    },
+    "leave_scene_in": [
+      {
+        "scene": "sequence_02_ambush_2",
+        "n_items": 3,
+        "order": [
+          1,
+          0,
+          2
+        ],
+        "order_label": "1 < 0 < 2",
+        "matches_full": false
+      },
+      {
+        "scene": "sequence_07_bamboo_1",
+        "n_items": 3,
+        "order": [
+          0,
+          2,
+          1
+        ],
+        "order_label": "0 < 2 < 1",
+        "matches_full": false
+      },
+      {
+        "scene": "sequence_09_bandage_1",
+        "n_items": 3,
+        "order": [
+          2,
+          0,
+          1
+        ],
+        "order_label": "2 < 0 < 1",
+        "matches_full": false
+      },
+      {
+        "scene": "sequence_12_cave_4",
+        "n_items": 1,
+        "order": [
+          0,
+          2,
+          1
+        ],
+        "order_label": "0 < 2 < 1",
+        "matches_full": false
+      },
+      {
+        "scene": "sequence_13_market_2",
+        "n_items": 3,
+        "order": [
+          0,
+          2,
+          1
+        ],
+        "order_label": "0 < 2 < 1",
+        "matches_full": false
+      },
+      {
+        "scene": "sequence_16_mountain_1",
+        "n_items": 3,
+        "order": [
+          2,
+          0,
+          1
+        ],
+        "order_label": "2 < 0 < 1",
+        "matches_full": false
+      }
+    ]
+  },
+  "25212": {
+    "rung": "25212",
+    "n_items": 16,
+    "scenes": {
+      "sequence_02_ambush_2": [
+        "sequence_02_ambush_2_split_00",
+        "sequence_02_ambush_2_split_01",
+        "sequence_02_ambush_2_split_02"
+      ],
+      "sequence_07_bamboo_1": [
+        "sequence_07_bamboo_1_split_00",
+        "sequence_07_bamboo_1_split_01",
+        "sequence_07_bamboo_1_split_02"
+      ],
+      "sequence_09_bandage_1": [
+        "sequence_09_bandage_1_split_00",
+        "sequence_09_bandage_1_split_01",
+        "sequence_09_bandage_1_split_02"
+      ],
+      "sequence_12_cave_4": [
+        "sequence_12_cave_4_split_00"
+      ],
+      "sequence_13_market_2": [
+        "sequence_13_market_2_split_00",
+        "sequence_13_market_2_split_01",
+        "sequence_13_market_2_split_02"
+      ],
+      "sequence_16_mountain_1": [
+        "sequence_16_mountain_1_split_00",
+        "sequence_16_mountain_1_split_01",
+        "sequence_16_mountain_1_split_02"
+      ]
+    },
+    "full_set": {
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "order_label": "1 < 0 < 2",
+      "means": {
+        "seed0": 1192.7493104934692,
+        "seed1": 1192.4103379249573,
+        "seed2": 1205.9781861305237
+      }
+    },
+    "dropk": {
+      "1": {
+        "n_subsets": 16,
+        "frac_preserve_exact": 0.75,
+        "frac_best_preserved": 0.75,
+        "order_distribution": {
+          "1 < 0 < 2": 12,
+          "0 < 1 < 2": 4
+        },
+        "pairwise_win_fractions": {
+          "1_beats_0": 0.75,
+          "2_beats_0": 0.0,
+          "1_beats_2": 1.0
+        },
+        "all_16_drop_one": [
+          {
+            "dropped": "sequence_02_ambush_2_split_00",
+            "order": [
+              1,
+              0,
+              2
+            ],
+            "order_label": "1 < 0 < 2",
+            "flips": false
+          },
+          {
+            "dropped": "sequence_02_ambush_2_split_01",
+            "order": [
+              1,
+              0,
+              2
+            ],
+            "order_label": "1 < 0 < 2",
+            "flips": false
+          },
+          {
+            "dropped": "sequence_02_ambush_2_split_02",
+            "order": [
+              1,
+              0,
+              2
+            ],
+            "order_label": "1 < 0 < 2",
+            "flips": false
+          },
+          {
+            "dropped": "sequence_07_bamboo_1_split_00",
+            "order": [
+              1,
+              0,
+              2
+            ],
+            "order_label": "1 < 0 < 2",
+            "flips": false
+          },
+          {
+            "dropped": "sequence_07_bamboo_1_split_01",
+            "order": [
+              1,
+              0,
+              2
+            ],
+            "order_label": "1 < 0 < 2",
+            "flips": false
+          },
+          {
+            "dropped": "sequence_07_bamboo_1_split_02",
+            "order": [
+              1,
+              0,
+              2
+            ],
+            "order_label": "1 < 0 < 2",
+            "flips": false
+          },
+          {
+            "dropped": "sequence_09_bandage_1_split_00",
+            "order": [
+              0,
+              1,
+              2
+            ],
+            "order_label": "0 < 1 < 2",
+            "flips": true
+          },
+          {
+            "dropped": "sequence_09_bandage_1_split_01",
+            "order": [
+              0,
+              1,
+              2
+            ],
+            "order_label": "0 < 1 < 2",
+            "flips": true
+          },
+          {
+            "dropped": "sequence_09_bandage_1_split_02",
+            "order": [
+              0,
+              1,
+              2
+            ],
+            "order_label": "0 < 1 < 2",
+            "flips": true
+          },
+          {
+            "dropped": "sequence_12_cave_4_split_00",
+            "order": [
+              1,
+              0,
+              2
+            ],
+            "order_label": "1 < 0 < 2",
+            "flips": false
+          },
+          {
+            "dropped": "sequence_13_market_2_split_00",
+            "order": [
+              1,
+              0,
+              2
+            ],
+            "order_label": "1 < 0 < 2",
+            "flips": false
+          },
+          {
+            "dropped": "sequence_13_market_2_split_01",
+            "order": [
+              1,
+              0,
+              2
+            ],
+            "order_label": "1 < 0 < 2",
+            "flips": false
+          },
+          {
+            "dropped": "sequence_13_market_2_split_02",
+            "order": [
+              1,
+              0,
+              2
+            ],
+            "order_label": "1 < 0 < 2",
+            "flips": false
+          },
+          {
+            "dropped": "sequence_16_mountain_1_split_00",
+            "order": [
+              1,
+              0,
+              2
+            ],
+            "order_label": "1 < 0 < 2",
+            "flips": false
+          },
+          {
+            "dropped": "sequence_16_mountain_1_split_01",
+            "order": [
+              1,
+              0,
+              2
+            ],
+            "order_label": "1 < 0 < 2",
+            "flips": false
+          },
+          {
+            "dropped": "sequence_16_mountain_1_split_02",
+            "order": [
+              0,
+              1,
+              2
+            ],
+            "order_label": "0 < 1 < 2",
+            "flips": true
+          }
+        ]
+      },
+      "2": {
+        "n_subsets": 120,
+        "frac_preserve_exact": 0.6,
+        "frac_best_preserved": 0.6,
+        "order_distribution": {
+          "1 < 0 < 2": 72,
+          "0 < 1 < 2": 48
+        },
+        "pairwise_win_fractions": {
+          "1_beats_0": 0.6,
+          "2_beats_0": 0.0,
+          "1_beats_2": 1.0
+        },
+        "n_flipping_pairs": 48
+      },
+      "3": {
+        "n_subsets": 560,
+        "frac_preserve_exact": 0.5482142857142858,
+        "frac_best_preserved": 0.5482142857142858,
+        "order_distribution": {
+          "1 < 0 < 2": 307,
+          "0 < 1 < 2": 253
+        },
+        "pairwise_win_fractions": {
+          "1_beats_0": 0.5482142857142858,
+          "2_beats_0": 0.0,
+          "1_beats_2": 1.0
+        },
+        "top_10_most_different_triples": [
+          {
+            "dropped": [
+              "sequence_02_ambush_2_split_00",
+              "sequence_02_ambush_2_split_01",
+              "sequence_09_bandage_1_split_00"
+            ],
+            "order": [
+              0,
+              1,
+              2
+            ],
+            "order_label": "0 < 1 < 2",
+            "tau_distance": 1
+          },
+          {
+            "dropped": [
+              "sequence_02_ambush_2_split_00",
+              "sequence_02_ambush_2_split_01",
+              "sequence_09_bandage_1_split_01"
+            ],
+            "order": [
+              0,
+              1,
+              2
+            ],
+            "order_label": "0 < 1 < 2",
+            "tau_distance": 1
+          },
+          {
+            "dropped": [
+              "sequence_02_ambush_2_split_00",
+              "sequence_02_ambush_2_split_01",
+              "sequence_09_bandage_1_split_02"
+            ],
+            "order": [
+              0,
+              1,
+              2
+            ],
+            "order_label": "0 < 1 < 2",
+            "tau_distance": 1
+          },
+          {
+            "dropped": [
+              "sequence_02_ambush_2_split_00",
+              "sequence_02_ambush_2_split_01",
+              "sequence_16_mountain_1_split_02"
+            ],
+            "order": [
+              0,
+              1,
+              2
+            ],
+            "order_label": "0 < 1 < 2",
+            "tau_distance": 1
+          },
+          {
+            "dropped": [
+              "sequence_02_ambush_2_split_00",
+              "sequence_02_ambush_2_split_02",
+              "sequence_09_bandage_1_split_00"
+            ],
+            "order": [
+              0,
+              1,
+              2
+            ],
+            "order_label": "0 < 1 < 2",
+            "tau_distance": 1
+          },
+          {
+            "dropped": [
+              "sequence_02_ambush_2_split_00",
+              "sequence_02_ambush_2_split_02",
+              "sequence_09_bandage_1_split_01"
+            ],
+            "order": [
+              0,
+              1,
+              2
+            ],
+            "order_label": "0 < 1 < 2",
+            "tau_distance": 1
+          },
+          {
+            "dropped": [
+              "sequence_02_ambush_2_split_00",
+              "sequence_02_ambush_2_split_02",
+              "sequence_09_bandage_1_split_02"
+            ],
+            "order": [
+              0,
+              1,
+              2
+            ],
+            "order_label": "0 < 1 < 2",
+            "tau_distance": 1
+          },
+          {
+            "dropped": [
+              "sequence_02_ambush_2_split_00",
+              "sequence_02_ambush_2_split_02",
+              "sequence_16_mountain_1_split_02"
+            ],
+            "order": [
+              0,
+              1,
+              2
+            ],
+            "order_label": "0 < 1 < 2",
+            "tau_distance": 1
+          },
+          {
+            "dropped": [
+              "sequence_02_ambush_2_split_00",
+              "sequence_07_bamboo_1_split_00",
+              "sequence_09_bandage_1_split_01"
+            ],
+            "order": [
+              0,
+              1,
+              2
+            ],
+            "order_label": "0 < 1 < 2",
+            "tau_distance": 1
+          },
+          {
+            "dropped": [
+              "sequence_02_ambush_2_split_00",
+              "sequence_07_bamboo_1_split_00",
+              "sequence_09_bandage_1_split_02"
+            ],
+            "order": [
+              0,
+              1,
+              2
+            ],
+            "order_label": "0 < 1 < 2",
+            "tau_distance": 1
+          }
+        ]
+      }
+    },
+    "scene_level_drop": [
+      {
+        "scene_dropped": "sequence_02_ambush_2",
+        "n_items_dropped": 3,
+        "n_items_remaining": 13,
+        "order": [
+          1,
+          0,
+          2
+        ],
+        "order_label": "1 < 0 < 2",
+        "flips": false
+      },
+      {
+        "scene_dropped": "sequence_07_bamboo_1",
+        "n_items_dropped": 3,
+        "n_items_remaining": 13,
+        "order": [
+          1,
+          0,
+          2
+        ],
+        "order_label": "1 < 0 < 2",
+        "flips": false
+      },
+      {
+        "scene_dropped": "sequence_09_bandage_1",
+        "n_items_dropped": 3,
+        "n_items_remaining": 13,
+        "order": [
+          0,
+          1,
+          2
+        ],
+        "order_label": "0 < 1 < 2",
+        "flips": true
+      },
+      {
+        "scene_dropped": "sequence_12_cave_4",
+        "n_items_dropped": 1,
+        "n_items_remaining": 15,
+        "order": [
+          1,
+          0,
+          2
+        ],
+        "order_label": "1 < 0 < 2",
+        "flips": false
+      },
+      {
+        "scene_dropped": "sequence_13_market_2",
+        "n_items_dropped": 3,
+        "n_items_remaining": 13,
+        "order": [
+          1,
+          0,
+          2
+        ],
+        "order_label": "1 < 0 < 2",
+        "flips": false
+      },
+      {
+        "scene_dropped": "sequence_16_mountain_1",
+        "n_items_dropped": 3,
+        "n_items_remaining": 13,
+        "order": [
+          1,
+          0,
+          2
+        ],
+        "order_label": "1 < 0 < 2",
+        "flips": false
+      }
+    ],
+    "twin_sign_robustness": {
+      "full_set_mean_diff": 0.0755925178527832,
+      "full_set_sign_positive": true,
+      "by_k": {
+        "1": {
+          "n_subsets": 16,
+          "frac_positive": 0.875
+        },
+        "2": {
+          "n_subsets": 120,
+          "frac_positive": 0.7
+        },
+        "3": {
+          "n_subsets": 560,
+          "frac_positive": 0.6428571428571429
+        }
+      }
+    },
+    "per_item_pairwise_counts": {
+      "seed1_lt_seed0": 5,
+      "seed2_lt_seed0": 3,
+      "seed1_lt_seed2": 9,
+      "n_items": 16
+    },
+    "leave_scene_in": [
+      {
+        "scene": "sequence_02_ambush_2",
+        "n_items": 3,
+        "order": [
+          0,
+          1,
+          2
+        ],
+        "order_label": "0 < 1 < 2",
+        "matches_full": false
+      },
+      {
+        "scene": "sequence_07_bamboo_1",
+        "n_items": 3,
+        "order": [
+          0,
+          2,
+          1
+        ],
+        "order_label": "0 < 2 < 1",
+        "matches_full": false
+      },
+      {
+        "scene": "sequence_09_bandage_1",
+        "n_items": 3,
+        "order": [
+          1,
+          0,
+          2
+        ],
+        "order_label": "1 < 0 < 2",
+        "matches_full": true
+      },
+      {
+        "scene": "sequence_12_cave_4",
+        "n_items": 1,
+        "order": [
+          1,
+          0,
+          2
+        ],
+        "order_label": "1 < 0 < 2",
+        "matches_full": true
+      },
+      {
+        "scene": "sequence_13_market_2",
+        "n_items": 3,
+        "order": [
+          0,
+          1,
+          2
+        ],
+        "order_label": "0 < 1 < 2",
+        "matches_full": false
+      },
+      {
+        "scene": "sequence_16_mountain_1",
+        "n_items": 3,
+        "order": [
+          2,
+          1,
+          0
+        ],
+        "order_label": "2 < 1 < 0",
+        "matches_full": false
+      }
+    ]
+  }
+}

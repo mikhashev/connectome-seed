@@ -1,0 +1,316 @@
+{
+ "meta": {
+  "flyvis": "1.2.0",
+  "torch": "2.9.1+cu128",
+  "python": "3.10.20",
+  "gpu": "NVIDIA RTX PRO 4500 Blackwell",
+  "netdir": "C:\\Users\\mikha\\AppData\\Local\\Temp\\claude\\c--Users-mikha-Documents-dpc-research-autoresearch-win-rtx\\03852100-01fd-45ef-82c3-e22ac607b0f7\\scratchpad\\splice\\netdir\\flow\\9991\\000",
+  "stage": "indices",
+  "utc": "2026-09-15T07:50:52Z"
+ },
+ "cell_type": "T2",
+ "k_expected": 26,
+ "k_found": 26,
+ "ordering_source": {
+  "nodes_bias/nodes_time_const": "flyvis/network/network.py:167 register_parameter('nodes_'+name); order = Parameter.keys from flyvis/network/initialization.py:345-356",
+  "edges_syn_strength": "flyvis/network/network.py:199 register_parameter('edges_'+name); order = Parameter.keys from flyvis/network/initialization.py:496-515"
+ },
+ "n_node_types": 65,
+ "n_edge_types": 604,
+ "node_type_index_of_T2": 32,
+ "node_types_order": [
+  "R1",
+  "R2",
+  "R3",
+  "R4",
+  "R5",
+  "R6",
+  "R7",
+  "R8",
+  "L1",
+  "L2",
+  "L3",
+  "L4",
+  "L5",
+  "Lawf1",
+  "Lawf2",
+  "Am",
+  "C2",
+  "C3",
+  "CT1(Lo1)",
+  "CT1(M10)",
+  "Mi1",
+  "Mi2",
+  "Mi3",
+  "Mi4",
+  "Mi9",
+  "Mi10",
+  "Mi11",
+  "Mi12",
+  "Mi13",
+  "Mi14",
+  "Mi15",
+  "T1",
+  "T2",
+  "T2a",
+  "T3",
+  "T4a",
+  "T4b",
+  "T4c",
+  "T4d",
+  "T5a",
+  "T5b",
+  "T5c",
+  "T5d",
+  "Tm1",
+  "Tm2",
+  "Tm3",
+  "Tm4",
+  "Tm5Y",
+  "Tm5a",
+  "Tm5b",
+  "Tm5c",
+  "Tm9",
+  "Tm16",
+  "Tm20",
+  "Tm28",
+  "Tm30",
+  "TmY3",
+  "TmY4",
+  "TmY5a",
+  "TmY9",
+  "TmY10",
+  "TmY13",
+  "TmY14",
+  "TmY15",
+  "TmY18"
+ ],
+ "module": [
+  {
+   "slot": 0,
+   "key": "nodes_bias",
+   "flat_index": 32,
+   "label": "T2"
+  },
+  {
+   "slot": 1,
+   "key": "nodes_time_const",
+   "flat_index": 32,
+   "label": "T2"
+  },
+  {
+   "slot": 2,
+   "key": "edges_syn_strength",
+   "flat_index": 94,
+   "label": "L4->T2"
+  },
+  {
+   "slot": 3,
+   "key": "edges_syn_strength",
+   "flat_index": 110,
+   "label": "L5->T2"
+  },
+  {
+   "slot": 4,
+   "key": "edges_syn_strength",
+   "flat_index": 141,
+   "label": "C2->T2"
+  },
+  {
+   "slot": 5,
+   "key": "edges_syn_strength",
+   "flat_index": 158,
+   "label": "C3->T2"
+  },
+  {
+   "slot": 6,
+   "key": "edges_syn_strength",
+   "flat_index": 193,
+   "label": "Mi1->T2"
+  },
+  {
+   "slot": 7,
+   "key": "edges_syn_strength",
+   "flat_index": 210,
+   "label": "Mi2->T2"
+  },
+  {
+   "slot": 8,
+   "key": "edges_syn_strength",
+   "flat_index": 215,
+   "label": "Mi3->T2"
+  },
+  {
+   "slot": 9,
+   "key": "edges_syn_strength",
+   "flat_index": 252,
+   "label": "Mi9->T2"
+  },
+  {
+   "slot": 10,
+   "key": "edges_syn_strength",
+   "flat_index": 288,
+   "label": "Mi13->T2"
+  },
+  {
+   "slot": 11,
+   "key": "edges_syn_strength",
+   "flat_index": 307,
+   "label": "T2->T2"
+  },
+  {
+   "slot": 12,
+   "key": "edges_syn_strength",
+   "flat_index": 320,
+   "label": "T3->T2"
+  },
+  {
+   "slot": 13,
+   "key": "edges_syn_strength",
+   "flat_index": 359,
+   "label": "T5b->T2"
+  },
+  {
+   "slot": 14,
+   "key": "edges_syn_strength",
+   "flat_index": 374,
+   "label": "T5d->T2"
+  },
+  {
+   "slot": 15,
+   "key": "edges_syn_strength",
+   "flat_index": 391,
+   "label": "Tm1->T2"
+  },
+  {
+   "slot": 16,
+   "key": "edges_syn_strength",
+   "flat_index": 414,
+   "label": "Tm2->T2"
+  },
+  {
+   "slot": 17,
+   "key": "edges_syn_strength",
+   "flat_index": 435,
+   "label": "Tm3->T2"
+  },
+  {
+   "slot": 18,
+   "key": "edges_syn_strength",
+   "flat_index": 458,
+   "label": "Tm4->T2"
+  },
+  {
+   "slot": 19,
+   "key": "edges_syn_strength",
+   "flat_index": 506,
+   "label": "Tm16->T2"
+  },
+  {
+   "slot": 20,
+   "key": "edges_syn_strength",
+   "flat_index": 526,
+   "label": "TmY3->T2"
+  },
+  {
+   "slot": 21,
+   "key": "edges_syn_strength",
+   "flat_index": 537,
+   "label": "TmY4->T2"
+  },
+  {
+   "slot": 22,
+   "key": "edges_syn_strength",
+   "flat_index": 545,
+   "label": "TmY5a->T2"
+  },
+  {
+   "slot": 23,
+   "key": "edges_syn_strength",
+   "flat_index": 567,
+   "label": "TmY13->T2"
+  },
+  {
+   "slot": 24,
+   "key": "edges_syn_strength",
+   "flat_index": 579,
+   "label": "TmY15->T2"
+  },
+  {
+   "slot": 25,
+   "key": "edges_syn_strength",
+   "flat_index": 599,
+   "label": "TmY18->T2"
+  }
+ ],
+ "incoming_source_types_found": [
+  "L4",
+  "L5",
+  "C2",
+  "C3",
+  "Mi1",
+  "Mi2",
+  "Mi3",
+  "Mi9",
+  "Mi13",
+  "T2",
+  "T3",
+  "T5b",
+  "T5d",
+  "Tm1",
+  "Tm2",
+  "Tm3",
+  "Tm4",
+  "Tm16",
+  "TmY3",
+  "TmY4",
+  "TmY5a",
+  "TmY13",
+  "TmY15",
+  "TmY18"
+ ],
+ "incoming_source_types_prereg_sec2": [
+  "C2",
+  "C3",
+  "L4",
+  "L5",
+  "Mi1",
+  "Mi13",
+  "Mi2",
+  "Mi3",
+  "Mi9",
+  "T2",
+  "T3",
+  "T5b",
+  "T5d",
+  "Tm1",
+  "Tm16",
+  "Tm2",
+  "Tm3",
+  "Tm4",
+  "TmY13",
+  "TmY15",
+  "TmY18",
+  "TmY3",
+  "TmY4",
+  "TmY5a"
+ ],
+ "sets_match": true,
+ "only_in_found": [],
+ "only_in_prereg": [],
+ "symmetry_masks_present": {
+  "nodes_bias": 0,
+  "nodes_time_const": 0,
+  "edges_sign": 0,
+  "edges_syn_count": 0,
+  "edges_syn_strength": 0
+ },
+ "clamp_config": {
+  "nodes_bias": null,
+  "nodes_time_const": null,
+  "edges_sign": null,
+  "edges_syn_count": null,
+  "edges_syn_strength": "non_negative"
+ },
+ "note_clamp": "Network.clamp() (flyvis/network/network.py:480-507) is called in training only; solver.test() does not call it, so neither clamping nor the symmetry averaging is applied by any evaluation in this package."
+}

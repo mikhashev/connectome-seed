@@ -22,6 +22,12 @@ missed at 1.1104 %. Full record: `docs/experiments/001-run0-and-replicate.md`. T
    Mike «ок давай впишем»; form in §4/§5 of the pre-registration.
 5. ~~Who fixes the PNAS line numbers in `research/analysis-cheap-step.md`.~~ Done in `dbeb878`
    (Ark's own correction applied by CC; verified lines 848–851 and 851–856).
+6. **(a) outcome reading** — stands as the rule reads it / relabelled uninformative by the
+   calibration / floor re-registered — Mike + reviewers. Numbers: `docs/experiments/002-night2-seeds-1-and-2.md`
+   §5g, pre-registration §5 (a) 2026-09-15 note. Board:
+   [[THE-COMPOSITION-MARGIN-OVER-ITS-FLOOR-IS-SMALLER-THAN-A-NULL-SHIFTS-MEDIAN-DELTA]].
+7. **Population for the next pre-registration** — seed-only or wider variation (Zcode 07:05,
+   Ark 07:36) — Mike.
 
 Nothing below runs before 1–4 are answered; night 2 specifically waits on Mike's explicit word
 (the standing rule, board: [[THE-NIGHT-RUN-STARTS-ONLY-ON-MIKES-EXPLICIT-WORD]]).
@@ -138,6 +144,19 @@ homogeneous by construction — "should variation stay seed-only" stands above "
 expensive metric"; §8 of the current pre-registration fences structural variation, the next one
 may choose anew; Mike's decision, all numbers now on the table.
 
+**Diagnostics-2 done 2026-09-15 (Mike 07:43).** Four more diagnostics ran from the saved
+checkpoints, on Mike's word «делай что можно до ночного прогона» — nothing trained, run dirs
+verified unchanged. One line each, full detail `docs/experiments/002-night2-seeds-1-and-2.md`
+§5d–§5g: **connectivity** — the 0↔0′ linear path carries a barrier of 96.6 (variant 2) against
+an endpoint gap of 12.7, no better connected than the 0→1 control (115.2 at the same α) (§5d).
+**drop-k** — the top-rung order (1<2<0) survives drop-one (0.8125) but is only modal at drop-3
+(0.5054), and the twin sign degrades at C3 (§5e). **ablation** — the twin trap passes on both
+pre-declared metrics in all three item subsets, margin only 4 % on Euclid and reversed by a
+post-hoc Pearson; the supported claim is rank-order agreement, not agreement on the largest
+effects (§5f). **(a) composition** — the registered T2 splice reads "composes predictably",
+0.40 above its floor, while a null shift of the same norm moves the loss more on the median
+draw (46.07 vs 38.58) (§5g).
+
 ## 4. Side tasks (board entry names)
 
 - **[[THE-NIGHT-TOOLING-LIVES-IN-A-TEMPORARY-SCRATCHPAD]]** — environment out of the scratchpad:
@@ -159,27 +178,33 @@ may choose anew; Mike's decision, all numbers now on the table.
   is 4.2372 = 0.52 of its own mean parameter norm, about three-quarters of the 0.59–0.78 spread
   between different-seed pairs; the loss gap is spread over 14 of 16 held-out items, not
   concentrated in one. Full detail: `docs/experiments/002-night2-seeds-1-and-2.md` §5b.
-- **Linear mode connectivity, seed 0 ↔ 0′, (0,1) as control** — on Mike's word. Interpolate the
-  weights along the path between the two end states and evaluate loss at intermediate points (tens
-  of evaluator runs, seconds of GPU); loss rising mid-path → two basins, loss not above the ends →
-  one basin and 12.7 is an offset on a flat plateau. How to treat the 17 BatchNorm buffers along
-  the path (interpolate, or take one end's) must be decided and stated, since it affects the loss.
-  Ark 06:47, full detail: `docs/experiments/002-night2-seeds-1-and-2.md` §5c items 5–6.
-  - Design (Ark 06:52, Zcode 07:05; on Mike's word): variant 2 primary — interpolate the 8,161
-    weights, recompute the BatchNorm running statistics by a forward pass on training data at each
-    point (no gradient), eval mode; variant 1 in the same run — interpolate weights and the 17
-    buffers linearly (a path in stored-parameter space; a barrier only on variant 1 is a storage
-    artefact); variant 3 (buffers from one end) rejected as not a linear path; control A↔A
-    self-path (must be flat; isolates buffer-recompute artefacts); control (0,1) by the same
-    method as the main path; resolution chosen for a barrier of order 12.7 on the aggregate
-    (≈ 20–30 points per path), so that "no barrier" means something; per-item profile reported
-    beside the aggregate.
-- **Ranking robustness to item composition** — on Mike's word. Drop-one and drop-random-k over the
-  16 held-out items; item 1 of §5c already shows dropping the three ambush_2 items flips the
-  seed-1/2/0 order (1 < 2 < 0 → 2 < 0 < 1 on the remaining 13). Ark 06:47, full detail:
-  `docs/experiments/002-night2-seeds-1-and-2.md` §5c item 1.
-  - Pre-stated consequence: if the order survives drop-one but not drop-3, the new
-    pre-registration carries the item list and the aggregation rule.
+- ~~Linear mode connectivity, seed 0 ↔ 0′, (0,1) as control~~ — **Done 2026-09-15**, design Ark
+  06:52 / Zcode 07:05, on Mike's word 07:43 «делай что можно до ночного прогона». Result: the
+  main path (0→0′) carries a barrier of 96.6 (variant 2, primary) against an endpoint gap of
+  12.7 — 7.6× — and is no better connected than the 0→1 control (115.2 at the same α); the
+  self-path is flat to ≈1e-4 under both variants; the design's own resolution criterion is not
+  met, so all barriers are lower bounds. Full detail:
+  `docs/experiments/002-night2-seeds-1-and-2.md` §5d.
+- ~~Ranking robustness to item composition~~ — **Done 2026-09-15**, Ark 06:47, on Mike's word
+  07:43. Result: the pre-stated consequence occurred — the top-rung order (1<2<0) survives
+  drop-one (0.8125) but is only modal, not universal, at drop-3 (0.5054, alternative 1<0<2 at
+  152/560); the twin sign degrades at C3. Consequence stands: the new pre-registration must
+  carry the item list and the aggregation rule. Full detail:
+  `docs/experiments/002-night2-seeds-1-and-2.md` §5e.
+- ~~Cell-type ablation profile~~ — **Done 2026-09-15**, unregistered diagnostic, Ark 07:39 /
+  Zcode 07:43, on Mike's word 07:43. Result: the twin trap passes on both pre-declared metrics
+  (Euclidean, Spearman) in all three item subsets, but the Euclidean margin over (0′,1) is only
+  4 % and a post-hoc Pearson reverses it — the supported claim is agreement in rank order of
+  type importance (ρ 0.72 vs 0.35–0.48), not in the largest effects. Full detail:
+  `docs/experiments/002-night2-seeds-1-and-2.md` §5f.
+- ~~Hypothesis (a) composition package~~ — **Done 2026-09-15**, Zcode's bundle 07:43 with Ark's
+  null-shift calibration, on Mike's word 07:43. Result: the registered T2 splice (B = seed 1 →
+  A = seed 0) gives Δ = +38.58 (3.366 % / 3.358 %), read by the registered rule as "composes
+  predictably for this pair", 0.40 above the floor — but a null-shift calibration of the same
+  norm moves the loss more on the median draw (46.07 vs 38.58), and the reverse splice explodes
+  (+2029). Reading open for Mike + reviewers, board
+  [[THE-COMPOSITION-MARGIN-OVER-ITS-FLOOR-IS-SMALLER-THAN-A-NULL-SHIFTS-MEDIAN-DELTA]]. Full
+  detail: `docs/experiments/002-night2-seeds-1-and-2.md` §5g.
 
 ## 5. What not to do
 

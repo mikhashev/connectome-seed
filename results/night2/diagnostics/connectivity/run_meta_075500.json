@@ -1,0 +1,49 @@
+{
+ "meta": {
+  "flyvis": "1.2.0",
+  "torch": "2.9.1+cu128",
+  "python": "3.10.20",
+  "gpu": "NVIDIA RTX PRO 4500 Blackwell",
+  "netdir": "C:\\Users\\mikha\\AppData\\Local\\Temp\\claude\\c--Users-mikha-Documents-dpc-research-autoresearch-win-rtx\\03852100-01fd-45ef-82c3-e22ac607b0f7\\scratchpad\\conn\\netdir\\flow\\9991\\000",
+  "utc": "2026-09-15T07:53:12Z",
+  "argv": [
+   "C:/Users/mikha/Documents/dpc-research/connectome-seed/results/night2/diagnostics/connectivity/connectivity.py",
+   "--task",
+   "run",
+   "--out-dir",
+   "C:/Users/mikha/Documents/dpc-research/connectome-seed/results/night2/diagnostics/connectivity",
+   "--netdir-root",
+   "C:/Users/mikha/AppData/Local/Temp/claude/c--Users-mikha-Documents-dpc-research-autoresearch-win-rtx/03852100-01fd-45ef-82c3-e22ac607b0f7/scratchpad/conn/netdir",
+   "--paths",
+   "main_0_to_0prime,control_0_to_1,self_0_to_0,extra_0prime_to_1",
+   "--variants",
+   "1,2"
+  ]
+ },
+ "val_items": [
+  "sequence_02_ambush_2_split_00",
+  "sequence_02_ambush_2_split_01",
+  "sequence_02_ambush_2_split_02",
+  "sequence_07_bamboo_1_split_00",
+  "sequence_07_bamboo_1_split_01",
+  "sequence_07_bamboo_1_split_02",
+  "sequence_09_bandage_1_split_00",
+  "sequence_09_bandage_1_split_01",
+  "sequence_09_bandage_1_split_02",
+  "sequence_12_cave_4_split_00",
+  "sequence_13_market_2_split_00",
+  "sequence_13_market_2_split_01",
+  "sequence_13_market_2_split_02",
+  "sequence_16_mountain_1_split_00",
+  "sequence_16_mountain_1_split_01",
+  "sequence_16_mountain_1_split_02"
+ ],
+ "bn_loader": {
+  "n_train_items": 51,
+  "batch_size": 4,
+  "n_batches": 13,
+  "sampler": "IndexSampler",
+  "drop_last": false
+ },
+ "wall_s": 107.8
+}
