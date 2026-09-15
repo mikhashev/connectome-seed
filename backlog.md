@@ -123,6 +123,7 @@ language_cutoff: 2026-09-13
   `tools/night/` (scripts only, no logs); write the venv recipe beside them (uv venv, torch
   2.9.1+cu128, flyvis 1.2.0, the datamate patch); re-create the environment outside the
   scratchpad and re-patch it; one 24-iteration dry run from the new location.
+- **2026-09-15, CC:** Night 3 (2026-09-15) again runs from the scratchpad copy (.../63f3961a-.../scratchpad/flyvis-probe/, per docs/next-session-plan.md §2); venv and scripts verified present and byte-identical to tools/night/ for the three executed files (run_individual.py, launch_wave.py, start_night.ps1); the migration per tools/night/README.md is scheduled after night 3, not before -- a pause costs more than the risk tonight (Ark 10:00); the two open entries about the night killing itself (this one and [[WINDOWS-UPDATE-RESTARTS-INSIDE-THE-NIGHT-WINDOW-BECAUSE-ACTIVE-HOURS-END-AT-0600]]) are both live tonight.
 - **axis:** collective
 
 ### FLYVIS-RESUME-AND-RECOVER-ARE-BROKEN-IN-1-2-0: five defects found by execution in the installed flyvis stand between anyone and a resumed run, and none of them is reported upstream (MEDIUM, open, 2026-09-14 — CC, from the interrupt-and-resume test of 2026-09-13)
@@ -142,25 +143,6 @@ language_cutoff: 2026-09-13
   48-iteration minimal reproduction; until then the §7 rule stands.
 - **axis:** knowledge
 
-### RUN-0-SHOWS-WHERE-THE-LOSS-PLATEAUS: run 0's rungs and checkpoints will show where held-out loss stops moving, and if that is far before 250,000 the expensive evaluation could be redefined cheaper — only by a new pre-registration written before the N runs (LOW, open, 2026-09-14 — Ark, chat 2026-09-13; filed by CC)
-
-- **Observed 2026-09-14 (run 0).** Plateau reached: minimum held-out (checkpoint) loss
-  1141.0463 at iteration 219,612; held-out loss rose by +0.11 % (1147.5358 → 1148.8075) over
-  the last 50,000 iterations (checkpoint near 200,000 → checkpoint near 250,000); plateau:
-  |change| < 0.2 %. Rung-vs-checkpoint jitter: the
-  evaluation-hook rung at iteration 250,000 (1146.1958) and the checkpoint at iteration
-  250,008 (1148.8075) differ by 2.61 over the 8 extra iterations. Full trajectory in
-  `results/night1/night_report.md` and `results/night1/night_report_checkpoints.csv`.
-- **Reported.** Ark: a free lever — run 0's plateau could redefine "expensive" together with
-  the ladder.
-- **Inferred.** The redefinition is a change to §3 after seeing run 0 — allowed for the
-  population only if registered anew *before* the N runs, and not available at all once (b)
-  has been seen.
-- **First step.** After run 0, plot held-out loss against iteration from the rung and
-  checkpoint metrics; if a plateau sits far before 250,000, propose a new pre-registration
-  to Mike before any N run starts. Parent task
-  [[PRE-REGISTER-THE-CHEAP-VERSUS-EXPENSIVE-TEST]], closed 2026-09-13.
-- **axis:** knowledge
 
 ### WINDOWS-UPDATE-RESTARTS-INSIDE-THE-NIGHT-WINDOW-BECAUSE-ACTIVE-HOURS-END-AT-0600: a planned Windows Update restart killed seed 2 mid-run because active hours end at 06:00 while the night window runs to 11:30, and the launcher has no preflight for a pending reboot (HIGH, open, 2026-09-15 — CC, from the KB5129195 restart during night 2)
 
@@ -277,4 +259,5 @@ language_cutoff: 2026-09-13
   `docs/next-session-plan.md`.
 - **2026-09-15, CC:** Night 2 gives the top-rung between-seed distances: seed 0/1/2 held-out loss at 250,000 = 1146.1958/1145.3572/1148.8000, sample SD (n=3) = 1.7953, against the replicate |0′−0| of 12.7279 (1.11 %) above — SD/replicate ≈ 0.14, about seven times smaller than the replicate offset. At rung C3 (25,000) the same comparison inverts: SD 7.7627 vs replicate 0.3365, ≈23× larger. n=3 (2 degrees of freedom); no verdict on (b)/(b2) here — see [[THE-SPREAD-REPLICATE-RATIO-INVERTS-BETWEEN-C3-AND-THE-TOP-RUNG]] and docs/experiments/002-night2-seeds-1-and-2.md.
 - **2026-09-15, CC (four more diagnostics, docs/experiments/002-night2-seeds-1-and-2.md §5d/§5f):** connectivity — the linear path between run 0 and run 0′ at 250,008 carries a barrier of 96.6 (variant 2) against their 12.7 endpoint gap, and is no better connected than the 0→1 control (115.2 at the same α); the self-path is flat to ≈1e-4, and the design's own resolution criterion is not met, so all barriers are lower bounds. ablation (unregistered) — the twin trap passes on both pre-declared metrics (Euclidean, Spearman) in all three item subsets, but the Euclidean margin over the (0′,1) different-seed pair is only 4 % and a post-hoc Pearson reverses it; the supported claim is that the twins agree in rank order of cell-type importance (ρ 0.72 vs 0.35–0.48 for different seeds), not in their largest single effects (seed 0's top type Tm5c +2,616.8 is +34.6 in seed 0′).
+- **2026-09-15, CC:** Ark 10:00: the entry title states half the fact -- after night 2 the statement is "three different individuals sit closer to each other (SD 1.80) than one individual to its own replicate (12.73), seven times", and after the diagnostics "the two ends of one seed sit in different basins (barrier 96.6) like different seeds do"; the title is not rewritten (no backfilling per the format) -- the current statement lives in docs/experiments/002-night2-seeds-1-and-2.md §2/§5d and in [[THE-SPREAD-REPLICATE-RATIO-INVERTS-BETWEEN-C3-AND-THE-TOP-RUNG]].
 - **axis:** honesty

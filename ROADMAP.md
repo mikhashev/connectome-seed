@@ -124,7 +124,7 @@ one that can be trusted to be current.
 | axis | decisions | board entries | awaiting observation |
 |---|---|---|---|
 | **collective** | — | 2 | 0 |
-| **knowledge** | — | 4 | 0 |
+| **knowledge** | — | 3 | 0 |
 | **network** | — | 0 | 0 |
 | **honesty** | ADR-002 accepted | 6 | 0 |
 | **reach** | ADR-001 accepted | 2 | 0 |

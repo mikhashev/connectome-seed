@@ -2,6 +2,28 @@
 
 ## 2026-09-15 — closed by CC
 
+### RUN-0-SHOWS-WHERE-THE-LOSS-PLATEAUS: run 0's rungs and checkpoints will show where held-out loss stops moving, and if that is far before 250,000 the expensive evaluation could be redefined cheaper — only by a new pre-registration written before the N runs (LOW, closed, 2026-09-14 — Ark, chat 2026-09-13; filed by CC)
+
+**Closed:** S2026-09-13.1 · 2026-09-15 · disproved · docs/experiments/001-run0-and-replicate.md §4: minimum checkpoint loss 1141.0463 at iteration 219,612; held-out loss rose +0.11% (1147.5358 -> 1148.8075) over the last 50,000 iterations; docs/preregistration-cheap-vs-expensive.md §7 "Plateau facts"; the redefine-expensive-via-the-plateau reading judged not viable by reviewers, 002 §5a item 12 (docs/experiments/002-night2-seeds-1-and-2.md); a plateau is an interpretation of the tail, not a datum · closed by CC
+
+- **Observed 2026-09-14 (run 0).** Plateau reached: minimum held-out (checkpoint) loss
+  1141.0463 at iteration 219,612; held-out loss rose by +0.11 % (1147.5358 → 1148.8075) over
+  the last 50,000 iterations (checkpoint near 200,000 → checkpoint near 250,000); plateau:
+  |change| < 0.2 %. Rung-vs-checkpoint jitter: the
+  evaluation-hook rung at iteration 250,000 (1146.1958) and the checkpoint at iteration
+  250,008 (1148.8075) differ by 2.61 over the 8 extra iterations. Full trajectory in
+  `results/night1/night_report.md` and `results/night1/night_report_checkpoints.csv`.
+- **Reported.** Ark: a free lever — run 0's plateau could redefine "expensive" together with
+  the ladder.
+- **Inferred.** The redefinition is a change to §3 after seeing run 0 — allowed for the
+  population only if registered anew *before* the N runs, and not available at all once (b)
+  has been seen.
+- **First step.** After run 0, plot held-out loss against iteration from the rung and
+  checkpoint metrics; if a plateau sits far before 250,000, propose a new pre-registration
+  to Mike before any N run starts. Parent task
+  [[PRE-REGISTER-THE-CHEAP-VERSUS-EXPENSIVE-TEST]], closed 2026-09-13.
+- **axis:** knowledge
+
 ### RESEARCH-REPO-START-CHECKLIST-WRITTEN-ON-MIKES-WORD: fourteen rules distilled from this session's incidents, so a new research repository starts by reading them rather than re-deriving the principles (LOW, closed, 2026-09-15 — Mike 09:56 «пиши чек-лист»; drafted by Ark 08:50/09:39/09:51, written by CC)
 
 **Closed:** S2026-09-13.1 · 2026-09-15 · fixed · `docs/CHECKLIST-research-repo.md` written (14

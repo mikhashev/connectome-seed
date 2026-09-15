@@ -29,6 +29,15 @@ missed at 1.1104 %. Full record: `docs/experiments/001-run0-and-replicate.md`. T
 7. **Population for the next pre-registration** — seed-only or wider variation (Zcode 07:05,
    Ark 07:36) — Mike.
 
+**Ark's proposal, 2026-09-15 10:00 (for Mike, not a change):** the four BLOCKED ON DECISION
+entries — N = 8/10 ([[N-EQUALS-EIGHT-IS-BELOW-THE-FILES-OWN-MINIMUM]]); the (a) outcome reading
+([[THE-COMPOSITION-MARGIN-OVER-ITS-FLOOR-IS-SMALLER-THAN-A-NULL-SHIFTS-MEDIAN-DELTA]]); the
+1.11 % replicate ([[THE-REPLICATE-DIFFERS-BY-ONE-POINT-ONE-PERCENT-AT-THE-TOP-RUNG]]); and the
+C3/250k inversion ([[THE-SPREAD-REPLICATE-RATIO-INVERTS-BETWEEN-C3-AND-THE-TOP-RUNG]]) — are one
+decision under four headings: what to do with an instrument that does not resolve individuals at
+the top rung. Three outcomes: accept the limit (position paper), change the population (road C, a
+new registration), or take (a) as an independent hypothesis. Merging them is Mike's call.
+
 Nothing below runs before 1–4 are answered; night 2 specifically waits on Mike's explicit word
 (the standing rule, board: [[THE-NIGHT-RUN-STARTS-ONLY-ON-MIKES-EXPLICIT-WORD]]).
 
