@@ -967,6 +967,53 @@ profile (4 % margin), it is reproducible to 1e-7, and it is only weakly aligned 
 profile within an individual; whether it predicts row A is not answerable at n = 4. Reading
 rule (Ark's design §6): no B figure is read as a test before N ≥ 8.
 
+**Review and three checks (Ark 10:19; checks by CC from `rowB_profiles_250008.csv` and
+`ablation_profiles.csv`):**
+
+1. Correction to the twin-trap reading (Ark, accepted): with a rank floor of exactly 0.0 the
+clause "margin exceeds the floor" is satisfied identically — the 1−ρ scale has no resolution
+below any between-run difference, so 0.197 must not be compared with the value-level 8e-8
+(different units). The load-bearing statement is that the twin pair is the minimum in 16 of 16
+items individually, independent of composition. Recorded as the reading of §5i's PASS.
+2. The two profiles diverge exactly on seed 2 (Ark, verified from the distance tables): on the
+three pairs without seed 2 the causal profile (row A, 1−ρ: (0,0′) 0.285 < (0,1) 0.524 < (0′,1)
+0.559), the observational profile (row B: 0.349 < 0.569 < 0.635) and the weight distances
+(0.52 < 0.59 < 0.69) give the same order; on the three pairs with seed 2 the order inverts
+completely — row A (0′,2) 0.557 < (1,2) 0.560 < (0,2) 0.647 and weights (0′,2) 0.60 <
+(1,2) 0.66 < (0,2) 0.78 agree, row B gives (0,2) 0.546 < (1,2) 0.576 < (0′,2) 0.821 with
+(0,2) moved from last to first. (Label correction, CC 2026-09-15: Ark's chat table wrote the
+row-A trio as "(0,2) 0.557 … (0′,2) 0.647"; §5f's table and a recomputation from
+`ablation_profiles.csv` give (0,2) 0.6466 and (0′,2) 0.5571, so the labels were swapped —
+the conclusion, that row A and the weights agree and row B reverses them, is unchanged.) Over the five foreign pairs the Spearman correlation between row-B distance and weight
+distance is −0.9 (n = 5, indicative only). Ark's reading, Reported: "which individual is the
+outlier" has no channel-independent answer, and all the disagreement sits on seed 2 — the
+individual with the R2 ablation collapse (+21,157), the lowest 25k→250k stability (0.358) and
+the lagging-then-catching-up loss trajectory; five independent signs, one individual, invisible
+in the loss.
+3. The flip (Ark): at iteration 0 seed 2 is the farthest from seed 0 (1−ρ 0.197 vs 0.174 for
+seed 1); at 250,008 it is the closest (0.546 vs 0.569). What the individuals differed by at the
+start (65 biases) is not what they differ by at the end.
+4. The one number leaning towards (b) (Ark, Reported): ρ(B@25,212, B@250,008) over the six
+distances = 0.60 and within runs 0.58 / 0.68 / 0.79 / 0.36 — the cheap rung on this channel
+partly predicts the geometry of the expensive one; no licence follows at n = 4.
+5. CC's three checks: (i) seed 2's anomaly in row B is NOT on R2 — R2 mean activity is
+3.64 / 1.68 / 0.07 / 1.97 for seeds 0 / 0′ / 1 / 2, unremarkable for seed 2; the largest
+|B(2) − B(0)| are T5d 40.78, T5c 30.48, T2 13.15 (seed 0 has T5c 41.62 and T5d 40.65 while
+seed 2 has 11.14 and ≈ 0); vs seed 0′: Tm4 23.40, T5d 20.10, T2 17.00; vs seed 1: C3 11.71,
+Tm2 10.37, Mi9 7.54. The two instruments do not point at the same cell type; the R2 finding
+rests on the causal profile alone. (ii) ρ(B, Δ_T) without R2: 0.389 → 0.375, 0.481 → 0.475,
+0.563 → 0.561, 0.653 → 0.651 — the within-individual agreement does not rest on R2.
+(iii) profile spread (mean_window over 65 types): seed 0 min −1.91 max 41.62 sd 7.38; seed 0′
+−0.84 / 23.84 / 5.22; seed 1 −8.81 / 12.31 / 2.44; seed 2 −0.75 / 11.14 / 2.72; types with
+|B| < 1e-3: 1 / 0 / 0 / 0. Seeds 1 and 2 are compressed 2–3× against seed 0 (consistent with
+Ark's compressed-regime hypothesis, not a test of it); the twins differ in amplitude almost
+twofold on T5c (41.62 vs 23.84) while their rank order agrees — amplitude of a type floats
+between copies, rank does not.
+
+Seeds 3 and 4 (night 3) add two rungs to the ladder and two points to the 25k→250k preview;
+the R2 reading rule of the plan §2a applies to the causal profile, and row B now has its own
+pre-declared reading: the twin pair must stay the minimum in every item.
+
 ## 6. Provenance
 
 - `results/night2/extract_night2.py` — this session's script; builds the slim jsons, the two
