@@ -159,6 +159,7 @@ draw (46.07 vs 38.58) (§5g).
 
 ## 4. Side tasks (board entry names)
 
+- Row B activity profiles (65 per-type means + within-type spread) from the 72 saved checkpoints of seeds 0, 0′, 1, 2, with P0 (cross-process reproducibility), P1, P2 and the twin trap, Spearman ρ pre-fixed as the measure, all 16 items — Ark's proposal `docs/proposals/mi-axis-per-cell-type-design.md`; preview, not a test; on Mike's word.
 - **[[THE-NIGHT-TOOLING-LIVES-IN-A-TEMPORARY-SCRATCHPAD]]** — environment out of the scratchpad:
   recipe now in `tools/night/README.md` (this commit); remaining step is to re-create the venv
   from that recipe outside the scratchpad.
