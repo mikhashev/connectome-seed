@@ -2,6 +2,39 @@
 
 ## 2026-09-15 — closed by CC
 
+### NIGHT-2-RUNS-SEEDS-1-AND-2-ON-MIKES-WORD: seeds 1 and 2 trained to 250,000, sequential, no replicate, are the first between-seed distances against the run 0 / run 0′ replicate offset (HIGH, closed, 2026-09-14 — CC, from the experiment record and next-session plan)
+
+**Closed:** S2026-09-13.1 · 2026-09-15 · fixed · seed 1 (9991/001) EXIT rc=0, 250,008 iterations, 14,532.9 s; seed 2 killed at iteration 12,700 by the KB5129195 restart, partial dir renamed to flow/9991/002_killed_by_reboot, excluded under §7's resume rule; re-run as wave night2b (9991/002), started 2026-09-15T01:13:46Z, EXIT rc=0, 250,008 iterations, 14,296.6 s, done 05:12:18Z; Mike, chat 05:19Z: «прогон завершен»; record docs/experiments/002-night2-seeds-1-and-2.md and results/night2/ · commit: (this commit) · closed by CC
+
+- **Observed.** Tooling ready: `tools/night/start_night.ps1` takes `-NoReplicate` (this
+  commit), dry-run quoted (ids `9991/001`, `9991/002`; ensemble 9991 already holds `000` and
+  `900` — the ids differ, no collision). Command in `docs/next-session-plan.md` §2.
+- **Observed 2026-09-15 (CC).** Mike's word given (DPC Research chat, 2026-09-15 18:32 local:
+  «вноси да и напиши мне команду…», then «запустил»); launched. Launcher log: `WAVE START
+  tag=night2` 2026-09-14T19:12:31Z, launcher PID 32124, mode sequential, detached, determinism
+  off, 2 jobs. First run id 9991/001, seed 1, PID 16460, `--n-iters 250000 --rungs
+  1000,5000,25000,250000 --no-determinism`; progress log at iteration 700: 0.066 s/iter, VRAM
+  1426 MiB, ETA first run ≈ 23:46Z. Second run 9991/002, seed 2, follows sequentially.
+  `flow/9991` now holds 000, 001, 900. The b2 amendment (`9c395d5`) and the review edits plus
+  `rho_ci.py` (`21fa5ab`) were committed before the launch.
+- **Observed 2026-09-15, later (CC).** Seed 1 (9991/001) completed: `EXIT rc=0
+  final_iteration=250008 wall=14548.9s` at 23:15:00Z. Seed 2 (9991/002) started 23:15:00Z; last
+  progress line iteration 12,700/250,000 at 23:29:04Z; killed at 23:29:19Z by a Windows Update
+  planned restart (KB5129195) — see
+  [[WINDOWS-UPDATE-RESTARTS-INSIDE-THE-NIGHT-WINDOW-BECAUSE-ACTIVE-HOURS-END-AT-0600]]. Under the
+  registered §7 resume rule (an interrupted run is a failed run, re-run from the same seed, no
+  resume) seed 2 is re-run from scratch. Pending Mike's decision: remove or rename
+  `results/flow/9991/002` (`run_individual.py:301-308` refuses to start if it exists, and a new
+  tag such as `night2b` keeps the partial `night2_9991-002.*` / `wave_night2.*` records intact),
+  then `-Tag night2b -Seeds 2 -NoReplicate`.
+- **First step.** Mike's word (the standing rule,
+  [[THE-NIGHT-RUN-STARTS-ONLY-ON-MIKES-EXPLICIT-WORD]], closed), then launch by Mike; morning
+  comparison against the replicate offset (+12.64 mean / 1.11 % at 250,000,
+  `docs/experiments/001-run0-and-replicate.md` §4) per the decision rule already registered
+  in `docs/preregistration-cheap-vs-expensive.md` §7.
+- **axis:** collective
+- **taken:** CC · 2026-09-15
+
 ### A-TRAINED-SURROGATE-IS-NOT-A-PREFIX-OF-THE-SAME-PROCESS: AlphaGenome Atlas shows a cheap evaluation that works, but it is a trained surrogate validated at the top of its ranking, while this project's cheap evaluation is a prefix of the expensive process, the kind 2508.17464 found not to rank (MEDIUM, closed, 2026-09-13 — Ark, 17:51 UTC, on Mike's link of 17:50 UTC; source read by CC 2026-09-14)
 
 **Closed:** S2026-09-13.1 · 2026-09-15 · fixed · Mike decided yes 2026-09-15 18:05 local, DPC Research chat: «ок давай впишем»; the form is written into docs/preregistration-cheap-vs-expensive.md as secondary hypothesis (b2) — §1 bullet, §4 statistic X = |Top-k(C3) ∩ Top-k(250,000)| with exact hypergeometric tails for N = 8/10/12/16/20 and k = 2/3 from docs/prereg-scripts/topk_tail.py (8!-permutation self-check passed, Python 3.12.10), §5 decision rule and timing rule, §7 measurability paragraph, §8 exclusions, §9 provenance; k = 2 fixed, marked (proposed — fix in review) until seeds 1 and 2 start · commit: (this commit) · closed by CC

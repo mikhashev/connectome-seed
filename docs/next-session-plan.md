@@ -9,8 +9,12 @@ missed at 1.1104 %. Full record: `docs/experiments/001-run0-and-replicate.md`. T
 
 1. **Instrument-floor route** — proceed as registered (top rung may come out *unmeasurable* for
    hypothesis (b), per §7's own clause) vs. write a new pre-registration for the expensive metric
-   before any N run.
-2. **Night 2 = seeds 1 and 2, sequential, to 250,000, no replicate** — yes/no.
+   before any N run. **Note 2026-09-15:** numbers in, decision pending — night 2's three-seed
+   rung SDs vs the run 0/run 0′ replicate offset are recorded in §2 below and on the board
+   ([[THE-SPREAD-REPLICATE-RATIO-INVERTS-BETWEEN-C3-AND-THE-TOP-RUNG]]); the branch in §3 is now
+   decidable, the call itself still waits on Mike + reviewers.
+2. ~~**Night 2 = seeds 1 and 2, sequential, to 250,000, no replicate** — yes/no.~~ Decided
+   2026-09-15, Mike «вноси…»/«запустил»; launched 2026-09-14T19:12:31Z, `wave_night2`.
 3. **Floor N: 8 or 10** (`docs/preregistration-cheap-vs-expensive.md` §4,
    [[N-EQUALS-EIGHT-IS-BELOW-THE-FILES-OWN-MINIMUM]]).
 4. ~~**Top-k as a secondary hypothesis** — enters the pre-registration or not
@@ -43,7 +47,36 @@ powershell -ExecutionPolicy Bypass -File "C:\Users\mikha\AppData\Local\Temp\clau
 already registered (§7): a rung whose between-seed standard deviation does not exceed the
 replicate difference is *unmeasurable*, not a failed surrogate.
 
+**Result 2026-09-15.** Both waves complete. Seed 1 (`9991/001`) EXIT rc=0, 250,008 iterations,
+14,532.9 s. Seed 2's first attempt (`9991/002`) was killed at iteration 12,700 by a Windows
+Update planned restart (KB5129195, see
+[[WINDOWS-UPDATE-RESTARTS-INSIDE-THE-NIGHT-WINDOW-BECAUSE-ACTIVE-HOURS-END-AT-0600]]); the
+partial directory was renamed to `flow/9991/002_killed_by_reboot` and excluded under §7's
+resume rule (an interrupted run is a failed run). Seed 2 was re-run from scratch as wave
+`night2b` (`9991/002`): started 2026-09-15T01:13:46Z, EXIT rc=0, 250,008 iterations, 14,296.6 s,
+done 05:12:18Z. Mike, chat 05:19Z: «прогон завершен». Full record:
+`docs/experiments/002-night2-seeds-1-and-2.md`, `results/night2/`.
+
+Rung SD (seeds 0/1/2, n=3) against the run 0/run 0′ replicate offset:
+
+| rung | SD (n=3) | replicate \|0′−0\| | SD/replicate |
+|---|---|---|---|
+| 1,000 | 0.8543 | 0.0000 | — |
+| 5,000 | 0.5151 | 0.0025 | — |
+| 25,000 (C3) | 7.7627 | 0.3365 | ≈ 23 |
+| 250,000 | 1.7953 | 12.7279 | ≈ 0.14 |
+
+n=3 gives an SD with 2 degrees of freedom; §7's measurability clause is applied once at the
+registered N. These are distances only — no ρ, no ranks, no verdict on (b)/(b2) yet. Board:
+[[NIGHT-2-RUNS-SEEDS-1-AND-2-ON-MIKES-WORD]] (closed) and
+[[THE-SPREAD-REPLICATE-RATIO-INVERTS-BETWEEN-C3-AND-THE-TOP-RUNG]].
+
 ## 3. Branches after night 2
+
+**2026-09-15:** the branch below is now decidable with the numbers in the Result paragraph
+above — SD/replicate ≈ 0.14 at 250,000 (spread far smaller than the replicate offset) against
+≈ 23 at C3 (spread far larger). The numbers point at (b), but the call is Mike's + reviewers',
+not made here.
 
 - **(a) Top rung measurable** (between-seed sd at 250,000 exceeds the ~12.64 / 1.11 % replicate
   offset) → continue the population per the N rule (§4): nights 3–5, seeds 3 onward, to the
@@ -55,6 +88,28 @@ replicate difference is *unmeasurable*, not a failed surrogate.
   median of ≥ 2 replicates per seed; both cost extra wall-clock and neither is registered yet.
   The lower rungs (1,000 / 5,000 / 25,000) are clean under either branch and do not need this
   decision.
+
+**Reviewers 2026-09-15 (Ark 05:35, Zcode 05:44):** sequence proposed — (i) now, free, from the 72
+saved checkpoints already on disk: re-evaluate one checkpoint several times and on a second
+held-out split (evaluation noise vs trajectory noise), plus weight-space distance between seed 0
+and seed 0′ at 250,000 (two basins vs steep landscape); (ii) night 3 = seeds 3 and 4 (critical
+path of both branches); (iii) if (b) holds, night 4 = one replicate each of seeds 0 and 1
+(distribution of the offset, seed-dependence, bimodality test). Both reviewers judge neither
+candidate above viable as registered: plateau mean's own SD/replicate is 0.239 (still far below
+1), and the median of ≥ 2 replicates is meaningless if the end state is bimodal. Rule both ask
+written into the new pre-registration verbatim: the statistic is chosen by the diagnostics, not by
+the table of ratios. Full detail: `docs/experiments/002-night2-seeds-1-and-2.md` §5a. Decision
+Mike.
+
+**Second pass 2026-09-15 (Ark 05:52, Zcode 05:55):** diagnostic 1 above is revised — run one saved
+checkpoint through both reporting paths (hook vs checkpoint) first, since the two paths disagree by
+0.7–2.6 at the top rung with no constant offset, before any evaluation-noise study. The honest
+expected label for branch (b) at the top rung is "unanswerable by this instrument at the affordable
+price" (r ≈ 40 replicates needed to separate σ_within from σ_between), not a failure of the
+surrogate. Night 4, if reached, should place a replicate of seed 1 SECOND in a wave whose FIRST job
+is a new seed, to separate a pair-random sign from a within-wave position effect — night 2's seed 2
+(solo in `night2b`) is no witness to position. Full detail:
+`docs/experiments/002-night2-seeds-1-and-2.md` §5a items 9–13.
 
 ## 4. Side tasks (board entry names)
 
@@ -71,6 +126,10 @@ replicate difference is *unmeasurable*, not a failed surrogate.
   action on that sub-item.
 - **[[THIRTEEN-LINKS-POINT-INTO-A-DIRECTORY-THAT-WILL-NOT-BE-PUSHED]]** — the 13 `chat/` links
   before the repo opens.
+- Diagnostics from saved checkpoints — starting with one saved checkpoint through both reporting
+  paths (hook vs checkpoint; the two disagree by 0.7–2.6 at the top rung, second pass item 10),
+  then evaluation-noise re-scoring and weight distance 0↔0′ — proposed by Ark, feasible per Zcode's
+  disk check; on Mike's word.
 
 ## 5. What not to do
 

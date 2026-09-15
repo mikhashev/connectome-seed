@@ -133,21 +133,45 @@ language_cutoff: 2026-09-13
   [[PRE-REGISTER-THE-CHEAP-VERSUS-EXPENSIVE-TEST]], closed 2026-09-13.
 - **axis:** knowledge
 
-### NIGHT-2-RUNS-SEEDS-1-AND-2-ON-MIKES-WORD: seeds 1 and 2 trained to 250,000, sequential, no replicate, are the first between-seed distances against the run 0 / run 0′ replicate offset (HIGH, open, 2026-09-14 — CC, from the experiment record and next-session plan)
+### WINDOWS-UPDATE-RESTARTS-INSIDE-THE-NIGHT-WINDOW-BECAUSE-ACTIVE-HOURS-END-AT-0600: a planned Windows Update restart killed seed 2 mid-run because active hours end at 06:00 while the night window runs to 11:30, and the launcher has no preflight for a pending reboot (HIGH, open, 2026-09-15 — CC, from the KB5129195 restart during night 2)
 
-- **Observed.** Tooling ready: `tools/night/start_night.ps1` takes `-NoReplicate` (this
-  commit), dry-run quoted (ids `9991/001`, `9991/002`; ensemble 9991 already holds `000` and
-  `900` — the ids differ, no collision). Command in `docs/next-session-plan.md` §2.
-- **First step.** Mike's word (the standing rule,
-  [[THE-NIGHT-RUN-STARTS-ONLY-ON-MIKES-EXPLICIT-WORD]], closed), then launch by Mike; morning
-  comparison against the replicate offset (+12.64 mean / 1.11 % at 250,000,
-  `docs/experiments/001-run0-and-replicate.md` §4) per the decision rule already registered
-  in `docs/preregistration-cheap-vs-expensive.md` §7.
+- **Observed.** System event log: "2026-09 Security Update (KB5129195)" (build 26200.9457)
+  download started 02:33 local 2026-09-15, "Installation Started" 03:10:53 local, three planned
+  restarts at 06:29:19 / 06:30:20 / 06:31:05 local (23:29Z–23:31Z 2026-09-14), two logged as
+  User32 1074 "TrustedInstaller.exe … on behalf of NT AUTHORITY\SYSTEM … Operating System:
+  Upgrade (Planned) 0x80020003", "Installation Successful" 06:33:45 local; no Kernel-Power 41 /
+  6008 / 1001 — not a crash or power loss. Active hours on this machine are 12:00–06:00 local
+  (`HKLM\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings`), so 06:29 was the first minute Windows
+  was allowed to restart. Edition: Windows 11 Home (EditionID Core) — no gpedit, no
+  WindowsUpdate policy keys exist.
+- **Inferred.** The night window (02:00–11:30 local, per the tooling) runs five and a half
+  hours past the end of active hours (06:00 local); nothing in `start_night.ps1` checks for a
+  pending reboot or otherwise defends the run against an automatic restart. Follow-up to
+  [[NIGHT-2-RUNS-SEEDS-1-AND-2-ON-MIKES-WORD]] — this restart is what killed its seed 2 run at
+  iteration 12,700.
+- **First step.** Mike chooses the protection: pause updates before each night, shift active
+  hours to cover 02:00–11:30, or a policy value if one is documented for Home (the orchestrator
+  is checking Microsoft's documentation now). Then `start_night.ps1` gets a preflight that
+  refuses to launch when `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto
+  Update\RebootRequired` or `…\Component Based Servicing\RebootPending` exists.
 - **axis:** collective
+
+
+
+## IN PROGRESS
+
 
 
 ## BLOCKED ON DECISION
 
+
+### THE-SPREAD-REPLICATE-RATIO-INVERTS-BETWEEN-C3-AND-THE-TOP-RUNG: the between-seed spread at 250,000 is smaller than the replicate offset while at rung C3 it is larger, so the plan's §3 branch is decidable and waits on Mike + reviewers (HIGH, open, 2026-09-15 — CC, from the night 2 rung SDs and the §7 replicate comparison, 2026-09-15)
+
+- **Observed.** Held-out loss at rungs, seed 0/1/2 (docs/experiments/002-night2-seeds-1-and-2.md, results/night2/): 1,000: 1208.9363/1208.0556/1209.7639; 5,000: 1207.7673/1206.7832/1207.0115; 25,000 (C3): 1191.7375/1190.2235/1204.3618; 250,000: 1146.1958/1145.3572/1148.8000. Sample SD over seeds {0,1,2} (n=3): 0.8543/0.5151/7.7627/1.7953 respectively. Replicate |0′−0| (night 1, docs/experiments/001-run0-and-replicate.md §4): 0.0000/0.0025/0.3365/12.7279. Ratio SD/replicate ≈23 at 25,000 (C3, the primary rung), ≈0.14 at 250,000 — the between-seed spread at 250,000 (1.7953) is about seven times smaller than the replicate difference (12.7279), while at C3 it is about 23 times larger (7.7627 vs 0.3365).
+- **Inferred.** n=3 gives an SD with 2 degrees of freedom; the §7 measurability clause is applied once at the registered N, so this is a distance, not a verdict — no rho, no ranks, no call on hypothesis (b)/(b2) yet. What it does settle is the branch itself: docs/next-session-plan.md §3's (a) top rung measurable / (b) not measurable is now decidable with these numbers. See [[NIGHT-2-RUNS-SEEDS-1-AND-2-ON-MIKES-WORD]] (closed) and [[THE-REPLICATE-DIFFERS-BY-ONE-POINT-ONE-PERCENT-AT-THE-TOP-RUNG]].
+- **First step:** Mike + reviewers read docs/experiments/002-night2-seeds-1-and-2.md and choose branch (a) (continue to the floor N, nights 3-5) or (b) (a new pre-registration for the expensive metric before any further N run) per docs/next-session-plan.md §3.
+- **axis:** honesty
+- **filed:** CC · 2026-09-15
 
 ### N-EQUALS-EIGHT-IS-BELOW-THE-FILES-OWN-MINIMUM: §4 calls N = 10 the minimum at which the test is meaningful and in the same section lets N fall to 8, where power at a true rho of 0.5 is about a third (MEDIUM, open, 2026-09-13 — Zcode 3.3 and Ark 6, chat; filed by CC)
 
@@ -193,4 +217,5 @@ language_cutoff: 2026-09-13
   at the plateau against the 12.64 mean replicate offset above.
 - **Experiment record:** `docs/experiments/001-run0-and-replicate.md`; plan:
   `docs/next-session-plan.md`.
+- **2026-09-15, CC:** Night 2 gives the top-rung between-seed distances: seed 0/1/2 held-out loss at 250,000 = 1146.1958/1145.3572/1148.8000, sample SD (n=3) = 1.7953, against the replicate |0′−0| of 12.7279 (1.11 %) above — SD/replicate ≈ 0.14, about seven times smaller than the replicate offset. At rung C3 (25,000) the same comparison inverts: SD 7.7627 vs replicate 0.3365, ≈23× larger. n=3 (2 degrees of freedom); no verdict on (b)/(b2) here — see [[THE-SPREAD-REPLICATE-RATIO-INVERTS-BETWEEN-C3-AND-THE-TOP-RUNG]] and docs/experiments/002-night2-seeds-1-and-2.md.
 - **axis:** honesty
