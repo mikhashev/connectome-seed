@@ -2,6 +2,23 @@
 
 ## 2026-09-15 — closed by CC
 
+### ROW-B-CELL-TYPE-ACTIVITY-PROFILES-RUN-AS-A-PREVIEW-AT-N-EQUALS-FIVE-OR-SIX: row B (65 per-type activity profiles across P0/P1/P2 and the twin trap) runs from the 72 saved checkpoints of seeds 0, 0′, 1, 2 as a preview diagnostic, never read as a test until N ≥ 8 (MEDIUM, closed, 2026-09-15 — Mike 09:56 «делай ряд B»; protocol `docs/proposals/mi-axis-per-cell-type-design.md`; taken by CC)
+
+**Closed:** S2026-09-15.1 · 2026-09-15 · fixed · rowB.py run against the 72 saved checkpoints of seeds 0, 0prime, 1, 2 (results/night2/diagnostics/rowB/); P0 graduated ladder at iter 0 in order (0,0prime)=0.000000, (0,1)=0.1736, (1,2)=0.2110; floor (3 fresh processes, seed0@250008) rank rho=1.0000, max|deltaB|=8.25e-8; P2 (silence R1-R8) moves B on 64-65/65 types per seed, loss +58.43/+47.02/+64.87/+30626.21; twin-trap PASS: d(0,0prime)=0.3487 is the minimum of the six pairs, nearest foreign (0,2)=0.5455, margin 0.1968 over floor 0.0, minimum in 16/16 items; B vs row-A within-individual rho=+0.389/+0.481/+0.563/+0.653; write-up docs/experiments/002-night2-seeds-1-and-2.md sec5i; PREVIEW DIAGNOSTIC n=4, not read as a test · closed by CC
+
+- **Observed.** Mike's word (DPC Research chat, 2026-09-15 09:56 UTC: «делай ряд B»). Protocol:
+  `docs/proposals/mi-axis-per-cell-type-design.md` — 65 per-type means + within-type spread, P0
+  (cross-process reproducibility), P1, P2, the twin trap, Spearman ρ pre-fixed as the measure,
+  all 16 held-out items. Source: the 72 saved checkpoints of seeds 0, 0′, 1, 2 (`results/night1/`,
+  `results/night2/`).
+- **Inferred.** At n = 5–6 seeds the critical ρ is 0.90–1.00
+  (`docs/next-session-plan.md` §5: "Do not read row B as a test at N < 8"); this run is a
+  preview and cannot be read as a hypothesis test.
+- **First step.** CC runs the protocol against the 72 checkpoints; results to
+  `results/night2/diagnostics/rowB/`.
+- **axis:** knowledge
+- **taken:** CC · 2026-09-15
+
 ### RUN-0-SHOWS-WHERE-THE-LOSS-PLATEAUS: run 0's rungs and checkpoints will show where held-out loss stops moving, and if that is far before 250,000 the expensive evaluation could be redefined cheaper — only by a new pre-registration written before the N runs (LOW, closed, 2026-09-14 — Ark, chat 2026-09-13; filed by CC)
 
 **Closed:** S2026-09-13.1 · 2026-09-15 · disproved · docs/experiments/001-run0-and-replicate.md §4: minimum checkpoint loss 1141.0463 at iteration 219,612; held-out loss rose +0.11% (1147.5358 -> 1148.8075) over the last 50,000 iterations; docs/preregistration-cheap-vs-expensive.md §7 "Plateau facts"; the redefine-expensive-via-the-plateau reading judged not viable by reviewers, 002 §5a item 12 (docs/experiments/002-night2-seeds-1-and-2.md); a plateau is an interpretation of the tail, not a datum · closed by CC

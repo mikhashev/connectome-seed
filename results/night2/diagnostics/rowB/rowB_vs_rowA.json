@@ -1,0 +1,60 @@
+{
+ "status": "PREVIEW DIAGNOSTIC -- NOT A TEST (n=4, critical rho 0.90-1.00)",
+ "script_sha256": "195a89b555bedf3a0ff00a4c4e0542eafa6370243fbf9ed954f5fe8fbf7f4082",
+ "script": "rowB.py",
+ "utc": "2026-09-15T10:13:55Z",
+ "measure": "Spearman rho over the 65 types; distance = 1 - rho",
+ "primary_summary": "mean over the whole simulation window, all 65 types",
+ "item_composition": "all 16 (primary); 13 without ambush_2 and 10 without bandage_1 are context only",
+ "row_A_source": "../ablation/ablation_profiles.csv, column delta_16",
+ "primary_i_within_individual": {
+  "seed0": {
+   "spearman_rho_B_vs_deltaT": "0.38933566433566436",
+   "pearson_r_context_only": "-0.0106229938882652",
+   "spearman_absB_vs_absdeltaT": "0.3202797202797203"
+  },
+  "seed0prime": {
+   "spearman_rho_B_vs_deltaT": "0.4811188811188811",
+   "pearson_r_context_only": "0.28585477693274897",
+   "spearman_absB_vs_absdeltaT": "0.4171328671328671"
+  },
+  "seed1": {
+   "spearman_rho_B_vs_deltaT": "0.5629807692307692",
+   "pearson_r_context_only": "0.4001485963344485",
+   "spearman_absB_vs_absdeltaT": "0.47618006993006995"
+  },
+  "seed2": {
+   "spearman_rho_B_vs_deltaT": "0.6532342657342657",
+   "pearson_r_context_only": "0.10722151577170332",
+   "spearman_absB_vs_absdeltaT": "0.5826048951048951"
+  }
+ },
+ "preview_ii_between_individuals": {
+  "pairs": [
+   "seed0|seed0prime",
+   "seed0|seed1",
+   "seed0|seed2",
+   "seed1|seed2",
+   "seed0prime|seed1",
+   "seed0prime|seed2"
+  ],
+  "distance_B_1_minus_rho": [
+   "0.34873251748251743",
+   "0.5689248251748251",
+   "0.545541958041958",
+   "0.5759178321678322",
+   "0.634965034965035",
+   "0.8212412587412588"
+  ],
+  "distance_A_1_minus_rho": [
+   "0.2846590909090909",
+   "0.5237762237762238",
+   "0.6466346153846154",
+   "0.5597902097902098",
+   "0.5593531468531469",
+   "0.5570804195804195"
+  ],
+  "spearman_over_the_6_distances": "0.2",
+  "note": "6 distances, N=4 -- preview only, no inference (README Sec 7)"
+ }
+}

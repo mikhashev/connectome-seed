@@ -1,0 +1,74 @@
+{
+ "status": "PREVIEW DIAGNOSTIC -- NOT A TEST (n=4, critical rho 0.90-1.00)",
+ "script_sha256": "195a89b555bedf3a0ff00a4c4e0542eafa6370243fbf9ed954f5fe8fbf7f4082",
+ "script": "rowB.py",
+ "utc": "2026-09-15T10:13:55Z",
+ "measure": "Spearman rho over the 65 types; distance = 1 - rho",
+ "primary_summary": "mean over the whole simulation window, all 65 types",
+ "item_composition": "all 16 (primary); 13 without ambush_2 and 10 without bandage_1 are context only",
+ "within_run_B25212_vs_B250008": {
+  "seed0": {
+   "spearman_rho": "0.5813374125874126",
+   "max_abs_deltaB": "35.29424531233759"
+  },
+  "seed0prime": {
+   "spearman_rho": "0.6748688811188811",
+   "max_abs_deltaB": "18.48576705131529"
+  },
+  "seed1": {
+   "spearman_rho": "0.789729020979021",
+   "max_abs_deltaB": "46.45744724182032"
+  },
+  "seed2": {
+   "spearman_rho": "0.3584353146853147",
+   "max_abs_deltaB": "26.167775956107803"
+  }
+ },
+ "between_run_distances": {
+  "pairs": [
+   "seed0|seed0prime",
+   "seed0|seed1",
+   "seed0|seed2",
+   "seed1|seed2",
+   "seed0prime|seed1",
+   "seed0prime|seed2"
+  ],
+  "at_25212": [
+   "0.12456293706293708",
+   "0.46555944055944054",
+   "0.5812062937062937",
+   "0.5196241258741259",
+   "0.4961975524475525",
+   "0.6015734265734265"
+  ],
+  "at_250008": [
+   "0.34873251748251743",
+   "0.5689248251748251",
+   "0.545541958041958",
+   "0.5759178321678322",
+   "0.634965034965035",
+   "0.8212412587412588"
+  ],
+  "spearman_over_the_6_distances": "0.6",
+  "twin_is_minimum_at_25212": true
+ },
+ "iteration_0_for_reference": {
+  "pairs": [
+   "seed0|seed0prime",
+   "seed0|seed1",
+   "seed0|seed2",
+   "seed1|seed2",
+   "seed0prime|seed1",
+   "seed0prime|seed2"
+  ],
+  "distances": [
+   "0.0",
+   "0.17360139860139856",
+   "0.19742132867132867",
+   "0.21101398601398602",
+   "0.17360139860139856",
+   "0.19742132867132867"
+  ]
+ },
+ "note": "preview, not a test (PREVIEW DIAGNOSTIC -- NOT A TEST (n=4, critical rho 0.90-1.00))"
+}

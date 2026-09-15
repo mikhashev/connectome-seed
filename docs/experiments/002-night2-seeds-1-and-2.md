@@ -897,6 +897,76 @@ check.
 09:39 verified the lattice arithmetic (207,987,676 × 2⁻¹⁶) and the (a) margin in lattice steps
 (≈ 52,000); the base-rate rule (item 18) and the two-formatter provenance rule (item 19) added.
 
+## 5i. Row B — per-cell-type activity profiles (Mike's word 09:56 «делай ряд B»; design Ark `docs/proposals/mi-axis-per-cell-type-design.md` with its addendum; run by CC's subagent on Opus; verified by CC)
+
+**PREVIEW DIAGNOSTIC, n = 4, critical ρ 0.90–1.00 — not a test.**
+
+**What row B is.** For each of the 65 cell types, the mean activity (`state.nodes.activity`,
+read by a pure state hook — purity checked: the 16-item loss with and without the hook agrees
+to **2.57e-5** at 250,008 against a tolerance of 1e-4, per-item max diff **0.5 float32 ULP**
+against its own floor of **1 ULP**, the same state evaluated twice with no hook at all) over
+that type's nodes, summarised as the mean over the whole simulation window (primary) and the
+last step (secondary), plus within-type std; per item (65 × 16, phase 0 = the 13-step grey
+steady state excluded, items = 40 steps each, item boundaries from a forward pre-hook) and the
+16-item aggregate; row C = the same at all 72 checkpoints (`rowC_trajectory.csv`). Seven
+`eval_rung` invariants recorded and asserted on all 336 evaluations; run dirs unchanged (396
+files, `diff` empty). Script sha256 `195a89b5…f4082` in every json (item 9 of the hardening
+package, applied here first). Files: `results/night2/diagnostics/rowB/`.
+
+**Amendment made before any B value was seen** (`rowB/README.md` §2, dated 2026-09-15T12:07Z):
+the purity tolerance applies to the 16-item loss, not per item, because the per-item form
+aborted at `0.00048828125` = one float32 ULP at an `ambush_2` loss ≈ 4,800 — the last
+representable bit of the largest item, on a path whose own noise is 0.52–0.85 ppm (§5f); the
+per-item figures and their own floor are kept in `rowB_eval_records.json`.
+
+**P0, graduated ladder at iteration 0** (1 − ρ | max per-type |ΔB|, `rowB_controls.json`
+`P0_ladder_iteration_0`): (0, 0′) **0.000000 | 1.4e-10**; (0, 1) **0.1736 | 0.1545**; (0, 2)
+**0.1974 | 0.1658**; (1, 2) **0.2110 | 0.2508**; (0′, 1) **0.1736**; (0′, 2) **0.1974** — the
+three rungs of the ladder (0 → 0.17–0.21 → 0.35–0.82 at 250,008) come out in order.
+
+**Floor:** seed 0 at 250,008, evaluated in three fresh processes (`rowB_controls.json`
+`floor`): Spearman ρ = **1.0000** on all three pairs → rank floor **0.0**; max per-type |ΔB|
+**8.25e-8** (7.1e-8 / 2.1e-8 / 8.3e-8 over the three process pairs). Caveat, stated: a rank
+floor of exactly zero makes "margin exceeds the floor" trivially satisfiable; the load-bearing
+figure is the value-level 8.3e-8, six orders below any between-run |ΔB|.
+
+**P2** (silence R1–R8 with the ablation hook registered before the recorder, `rowB_controls.json`
+`P2_silence_R1_R8`): loss **+58.43 / +47.02 / +64.87 / +30,626.21** (reproduces §5f); B moves on
+**64/65, 65/65, 64/65, 65/65** types; seed 0 top-10 ΔB: Mi1 **−29.57**, Tm3 **−21.67**, Lawf2
+**−17.30**, T2 **−12.97**, L5 **−8.69**, T5a **+5.33**, T5c **−5.16**, T1 **+4.99**, T5d
+**−3.86**, R2 **−3.64**; seed 0′: Lawf2 **−22.65**, T2 **−17.54**, Mi1 **−15.67**; seed 1: C3
+**−19.29**, Mi1 **−9.48**, Tm3 **−8.71**; seed 2: L4 **+81.77**, Tm2 **+63.99**, T1 **+53.34**.
+The instrument sees the intervention.
+
+**Six pairs, 1 − ρ (ρ), on 16 / 13 / 10 items** (`rowB_distances.json` `subsets`): (0, 0′)
+**0.3487** (0.6513) / 0.3453 / 0.3520; (0, 1) **0.5689** (0.4311) / 0.5893 / 0.5994; (0, 2)
+**0.5455** (0.4545) / 0.5608 / 0.5665; (1, 2) **0.5759** (0.4241) / 0.5940 / 0.6008; (0′, 1)
+**0.6350** (0.3650) / 0.6507 / 0.6567; (0′, 2) **0.8212** (0.1788) / 0.8356 / 0.8353.
+
+**Twin trap, pre-declared rule** (`rowB_distances.json` `twin_trap`): **PASS** — d(0, 0′) =
+**0.3487** is the minimum of six; nearest foreign pair (0, 2) **0.5455**; margin **0.1968** >
+floor 0.0 (and > the value-level floor by six orders); the twin is the minimum in **16/16
+items individually** and on both secondary readings (last step **0.3622** vs **0.4775**; 57
+types without R1–R8 **0.2765** vs **0.4997**). Contrast with row A (§5f): there the nearest
+foreign pair was (0′, 1) with a 4 % Euclidean margin; here it is (0, 2) with a 36 % margin.
+n = 4: a preview, not a test.
+
+**B ↔ A** (`rowB_vs_rowA.json`): (i) within-individual ρ(B, Δ_T): **+0.389 / +0.481 / +0.563 /
++0.653** (seeds 0 / 0′ / 1 / 2), all positive, none strong (Pearson, context: **−0.011 / +0.286
+/ +0.400 / +0.107**); (ii) Spearman over the six pairwise distances between the B and A
+matrices = **0.20** — they agree on the twin being smallest and disagree on the rest (A side
+taken as 1 − ρ to match B's measure).
+
+**Preview 25k → 250k** (`rowB_preview.json`): within-run ρ(B@25,212, B@250,008) = **0.581 /
+0.675 / 0.790 / 0.358**; between-run distance ranking Spearman over the six = **0.60**; the
+twin is already the minimum at 25,212 (**0.1246**).
+
+**What the numbers show, without mechanism:** the observational per-type profile separates the
+twins from different seeds far more cleanly than the loss (which cannot) and than the causal
+profile (4 % margin), it is reproducible to 1e-7, and it is only weakly aligned with the causal
+profile within an individual; whether it predicts row A is not answerable at n = 4. Reading
+rule (Ark's design §6): no B figure is read as a test before N ≥ 8.
+
 ## 6. Provenance
 
 - `results/night2/extract_night2.py` — this session's script; builds the slim jsons, the two

@@ -177,20 +177,6 @@ language_cutoff: 2026-09-13
 
 ## IN PROGRESS
 
-### ROW-B-CELL-TYPE-ACTIVITY-PROFILES-RUN-AS-A-PREVIEW-AT-N-EQUALS-FIVE-OR-SIX: row B (65 per-type activity profiles across P0/P1/P2 and the twin trap) runs from the 72 saved checkpoints of seeds 0, 0′, 1, 2 as a preview diagnostic, never read as a test until N ≥ 8 (MEDIUM, in-progress, 2026-09-15 — Mike 09:56 «делай ряд B»; protocol `docs/proposals/mi-axis-per-cell-type-design.md`; taken by CC)
-
-- **Observed.** Mike's word (DPC Research chat, 2026-09-15 09:56 UTC: «делай ряд B»). Protocol:
-  `docs/proposals/mi-axis-per-cell-type-design.md` — 65 per-type means + within-type spread, P0
-  (cross-process reproducibility), P1, P2, the twin trap, Spearman ρ pre-fixed as the measure,
-  all 16 held-out items. Source: the 72 saved checkpoints of seeds 0, 0′, 1, 2 (`results/night1/`,
-  `results/night2/`).
-- **Inferred.** At n = 5–6 seeds the critical ρ is 0.90–1.00
-  (`docs/next-session-plan.md` §5: "Do not read row B as a test at N < 8"); this run is a
-  preview and cannot be read as a hypothesis test.
-- **First step.** CC runs the protocol against the 72 checkpoints; results to
-  `results/night2/diagnostics/rowB/`.
-- **axis:** knowledge
-- **taken:** CC · 2026-09-15
 
 ## BLOCKED ON DECISION
 
