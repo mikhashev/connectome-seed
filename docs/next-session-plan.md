@@ -114,6 +114,11 @@ is a new seed, to separate a pair-random sign from a within-wave position effect
 **Diagnostics done 2026-09-15 — see 002 §5b; the sequence's step (i) is complete, steps (ii) night 3
 and (iii) night 4 wait on Mike.**
 
+**Third pass 2026-09-15 (Ark 06:47):** whatever statistic the new pre-registration adopts, it must
+carry the item list and the aggregation rule explicitly, not the words "held-out loss" — §5c item 1
+shows the top-rung seed order changes when 3 of the 16 held-out items are dropped. Pending. Full
+detail: `docs/experiments/002-night2-seeds-1-and-2.md` §5c.
+
 ## 4. Side tasks (board entry names)
 
 - **[[THE-NIGHT-TOOLING-LIVES-IN-A-TEMPORARY-SCRATCHPAD]]** — environment out of the scratchpad:
@@ -135,6 +140,16 @@ and (iii) night 4 wait on Mike.**
   is 4.2372 = 0.52 of its own mean parameter norm, about three-quarters of the 0.59–0.78 spread
   between different-seed pairs; the loss gap is spread over 14 of 16 held-out items, not
   concentrated in one. Full detail: `docs/experiments/002-night2-seeds-1-and-2.md` §5b.
+- **Linear mode connectivity, seed 0 ↔ 0′, (0,1) as control** — on Mike's word. Interpolate the
+  weights along the path between the two end states and evaluate loss at intermediate points (tens
+  of evaluator runs, seconds of GPU); loss rising mid-path → two basins, loss not above the ends →
+  one basin and 12.7 is an offset on a flat plateau. How to treat the 17 BatchNorm buffers along
+  the path (interpolate, or take one end's) must be decided and stated, since it affects the loss.
+  Ark 06:47, full detail: `docs/experiments/002-night2-seeds-1-and-2.md` §5c items 5–6.
+- **Ranking robustness to item composition** — on Mike's word. Drop-one and drop-random-k over the
+  16 held-out items; item 1 of §5c already shows dropping the three ambush_2 items flips the
+  seed-1/2/0 order (1 < 2 < 0 → 2 < 0 < 1 on the remaining 13). Ark 06:47, full detail:
+  `docs/experiments/002-night2-seeds-1-and-2.md` §5c item 1.
 
 ## 5. What not to do
 

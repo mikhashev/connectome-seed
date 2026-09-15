@@ -421,6 +421,88 @@ via `recover_network`/`recover_decoder`, `solver.test(track_loss=False)`
 copy of `flyvis/solver.py:474-556` returning per-item values instead of only their mean, which
 agrees with the hook value to < 7e-5 in all eight cases it was cross-checked against.
 
+## 5c. Third pass on the diagnostics (Ark 06:47; per-item decomposition)
+
+1. Per-item pairwise, seed 1 vs seed 0 at 250,008 (verified by CC): seed 1 beats seed 0 on 4 of 16
+   items (the three ambush_2 items and market_2_split_00) and loses on 12; the three ambush_2 items
+   contribute −215.37 to the sum of (seed1 − seed0) (−13.46 on the 16-item mean), the other 13
+   items +148.60 (+9.29); total −66.77 ≈ 16 × (1144.6362 − 1148.8075). Dropping the three ambush_2
+   items, the order of the three seeds by the mean of the remaining 13 becomes 2 < 0 < 1 instead of
+   1 < 2 < 0 (verified by CC: 13-item sums 5203.64 / 5352.27 / 5185.36 for seeds 0 / 1 / 2). Ark's
+   reading, Reported: the quantity that ranks the individuals and the quantity that measures the
+   instrument floor are the same handful of items (ambush_2 also carries 28.5 % of the twin gap);
+   the "expensive ranking" at the top rung is ranking by who did better on the three darkest
+   sequences, and the replicate says that number moves by ±12 between runs.
+
+   CC's independent recompute of this item from `per_item_250008.csv` (full float precision,
+   not the printed table): the 4-of-16 win/loss split, the four winning items, the ambush_2
+   contribution (−215.3704, i.e. −215.37) and its 16-item-mean share (−13.4606, i.e. −13.46), and
+   the three 13-item sums (5203.6383 / 5352.2694 / 5185.3598, i.e. 5203.64 / 5352.27 / 5185.36 and
+   the resulting 2 < 0 < 1 order) all match exactly. Two sub-figures do not: CC gets the other-13
+   sum as +148.6311 (+148.63, not +148.60) and the total as −66.7393 (−66.74, not −66.77); the
+   aggregate cross-check 16 × (1144.6362 − 1148.8075) also gives −66.7408 (−66.74), agreeing with
+   CC's direct sum rather than with the −66.77 above. Both values as given above (unchanged) and as
+   recomputed are recorded; the discrepancy is ≈0.03–0.04, one order of magnitude below the −215.37
+   ambush contribution, and does not change any ordering or sign in this item.
+
+2. Relative view (verify from the CSV: per-item (seed0′ − seed0)/seed0 in %): Ark reports ambush_2
+   items move 0.37–0.49 %, mountain_1_split_01 13.4 %, mountain_1_split_02 6.7 %, bamboo_1_split_02
+   6.6 % — the twins diverge most in relative terms where the network solves well, and the absolute
+   aggregate is dominated by items it does not solve (loss scales differ 60×, 79 vs 4,764). Ark's
+   own caveat, Reported verbatim in substance: switching to a relative metric NOW would be a choice
+   made after night-2 data exists; defensible only as a dated decision with a named reason
+   (heteroscedasticity across items), never as pre-registered.
+
+   CC's own recompute from `per_item_250008.csv`, (seed0′ − seed0)/seed0 × 100: ambush_2_split_00
+   +0.4894 %, ambush_2_split_01 +0.4107 %, ambush_2_split_02 +0.3728 % (range 0.37–0.49 %, matches);
+   mountain_1_split_01 +13.4395 % (matches 13.4 %); mountain_1_split_02 +6.6691 % (matches 6.7 %);
+   bamboo_1_split_02 +6.6262 % (matches 6.6 %). All four match Ark's figures to the stated
+   precision; no discrepancy found.
+
+3. Weight-space, Ark's reframing (verified by CC from `weight_distance_at_iterations.csv` and
+   `diag2_group_breakdowns.json`): relative within-group distance for the twins at 250,008 —
+   nodes_bias 0.70, nodes_time_const 0.71, edges_syn_strength 0.77, decoder 0.29; for different-seed
+   pairs the decoder is 0.62 (e.g. (0,1): 3.7337 / 6.0257). So the twin divergence is spread evenly
+   over the core while pairs of different seeds differ mainly in the decoder — and the twins,
+   closer in the decoder, are farther apart in loss (12.18 vs 2.16 between-seed by checkpoint,
+   ratio 5.6). Ark: the "62 % of squared distance in nodes_bias" figure in §5b is a share of the
+   square and is biased toward the large-norm group; the relative measure is the fairer one.
+   Recorded as such; §5b's number stays as written.
+
+   CC re-read `diag2_group_breakdowns.json` key `0_vs_0prime_250008` directly: `dist_over_mean_norm`
+   is 0.6996 (nodes_bias), 0.7078 (nodes_time_const), 0.7746 (edges_syn_strength), 0.2938 (decoder)
+   — matches 0.70 / 0.71 / 0.77 / 0.29 above. `weight_distance_at_iterations.csv` row `(0,1)` at
+   250,008 gives `reln_decoder` 0.6196 with `d_decoder` 3.7337274807766705 /
+   `meannorm_decoder` 6.025711254447206 (3.7337/6.0257 = 0.6196) — matches the 0.62 and the
+   3.7337/6.0257 figures above exactly.
+
+4. Limits Ark names (Reported): n = 3 seeds, n = 1 pair; between-seed differences per item up to
+   177 that cancel in the aggregate — real cancellation vs a centring artefact of three seeds
+   cannot be separated, which is why item 1 is built on pairwise counts; two basins vs steep
+   landscape still open (distance, no curvature); one fly line, one rung, 16 items, one split; the
+   seed's only channel at start is the 65 nodes_bias values out of 8,161 trainable — a measurement,
+   not a fact about flyvis, mechanism unexamined.
+
+5. Ark's two proposals, Reported, decision Mike: (i) linear mode connectivity between seed 0 and
+   0′ — interpolate the weights between the two end states and evaluate the loss along the path
+   (tens of evaluator runs, seconds of GPU), with (0,1) as control: loss rising mid-path → two
+   basins; loss along the path not above the ends → one basin and 12.7 is an offset on a flat
+   plateau. This is the direct answer to the registered "chaos or flat landscape" question, from
+   files already on disk. (ii) Ranking robustness to item composition — drop-one and drop-random-k
+   over the 16 items; if the order flips when 3 of 16 are removed, the new pre-registration must
+   carry the item list and the aggregation rule, not the words "held-out loss". (iii) The rule
+   again: do not change the metric because it gives a nicer ratio; a relative-per-item metric
+   would "fix" the ratio, and that is exactly the temptation.
+
+6. CC's answer to Ark's question (verified by CC, `torch.load` on `chkpt_00071` of all four runs):
+   each checkpoint holds `network` (nodes_bias 65, nodes_time_const 65, edges_syn_strength 604
+   trainable, plus the fixed edges_sign and edges_syn_count), `decoder/flow` (7,444 elements =
+   7,427 trainable + 17 BatchNorm buffers: running_mean, running_var, num_batches_tracked), `optim`
+   and `activity_optim` (Adam state), `iteration` (stored as iteration − 1), `dt`, `val_loss`.
+   Interpolation over all 8,161 trainable parameters is therefore possible from disk; how to treat
+   the BatchNorm buffers along the path (interpolate, or take one end's) must be decided and
+   stated, since it affects the loss.
+
 ## 6. Provenance
 
 - `results/night2/extract_night2.py` — this session's script; builds the slim jsons, the two
