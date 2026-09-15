@@ -213,7 +213,7 @@ floor nearly reused for ρ.
 
 ## 4. Side tasks (board entry names)
 
-- Row B activity profiles (65 per-type means + within-type spread) from the 72 saved checkpoints of seeds 0, 0′, 1, 2, with P0 (cross-process reproducibility), P1, P2 and the twin trap, Spearman ρ pre-fixed as the measure, all 16 items — Ark's proposal `docs/proposals/mi-axis-per-cell-type-design.md`; preview, not a test; on Mike's word.
+- Row B activity profiles (65 per-type means + within-type spread) from the 72 saved checkpoints of seeds 0, 0′, 1, 2, with P0 (cross-process reproducibility), P1, P2 and the twin trap, Spearman ρ pre-fixed as the measure, all 16 items — Ark's proposal `docs/proposals/mi-axis-per-cell-type-design.md`; preview, not a test. **Running 2026-09-15**, Mike's word 09:56 «делай ряд B»; taken by CC; results to `results/night2/diagnostics/rowB/`; board [[ROW-B-CELL-TYPE-ACTIVITY-PROFILES-RUN-AS-A-PREVIEW-AT-N-EQUALS-FIVE-OR-SIX]].
 - **[[THE-NIGHT-TOOLING-LIVES-IN-A-TEMPORARY-SCRATCHPAD]]** — environment out of the scratchpad:
   recipe now in `tools/night/README.md` (this commit); remaining step is to re-create the venv
   from that recipe outside the scratchpad.
@@ -284,8 +284,10 @@ floor nearly reused for ρ.
   all on Mike's word «чини инструменты». Night 3 runs the current script unchanged.
   Consolidated as `docs/tool-hardening-package.md` (19 items, 2026-09-15); execution on Mike's
   word.
-- Research-repo start checklist (Ark 08:50) — file as `docs/CHECKLIST-research-repo.md` on Mike's
-  word «пиши чек-лист».
+- ~~Research-repo start checklist (Ark 08:50)~~ — **Done 2026-09-15**, Mike's word 09:56 «пиши
+  чек-лист». File: `docs/CHECKLIST-research-repo.md` (14 rules with incident addresses, English,
+  dense style); linked from `README.md`; board
+  [[RESEARCH-REPO-START-CHECKLIST-WRITTEN-ON-MIKES-WORD]] (closed).
 
 ## 5. What not to do
 

@@ -16,6 +16,35 @@ language_cutoff: 2026-09-13
 
 ## OPEN
 
+### THE-INSTRUMENTS-WERE-AUDITED-THE-DAY-THEY-WERE-BUILT-AND-NINETEEN-FIXES-WAIT-ON-MIKES-WORD: the code audit of the diagnostics found witnesses that cannot veto, constants never checked against the pre-registration and an undocumented null-draw rule, and nineteen fixes with falsifiers wait on Mike's word to fix the tools (HIGH, open, 2026-09-15 — Ark 08:42/08:45/09:39/09:51, Zcode 09:04, CC; consolidated `docs/tool-hardening-package.md`; Mike's word «чини инструменты»)
+
+- **Observed.** `docs/tool-hardening-package.md` (19 items): tier A, before the first analysis
+  of night 3 — items 1, 2, 15, 16 (the seven `eval_rung` invariants into every evaluation json;
+  a lattice-derived hook/per-item tolerance; a failed invariant sets `exit =
+  "state_check_failed"` instead of staying `"ok"`; an idempotence control of the evaluator);
+  tier B, before the new pre-registration — items 3a/3b (`--check-constants` against the
+  pre-registration; no numbers in identifier names), 4–14 (connectome-checked module grouping,
+  a scaled null beside the isotropic one, P0/P1/self-path as asserts, noise-band and state
+  labels on every output, script-hash provenance, one evaluation entry point, the null-draw
+  rule registered before any draw, duplicate-key refusal, per-metric-per-state floors, a paired
+  re-draw for clamp censoring), 17 (preflight for a pending reboot / free VRAM), 19 (a
+  provenance field for any quantity that crossed more than one formatter); tier C, before night
+  3 — nothing, night 3 runs the current script unchanged. Source: 002 §5h code audit (Mike's
+  question 08:40; Ark 08:42/08:45; CC's Explore agent on Sonnet; verified by CC), extended
+  09:04–09:51 with items 14–19 and rules R1–R4. Item numbering: item 18 (the base-rate check)
+  was folded into rule R2 when rules were separated from fixes; the gap is deliberate.
+- **Inferred.** None of the 19 items recomputes a recorded number — only item 14's null
+  calibration is re-run once, a second line beside the first; every falsifier is stated as a
+  concrete test that fails today and must pass after the fix.
+- **First step.** Mike's word «чини инструменты», then tier A (items 1 and 15 are tested
+  together by one test; item 16 needs a purpose-built fixture); items 5 and 13 are
+  design-first, not one-line changes. See
+  [[THE-COMPOSITION-MARGIN-OVER-ITS-FLOOR-IS-SMALLER-THAN-A-NULL-SHIFTS-MEDIAN-DELTA]] (the (a)
+  reading items 5/11 answer) and
+  [[WINDOWS-UPDATE-RESTARTS-INSIDE-THE-NIGHT-WINDOW-BECAUSE-ACTIVE-HOURS-END-AT-0600]] (item
+  17).
+- **axis:** honesty
+
 ### DATAMATE-UNLINKS-AN-OPEN-HDF5-FILE-AND-WINDOWS-REFUSES: flyvis does not build its connectome on Windows because its storage layer deletes a file while an h5py handle is still open (MEDIUM, open, 2026-09-13 — found by CC while verifying the flow)
 
 - **Observed.** `datamate/io.py`, `_write_h5`: `h5.File(path, mode="w")` is opened, the
@@ -154,13 +183,32 @@ language_cutoff: 2026-09-13
   is checking Microsoft's documentation now). Then `start_night.ps1` gets a preflight that
   refuses to launch when `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto
   Update\RebootRequired` or `…\Component Based Servicing\RebootPending` exists.
+- **Observed, 2026-09-15 (CC).** The preflight fix is now item 17 of
+  `docs/tool-hardening-package.md` (tier B, before the new pre-registration): refuse to launch
+  on a pending reboot or insufficient free VRAM, falsifier — create the `RebootRequired` key in
+  a test hive → `start_night.ps1` must refuse; today it launches. Execution waits on Mike's word
+  «чини инструменты» —
+  [[THE-INSTRUMENTS-WERE-AUDITED-THE-DAY-THEY-WERE-BUILT-AND-NINETEEN-FIXES-WAIT-ON-MIKES-WORD]].
 - **axis:** collective
 
 
 
 ## IN PROGRESS
 
+### ROW-B-CELL-TYPE-ACTIVITY-PROFILES-RUN-AS-A-PREVIEW-AT-N-EQUALS-FIVE-OR-SIX: row B (65 per-type activity profiles across P0/P1/P2 and the twin trap) runs from the 72 saved checkpoints of seeds 0, 0′, 1, 2 as a preview diagnostic, never read as a test until N ≥ 8 (MEDIUM, in-progress, 2026-09-15 — Mike 09:56 «делай ряд B»; protocol `docs/proposals/mi-axis-per-cell-type-design.md`; taken by CC)
 
+- **Observed.** Mike's word (DPC Research chat, 2026-09-15 09:56 UTC: «делай ряд B»). Protocol:
+  `docs/proposals/mi-axis-per-cell-type-design.md` — 65 per-type means + within-type spread, P0
+  (cross-process reproducibility), P1, P2, the twin trap, Spearman ρ pre-fixed as the measure,
+  all 16 held-out items. Source: the 72 saved checkpoints of seeds 0, 0′, 1, 2 (`results/night1/`,
+  `results/night2/`).
+- **Inferred.** At n = 5–6 seeds the critical ρ is 0.90–1.00
+  (`docs/next-session-plan.md` §5: "Do not read row B as a test at N < 8"); this run is a
+  preview and cannot be read as a hypothesis test.
+- **First step.** CC runs the protocol against the 72 checkpoints; results to
+  `results/night2/diagnostics/rowB/`.
+- **axis:** knowledge
+- **taken:** CC · 2026-09-15
 
 ## BLOCKED ON DECISION
 

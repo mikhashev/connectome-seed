@@ -2,6 +2,23 @@
 
 ## 2026-09-15 — closed by CC
 
+### RESEARCH-REPO-START-CHECKLIST-WRITTEN-ON-MIKES-WORD: fourteen rules distilled from this session's incidents, so a new research repository starts by reading them rather than re-deriving the principles (LOW, closed, 2026-09-15 — Mike 09:56 «пиши чек-лист»; drafted by Ark 08:50/09:39/09:51, written by CC)
+
+**Closed:** S2026-09-13.1 · 2026-09-15 · fixed · `docs/CHECKLIST-research-repo.md` written (14
+rules with incident addresses, header carrying Mike's word and the authorship line, closing
+links to `docs/tool-hardening-package.md` and `docs/preregistration-cheap-vs-expensive.md` §7);
+linked from `README.md`; verified on disk by CC · commit: not yet committed this session (Mike's
+instruction: do not commit) · closed by CC
+
+- **Observed.** Ark proposed the checklist three times (08:50, 09:39, 09:51) as the rules
+  emerged from the 002 §5h code audit and the tool-hardening package; Mike's word (DPC Research
+  chat, 2026-09-15 09:56 UTC): «пиши чек-лист». The file carries the same 14 items in the same
+  order as the rules Ark and Zcode named through the day, plus R1–R4 from
+  `docs/tool-hardening-package.md`.
+- **First step.** None — closed on completion; a future incident that adds a rule appends a
+  15th item rather than reopening this entry.
+- **axis:** honesty, reach
+
 ### NIGHT-2-RUNS-SEEDS-1-AND-2-ON-MIKES-WORD: seeds 1 and 2 trained to 250,000, sequential, no replicate, are the first between-seed distances against the run 0 / run 0′ replicate offset (HIGH, closed, 2026-09-14 — CC, from the experiment record and next-session plan)
 
 **Closed:** S2026-09-13.1 · 2026-09-15 · fixed · seed 1 (9991/001) EXIT rc=0, 250,008 iterations, 14,532.9 s; seed 2 killed at iteration 12,700 by the KB5129195 restart, partial dir renamed to flow/9991/002_killed_by_reboot, excluded under §7's resume rule; re-run as wave night2b (9991/002), started 2026-09-15T01:13:46Z, EXIT rc=0, 250,008 iterations, 14,296.6 s, done 05:12:18Z; Mike, chat 05:19Z: «прогон завершен»; record docs/experiments/002-night2-seeds-1-and-2.md and results/night2/ · commit: (this commit) · closed by CC

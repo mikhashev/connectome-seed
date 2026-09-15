@@ -134,6 +134,9 @@ CC executes everything, Ark, Johnny and Warren review. **Experiment record, adde
 and its replicate, against the pre-registration); next session:
 [docs/next-session-plan.md](docs/next-session-plan.md).
 
+Start here for the rules this repository learned the hard way:
+[docs/CHECKLIST-research-repo.md](docs/CHECKLIST-research-repo.md).
+
 ## Files
 
 ```
