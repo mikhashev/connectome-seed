@@ -282,6 +282,8 @@ floor nearly reused for ρ.
   strings, not just their count (`:149`); an idempotence control of the evaluator (evaluate twice,
   compare result and state); preflight in `start_night.ps1` for a pending reboot and free VRAM —
   all on Mike's word «чини инструменты». Night 3 runs the current script unchanged.
+  Consolidated as `docs/tool-hardening-package.md` (19 items, 2026-09-15); execution on Mike's
+  word.
 - Research-repo start checklist (Ark 08:50) — file as `docs/CHECKLIST-research-repo.md` on Mike's
   word «пиши чек-лист».
 

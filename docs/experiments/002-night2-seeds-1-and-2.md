@@ -893,6 +893,10 @@ evaluation; harmless in the night run (clamp is idempotent there) but the class 
 an idempotence control (evaluate twice, compare result and state) is proposed as a universal
 check.
 
+**Consolidated 2026-09-15:** the hardening items live in `docs/tool-hardening-package.md`; Ark
+09:39 verified the lattice arithmetic (207,987,676 × 2⁻¹⁶) and the (a) margin in lattice steps
+(≈ 52,000); the base-rate rule (item 18) and the two-formatter provenance rule (item 19) added.
+
 ## 6. Provenance
 
 - `results/night2/extract_night2.py` — this session's script; builds the slim jsons, the two
