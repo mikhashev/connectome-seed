@@ -119,6 +119,25 @@ carry the item list and the aggregation rule explicitly, not the words "held-out
 shows the top-rung seed order changes when 3 of the 16 held-out items are dropped. Pending. Full
 detail: `docs/experiments/002-night2-seeds-1-and-2.md` §5c.
 
+**Zcode 07:05 — remarks and proposals, Reported, decisions Mike:** (i) hypothesis (a) composition
+is unblocked and is the cheapest item in the queue: A = seed 0 and B = seed 1 are trained with all
+checkpoints; the T2 splice (k = 26) is a weight edit plus evaluation, minutes of GPU with the
+evaluator built by the diagnostics; the instrument floor is now computable (3 × 12.7279 = 38.18,
+3.33 %) and the 5 % bound 57.31, band non-empty; the mandatory A←A self-splice is nearly free; per
+ADR-002 composition is the project's existence condition, so while (b) sits in instrument noise,
+(a) is the load-bearing hypothesis and needs no night; caveat: the splice effect will also be
+judged mostly by ambush_2/bandage_1, so a per-item report beside the aggregate is mandatory; Zcode
+offers to run it his side (his submodels, Ark reviewing) on Mike's word. (ii) Connectivity as in §4
+with the A↔A control. (iii) drop-k yes with the pre-stated consequence. (iv) Night 3 = seeds 3, 4 —
+Zcode recommends giving the word (after pausing updates): checkpoints are metric-agnostic and
+population-agnostic, any N needs them, they push the CI to n = 5, the GPU idles otherwise; night 4
+as agreed (new seed first, replicate of seed 1 second). Strategic question (Zcode): the next
+pre-registration must choose the population; seeds differ by 65 biases plus data order and
+converge by 250,000 into a band below the instrument floor, so the population was nearly
+homogeneous by construction — "should variation stay seed-only" stands above "how to fix the
+expensive metric"; §8 of the current pre-registration fences structural variation, the next one
+may choose anew; Mike's decision, all numbers now on the table.
+
 ## 4. Side tasks (board entry names)
 
 - **[[THE-NIGHT-TOOLING-LIVES-IN-A-TEMPORARY-SCRATCHPAD]]** — environment out of the scratchpad:
@@ -146,10 +165,21 @@ detail: `docs/experiments/002-night2-seeds-1-and-2.md` §5c.
   one basin and 12.7 is an offset on a flat plateau. How to treat the 17 BatchNorm buffers along
   the path (interpolate, or take one end's) must be decided and stated, since it affects the loss.
   Ark 06:47, full detail: `docs/experiments/002-night2-seeds-1-and-2.md` §5c items 5–6.
+  - Design (Ark 06:52, Zcode 07:05; on Mike's word): variant 2 primary — interpolate the 8,161
+    weights, recompute the BatchNorm running statistics by a forward pass on training data at each
+    point (no gradient), eval mode; variant 1 in the same run — interpolate weights and the 17
+    buffers linearly (a path in stored-parameter space; a barrier only on variant 1 is a storage
+    artefact); variant 3 (buffers from one end) rejected as not a linear path; control A↔A
+    self-path (must be flat; isolates buffer-recompute artefacts); control (0,1) by the same
+    method as the main path; resolution chosen for a barrier of order 12.7 on the aggregate
+    (≈ 20–30 points per path), so that "no barrier" means something; per-item profile reported
+    beside the aggregate.
 - **Ranking robustness to item composition** — on Mike's word. Drop-one and drop-random-k over the
   16 held-out items; item 1 of §5c already shows dropping the three ambush_2 items flips the
   seed-1/2/0 order (1 < 2 < 0 → 2 < 0 < 1 on the remaining 13). Ark 06:47, full detail:
   `docs/experiments/002-night2-seeds-1-and-2.md` §5c item 1.
+  - Pre-stated consequence: if the order survives drop-one but not drop-3, the new
+    pre-registration carries the item list and the aggregation rule.
 
 ## 5. What not to do
 

@@ -503,6 +503,11 @@ agrees with the hook value to < 7e-5 in all eight cases it was cross-checked aga
    the BatchNorm buffers along the path (interpolate, or take one end's) must be decided and
    stated, since it affects the loss.
 
+**Zcode 07:05 (verified by CC):** per-item decomposition recomputed and confirmed (4/16, −215.37,
++148.63, order 2 < 0 < 1 without ambush_2; twins 14/16, 47 % / 28 %); the CI and the per-item view
+are complementary (the interval says σ is not sampling luck; the decomposition says what it is made
+of); the seed also drives data order (run_individual.py:208-210, 623-625).
+
 ## 6. Provenance
 
 - `results/night2/extract_night2.py` — this session's script; builds the slim jsons, the two
