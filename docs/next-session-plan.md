@@ -275,6 +275,10 @@ floor nearly reused for ρ.
   processes to ±4e-4. Full detail: 002 §5g.
 - ROADMAP: Ark 08:23: formulations after night 3, since night 3 decides which of the three
   outcomes is written into Phase 2 first; Zcode concurs.
+- Tool-hardening package (Ark 08:42/08:45; CC) — nine items, see 002 §5h; on Mike's word «чини
+  инструменты».
+- Research-repo start checklist (Ark 08:50) — file as `docs/CHECKLIST-research-repo.md` on Mike's
+  word «пиши чек-лист».
 
 ## 5. What not to do
 

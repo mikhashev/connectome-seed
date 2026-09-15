@@ -596,6 +596,15 @@ must carry the item list and the aggregation rule explicitly, not the words "hel
 
 **Files:** `results/night2/diagnostics/dropk/`.
 
+**2026-09-15 — Basis note (Ark 08:45; CC):** drop-k and every per-item quantity in this record
+are computed on checkpoint 250,008 by the per-item path; the registered rung statistic is the
+training-time hook at iteration 250,000, which has no per-item decomposition and no saved state
+(checkpoints are at 246,412 and 250,008). The two states order the seeds differently — hook
+@250,000: 1 < 0 < 2; checkpoint @250,008: 1 < 2 < 0 — eight iterations apart. Consequence (Ark): a
+new pre-registration that carries an item list and an aggregation rule adopts the per-item path on
+a saved state as its instrument; it is not a refinement of the registered hook. On the same state
+the two paths agree to 1e-5 (§5b).
+
 ## 5f. Cell-type ablation profiles (Ark 07:39, Zcode 07:43; unregistered diagnostic; CC's subagent on Opus; verified by CC)
 
 **Status: unregistered diagnostic**, not a test of hypothesis (b)/(b2) and not a rung.
@@ -663,6 +672,15 @@ these data (the maximum over types); any other comparison (mean, or R2's own twi
 judge how surprising the twin margin is.
 
 **Files:** `results/night2/diagnostics/ablation/`.
+
+**2026-09-15 — Noise band for the sign claim (Ark 08:45; computed by CC from
+`ablation_profiles.csv`, `delta_16`):** repeatability of a per-type Δ_T in a fresh process is
+≤ 6.1e-4 (§5f), so the noise band is 2e-3. Types inside it: exactly one, Mi11, in all four runs
+(Δ ≈ 0.000; the ablation does not touch it). Types with |Δ_T| < 1: 8 / 5 / 6 / 8 per run (seeds 0
+/ 0′ / 1 / 2); < 10: 20 / 20 / 18 / 18. Of the 44 types whose sign agrees across all four runs, 19
+have min |Δ_T| < 10 in at least one run (Am, C3, L3, L4, Mi10, Mi15, Mi9, R6, T1, T4a, …): the sign
+agreement is not a coin flip at the noise level, but 19 of the 44 are small effects. Path noise
+normalised to the loss (Ark): hook 0.022 ppm, per-item 0.52–0.85 ppm, ≈ 40×.
 
 ## 5g. Composition (a): registered splice T2 B→A with instrument control and null-shift calibration (Zcode 07:43 bundle, Ark's calibration; CC's subagent on Opus; verified by CC)
 
@@ -748,6 +766,51 @@ Three numbers side by side — isotropic null median 46.07 / real-module transpl
 registered 38.58 — recorded without interpretation; the reading of (a)'s status remains decision
 6. Note: an A←1 evaluation in the same process as the other three is running (Ark 08:28) and
 will be appended as `extra4_same_process.json`.
+
+**2026-09-15 — Reviewer's reading of the null (Ark 08:45, Reported):** the three achievable
+transplants are not monotone in norm (0.297 → +13.98, 0.346 → +10.02, 0.382 → +38.58), so no
+'effect from norm' model exists even among achievable transplants, and a population null cannot be
+built from n = 3; the isotropic null is wrong not because it is high but because it samples a
+region the trained network does not occupy; the (a) verdict therefore meets the same wall as (b): a
+population is needed. Recorded, not adopted; decision 6 stands.
+
+## 5h. Code audit of the diagnostics (Mike's question 08:40; Ark 08:42/08:45; CC's Explore agent on Sonnet; verified by CC)
+
+(i) `hook_eval` (`diag1_eval_paths.py:151-173`) is a copy of the run-time hook path and reproduces
+the stored val_loss to 1e-4 — the anchor of all four diagnostics; (ii) neither `hook_eval` nor
+`per_item_eval` draws from any RNG during the loop (IndexSampler `flyvis/task/tasks.py:105,108`;
+augmentation off disables `hex.py:320`; dropout off in eval); the RNG save/restore in `hook_eval`
+(`:159-160, 168-171`) is defensive; the scheduler is no-op in `hook_eval` (`:161`) and real in
+`per_item_eval` (`:182`, `solver.py:504`) and the paths agree to 1e-5, so the scheduler does not
+affect the loss; the shared noise source is `cudnn.deterministic = False` (`:92-93`); (iii)
+calibration and the registered splice use the same `evaluate()` (`splice_a.py:169-182`, called at
+`:309, :319, :341` and `:425, :428`), functions imported from `diag1_eval_paths` (`:58-65`); (iv)
+hard-coded constants in `splice_a.py:73-86` (`PREREG_SOURCES`, `K = 26`, `FLOOR_REL`,
+`BASIS_PREREG`, `FLOOR_ABS_PREREG`, `BOUND_ABS_PREREG`, `STORED_LA`) are never checked against the
+pre-registration document (cited only in a docstring, `:4`); the only live check is
+`PREREG_SOURCES` against the source-type set computed from the network (`:127-141, :193-195`,
+`assert len == K` at `:239`); the T2 index and the held-out list are computed live (`:135`;
+`diag1_eval_paths.py:204-206`); (v) `run_individual.py:550-558` records seven post-evaluation
+invariants (`lr_unchanged`, `pen_lr_unchanged`, `dt_unchanged`, `scheduler_iter_unchanged`,
+`back_in_train_mode`, `was_in_train_mode_before`, `dataset_augment_restored`); none of the six
+diagnostics scripts records any of them; what they do assert (table): diag1 — dt vs checkpoint,
+checkpoint count, 0/0′ iteration alignment; splice_a — reproduction of the stored value to 1e-3
+(assert), self-splice bitwise (recorded, not asserted); ablation — clamp = 0, hook state,
+`_HOOK_SEEN` single-variable check (assert), P0/P1 (recorded, not asserted); connectivity — key
+sets, dt (assert), self-path and (0,1) controls (recorded); diag2 — counts; dropk — no solver.
+(vi) the isotropic null draw `u = rng.standard_normal(K); u /= ‖u‖; u *= r` is documented in the
+code with the non-negativity caveat but registered nowhere, and it decides the (a) reading. (vii)
+`evaluate()` computes both paths and never compares them; the bit-identical 0.0 was found by hand a
+day later.
+
+**Tool-hardening package, proposed (Ark 08:42/08:45, CC), on Mike's word, none of it recomputes
+recorded numbers:** the seven invariants into `hook_eval` and every evaluation json;
+`assert |hook − per_item_mean| < tol` with tol from the measured 0.85 ppm × loss × 3;
+`--check-constants` reading §2/§5 from the document; module grouping recomputed from the
+connectome beside `PREREG_SOURCES`; a per-slot scaled null beside the isotropic one; P0/P1/self-path
+as asserts with thresholds in `ablation.py`/`connectivity.py`; the 250,008 basis note above. Also
+Ark's seven-line research-repo start checklist with incident addresses, to be filed as
+`docs/CHECKLIST-research-repo.md` on Mike's word.
 
 ## 6. Provenance
 
