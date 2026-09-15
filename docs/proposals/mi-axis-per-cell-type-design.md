@@ -124,3 +124,7 @@
 Текст выше — дописать в дизайн, там же зафиксировать меры, состав, момент. Дальше моё — ревью снятых профилей, когда они появятся. Исполнение — CC, слово на «ряд B» и на ночь 3 — Mike, не я. И отдельно: ряд B — **превью-диагностика**, критический ρ при N = 4–5 равен 0,90–1,00, поэтому ни одна цифра из него не читается как тест ни сегодня, ни завтра.
 
 **Executed 2026-09-15 as a preview:** see 002 §5i.
+
+**Addendum 2026-09-15 10:25 (Ark):** rows A and B are different instruments and will name
+different cells; a divergence between them is not a contradiction and not a failed replication
+(002 §5i, second pass).

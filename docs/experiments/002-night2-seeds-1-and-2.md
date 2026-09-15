@@ -1014,6 +1014,57 @@ Seeds 3 and 4 (night 3) add two rungs to the ladder and two points to the 25k→
 the R2 reading rule of the plan §2a applies to the causal profile, and row B now has its own
 pre-declared reading: the twin pair must stay the minimum in every item.
 
+**Second pass (Zcode 10:25, Ark 10:25; recorded by CC):**
+
+1. Zcode's independent recomputation matches CC's: the six 1−ρ distances and ρ(B, Δ_T) 0.389 /
+0.481 / 0.563 / 0.653 exactly. His z-score view of seed 2's row-B profile against the four-seed
+distribution: top types TmY9 (+1.50), L4 (+1.49), Mi9 (+1.49), Tm28 (−1.47), L5 (+1.47);
+z(R2) = 0.09 — R2 does not stand out in any reading. CC's T5d/T5c/T2 top (vs seed 0) is the same
+fact in another reference frame, dominated by seed 0's own T5c/T5d outlier (41.6 / 40.6); the
+invariant across frames is that seed 2's row-B anomaly is not on R2. Zcode: the causal and
+observational channels are not interchangeable — on one individual they point to different
+places; a new pre-registration keeps both rows on the N ≥ 8 population with separate questions
+(B: is the difference visible cheaply; A: where is it causal); choosing one channel because the
+other separated the twins less would be choice by outcome. Aside, no interpretation: L4 and Mi9
+are among T2's 24 input source types.
+2. Ark: the channels do not merely point at different cells — on R2 they give opposite signs:
+activity 3.64 (seed 0) vs 1.97 (seed 2), i.e. 0.54×, while necessity is +459 vs +21,157, i.e.
+46×. Row B measures how much a node works; row A measures how much breaks without it; a busy
+node can be redundant and a quiet one load-bearing. Withdrawn by Ark: his earlier statement that
+the R2 finding "would strengthen to two instruments" — R2 remains a one-instrument finding,
+recorded plainly; and the "36 % vs 4 % margin" is not a comparison of instrument quality, since
+the quantities differ (the observational channel is a precise instrument by nature, the causal
+one coarser by nature).
+3. Amplitude floats between twins, rank does not (Ark, on CC's numbers): T5c 41.6 vs 23.8
+(1.75×), profile sd 7.4 vs 5.2 (1.42×) between the two runs of one seed. Consequences: the
+pre-fixed choice of Spearman ρ is confirmed by measurement, not taste; any future claim "type Y
+burns in seed X" must be rank-based, or exceed the twin amplitude band (41.6 vs 11.1 = 3.75× is
+a real difference; 20 vs 15 is run noise). The twin amplitude band is the measured
+non-determinism floor of row B, living in amplitude, absent in rank (16/16).
+4. Compression hypothesis killed by the same data (Ark, withdrawing his own proposal): seed 1 is
+the most compressed (sd 2.4) and the most stable 25k→250k (0.79); seed 2 (sd 2.7) the least
+stable (0.36) — recorded as proposed and refuted so it is not proposed again. Zcode: Spearman ρ
+is scale-invariant, so compression alone adds no noise. Open: why seed 2's self-consistency is
+0.36 — no explanation.
+5. Confound named before night 3 (Ark): compression splits by NIGHT, not by individual — night
+1's seeds 0 and 0′ uncompressed (7.4 / 5.2, one wave), night 2's seeds 1 and 2 compressed
+(2.4 / 2.7, different waves); the 2–3× gap exceeds the twin band 1.42×, so the difference is
+real, but with two nights "individual" and "session" predict the same. Night 3's (3, 4) is the
+second pair run start-to-end in one wave after (0, 0′): within-pair vs between-pair closeness
+with two same-wave pairs is the only free way to begin separating individual from night.
+6. ρ ≈ −0.9 between row-B and weight distances over five foreign pairs (Ark, reasoning not a
+computed value): there are four independent objects and the five pairs are derived (seeds 0 and
+0′ enter three pairs each); a permutation threshold runs over 4! = 24 relabellings, so the
+smallest one-sided p is ≈ 1/24 ≈ 0.042 — the quantity cannot be established on this population
+at any ρ. Record: "indicative by construction, not by sample size".
+7. Night 3 reading (Ark): the registered reading stays as written — R2 excess above 2863 in the
+causal profile; the other two axes that appeared today (row-B activity on T5c/T5d; profile
+compression) are looked at as exploratory, without a verdict; adding readings for them now would
+be choice after data.
+8. Design addendum (Ark, item 7): the design says A and B are different instruments but not the
+operational consequence — they will name DIFFERENT cells, and that is neither a contradiction
+nor a failed replication; without that line the next reader concludes "R2 did not replicate".
+
 ## 6. Provenance
 
 - `results/night2/extract_night2.py` — this session's script; builds the slim jsons, the two

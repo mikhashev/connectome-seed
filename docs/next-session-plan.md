@@ -103,6 +103,11 @@ at n = 5–6 (critical ρ 0.90–1.00), never read as a test.
 (the largest twin per-type discrepancy), the R2 finding becomes a repeated observation, still
 not a test.
 
+**Exploratory axes for night 3 (Ark 10:25):** the registered reading is R2 in the causal profile
+only; row-B activity on T5c/T5d and profile compression (sd, range) are recorded as exploratory,
+no verdict; night 3's (3, 4) is the second same-wave pair — within-pair vs between-pair closeness
+across the two same-wave pairs is the first free separation of individual from night.
+
 ## 3. Branches after night 2
 
 **2026-09-15:** the branch below is now decidable with the numbers in the Result paragraph
