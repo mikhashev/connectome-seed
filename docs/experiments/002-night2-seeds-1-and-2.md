@@ -774,6 +774,37 @@ built from n = 3; the isotropic null is wrong not because it is high but because
 region the trained network does not occupy; the (a) verdict therefore meets the same wall as (b): a
 population is needed. Recorded, not adopted; decision 6 stands.
 
+### Clamp censoring of the null calibration (Zcode 09:04; quantified by CC's subagent on Opus; verified by CC)
+
+`Network.forward()` calls `self.clamp()` on every pass (`flyvis/network/network.py:527`); `clamp()`
+applies `param.data.clamp_(0)` **in place** to every `non_negative`-configured, `requires_grad`
+parameter (`:490-496`) — only `edges_syn_strength` carries `clamp_config = non_negative`;
+`nodes_bias` and `nodes_time_const` are unclamped. The "training only" claim in
+`splice_a.py:232-236` and the diagnostics README is **wrong**; verified directly (−0.5 written to a
+synapse slot reads back 0.0 after one evaluation). So every calibration draw was evaluated
+**censored at zero**. All 20 draws were regenerated bitwise-identical from seeds 0…19 (max abs diff
+0.0); each drew 4–12 negative synapse slots (mean 7.9, median 8.0 of 24), 9 of 20 also a negative
+(unclamped) `nodes_time_const`; pre-clamp norm 0.38185 for every draw; **post-clamp effective norm
+min 0.2198, mean 0.2985, median 0.2964, max 0.3676** — 78.2 % of r survived on average. The two
+real-direction reference shifts, recomputed the same way: −v 0.38185 → 0.32325 (84.7 % survived);
++2v 0.76371 → 0.58365 (76.4 %). None of the transplants actually written — registered splice A←B,
+self-splice A←A, reverse splice B←A, and the achievable-null transplants A←0′/A←2 — carried a
+negative value anywhere among their 26 slots (module minima: A 0.0 at T5d→T2, B 0.0 at T5b→T2, 0′
+4.106e-05, 2 1.117e-05); **clamp was a no-op on every measured splice**, so the headline numbers of
+this section stand unchanged. The four divergent draws (seeds 4, 9, 17, 18) are not distinguished
+from the 16 kept by censoring (mean 7.0 vs 8.125 negative slots — divergent drew *fewer*),
+post-clamp norm (0.3098 vs 0.2956), or time-constant sign (1 of 4 negative vs 8 of 16) — the
+divergence is unlocalised by these data. Reading (Zcode, Reported): the null shifts were smaller
+perturbations than declared and still moved the loss more than the transplant on the median draw,
+so the calibration's conclusion survives and strengthens; Ark's "region the network does not
+occupy" phrasing is corrected to "censored to an achievable region." Provenance note (Zcode):
+`splice_a.py` on disk (mtime 2026-09-15T07:58:14Z) postdates the calibration (07:54:06Z) and the
+splice (07:55:37Z) — a per-item stage was added afterward — so the byte-exact script that produced
+the registered splice value is not on disk; night-1 derivative artefacts came from an uncommitted
+interactive step, night-2's from a script with an equality check.
+
+**Files:** `results/night2/diagnostics/splice_a/extra5_clamp_censoring.json`.
+
 ## 5h. Code audit of the diagnostics (Mike's question 08:40; Ark 08:42/08:45; CC's Explore agent on Sonnet; verified by CC)
 
 (i) `hook_eval` (`diag1_eval_paths.py:151-173`) is a copy of the run-time hook path and reproduces
@@ -811,6 +842,56 @@ connectome beside `PREREG_SOURCES`; a per-slot scaled null beside the isotropic 
 as asserts with thresholds in `ablation.py`/`connectivity.py`; the 250,008 basis note above. Also
 Ark's seven-line research-repo start checklist with incident addresses, to be filed as
 `docs/CHECKLIST-research-repo.md` on Mike's word.
+
+### Bit-identity test on the reverse-splice state (Ark 08:54 ulp argument; run by CC's subagent on Opus; `extra6_bit_identity_test.json`)
+
+Two fresh processes, hook and per-item interleaved 5+5 on the reverse-splice state (B = seed 1
+with T2 from A = seed 0) and on baseline B, each preceded by a direct clamp probe. Process 1
+(pid 42188): 9 of 10 values distinct on the reverse state, 9 of 10 on baseline; process 2
+(pid 37260): 10 of 10 and 10 of 10. Spreads: reverse hook-path 1.98e-4 / 3.66e-4
+(process 1/2), reverse per-item-path 2.75e-4 / 7.02e-4; baseline spreads correspondingly
+smaller. Determinism flags identical across both processes (`cudnn.deterministic` False,
+`cudnn.benchmark` False, `torch.are_deterministic_algorithms_enabled()` False,
+`cudnn.allow_tf32` True, `matmul.allow_tf32` False, `float32_matmul_precision` "highest",
+cuDNN 91002, CUDA 12.8, torch 2.9.1+cu128, one sm_12.0 device). **Conclusion: candidate (B)** —
+within a process the two paths are not bit-deterministic. Correction to the ulp argument: values
+lie on a lattice of step 2⁻¹⁶ = 1.52588e-05 on the reverse-splice state (2⁻²¹ = 4.768e-07 on
+baseline), i.e. the resolution is set by float32 accumulation upstream, not the float64 ulp
+(4.55e-13); the whole observed spread is only 25–46 lattice steps on the reverse state, so the
+probability of an exact equality between two independent values is of order 1/40, not ~1e-9.
+Exact equalities were directly observed: 2 of the 180 within-process unordered pairs (process 1:
+one hook = one per-item mean on the reverse state at 3173.6402893066406; process 1: two per-item
+repeats equal on baseline at 1144.636215209961), and pooling both processes, 4 of 190 pairs on the
+reverse state (2.1 %, 3 of the 100 cross-process pairs) and 1 of 190 on baseline. The 07:56
+equality is recorded as **a lattice coincidence with a measured rate ≈ 1–2 %, mechanism named**
+(the coarse float32-derived lattice, not float64 rounding) — not as "chance float accumulation."
+
+### Night-tooling audit (Mike 09:35; Zcode 09:36, Ark 09:36; verified by CC at the lines)
+
+Zcode's eight confirmed properties: seeding with a bias-seed assert; the hook fires exactly at the
+registered rungs (`solver_iteration_at_hook` = rung − 1); validation via `solver.test` with
+augmentation off, batch 1, 16 items; waves run strictly sequentially via `pr.wait()`, no retries;
+a refusal on an existing run directory, no resume used; checkpoints loaded strict in the
+diagnostics; determinism left off by `start_night.ps1`, recorded honestly. His two notes: no
+preflight for a pending reboot or free VRAM; `start_night.ps1` is the only safe entry point, since
+bare `launch_wave.py` defaults to concurrent jobs.
+
+Ark's two findings, verified by CC at the lines: (i) `run_individual.py:572` appends a failed
+invariant set to `errors` and logs it, but `rec["exit"] = "ok"` is set unconditionally at `:635`
+and the return code follows it (`return 0 if rec["exit"] == "ok" else 1` at `:673`) — **the
+witness records but cannot veto**; `night_report.py:149` prints only `errors: {n}`, the count.
+(ii) `night_report.py` writes checkpoint CSVs through `r4()` (`:60-64`, a fixed-4-decimal /
+`"n/a"` formatter), so night-1's `results/night1/night_report_checkpoints.csv` (e.g.
+`1212.5556`) is quantised at 1e-4 and any claim at 1e-5 is impossible from it; night-2's four-way
+`results/night2/night_report_checkpoints.csv` was written by `extract_night2.py` with full floats
+(`1212.5555891990662`) and is what this session's diagnostics used. (iii) The registered rung
+hook fires at k = 250,000 while flyvis's checkpoint grid ends at 250,008 — two moments eight
+iterations apart, neither declared in advance; this is the mechanism behind the hook-vs-checkpoint
+gaps and order flips already noted in §5b/§5e — the training ran 8 iterations past the registered
+250,000. (iv) None of the seven invariants checks that network parameters are unchanged by an
+evaluation; harmless in the night run (clamp is idempotent there) but the class is unwitnessed —
+an idempotence control (evaluate twice, compare result and state) is proposed as a universal
+check.
 
 ## 6. Provenance
 

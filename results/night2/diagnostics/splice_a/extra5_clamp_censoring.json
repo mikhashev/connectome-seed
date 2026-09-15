@@ -1,0 +1,1100 @@
+{
+ "utc": "2026-09-15T09:30:25Z",
+ "what": "TASK 1 of the reviewers' code-audit follow-up (Zcode 09:04 / Ark 08:54): how much of each recorded null-shift draw was censored by Network.clamp(). Arithmetic only -- no model was built, no draw re-run, no checkpoint read.",
+ "clamp_mechanism": {
+  "forward_calls_clamp": "flyvis/network/network.py:527 -- self.clamp() on every forward",
+  "clamp_body": "flyvis/network/network.py:490-496 -- param.data.clamp_(0) IN PLACE for clamp_config == 'non_negative' when param.requires_grad",
+  "clamp_config_read_from": "t2_module_indices.json:clamp_config",
+  "clamp_config": {
+   "nodes_bias": null,
+   "nodes_time_const": null,
+   "edges_sign": null,
+   "edges_syn_count": null,
+   "edges_syn_strength": "non_negative"
+  },
+  "slots_subject_to_clamp": "the 24 edges_syn_strength slots (2..25)",
+  "slots_NOT_clamped": "slot 0 nodes_bias[T2] and slot 1 nodes_time_const[T2] (clamp_config null for both)",
+  "symmetry_masks_present": {
+   "nodes_bias": 0,
+   "nodes_time_const": 0,
+   "edges_sign": 0,
+   "edges_syn_count": 0,
+   "edges_syn_strength": 0
+  },
+  "readme_correction": "splice_a/README.md and splice_a.py:232-236 state that clamp() is called in training only and that no evaluation in the package clamps.  That statement is FALSE: forward() clamps on every pass, so every evaluated state was evaluated censored at zero and the in-memory module was mutated in place."
+ },
+ "regeneration_proof": {
+  "method": "each draw's u regenerated exactly as stage_calib does (np.random.default_rng(seed).standard_normal(26), then /||u||*r with r = calibration.json:r_norm_v) and compared to the stored draws[i].u",
+  "r_norm_v": 0.38185439431963675,
+  "all_20_bitwise_equal_to_stored_u": true,
+  "max_abs_diff_over_all_draws": 0.0,
+  "per_seed": {
+   "0": {
+    "bitwise_equal_to_stored_u": true,
+    "max_abs_diff": 0.0
+   },
+   "1": {
+    "bitwise_equal_to_stored_u": true,
+    "max_abs_diff": 0.0
+   },
+   "2": {
+    "bitwise_equal_to_stored_u": true,
+    "max_abs_diff": 0.0
+   },
+   "3": {
+    "bitwise_equal_to_stored_u": true,
+    "max_abs_diff": 0.0
+   },
+   "4": {
+    "bitwise_equal_to_stored_u": true,
+    "max_abs_diff": 0.0
+   },
+   "5": {
+    "bitwise_equal_to_stored_u": true,
+    "max_abs_diff": 0.0
+   },
+   "6": {
+    "bitwise_equal_to_stored_u": true,
+    "max_abs_diff": 0.0
+   },
+   "7": {
+    "bitwise_equal_to_stored_u": true,
+    "max_abs_diff": 0.0
+   },
+   "8": {
+    "bitwise_equal_to_stored_u": true,
+    "max_abs_diff": 0.0
+   },
+   "9": {
+    "bitwise_equal_to_stored_u": true,
+    "max_abs_diff": 0.0
+   },
+   "10": {
+    "bitwise_equal_to_stored_u": true,
+    "max_abs_diff": 0.0
+   },
+   "11": {
+    "bitwise_equal_to_stored_u": true,
+    "max_abs_diff": 0.0
+   },
+   "12": {
+    "bitwise_equal_to_stored_u": true,
+    "max_abs_diff": 0.0
+   },
+   "13": {
+    "bitwise_equal_to_stored_u": true,
+    "max_abs_diff": 0.0
+   },
+   "14": {
+    "bitwise_equal_to_stored_u": true,
+    "max_abs_diff": 0.0
+   },
+   "15": {
+    "bitwise_equal_to_stored_u": true,
+    "max_abs_diff": 0.0
+   },
+   "16": {
+    "bitwise_equal_to_stored_u": true,
+    "max_abs_diff": 0.0
+   },
+   "17": {
+    "bitwise_equal_to_stored_u": true,
+    "max_abs_diff": 0.0
+   },
+   "18": {
+    "bitwise_equal_to_stored_u": true,
+    "max_abs_diff": 0.0
+   },
+   "19": {
+    "bitwise_equal_to_stored_u": true,
+    "max_abs_diff": 0.0
+   }
+  },
+  "cross_check_recorded_negative_count": "every row's n_syn_slots_negative_recorded_in_calibration_json equals the recomputed n_syn_slots_negative_of_24",
+  "negative_counts_all_match": true
+ },
+ "float32_note": "the module is written into a float32 parameter tensor, so every vector here is rounded to float32 before the negativity test and the norms; this is what the GPU actually held.",
+ "draws": [
+  {
+   "seed": 0,
+   "excluded_as_divergent": false,
+   "n_syn_slots_negative_of_24": 8,
+   "n_syn_slots_negative_recorded_in_calibration_json": 8,
+   "negative_syn_slot_labels": [
+    "C2->T2",
+    "Mi3->T2",
+    "Mi9->T2",
+    "Mi13->T2",
+    "T3->T2",
+    "T5d->T2",
+    "Tm2->T2",
+    "Tm3->T2"
+   ],
+   "most_negative_syn_value": -0.1650482714176178,
+   "sum_of_negative_syn_mass_removed_by_clamp": 0.4901716629974544,
+   "n_node_slots_negative_of_2_NOT_CLAMPED": 0,
+   "node_bias_after_shift": 0.5245050191879272,
+   "node_time_const_after_shift": 0.00791857298463583,
+   "norm_u_exact": 0.3818543943196367,
+   "pre_clamp_norm": 0.3818543952046134,
+   "post_clamp_effective_norm": 0.2704099906603863,
+   "post_over_pre": 0.708149478063463,
+   "recorded_delta_vs_base": 35.27882480621338,
+   "recorded_abs_delta": 35.27882480621338,
+   "recorded_L": 1184.0862746238708
+  },
+  {
+   "seed": 1,
+   "excluded_as_divergent": false,
+   "n_syn_slots_negative_of_24": 9,
+   "n_syn_slots_negative_recorded_in_calibration_json": 9,
+   "negative_syn_slot_labels": [
+    "L5->T2",
+    "Mi1->T2",
+    "T3->T2",
+    "T5d->T2",
+    "Tm3->T2",
+    "Tm4->T2",
+    "Tm16->T2",
+    "TmY15->T2",
+    "TmY18->T2"
+   ],
+   "most_negative_syn_value": -0.20215892791748047,
+   "sum_of_negative_syn_mass_removed_by_clamp": 0.6050368621945381,
+   "n_node_slots_negative_of_2_NOT_CLAMPED": 0,
+   "node_bias_after_shift": 0.5425564050674438,
+   "node_time_const_after_shift": 0.08917848020792007,
+   "norm_u_exact": 0.38185439431963675,
+   "pre_clamp_norm": 0.38185438370409136,
+   "post_clamp_effective_norm": 0.21977601466751795,
+   "post_over_pre": 0.5755492775430017,
+   "recorded_delta_vs_base": 69.18881893157959,
+   "recorded_abs_delta": 69.18881893157959,
+   "recorded_L": 1217.996268749237
+  },
+  {
+   "seed": 2,
+   "excluded_as_divergent": false,
+   "n_syn_slots_negative_of_24": 7,
+   "n_syn_slots_negative_recorded_in_calibration_json": 7,
+   "negative_syn_slot_labels": [
+    "L4->T2",
+    "L5->T2",
+    "Mi1->T2",
+    "T2->T2",
+    "Tm3->T2",
+    "Tm16->T2",
+    "TmY15->T2"
+   ],
+   "most_negative_syn_value": -0.16677013039588928,
+   "sum_of_negative_syn_mass_removed_by_clamp": 0.3829627139493823,
+   "n_node_slots_negative_of_2_NOT_CLAMPED": 1,
+   "node_bias_after_shift": 0.5302338004112244,
+   "node_time_const_after_shift": -0.027096804231405258,
+   "norm_u_exact": 0.38185439431963675,
+   "pre_clamp_norm": 0.38185439733308235,
+   "post_clamp_effective_norm": 0.2873412464066304,
+   "post_over_pre": 0.7524890335516801,
+   "recorded_delta_vs_base": 45.92734909057617,
+   "recorded_abs_delta": 45.92734909057617,
+   "recorded_L": 1194.7347989082336
+  },
+  {
+   "seed": 3,
+   "excluded_as_divergent": false,
+   "n_syn_slots_negative_of_24": 7,
+   "n_syn_slots_negative_recorded_in_calibration_json": 7,
+   "negative_syn_slot_labels": [
+    "C2->T2",
+    "Mi1->T2",
+    "Mi2->T2",
+    "Mi3->T2",
+    "T2->T2",
+    "T5d->T2",
+    "Tm16->T2"
+   ],
+   "most_negative_syn_value": -0.12216640263795853,
+   "sum_of_negative_syn_mass_removed_by_clamp": 0.25478235533228144,
+   "n_node_slots_negative_of_2_NOT_CLAMPED": 1,
+   "node_bias_after_shift": 0.6472674012184143,
+   "node_time_const_after_shift": -0.14805985987186432,
+   "norm_u_exact": 0.3818543943196367,
+   "pre_clamp_norm": 0.38185440108074264,
+   "post_clamp_effective_norm": 0.34769846775511476,
+   "post_over_pre": 0.910552469137561,
+   "recorded_delta_vs_base": 34.26790404319763,
+   "recorded_abs_delta": 34.26790404319763,
+   "recorded_L": 1183.075353860855
+  },
+  {
+   "seed": 4,
+   "excluded_as_divergent": true,
+   "n_syn_slots_negative_of_24": 8,
+   "n_syn_slots_negative_recorded_in_calibration_json": 8,
+   "negative_syn_slot_labels": [
+    "C2->T2",
+    "Mi1->T2",
+    "Mi3->T2",
+    "T5d->T2",
+    "Tm2->T2",
+    "Tm4->T2",
+    "Tm16->T2",
+    "TmY18->T2"
+   ],
+   "most_negative_syn_value": -0.12937332689762115,
+   "sum_of_negative_syn_mass_removed_by_clamp": 0.6429276950657368,
+   "n_node_slots_negative_of_2_NOT_CLAMPED": 0,
+   "node_bias_after_shift": 0.4692971408367157,
+   "node_time_const_after_shift": 0.007869625464081764,
+   "norm_u_exact": 0.38185439431963686,
+   "pre_clamp_norm": 0.38185440035836343,
+   "post_clamp_effective_norm": 0.27523694488265926,
+   "post_over_pre": 0.7207902923846219,
+   "recorded_delta_vs_base": Infinity,
+   "recorded_abs_delta": Infinity,
+   "recorded_L": Infinity
+  },
+  {
+   "seed": 5,
+   "excluded_as_divergent": false,
+   "n_syn_slots_negative_of_24": 9,
+   "n_syn_slots_negative_recorded_in_calibration_json": 9,
+   "negative_syn_slot_labels": [
+    "Mi1->T2",
+    "Mi2->T2",
+    "T2->T2",
+    "T3->T2",
+    "Tm2->T2",
+    "Tm3->T2",
+    "Tm4->T2",
+    "Tm16->T2",
+    "TmY3->T2"
+   ],
+   "most_negative_syn_value": -0.08823924511671066,
+   "sum_of_negative_syn_mass_removed_by_clamp": 0.4011659752577543,
+   "n_node_slots_negative_of_2_NOT_CLAMPED": 1,
+   "node_bias_after_shift": 0.445229172706604,
+   "node_time_const_after_shift": -0.09277956932783127,
+   "norm_u_exact": 0.3818543943196367,
+   "pre_clamp_norm": 0.3818544004625537,
+   "post_clamp_effective_norm": 0.33045232434627053,
+   "post_over_pre": 0.8653882839793963,
+   "recorded_delta_vs_base": 31.633046627044678,
+   "recorded_abs_delta": 31.633046627044678,
+   "recorded_L": 1180.4404964447021
+  },
+  {
+   "seed": 6,
+   "excluded_as_divergent": false,
+   "n_syn_slots_negative_of_24": 8,
+   "n_syn_slots_negative_recorded_in_calibration_json": 8,
+   "negative_syn_slot_labels": [
+    "L4->T2",
+    "T2->T2",
+    "T3->T2",
+    "T5d->T2",
+    "Tm4->T2",
+    "TmY3->T2",
+    "TmY15->T2",
+    "TmY18->T2"
+   ],
+   "most_negative_syn_value": -0.1419048309326172,
+   "sum_of_negative_syn_mass_removed_by_clamp": 0.4427096575964242,
+   "n_node_slots_negative_of_2_NOT_CLAMPED": 0,
+   "node_bias_after_shift": 0.5816248655319214,
+   "node_time_const_after_shift": 0.13489270210266113,
+   "norm_u_exact": 0.3818543943196367,
+   "pre_clamp_norm": 0.3818543928977802,
+   "post_clamp_effective_norm": 0.29722921148863524,
+   "post_over_pre": 0.7783836378915285,
+   "recorded_delta_vs_base": 57.029197216033936,
+   "recorded_abs_delta": 57.029197216033936,
+   "recorded_L": 1205.8366470336914
+  },
+  {
+   "seed": 7,
+   "excluded_as_divergent": false,
+   "n_syn_slots_negative_of_24": 12,
+   "n_syn_slots_negative_recorded_in_calibration_json": 12,
+   "negative_syn_slot_labels": [
+    "L4->T2",
+    "L5->T2",
+    "C2->T2",
+    "C3->T2",
+    "Mi9->T2",
+    "T5d->T2",
+    "Tm2->T2",
+    "Tm3->T2",
+    "Tm4->T2",
+    "Tm16->T2",
+    "TmY3->T2",
+    "TmY18->T2"
+   ],
+   "most_negative_syn_value": -0.16748003661632538,
+   "sum_of_negative_syn_mass_removed_by_clamp": 0.6580317354237195,
+   "n_node_slots_negative_of_2_NOT_CLAMPED": 0,
+   "node_bias_after_shift": 0.5134286880493164,
+   "node_time_const_after_shift": 0.04599163681268692,
+   "norm_u_exact": 0.3818543943196368,
+   "pre_clamp_norm": 0.3818543976834031,
+   "post_clamp_effective_norm": 0.23411973556629956,
+   "post_over_pre": 0.613112581619157,
+   "recorded_delta_vs_base": 67.44651460647583,
+   "recorded_abs_delta": 67.44651460647583,
+   "recorded_L": 1216.2539644241333
+  },
+  {
+   "seed": 8,
+   "excluded_as_divergent": false,
+   "n_syn_slots_negative_of_24": 8,
+   "n_syn_slots_negative_recorded_in_calibration_json": 8,
+   "negative_syn_slot_labels": [
+    "L4->T2",
+    "C2->T2",
+    "Mi1->T2",
+    "T5d->T2",
+    "Tm2->T2",
+    "Tm4->T2",
+    "Tm16->T2",
+    "TmY18->T2"
+   ],
+   "most_negative_syn_value": -0.16966556012630463,
+   "sum_of_negative_syn_mass_removed_by_clamp": 0.4577615889720619,
+   "n_node_slots_negative_of_2_NOT_CLAMPED": 1,
+   "node_bias_after_shift": 0.38578611612319946,
+   "node_time_const_after_shift": -0.07839726656675339,
+   "norm_u_exact": 0.38185439431963675,
+   "pre_clamp_norm": 0.38185439568982366,
+   "post_clamp_effective_norm": 0.30969554893513673,
+   "post_over_pre": 0.8110304671906912,
+   "recorded_delta_vs_base": 10.704183101654053,
+   "recorded_abs_delta": 10.704183101654053,
+   "recorded_L": 1159.5116329193115
+  },
+  {
+   "seed": 9,
+   "excluded_as_divergent": true,
+   "n_syn_slots_negative_of_24": 6,
+   "n_syn_slots_negative_recorded_in_calibration_json": 6,
+   "negative_syn_slot_labels": [
+    "L4->T2",
+    "Mi9->T2",
+    "Mi13->T2",
+    "Tm2->T2",
+    "Tm4->T2",
+    "TmY18->T2"
+   ],
+   "most_negative_syn_value": -0.11575023084878922,
+   "sum_of_negative_syn_mass_removed_by_clamp": 0.30915213702246547,
+   "n_node_slots_negative_of_2_NOT_CLAMPED": 0,
+   "node_bias_after_shift": 0.45998141169548035,
+   "node_time_const_after_shift": 0.035804830491542816,
+   "norm_u_exact": 0.38185439431963675,
+   "pre_clamp_norm": 0.3818543986397947,
+   "post_clamp_effective_norm": 0.3350237251253683,
+   "post_over_pre": 0.8773598688891836,
+   "recorded_delta_vs_base": 5.289518856593735e+18,
+   "recorded_abs_delta": 5.289518856593735e+18,
+   "recorded_L": 5.289518856593736e+18
+  },
+  {
+   "seed": 10,
+   "excluded_as_divergent": false,
+   "n_syn_slots_negative_of_24": 10,
+   "n_syn_slots_negative_recorded_in_calibration_json": 10,
+   "negative_syn_slot_labels": [
+    "L4->T2",
+    "C2->T2",
+    "Mi13->T2",
+    "T2->T2",
+    "T5d->T2",
+    "Tm3->T2",
+    "Tm4->T2",
+    "TmY3->T2",
+    "TmY4->T2",
+    "TmY18->T2"
+   ],
+   "most_negative_syn_value": -0.16630706191062927,
+   "sum_of_negative_syn_mass_removed_by_clamp": 0.6326991319656372,
+   "n_node_slots_negative_of_2_NOT_CLAMPED": 1,
+   "node_bias_after_shift": 0.41515782475471497,
+   "node_time_const_after_shift": -0.04483408108353615,
+   "norm_u_exact": 0.38185439431963675,
+   "pre_clamp_norm": 0.38185439539778365,
+   "post_clamp_effective_norm": 0.2490348782168601,
+   "post_over_pre": 0.652172349508866,
+   "recorded_delta_vs_base": 38.34171438217163,
+   "recorded_abs_delta": 38.34171438217163,
+   "recorded_L": 1187.149164199829
+  },
+  {
+   "seed": 11,
+   "excluded_as_divergent": false,
+   "n_syn_slots_negative_of_24": 9,
+   "n_syn_slots_negative_recorded_in_calibration_json": 9,
+   "negative_syn_slot_labels": [
+    "C2->T2",
+    "C3->T2",
+    "Mi9->T2",
+    "T5d->T2",
+    "Tm4->T2",
+    "TmY3->T2",
+    "TmY4->T2",
+    "TmY15->T2",
+    "TmY18->T2"
+   ],
+   "most_negative_syn_value": -0.1335819512605667,
+   "sum_of_negative_syn_mass_removed_by_clamp": 0.4392283229390159,
+   "n_node_slots_negative_of_2_NOT_CLAMPED": 0,
+   "node_bias_after_shift": 0.5161831974983215,
+   "node_time_const_after_shift": 0.1335182636976242,
+   "norm_u_exact": 0.3818543943196368,
+   "pre_clamp_norm": 0.38185440005231674,
+   "post_clamp_effective_norm": 0.2848921232161887,
+   "post_over_pre": 0.7460752663244327,
+   "recorded_delta_vs_base": 55.63848924636841,
+   "recorded_abs_delta": 55.63848924636841,
+   "recorded_L": 1204.4459390640259
+  },
+  {
+   "seed": 12,
+   "excluded_as_divergent": false,
+   "n_syn_slots_negative_of_24": 8,
+   "n_syn_slots_negative_recorded_in_calibration_json": 8,
+   "negative_syn_slot_labels": [
+    "C3->T2",
+    "Mi1->T2",
+    "Mi2->T2",
+    "T3->T2",
+    "T5d->T2",
+    "Tm4->T2",
+    "TmY15->T2",
+    "TmY18->T2"
+   ],
+   "most_negative_syn_value": -0.11789142340421677,
+   "sum_of_negative_syn_mass_removed_by_clamp": 0.46757471887394786,
+   "n_node_slots_negative_of_2_NOT_CLAMPED": 0,
+   "node_bias_after_shift": 0.5127498507499695,
+   "node_time_const_after_shift": 0.1070912703871727,
+   "norm_u_exact": 0.3818543943196367,
+   "pre_clamp_norm": 0.3818543905464829,
+   "post_clamp_effective_norm": 0.2984468520968161,
+   "post_over_pre": 0.781572399022832,
+   "recorded_delta_vs_base": 69.54515409469604,
+   "recorded_abs_delta": 69.54515409469604,
+   "recorded_L": 1218.3526039123535
+  },
+  {
+   "seed": 13,
+   "excluded_as_divergent": false,
+   "n_syn_slots_negative_of_24": 4,
+   "n_syn_slots_negative_recorded_in_calibration_json": 4,
+   "negative_syn_slot_labels": [
+    "T2->T2",
+    "Tm2->T2",
+    "Tm3->T2",
+    "Tm16->T2"
+   ],
+   "most_negative_syn_value": -0.08769641071557999,
+   "sum_of_negative_syn_mass_removed_by_clamp": 0.13006217312067747,
+   "n_node_slots_negative_of_2_NOT_CLAMPED": 1,
+   "node_bias_after_shift": 0.6266778707504272,
+   "node_time_const_after_shift": -0.17135243117809296,
+   "norm_u_exact": 0.3818543943196367,
+   "pre_clamp_norm": 0.38185439044594843,
+   "post_clamp_effective_norm": 0.36456216887127135,
+   "post_over_pre": 0.9547151427158337,
+   "recorded_delta_vs_base": 10.977479457855225,
+   "recorded_abs_delta": 10.977479457855225,
+   "recorded_L": 1159.7849292755127
+  },
+  {
+   "seed": 14,
+   "excluded_as_divergent": false,
+   "n_syn_slots_negative_of_24": 8,
+   "n_syn_slots_negative_recorded_in_calibration_json": 8,
+   "negative_syn_slot_labels": [
+    "L4->T2",
+    "L5->T2",
+    "C2->T2",
+    "T2->T2",
+    "T5d->T2",
+    "Tm2->T2",
+    "Tm4->T2",
+    "Tm16->T2"
+   ],
+   "most_negative_syn_value": -0.12783007323741913,
+   "sum_of_negative_syn_mass_removed_by_clamp": 0.4568996741436422,
+   "n_node_slots_negative_of_2_NOT_CLAMPED": 1,
+   "node_bias_after_shift": 0.55513596534729,
+   "node_time_const_after_shift": -0.039216991513967514,
+   "norm_u_exact": 0.3818543943196368,
+   "pre_clamp_norm": 0.3818544033695266,
+   "post_clamp_effective_norm": 0.29555984365286475,
+   "post_over_pre": 0.7740118774192759,
+   "recorded_delta_vs_base": 22.90350866317749,
+   "recorded_abs_delta": 22.90350866317749,
+   "recorded_L": 1171.710958480835
+  },
+  {
+   "seed": 15,
+   "excluded_as_divergent": false,
+   "n_syn_slots_negative_of_24": 7,
+   "n_syn_slots_negative_recorded_in_calibration_json": 7,
+   "negative_syn_slot_labels": [
+    "Mi1->T2",
+    "Mi3->T2",
+    "T2->T2",
+    "Tm16->T2",
+    "TmY3->T2",
+    "TmY4->T2",
+    "TmY18->T2"
+   ],
+   "most_negative_syn_value": -0.09705344587564468,
+   "sum_of_negative_syn_mass_removed_by_clamp": 0.2751025553443469,
+   "n_node_slots_negative_of_2_NOT_CLAMPED": 1,
+   "node_bias_after_shift": 0.40680238604545593,
+   "node_time_const_after_shift": -0.05004870519042015,
+   "norm_u_exact": 0.38185439431963686,
+   "pre_clamp_norm": 0.3818543989283219,
+   "post_clamp_effective_norm": 0.3374519946129737,
+   "post_over_pre": 0.8837190184532011,
+   "recorded_delta_vs_base": 46.619637966156006,
+   "recorded_abs_delta": 46.619637966156006,
+   "recorded_L": 1195.4270877838135
+  },
+  {
+   "seed": 16,
+   "excluded_as_divergent": false,
+   "n_syn_slots_negative_of_24": 7,
+   "n_syn_slots_negative_recorded_in_calibration_json": 7,
+   "negative_syn_slot_labels": [
+    "Mi2->T2",
+    "Mi3->T2",
+    "Mi9->T2",
+    "T2->T2",
+    "Tm4->T2",
+    "TmY3->T2",
+    "TmY18->T2"
+   ],
+   "most_negative_syn_value": -0.1625346541404724,
+   "sum_of_negative_syn_mass_removed_by_clamp": 0.439584581181407,
+   "n_node_slots_negative_of_2_NOT_CLAMPED": 0,
+   "node_bias_after_shift": 0.4615570306777954,
+   "node_time_const_after_shift": 0.07457220554351807,
+   "norm_u_exact": 0.3818543943196368,
+   "pre_clamp_norm": 0.38185438700776037,
+   "post_clamp_effective_norm": 0.28773346541860373,
+   "post_over_pre": 0.7535161967715096,
+   "recorded_delta_vs_base": 46.21475434303284,
+   "recorded_abs_delta": 46.21475434303284,
+   "recorded_L": 1195.0222041606903
+  },
+  {
+   "seed": 17,
+   "excluded_as_divergent": true,
+   "n_syn_slots_negative_of_24": 8,
+   "n_syn_slots_negative_recorded_in_calibration_json": 8,
+   "negative_syn_slot_labels": [
+    "L4->T2",
+    "L5->T2",
+    "C2->T2",
+    "Mi1->T2",
+    "Mi2->T2",
+    "Mi13->T2",
+    "T3->T2",
+    "TmY18->T2"
+   ],
+   "most_negative_syn_value": -0.14377596974372864,
+   "sum_of_negative_syn_mass_removed_by_clamp": 0.5471847718581557,
+   "n_node_slots_negative_of_2_NOT_CLAMPED": 0,
+   "node_bias_after_shift": 0.5921934247016907,
+   "node_time_const_after_shift": 0.04390900954604149,
+   "norm_u_exact": 0.38185439431963675,
+   "pre_clamp_norm": 0.3818544014301059,
+   "post_clamp_effective_norm": 0.2612641820204674,
+   "post_over_pre": 0.6841984301922178,
+   "recorded_delta_vs_base": 341268497283.19257,
+   "recorded_abs_delta": 341268497283.19257,
+   "recorded_L": 341268498432.0
+  },
+  {
+   "seed": 18,
+   "excluded_as_divergent": true,
+   "n_syn_slots_negative_of_24": 6,
+   "n_syn_slots_negative_recorded_in_calibration_json": 6,
+   "negative_syn_slot_labels": [
+    "L5->T2",
+    "Mi1->T2",
+    "Mi13->T2",
+    "Tm3->T2",
+    "Tm4->T2",
+    "TmY18->T2"
+   ],
+   "most_negative_syn_value": -0.0510002076625824,
+   "sum_of_negative_syn_mass_removed_by_clamp": 0.12104431695479434,
+   "n_node_slots_negative_of_2_NOT_CLAMPED": 1,
+   "node_bias_after_shift": 0.4804059863090515,
+   "node_time_const_after_shift": -0.06636467576026917,
+   "norm_u_exact": 0.38185439431963675,
+   "pre_clamp_norm": 0.3818543994943337,
+   "post_clamp_effective_norm": 0.3676020338083086,
+   "post_over_pre": 0.9626759159907582,
+   "recorded_delta_vs_base": Infinity,
+   "recorded_abs_delta": Infinity,
+   "recorded_L": Infinity
+  },
+  {
+   "seed": 19,
+   "excluded_as_divergent": false,
+   "n_syn_slots_negative_of_24": 9,
+   "n_syn_slots_negative_recorded_in_calibration_json": 9,
+   "negative_syn_slot_labels": [
+    "L5->T2",
+    "C3->T2",
+    "Mi2->T2",
+    "Mi13->T2",
+    "Tm2->T2",
+    "Tm3->T2",
+    "TmY3->T2",
+    "TmY15->T2",
+    "TmY18->T2"
+   ],
+   "most_negative_syn_value": -0.10930855572223663,
+   "sum_of_negative_syn_mass_removed_by_clamp": 0.4013803331181407,
+   "n_node_slots_negative_of_2_NOT_CLAMPED": 0,
+   "node_bias_after_shift": 0.4790991544723511,
+   "node_time_const_after_shift": 0.11160624027252197,
+   "norm_u_exact": 0.3818543943196368,
+   "pre_clamp_norm": 0.3818543921481574,
+   "post_clamp_effective_norm": 0.315702637142007,
+   "post_over_pre": 0.8267618328703579,
+   "recorded_delta_vs_base": 69.30348825454712,
+   "recorded_abs_delta": 69.30348825454712,
+   "recorded_L": 1218.1109380722046
+  }
+ ],
+ "draw_summary": {
+  "n_draws": 20,
+  "n_draws_with_at_least_one_negative_syn_slot": 20,
+  "n_draws_with_a_negative_node_slot": 9,
+  "negative_syn_slots_per_draw": {
+   "min": 4,
+   "max": 12,
+   "mean": 7.9,
+   "median": 8.0
+  },
+  "pre_clamp_norm": {
+   "min": 0.38185438370409136,
+   "max": 0.3818544033695266,
+   "mean": 0.3818543960937493,
+   "equals_r_to_1e-6": true
+  },
+  "post_clamp_effective_norm": {
+   "min": 0.21977601466751795,
+   "max": 0.3676020338083086,
+   "mean": 0.298461669444519,
+   "median": 0.29639452757075,
+   "std_ddof1": 0.0409074071428917
+  },
+  "zcode_claim_0.22_to_0.37_mean_0.30": {
+   "claimed_min": 0.22,
+   "claimed_max": 0.37,
+   "claimed_mean": 0.3,
+   "observed_min": 0.21977601466751795,
+   "observed_max": 0.3676020338083086,
+   "observed_mean": 0.298461669444519,
+   "confirmed_to_2dp": true
+  },
+  "fraction_of_r_retained_mean": 0.7816111949590067
+ },
+ "reference_shifts": [
+  {
+   "shift": "minus_v",
+   "n_syn_slots_negative_of_24": 9,
+   "negative_syn_slot_labels": [
+    "L4->T2",
+    "C2->T2",
+    "Mi1->T2",
+    "Mi2->T2",
+    "Mi9->T2",
+    "T5d->T2",
+    "Tm2->T2",
+    "Tm16->T2",
+    "TmY18->T2"
+   ],
+   "most_negative_syn_value": -0.12617924809455872,
+   "n_node_slots_negative_of_2_NOT_CLAMPED": 0,
+   "node_bias_after_shift": 0.48106831312179565,
+   "node_time_const_after_shift": 0.019368713721632957,
+   "recorded_shift_norm": 0.38185439431963675,
+   "pre_clamp_norm": 0.38185439641523367,
+   "post_clamp_effective_norm": 0.3232474654170597,
+   "post_over_pre": 0.8465202141225473,
+   "recorded_delta_vs_base": 61.60095930099487,
+   "recorded_L": 1210.4084091186523
+  },
+  {
+   "shift": "plus_2v",
+   "n_syn_slots_negative_of_24": 10,
+   "negative_syn_slot_labels": [
+    "Mi13->T2",
+    "T2->T2",
+    "T3->T2",
+    "T5b->T2",
+    "Tm1->T2",
+    "Tm3->T2",
+    "Tm4->T2",
+    "TmY4->T2",
+    "TmY13->T2",
+    "TmY15->T2"
+   ],
+   "most_negative_syn_value": -0.1625354290008545,
+   "n_node_slots_negative_of_2_NOT_CLAMPED": 0,
+   "node_bias_after_shift": 0.5778243541717529,
+   "node_time_const_after_shift": 0.02027365192770958,
+   "recorded_shift_norm": 0.7637087886392735,
+   "pre_clamp_norm": 0.7637087686163422,
+   "post_clamp_effective_norm": 0.5836510799323925,
+   "post_over_pre": 0.7642325241201942,
+   "recorded_delta_vs_base": 53.48686075210571,
+   "recorded_L": 1202.2943105697632
+  }
+ ],
+ "transplanted_modules_min_values": [
+  {
+   "module": "T2_A (seed 0, the host)",
+   "source_field": "calibration.json:T2_module_A",
+   "min_value_over_all_26_slots": 0.0,
+   "argmin_slot": 14,
+   "argmin_label": "T5d->T2",
+   "argmin_key": "edges_syn_strength",
+   "min_over_the_24_syn_slots": 0.0,
+   "n_negative_syn_slots": 0,
+   "clamp_was_a_noop": true
+  },
+  {
+   "module": "T2_B written into A (registered splice)",
+   "source_field": "splice_result.json:T2_module_B_written",
+   "min_value_over_all_26_slots": 0.0,
+   "argmin_slot": 13,
+   "argmin_label": "T5b->T2",
+   "argmin_key": "edges_syn_strength",
+   "min_over_the_24_syn_slots": 0.0,
+   "n_negative_syn_slots": 0,
+   "clamp_was_a_noop": true
+  },
+  {
+   "module": "T2_A written into A (self-splice A<-A)",
+   "source_field": "splice_result.json:T2_module_A_before",
+   "min_value_over_all_26_slots": 0.0,
+   "argmin_slot": 14,
+   "argmin_label": "T5d->T2",
+   "argmin_key": "edges_syn_strength",
+   "min_over_the_24_syn_slots": 0.0,
+   "n_negative_syn_slots": 0,
+   "clamp_was_a_noop": true
+  },
+  {
+   "module": "T2_A written into B (reverse splice B<-A)",
+   "source_field": "calibration.json:T2_module_A (= what stage_extra wrote)",
+   "min_value_over_all_26_slots": 0.0,
+   "argmin_slot": 14,
+   "argmin_label": "T5d->T2",
+   "argmin_key": "edges_syn_strength",
+   "min_over_the_24_syn_slots": 0.0,
+   "n_negative_syn_slots": 0,
+   "clamp_was_a_noop": true
+  },
+  {
+   "module": "T2_B (seed 1, host of the reverse splice)",
+   "source_field": "calibration.json:T2_module_B",
+   "min_value_over_all_26_slots": 0.0,
+   "argmin_slot": 13,
+   "argmin_label": "T5b->T2",
+   "argmin_key": "edges_syn_strength",
+   "min_over_the_24_syn_slots": 0.0,
+   "n_negative_syn_slots": 0,
+   "clamp_was_a_noop": true
+  },
+  {
+   "module": "extra3 T2_modules/000",
+   "source_field": "extra3_achievable_null.json:T2_modules/000",
+   "min_value_over_all_26_slots": 0.0,
+   "argmin_slot": 14,
+   "argmin_label": "T5d->T2",
+   "argmin_key": "edges_syn_strength",
+   "min_over_the_24_syn_slots": 0.0,
+   "n_negative_syn_slots": 0,
+   "clamp_was_a_noop": true
+  },
+  {
+   "module": "extra3 T2_modules/900",
+   "source_field": "extra3_achievable_null.json:T2_modules/900",
+   "min_value_over_all_26_slots": 4.106387132196687e-05,
+   "argmin_slot": 24,
+   "argmin_label": "TmY15->T2",
+   "argmin_key": "edges_syn_strength",
+   "min_over_the_24_syn_slots": 4.106387132196687e-05,
+   "n_negative_syn_slots": 0,
+   "clamp_was_a_noop": true
+  },
+  {
+   "module": "extra3 T2_modules/001",
+   "source_field": "extra3_achievable_null.json:T2_modules/001",
+   "min_value_over_all_26_slots": 0.0,
+   "argmin_slot": 13,
+   "argmin_label": "T5b->T2",
+   "argmin_key": "edges_syn_strength",
+   "min_over_the_24_syn_slots": 0.0,
+   "n_negative_syn_slots": 0,
+   "clamp_was_a_noop": true
+  },
+  {
+   "module": "extra3 T2_modules/002",
+   "source_field": "extra3_achievable_null.json:T2_modules/002",
+   "min_value_over_all_26_slots": 1.1173940038133878e-05,
+   "argmin_slot": 10,
+   "argmin_label": "Mi13->T2",
+   "argmin_key": "edges_syn_strength",
+   "min_over_the_24_syn_slots": 1.1173940038133878e-05,
+   "n_negative_syn_slots": 0,
+   "clamp_was_a_noop": true
+  },
+  {
+   "module": "extra4 T2_modules_source/000",
+   "source_field": "extra4_same_process.json:T2_modules_source/000",
+   "min_value_over_all_26_slots": 0.0,
+   "argmin_slot": 14,
+   "argmin_label": "T5d->T2",
+   "argmin_key": "edges_syn_strength",
+   "min_over_the_24_syn_slots": 0.0,
+   "n_negative_syn_slots": 0,
+   "clamp_was_a_noop": true
+  },
+  {
+   "module": "extra4 T2_modules_source/900",
+   "source_field": "extra4_same_process.json:T2_modules_source/900",
+   "min_value_over_all_26_slots": 4.106387132196687e-05,
+   "argmin_slot": 24,
+   "argmin_label": "TmY15->T2",
+   "argmin_key": "edges_syn_strength",
+   "min_over_the_24_syn_slots": 4.106387132196687e-05,
+   "n_negative_syn_slots": 0,
+   "clamp_was_a_noop": true
+  },
+  {
+   "module": "extra4 T2_modules_source/001",
+   "source_field": "extra4_same_process.json:T2_modules_source/001",
+   "min_value_over_all_26_slots": 0.0,
+   "argmin_slot": 13,
+   "argmin_label": "T5b->T2",
+   "argmin_key": "edges_syn_strength",
+   "min_over_the_24_syn_slots": 0.0,
+   "n_negative_syn_slots": 0,
+   "clamp_was_a_noop": true
+  },
+  {
+   "module": "extra4 T2_modules_source/002",
+   "source_field": "extra4_same_process.json:T2_modules_source/002",
+   "min_value_over_all_26_slots": 1.1173940038133878e-05,
+   "argmin_slot": 10,
+   "argmin_label": "Mi13->T2",
+   "argmin_key": "edges_syn_strength",
+   "min_over_the_24_syn_slots": 1.1173940038133878e-05,
+   "n_negative_syn_slots": 0,
+   "clamp_was_a_noop": true
+  },
+  {
+   "module": "extra4 T2_module_A_live",
+   "source_field": "extra4_same_process.json:T2_module_A_live",
+   "min_value_over_all_26_slots": 0.0,
+   "argmin_slot": 14,
+   "argmin_label": "T5d->T2",
+   "argmin_key": "edges_syn_strength",
+   "min_over_the_24_syn_slots": 0.0,
+   "n_negative_syn_slots": 0,
+   "clamp_was_a_noop": true
+  }
+ ],
+ "transplants_clamp_was_a_noop_everywhere": true,
+ "divergent_draws": {
+  "seeds": [
+   4,
+   9,
+   17,
+   18
+  ],
+  "rule_that_excluded_them": "a draw is EXCLUDED from this subset if its |delta| is not finite or exceeds 10x the largest real-direction reference shift (61.60095930099487); the full 20-value list in summary_abs_delta is unchanged",
+  "rows": [
+   {
+    "seed": 4,
+    "excluded_as_divergent": true,
+    "n_syn_slots_negative_of_24": 8,
+    "n_syn_slots_negative_recorded_in_calibration_json": 8,
+    "negative_syn_slot_labels": [
+     "C2->T2",
+     "Mi1->T2",
+     "Mi3->T2",
+     "T5d->T2",
+     "Tm2->T2",
+     "Tm4->T2",
+     "Tm16->T2",
+     "TmY18->T2"
+    ],
+    "most_negative_syn_value": -0.12937332689762115,
+    "sum_of_negative_syn_mass_removed_by_clamp": 0.6429276950657368,
+    "n_node_slots_negative_of_2_NOT_CLAMPED": 0,
+    "node_bias_after_shift": 0.4692971408367157,
+    "node_time_const_after_shift": 0.007869625464081764,
+    "norm_u_exact": 0.38185439431963686,
+    "pre_clamp_norm": 0.38185440035836343,
+    "post_clamp_effective_norm": 0.27523694488265926,
+    "post_over_pre": 0.7207902923846219,
+    "recorded_delta_vs_base": Infinity,
+    "recorded_abs_delta": Infinity,
+    "recorded_L": Infinity
+   },
+   {
+    "seed": 9,
+    "excluded_as_divergent": true,
+    "n_syn_slots_negative_of_24": 6,
+    "n_syn_slots_negative_recorded_in_calibration_json": 6,
+    "negative_syn_slot_labels": [
+     "L4->T2",
+     "Mi9->T2",
+     "Mi13->T2",
+     "Tm2->T2",
+     "Tm4->T2",
+     "TmY18->T2"
+    ],
+    "most_negative_syn_value": -0.11575023084878922,
+    "sum_of_negative_syn_mass_removed_by_clamp": 0.30915213702246547,
+    "n_node_slots_negative_of_2_NOT_CLAMPED": 0,
+    "node_bias_after_shift": 0.45998141169548035,
+    "node_time_const_after_shift": 0.035804830491542816,
+    "norm_u_exact": 0.38185439431963675,
+    "pre_clamp_norm": 0.3818543986397947,
+    "post_clamp_effective_norm": 0.3350237251253683,
+    "post_over_pre": 0.8773598688891836,
+    "recorded_delta_vs_base": 5.289518856593735e+18,
+    "recorded_abs_delta": 5.289518856593735e+18,
+    "recorded_L": 5.289518856593736e+18
+   },
+   {
+    "seed": 17,
+    "excluded_as_divergent": true,
+    "n_syn_slots_negative_of_24": 8,
+    "n_syn_slots_negative_recorded_in_calibration_json": 8,
+    "negative_syn_slot_labels": [
+     "L4->T2",
+     "L5->T2",
+     "C2->T2",
+     "Mi1->T2",
+     "Mi2->T2",
+     "Mi13->T2",
+     "T3->T2",
+     "TmY18->T2"
+    ],
+    "most_negative_syn_value": -0.14377596974372864,
+    "sum_of_negative_syn_mass_removed_by_clamp": 0.5471847718581557,
+    "n_node_slots_negative_of_2_NOT_CLAMPED": 0,
+    "node_bias_after_shift": 0.5921934247016907,
+    "node_time_const_after_shift": 0.04390900954604149,
+    "norm_u_exact": 0.38185439431963675,
+    "pre_clamp_norm": 0.3818544014301059,
+    "post_clamp_effective_norm": 0.2612641820204674,
+    "post_over_pre": 0.6841984301922178,
+    "recorded_delta_vs_base": 341268497283.19257,
+    "recorded_abs_delta": 341268497283.19257,
+    "recorded_L": 341268498432.0
+   },
+   {
+    "seed": 18,
+    "excluded_as_divergent": true,
+    "n_syn_slots_negative_of_24": 6,
+    "n_syn_slots_negative_recorded_in_calibration_json": 6,
+    "negative_syn_slot_labels": [
+     "L5->T2",
+     "Mi1->T2",
+     "Mi13->T2",
+     "Tm3->T2",
+     "Tm4->T2",
+     "TmY18->T2"
+    ],
+    "most_negative_syn_value": -0.0510002076625824,
+    "sum_of_negative_syn_mass_removed_by_clamp": 0.12104431695479434,
+    "n_node_slots_negative_of_2_NOT_CLAMPED": 1,
+    "node_bias_after_shift": 0.4804059863090515,
+    "node_time_const_after_shift": -0.06636467576026917,
+    "norm_u_exact": 0.38185439431963675,
+    "pre_clamp_norm": 0.3818543994943337,
+    "post_clamp_effective_norm": 0.3676020338083086,
+    "post_over_pre": 0.9626759159907582,
+    "recorded_delta_vs_base": Infinity,
+    "recorded_abs_delta": Infinity,
+    "recorded_L": Infinity
+   }
+  ],
+  "compare_negative_slot_count": {
+   "divergent": {
+    "n": 4,
+    "mean": 7.0,
+    "min": 6.0,
+    "max": 8.0
+   },
+   "kept": {
+    "n": 16,
+    "mean": 8.125,
+    "min": 4.0,
+    "max": 12.0
+   }
+  },
+  "compare_post_clamp_effective_norm": {
+   "divergent": {
+    "n": 4,
+    "mean": 0.3097817214592009,
+    "min": 0.2612641820204674,
+    "max": 0.3676020338083086
+   },
+   "kept": {
+    "n": 16,
+    "mean": 0.29563165644084854,
+    "min": 0.21977601466751795,
+    "max": 0.36456216887127135
+   }
+  },
+  "compare_node_bias_after_shift": {
+   "divergent": {
+    "n": 4,
+    "mean": 0.5004694908857346,
+    "min": 0.45998141169548035,
+    "max": 0.5921934247016907
+   },
+   "kept": {
+    "n": 16,
+    "mean": 0.5089996717870235,
+    "min": 0.38578611612319946,
+    "max": 0.6472674012184143
+   }
+  },
+  "compare_node_time_const_after_shift": {
+   "divergent": {
+    "n": 4,
+    "mean": 0.005304697435349226,
+    "min": -0.06636467576026917,
+    "max": 0.04390900954604149
+   },
+   "kept": {
+    "n": 16,
+    "mean": 0.0033114789403043687,
+    "min": -0.17135243117809296,
+    "max": 0.13489270210266113
+   }
+  },
+  "baseline_node_values_A": {
+   "nodes_bias": 0.5133203268051147,
+   "nodes_time_const": 0.019670359790325165
+  }
+ }
+}

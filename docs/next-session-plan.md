@@ -275,8 +275,13 @@ floor nearly reused for ρ.
   processes to ±4e-4. Full detail: 002 §5g.
 - ROADMAP: Ark 08:23: formulations after night 3, since night 3 decides which of the three
   outcomes is written into Phase 2 first; Zcode concurs.
-- Tool-hardening package (Ark 08:42/08:45; CC) — nine items, see 002 §5h; on Mike's word «чини
-  инструменты».
+- Tool-hardening package (Ark 08:42/08:45; CC) — nine items, see 002 §5h; **extended 2026-09-15
+  (Zcode 09:04, Ark 08:54/09:36) with items 14–17**: a scaled null drawn in the non-negative
+  orthant with a separate time-constant sign control; failed invariants set
+  `exit = "state_check_failed"` (`run_individual.py:635`) and `night_report.py` prints the error
+  strings, not just their count (`:149`); an idempotence control of the evaluator (evaluate twice,
+  compare result and state); preflight in `start_night.ps1` for a pending reboot and free VRAM —
+  all on Mike's word «чини инструменты». Night 3 runs the current script unchanged.
 - Research-repo start checklist (Ark 08:50) — file as `docs/CHECKLIST-research-repo.md` on Mike's
   word «пиши чек-лист».
 
