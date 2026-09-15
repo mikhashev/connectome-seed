@@ -77,6 +77,23 @@ registered N. These are distances only — no ρ, no ranks, no verdict on (b)/(b
 [[NIGHT-2-RUNS-SEEDS-1-AND-2-ON-MIKES-WORD]] (closed) and
 [[THE-SPREAD-REPLICATE-RATIO-INVERTS-BETWEEN-C3-AND-THE-TOP-RUNG]].
 
+## 2a. Night 3 — pre-registered reading, written before launch
+
+**Pre-registered reading of night 3 (Ark 08:23, Zcode 08:24; recorded before the launch,
+2026-09-15):** seeds 3 and 4 run the registered script unchanged. Their ablation profiles
+(protocol of 002 §5f, all 65 types, 16 items, clamp to 0) are computed post hoc from the saved
+checkpoint 250,008. Reading rule, fixed now: if neither seed 3 nor seed 4 shows a single-type
+dependence of the size seen in seed 2 (R2: +21,157, i.e. an order of magnitude above every other
+type in that run and above the largest twin per-type discrepancy, max_T |Δ_T(0) − Δ_T(0′)| =
+2863 at T2a), then the R2 finding of seed 2 remains a single observation and is not interpreted
+as a property of individuals. A single-type dependence in seed 3 or 4 of that size would make it
+a repeated observation, not yet a test. Row B (activity profiles) for seeds 3 and 4 is a preview
+at n = 5–6 (critical ρ 0.90–1.00), never read as a test.
+
+**Positive reading (Ark 08:28):** if seed 3 OR seed 4 shows one type whose excess exceeds 2863
+(the largest twin per-type discrepancy), the R2 finding becomes a repeated observation, still
+not a test.
+
 ## 3. Branches after night 2
 
 **2026-09-15:** the branch below is now decidable with the numbers in the Result paragraph
@@ -144,6 +161,27 @@ homogeneous by construction — "should variation stay seed-only" stands above "
 expensive metric"; §8 of the current pre-registration fences structural variation, the next one
 may choose anew; Mike's decision, all numbers now on the table.
 
+**Three channels of variation (Ark 08:23) and the bias-only variant (Zcode 08:24):** the twins
+(0, 0′) differ in neither the bias seed nor the data-order seed — they isolate run
+non-determinism (12.73). Different seeds differ in both 65 biases and data order at once; no
+measurement so far (loss, profile, ablation) separates 'bet on R2' from 'saw a different frame
+order'. If individuality is carried by the data order, the 'genome = 65 numbers' frame and the
+plan of bias mutations fall with it. Cheapest separation (Zcode): a bias-only variant — seed only
+the bias (bias.seed = 1, 2) with the data-order seed fixed at 0; one night, two runs; profiles
+post hoc. If bias-only individuals differ in profile, the 65-number genome holds and road C
+narrows to bias mutations; if not, individuality rides on data order. This belongs in the
+population decision (decision 7), before any N run.
+
+**2×2 refinement (Ark 08:28):** bias-only alone cannot separate 'bias insufficient but
+necessary' from 'individuality rides on data order' — a null result on bias-only is consistent
+with either. The second arm, order-only (bias seed fixed, data-order seed varied), is required
+to complete the 2×2; two runs each, one night of four or two nights. CC's finding: `run_individual.py`
+takes a single `--seed` that feeds both `network.node_config.bias.seed` (`:282`, verified
+against `:334-335`) and the global RNGs, seeded twice (`:208-210` before the network is built,
+`:623-625` again before `solver.train` for the data-order / augmentation stream) — so separating
+the two seeds needs a second script argument, which is a change to the registered flow, not a
+night-script edit, and waits on a new registration.
+
 **Diagnostics-2 done 2026-09-15 (Mike 07:43).** Four more diagnostics ran from the saved
 checkpoints, on Mike's word «делай что можно до ночного прогона» — nothing trained, run dirs
 verified unchanged. One line each, full detail `docs/experiments/002-night2-seeds-1-and-2.md`
@@ -156,6 +194,22 @@ post-hoc Pearson; the supported claim is rank-order agreement, not agreement on 
 effects (§5f). **(a) composition** — the registered T2 splice reads "composes predictably",
 0.40 above its floor, while a null shift of the same norm moves the loss more on the median
 draw (46.07 vs 38.58) (§5g).
+
+**Night 4 revised (Ark 08:23, Zcode 08:24):** the replicate must run FIRST in the wave, not
+second — in night 1 the replicate 0′ ran second, so position in the wave and pair identity are
+confounded (n = 1). Night 4 = replicate of seed 3 (3′) as the first job, then a new seed (5) as
+the second job. Readings fixed now: (3, 3′) ≈ 0 at matched position → the +12.73 'floor' is a
+position effect of the second run, and the comparison of between-seed σ (1.80) with the twin
+offset (12.73) was made across unlike conditions — to be revisited BEFORE the new
+pre-registration; (3, 3′) ≈ +12.7 at matched position → the offset belongs to the re-run itself,
+not the position, and §7 needs a new rule for what a replicate difference is. Position in the
+wave becomes an explicit field in every run json (Zcode; it exists in the wave logs, to be
+carried into the json).
+
+**Each metric brings its own measured floor; inheritance is forbidden** (Ark 08:23, Zcode 08:24):
+12.73 is a property of the loss; ρ, row B, the profile each need their own P0/P1 and floor.
+Bought twice on 2026-09-15: the (a) floor built from two trainings' divergence; the ablation
+floor nearly reused for ρ.
 
 ## 4. Side tasks (board entry names)
 
@@ -206,6 +260,21 @@ draw (46.07 vs 38.58) (§5g).
   (+2029). Reading open for Mike + reviewers, board
   [[THE-COMPOSITION-MARGIN-OVER-ITS-FLOOR-IS-SMALLER-THAN-A-NULL-SHIFTS-MEDIAN-DELTA]]. Full
   detail: `docs/experiments/002-night2-seeds-1-and-2.md` §5g.
+- ~~A←0′ and A←2 splices (achievable null from real individuals; Ark 08:23, Zcode 08:24)~~ —
+  **Done 2026-09-15.** Result: A←0′ Δ +13.98 (1.2171 % / 1.4477 %, norm 0.2973), A←2 Δ +10.02
+  (0.8722 % / 1.1020 %, norm 0.3463) — both below the floor 38.18 by 3–4× and shorter in norm
+  than the registered A←B (Δ +38.58 / +41.19, norm 0.3819). Full detail: 002 §5g.
+- ~~max_T |Δ_T(0) − Δ_T(0′)| = 2863 (T2a), computed by CC from `ablation_profiles.csv`~~ —
+  **Done 2026-09-15.** Result: seed 2's R2 excess (+21,157.5) is 7.4× the largest twin per-type
+  discrepancy over all 65 types (2863.0, T2a); every other comparator (mean, R2's own twin gap
+  of 220.6) gives a larger ratio. Written into 002 §5f.
+- ~~The reverse-splice `per_item_mean_minus_hook = 0.0` anomaly~~ — **Resolved 2026-09-15.**
+  Two fresh-process re-runs (both path orders) show the two evaluation paths differ by ~5e-4,
+  not 0.0 — a coincidence of two independent float64 means, not code-path reuse or float32
+  saturation. The +2029.004 (+177.262 % of L_B) figure stands, reproduced across three
+  processes to ±4e-4. Full detail: 002 §5g.
+- ROADMAP: Ark 08:23: formulations after night 3, since night 3 decides which of the three
+  outcomes is written into Phase 2 first; Zcode concurs.
 
 ## 5. What not to do
 
@@ -217,3 +286,4 @@ draw (46.07 vs 38.58) (§5g).
   process count — [[EIGHT-PROCESSES-SHARE-THE-CARD-NO-FASTER-THAN-ONE]]).
 - No GPU probes while a night run is on (production `llama-server` stays down for the duration,
   same as night 1).
+- Do not read row B as a test at N < 8.

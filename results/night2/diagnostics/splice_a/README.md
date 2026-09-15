@@ -128,3 +128,130 @@ called with `track_loss=False` (`flyvis/solver.py:543-552`, the only form that w
   (`baseline_same_process`), so Δ is available both against the registered L_A and against a
   baseline that carries the same process's evaluation noise. The two differ by 1.7e-5 on the
   registered splice.
+
+---
+
+## Addendum, 2026-09-15 (second session) — the 0.0 anomaly and the achievable-null splices
+
+Run by CC's subagent on Opus, same interpreter, same GPU, repo HEAD `66f1189` at launch.
+Driver: `<session scratchpad>/splice2/splice2.py` (three stages, three fresh processes) and
+`<session scratchpad>/splice2/merge.py` (assembly only, no evaluation); both import
+`splice_a.py` / `diag1_eval_paths.py` rather than re-implementing anything. Nothing here is
+a registered (a) outcome, and no category is assigned to any number below. The four run
+directories `results/flow/9991/{000,900,001,002}` (396 files) were listed before the first
+command and after the last; `diff` empty — **NO CHANGE to run dirs**. New files:
+`extra2_reverse_recheck.json`, `extra3_achievable_null.json`, `extra_per_item.csv`.
+
+### 1 — why `per_item_mean_minus_hook` was exactly 0.0 for B←A
+
+**The two numbers are two independent evaluations; nothing is reused.** `stage_extra`
+(`splice_a.py:481-516`) computes no loss of its own: every value it writes comes from
+`evaluate()` (`splice_a.py:169-182`), called at `:489` (baseline B), `:493` (B←B) and `:497`
+(B←A). Inside `evaluate()`, `hook_eval(solver)` runs at `:172` and
+`per_item_eval(solver)["flow"]` at `:174` — two separate forward passes over the same 16
+validation items; `"hook"` is `:177`, `"per_item_mean"` is `np.mean(per)` at `:179` over the
+*second* pass's values, and the printed difference is `np.mean(per) - hook` at `:180`. No
+tensor, list or scalar crosses between the paths.
+
+The two paths also use **identical arithmetic**: `hook_eval` (`diag1_eval_paths.py:151-173`)
+calls `solver.test(track_loss=False)`, and `MultiTaskSolver.test` (`flyvis/solver.py:473-556`)
+collects one `.item()` per batch into a tuple (`:531-536`), averages with `np.mean` (`:542`),
+divides the single-task sum by 1 (`:547-548`) and returns it (`:556`); `per_item_eval`
+(`diag1_eval_paths.py:176-202`) is the same loop returning the same 16 values. So the only
+possible source of a difference is the per-item losses themselves, which are not reproducible
+between forward passes (`cudnn.deterministic = False`, `diag1_eval_paths.py:92-93`).
+
+Re-run in two fresh processes, both paths computed separately, in both orders:
+
+| | fresh run 1 (hook first) | fresh run 2 (per-item first) | 2026-09-15 07:56 |
+|---|---|---|---|
+| baseline B, hook | 1144.636218547821 | 1144.63622713089 | 1144.636239528656 |
+| B←A hook path | 3173.6404418945312 | 3173.6400451660156 | 3173.6400756835938 |
+| B←A per-item mean | 3173.639938354492 | 3173.6404724121094 | 3173.6400756835938 |
+| `mean − hook` | **−0.0005035400390625** | **+0.00042724609375** | 0.0 |
+| third pass (per-item again) | 3173.6400756835938 | 3173.640365600586 | — |
+| Δ vs same-process L_B | +2029.0042233467102 | +2029.0038180351257 | +2029.0038361549377 |
+| Δ as % of same-process L_B | 177.26192745507132 | 177.2618907162291 | 177.2618903792921 |
+
+The difference is ~5e-4 in both fresh runs, i.e. the earlier 0.0 was a **collision of two
+independently computed float64 means, not a code-path reuse and not a float32 saturation
+effect**. The float32/float64 check confirms the accumulation is not the cause: for fresh run
+1 the 16 values sum to 50778.239013671875 in float64, exactly equal to `math.fsum` (the
+float64 sum is exact), while a float32 accumulation gives 50778.23828125 — a different number
+(mean 3173.639892578125 vs 3173.639938354492), so accumulation order would matter if either
+path used float32, and neither does. The direct evidence is the third pass: re-running the
+per-item path a second time inside the same process changes 14 of the 16 item losses (max
+|Δ| 2.44e-3 in run 1, 2.69e-3 in run 2), which is the ~5e-4 scale of the aggregate.
+
+**The +2029 (+177 %) figure stands.** Three independent processes give B←A hook values
+3173.6404418945312 / 3173.6400451660156 / 3173.6400756835938 (spread 3.97e-4) and deltas
++2029.0042233467102 / +2029.0038180351257 / +2029.0038361549377 (spread 4.05e-4), i.e.
+**+2029.004 (+177.262 % of L_B)** on any of the three.
+
+### 2 — achievable-null splices into A (unregistered; no category assigned)
+
+One process, `--stage null`: A = seed 0 at checkpoint 250,008 loaded fresh before each write,
+the same 26 T2 slots as `t2_module_indices.json`, aggregate by the hook path, 16 per-item
+losses beside it. Same-process baseline L_A = 1148.8074293136597 (`reference.json` L_A =
+1148.807409286499). Δ below is against `reference.json` L_A.
+
+| splice | L | Δ vs L_A | \|Δ\|/L_A % | Δ vs 1146.1958 | \|Δ\|/1146.1958 % | ‖T2_X − T2_A‖ |
+|---|---|---|---|---|---|---|
+| A←A (control) | 1148.8074860572815 | +7.677078247070312e-05 | 6.68e-06 | +2.6116860572815312 | 0.22785688599465564 | 0.0 |
+| A←0′ (run 900) | 1162.789032459259 | +13.98162317276001 | 1.2170554489584735 | +16.59323245925907 | 1.4476787002062885 | 0.2973379965419648 |
+| A←2 (run 002) | 1158.8270206451416 | +10.019611358642578 | 0.8721750293084857 | +12.631220645141639 | 1.1020124698713465 | 0.34632670460554055 |
+| A←B (registered, 07:55) | 1187.3873553276062 | +38.57994604110718 | 3.3582 | +41.1915553276062 | 3.5937 | 0.38185439431963675 |
+
+Reference marks, as numbers: the §5 (a) floor 38.18 and 5 % bound 57.31 on the literal basis
+1146.1958; the same relative bounds on L_A are 38.26907241815186 and 57.44037046432496. Both
+new aggregates (13.98 and 10.02) sit below both floors; both transplant norms (0.2973, 0.3463)
+sit below the registered pair's 0.38185439431963675. The A←A control moved the aggregate by
++5.67e-05 against its own same-process baseline (per-item |Δ| ≤ 5.1e-4) and the module read
+back bitwise unchanged.
+
+Per-item columns for all of the above are in `extra_per_item.csv` (16 rows + an
+`AGGREGATE_hook` row): `L_A_same_process`, `A_from_A`(+delta), `A_from_0prime`(+delta),
+`A_from_2`(+delta), and the two reverse-splice re-runs `L_B_recheck_run{1,2}`,
+`B_from_A_recheck_run{1,2}`(+delta). The original `per_item.csv` is unchanged.
+
+*Footnote on the last row's two percentages:* here `Δ vs 1146.1958` is `L − 1146.1958`
+(41.1915553276062 for A←B, hence 3.5937 %), whereas `splice_result.json`'s
+`abs_delta_over_1146.1958_percent` = 3.365912354687321 expresses the *same* Δ vs L_A
+(38.57994604110718) over the 1146.1958 basis. Both appear in the record; they are two
+different quantities, not a discrepancy. The A←0′ / A←2 rows use the `L − 1146.1958` form in
+that column, as do their `delta_vs_1146.1958` fields in `extra3_achievable_null.json`.
+
+## Addendum 2, 2026-09-15 — all four T2→A transplants in ONE process
+
+Ark's review request (08:28): put the four transplants into A in one process so they are
+comparable without cross-process spread. Driver: `<session scratchpad>/splice3/extra4.py`,
+same interpreter and GPU, imports `splice_a.py` / `diag1_eval_paths.py` rather than
+re-implementing anything. Repo HEAD unchanged from the addendum-1 session. The four run
+directories `results/flow/9991/{000,900,001,002}` (396 files) were listed before the first
+command and after the last; `diff` empty — **NO CHANGE to run dirs**. New file:
+`extra4_same_process.json`. Not a registered (a) outcome; no category assigned.
+
+Order, one process, checkpoint A (250,008) loaded once: baseline A (hook + per-item),
+A←A, A←0′, A←2, A←1, baseline A again (drift check). Between every transplant, A's module
+is written back to the live values captured right after the checkpoint load and the
+restoration is asserted bitwise (`module_restored_bitwise: true` on all four blocks;
+`module_bitwise_A_after_all_transplants: true`).
+
+| transplant | ‖T2_X − T2_A‖ | L | Δ vs same-process baseline | \|Δ\|/baseline % |
+|---|---|---|---|---|
+| A←A (control) | 0.0 | 1148.8074069023132 | −4.38690185546875e-05 | 4.0e-06 |
+| A←0′ (run 900) | 0.2973379965419648 | 1162.7890062332153 | +13.981555461883545 | 1.217050 |
+| A←2 (run 002) | 0.34632670460554055 | 1158.8270211219788 | +10.019570350646973 | 0.872171 |
+| A←1 (run 001, registered) | 0.38185439431963675 | 1187.3873572349548 | +38.57990646362305 | 3.358257 |
+
+Baselines: first (before any transplant) 1148.8074507713318; second (after all four, drift
+check) 1148.8074789047241. Difference (second − first) = +2.8133392333984375e-05, i.e.
+2.4e-06 % of the first — the same ~1e-3-scale evaluation noise seen throughout this package,
+not module drift (the module reads back bitwise-A after the last restore).
+
+A←1 in this process reproduces the earlier registered splice (`splice_result.json`,
+`delta_vs_reference_L_A` = 38.57994604110718, cross-process) to within 3.96e-5, i.e. well
+inside the known ~1e-3 wobble. The A←0′ and A←2 aggregates and norms match
+`extra3_achievable_null.json` (cross-process: +13.981603145599365 / 0.2973379965419648 and
++10.019591331481934 / 0.34632670460554055) to within the same noise floor. Ranking by both
+norm and effect size is identical in-process and cross-process: A←A < A←2 < A←0′ < A←1.

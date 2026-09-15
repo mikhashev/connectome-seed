@@ -1,0 +1,191 @@
+{
+ "utc": "2026-09-15T08:34:25Z",
+ "what": "Re-check of the 0.0 difference between the two evaluation paths reported for the UNREGISTERED reverse splice B<-A in extra_unregistered.json.  Two fresh processes, the two paths run in both orders.  Nothing here is a registered (a) outcome.",
+ "code_finding": {
+  "question": "in stage_extra, are the hook value and the per-item mean two independent evaluations, or was one derived from the other / the same tensor reused?",
+  "answer": "two independent evaluations.  stage_extra (splice_a.py:481-516) never computes a loss itself: every number it stores comes from evaluate() (splice_a.py:169-182), called at :489 (baseline B), :493 (B<-B) and :497 (B<-A).  evaluate() calls hook_eval(solver) at :172 and then per_item_eval(solver)['flow'] at :174 -- two separate forward passes over the same 16 validation items.  'hook' is :177, 'per_item_mean' is np.mean(per) at :179 over the SECOND pass's values, and the reported difference is np.mean(per) - hook at :180.  No tensor, list or scalar is copied from one path to the other.",
+  "why_the_two_paths_use_identical_arithmetic": "hook_eval (diag1_eval_paths.py:151-173) calls solver.test(track_loss=False), and MultiTaskSolver.test (flyvis/solver.py:473-556) collects one .item() per batch into a tuple (:531-536), averages them with np.mean (:542), divides the one-task sum by 1 (:547-548) and returns that (:556).  per_item_eval (diag1_eval_paths.py:176-202) is the same loop, returning the same list.  Both aggregates are therefore np.mean over 16 python floats in float64 -- the same formula, so the only source of a difference is the per-item losses themselves, which differ between forward passes (the night runs and this package run with cudnn.deterministic False, diag1_eval_paths.py:92-93).",
+  "conclusion_on_the_0.0": "not code-path reuse and not a float32 saturation effect: it was a collision of two independently computed float64 means.  In both fresh runs the two paths differ (-5.035e-4 and +4.272e-4), and a third pass in the same process differs from the first per-item pass in 14 of the 16 items."
+ },
+ "runs": {
+  "fresh_run_1_hook_path_first": {
+   "order_of_paths": [
+    "hook",
+    "per_item",
+    "per_item_repeat"
+   ],
+   "meta": {
+    "flyvis": "1.2.0",
+    "torch": "2.9.1+cu128",
+    "python": "3.10.20",
+    "gpu": "NVIDIA RTX PRO 4500 Blackwell",
+    "netdir": "C:\\Users\\mikha\\AppData\\Local\\Temp\\claude\\c--Users-mikha-Documents-dpc-research-autoresearch-win-rtx\\03852100-01fd-45ef-82c3-e22ac607b0f7\\scratchpad\\splice2\\netdir\\flow\\9991\\000",
+    "stage": "rev_hook_first",
+    "utc": "2026-09-15T08:30:37Z"
+   },
+   "baseline_B_hook": 1144.636218547821,
+   "baseline_B_per_item_mean": 1144.6362495422363,
+   "baseline_B_per_item_mean_minus_hook": 3.0994415283203125e-05,
+   "reverse_hook_path_value": 3173.6404418945312,
+   "reverse_hook_hex": "0x1.8cb47e8000000p+11",
+   "reverse_per_item": [
+    4027.0615234375,
+    4146.30126953125,
+    4598.5126953125,
+    2165.992919921875,
+    2076.29345703125,
+    2201.72265625,
+    2858.151611328125,
+    2932.951904296875,
+    2852.144775390625,
+    2176.81640625,
+    2591.2060546875,
+    2467.218994140625,
+    2601.573486328125,
+    4566.08154296875,
+    4551.54833984375,
+    3964.661376953125
+   ],
+   "reverse_per_item_mean": 3173.639938354492,
+   "reverse_per_item_mean_hex": "0x1.8cb47a6000000p+11",
+   "per_item_mean_minus_hook": -0.0005035400390625,
+   "third_pass_per_item_mean": 3173.6400756835938,
+   "third_pass_mean_minus_hook": -0.0003662109375,
+   "third_pass_bitwise_identical_to_first_per_item_pass": false,
+   "n_items_differing_between_the_two_per_item_passes": 14,
+   "max_abs_item_difference_between_the_two_per_item_passes": 0.00244140625,
+   "accumulation_check": {
+    "sum16_float64": 50778.239013671875,
+    "sum16_math_fsum_exact": 50778.239013671875,
+    "float64_sum_is_exact": true,
+    "sum16_float32_accumulation": 50778.23828125,
+    "float32_minus_float64_sum": -0.000732421875,
+    "mean_float64": 3173.639938354492,
+    "mean_float32_accumulation": 3173.639892578125,
+    "mean_float32_minus_float64": -4.57763671875e-05
+   },
+   "delta_reverse_vs_same_process_baseline_B": 2029.0042233467102,
+   "delta_reverse_vs_2026_09_15_L_B_1144.636239528656": 2029.0042023658752,
+   "abs_delta_over_same_process_L_B_percent": 177.26192745507132,
+   "per_item_delta_reverse_vs_baseline": [
+    91.885009765625,
+    -166.3330078125,
+    -115.5869140625,
+    2060.930030822754,
+    1973.282943725586,
+    2078.1350479125977,
+    2165.546142578125,
+    2226.0164794921875,
+    2292.8126220703125,
+    986.610595703125,
+    1913.002685546875,
+    2020.99853515625,
+    2370.8538360595703,
+    4381.407760620117,
+    4430.374908447266,
+    3754.122344970703
+   ]
+  },
+  "fresh_run_2_per_item_path_first": {
+   "order_of_paths": [
+    "per_item",
+    "hook",
+    "per_item_repeat"
+   ],
+   "meta": {
+    "flyvis": "1.2.0",
+    "torch": "2.9.1+cu128",
+    "python": "3.10.20",
+    "gpu": "NVIDIA RTX PRO 4500 Blackwell",
+    "netdir": "C:\\Users\\mikha\\AppData\\Local\\Temp\\claude\\c--Users-mikha-Documents-dpc-research-autoresearch-win-rtx\\03852100-01fd-45ef-82c3-e22ac607b0f7\\scratchpad\\splice2\\netdir\\flow\\9991\\000",
+    "stage": "rev_per_first",
+    "utc": "2026-09-15T08:31:21Z"
+   },
+   "baseline_B_hook": 1144.63622713089,
+   "baseline_B_per_item_mean": 1144.636245727539,
+   "baseline_B_per_item_mean_minus_hook": 1.8596649169921875e-05,
+   "reverse_hook_path_value": 3173.6400451660156,
+   "reverse_hook_hex": "0x1.8cb47b4000000p+11",
+   "reverse_per_item": [
+    4027.06103515625,
+    4146.30078125,
+    4598.51318359375,
+    2165.99169921875,
+    2076.29443359375,
+    2201.724853515625,
+    2858.15185546875,
+    2932.95458984375,
+    2852.145263671875,
+    2176.81640625,
+    2591.207763671875,
+    2467.21728515625,
+    2601.573486328125,
+    4566.0849609375,
+    4551.546875,
+    3964.6630859375
+   ],
+   "reverse_per_item_mean": 3173.6404724121094,
+   "reverse_per_item_mean_hex": "0x1.8cb47ec000000p+11",
+   "per_item_mean_minus_hook": 0.00042724609375,
+   "third_pass_per_item_mean": 3173.640365600586,
+   "third_pass_mean_minus_hook": 0.0003204345703125,
+   "third_pass_bitwise_identical_to_first_per_item_pass": false,
+   "n_items_differing_between_the_two_per_item_passes": 14,
+   "max_abs_item_difference_between_the_two_per_item_passes": 0.002685546875,
+   "accumulation_check": {
+    "sum16_float64": 50778.24755859375,
+    "sum16_math_fsum_exact": 50778.24755859375,
+    "float64_sum_is_exact": true,
+    "sum16_float32_accumulation": 50778.25,
+    "float32_minus_float64_sum": 0.00244140625,
+    "mean_float64": 3173.6404724121094,
+    "mean_float32_accumulation": 3173.640625,
+    "mean_float32_minus_float64": 0.000152587890625
+   },
+   "delta_reverse_vs_same_process_baseline_B": 2029.0038180351257,
+   "delta_reverse_vs_2026_09_15_L_B_1144.636239528656": 2029.0038056373596,
+   "abs_delta_over_same_process_L_B_percent": 177.2618907162291,
+   "per_item_delta_reverse_vs_baseline": [
+    91.884521484375,
+    -166.33349609375,
+    -115.58642578125,
+    2060.9288330078125,
+    1973.2839813232422,
+    2078.1371994018555,
+    2165.54638671875,
+    2226.0191040039062,
+    2292.8130493164062,
+    986.6107177734375,
+    1913.00439453125,
+    2020.9967956542969,
+    2370.8538970947266,
+    4381.411163330078,
+    4430.373435974121,
+    3754.124069213867
+   ]
+  }
+ },
+ "value_2026_09_15_07_56": {
+  "hook": 3173.6400756835938,
+  "per_item_mean": 3173.6400756835938,
+  "per_item_mean_minus_hook": 0.0,
+  "L_B_reference": 1144.636239528656,
+  "delta_reverse": 2029.0038361549377,
+  "abs_delta_reverse_over_L_B_percent": 177.2618903792921
+ },
+ "standing_of_the_plus_2029_figure": {
+  "hook_values_three_runs": [
+   3173.6404418945312,
+   3173.6400451660156,
+   3173.6400756835938
+  ],
+  "spread_of_hook_values": 0.000396728515625,
+  "delta_values_three_runs": [
+   2029.0042233467102,
+   2029.0038180351257,
+   2029.0038361549377
+  ],
+  "spread_of_delta_values": 0.00040531158447265625,
+  "statement": "the figure stands.  The reverse-splice hook value reproduces to 0.0003967 across three independent processes; the delta against the same-process L_B is +2029.00 (+177.26 %) in all three."
+ }
+}

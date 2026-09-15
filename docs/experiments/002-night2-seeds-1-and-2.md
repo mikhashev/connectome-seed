@@ -651,6 +651,14 @@ indistinguishable from the others.
 
 **Mi4** is top-3 by |Δ_T| in all four runs.
 
+**Twin per-type discrepancy (Ark 08:23, Zcode 08:24; computed by CC from
+`ablation_profiles.csv`, `delta_16`):** max_T |Δ_T(0) − Δ_T(0′)| = **2863.0** (T2a), then Tm5c
+**2582.2**, Mi4 **1943.0**, L5 **1616.3**, R8 **933.5**, T2 **505.9**. Seed 2's R2 excess
+(**+21,157.5**; seeds 0 / 0′ / 1: **+459.2** / **+679.8** / **−1.0**) is **7.4×** the largest
+twin discrepancy over all 65 types — a ratio against the most generous null available from
+these data (the maximum over types); any other comparison (mean, or R2's own twin difference of
+220.6) gives a larger ratio (Ark 08:28).
+
 **Caveat.** One configuration, two twins, one comparison — no null distribution under which to
 judge how surprising the twin margin is.
 
@@ -702,6 +710,44 @@ outcome stands as read, is relabelled uninformative, or the floor itself needs r
 from the operation's own null is a decision for Mike and the reviewers, not made here.
 
 **Files:** `results/night2/diagnostics/splice_a/`.
+
+### Recheck of the reverse splice and the 0.0 (Ark 08:23/08:28, Zcode 08:24; run by CC's subagent on Opus; verified by CC)
+
+The code finding: `stage_extra` (`splice_a.py:481-516`) computes nothing itself; every value
+comes from `evaluate()` (`:169-182`), which runs `hook_eval` (`:172`) and `per_item_eval`
+(`:174`) as two separate forward passes, with `per_item_mean` at `:179` taken over the second
+pass; both paths use the same arithmetic (per-batch `.item()`, `np.mean`, float64). Fresh
+re-runs in two processes, both orders: B←A hook **3173.6404418945312** / **3173.6400451660156**,
+per-item mean **3173.639938354492** / **3173.6404724121094**, mean − hook **−5.04e-4** /
+**+4.27e-4**; a third per-item pass in the same process changes **14 of 16** items by
+**≤ 2.7e-3**; the float64 sum equals `math.fsum`, so the earlier 0.0 was a coincidence of two
+independent means, not code-path reuse and not float32 saturation. Standing: **+2029.004 ± 4e-4**
+across three processes (**+177.262 %** of L_B); the per-item decomposition stands within the
+~1e-3 wobble. Ark's caveat recorded: the claim "loss is not a function of shift size" does not
+rest on this number — it rests on the weight-space inversion (twins 0.52 at loss gap 12.7 vs
+0.66–0.78 at 1.80) and the orthogonal-direction signature.
+
+### Achievable null from real modules (Ark 08:23, Zcode 08:24; unregistered, no categories)
+
+Same-process baseline L_A = **1148.8074293**. A←A (control): Δ **+7.68e-5**. A←0′ (twin's T2,
+run 900): Δ **+13.9816**, **1.2171 %** of L_A / **1.4477 %** of 1146.1958, transplant norm
+**0.2973**. A←2 (run 002): Δ **+10.0196**, **0.8722 %** / **1.1020 %**, norm **0.3463**. The
+registered A←B, read the same two ways: Δ vs L_A **+38.5799** (**3.3583 %** of L_A); Δ vs
+1146.1958 **+41.1916** (**3.5937 %** of 1146.1958) — these are the file's two distinct Δ
+conventions (`extra3_achievable_null.json`'s footnote), stated exactly as it states them, not a
+discrepancy. Both achievable transplants lie below the floor 38.18 by 3–4× and are shorter in
+norm than the registered one.
+
+Per-item columns for A←0′ and A←2 from `extra_per_item.csv` (16 values each, Δ vs the
+same-process A baseline): ambush_2 A←0′ +0.04/+8.18/+21.93, A←2 +20.95/+5.28/+21.65; bamboo_1
+A←0′ −8.49/−17.03/−16.61, A←2 +0.01/+2.12/+3.18; bandage_1 A←0′ +61.18/+67.78/+56.67, A←2
+−11.30/−14.27/−11.99; cave_4 A←0′ +7.77, A←2 +6.23; market_2 A←0′ +13.49/+14.48/+1.05, A←2
++14.77/+8.74/+4.06; mountain_1 A←0′ −21.33/+1.41/+33.18, A←2 +53.78/+55.60/+1.52.
+
+Three numbers side by side — isotropic null median 46.07 / real-module transplants 10–14 /
+registered 38.58 — recorded without interpretation; the reading of (a)'s status remains decision
+6. Note: an A←1 evaluation in the same process as the other three is running (Ark 08:28) and
+will be appended as `extra4_same_process.json`.
 
 ## 6. Provenance
 
