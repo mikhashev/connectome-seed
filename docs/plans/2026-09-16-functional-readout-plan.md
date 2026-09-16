@@ -20,27 +20,47 @@ estimates, not measurements.
 Override the machine verdict in 003 §6 and the ablation README; checklist rule 16; the "scale 60"
 paragraph in 003. (This step is what this commit carries.)
 
-## Step 1 — gray stimulus (CC, minutes — estimate; brief reviewed by Zcode)
+## Step 1 — gray stimulus (CC, minutes — estimate; brief v2 reviewed by Ark and Zcode)
 
 The six 250,008 checkpoints plus each run's iteration-0 checkpoint, same 16 items, same
-evaluator, **no ablation**, input replaced by a constant gray (and separately by zero).
+evaluator, **no ablation**, four input conditions: (a) constant gray 0.5, (b) constant zero 0.0,
+(c) unmodified real input (P0), (d) the same item's input with the frame axis permuted
+(shuffled — fixed permutation seed recorded in the json, content and per-frame image statistics
+preserved, temporal structure destroyed). Output: `results/diagnostics/gray/` (named by subject,
+not by night — this directory hosts diagnostics over runs from several nights).
 
-**Readings fixed before launch:**
+**Readings fixed before launch (brief v2):**
 
-- (i) gray ≈ 1212 for five runs → "learned = vision" closed from the second side.
-- (ii) seed 2 under gray: ≈ 1212 → its explosion to 31,774 (under photoreceptor-silencing
-  ablation, §6c above) was an artefact of forcing photoreceptor activity to zero, not a vision
-  dependence; explosion under gray as well → the dependence is real.
+- (i) **paired, per seed, in units of the learned gain**: `gain_s = L_untrained_real(s) -
+  L_trained_real(s)`; holds for seed `s` if `|L_trained_gray(s) - L_untrained_gray(s)| ≤
+  0.1 · gain_s` ("gray removes ≥ 90% of the learned gain"); the reference is the untrained
+  network on gray, not on real input.
+- (ii) seed 2 stated on both (a) gray and (b) zero explicitly: explosion on both → fragility to
+  absence of drive is real; explosion only under the ablation's forced-zero state (neither (a)
+  nor (b) explode) → the ablation deltas measure fragility to a zero clamp specifically, an
+  instrument artefact, and the R2 finding (explosion to 31,774 under photoreceptor-silencing
+  ablation, §6c above) must be reworded; (b) is the condition closest to the ablation, (a) is the
+  third point.
+- (iii) reading for (d) shuffled, same band as (i): shuffled ≈ real → the learned gain is not
+  about motion; shuffled ≈ gray → the learned gain is about temporal content; between → recorded
+  as between.
 
-**Controls:** iteration 0 under gray must give ≈ 1212; repeat in a fresh process, agreement
-≤ 1e-4.
+**Controls:** the iteration-0 gray-vs-real difference is recorded as a control number only, not
+used in the reading; an analytical constant-output null is computed from the targets alone;
+repeat in a fresh process, agreement ≤ 1e-4.
 
-## Step 2 — tuning battery (CC, minutes per checkpoint — estimate; brief reviewed by Ark + Zcode)
+## Step 2 — tuning battery (CC, minutes per checkpoint — estimate; brief v2 reviewed by Ark + Zcode)
 
 Same seven networks per seed (250,008 and iteration 0): flashes → ON/OFF flash-response index per
 type (65); moving edges → DSI and preferred direction per type; comparison with the built-in
 literature table (polarity, DSI types, T4/T5 tuning curves from Maisak 2013) using flyvis's own
-functions.
+functions. Output: `results/diagnostics/tuning/` (named by subject, not by night). **dt decision
+(Ark, Zcode concurring): primary dt = 0.02** (the networks' own training regime; the Euler step
+enters the kinetics — the rate divides by `max(time_const, dt)` in `dynamics.py`, so a different
+dt changes the effective kinetics, not only the resolution); **secondary dt = 1/200** (flyvis's
+own regime, for comparability); the difference between the two is a third quantity: tuning that
+holds at both dt → robust, tuning that holds only at 1/200 → an artefact of the step, a result
+about the substrate.
 
 **Readings declared before data:**
 
@@ -69,6 +89,9 @@ Replicate 3′ first in the wave, new seed 5 second, `-NoReplicate`, Windows Upd
 ## Order and start
 
 Step 0 starts now on Mike's «давайте пробовать». Briefs for steps 1 and 2 follow and are posted
-to chat; they launch after the first review by Ark/Zcode, or immediately on Mike's «старт».
-"Minutes" are estimates from run volume, not measurements — the first thing reported after launch
-is the actual time.
+to chat for review by Ark/Zcode before launch. "Minutes" are estimates from run volume, not
+measurements — the first thing reported after launch is the actual time.
+
+**Rule (Mike, 06:3xZ): nothing launches without Mike's explicit «запускай» in the chat; plan
+approval is not a launch word. On 2026-09-16 CC launched step 1 before the reviews arrived; the
+output was discarded unread and step 1 is re-run from brief v2 only on Mike's word.**

@@ -1,5 +1,10 @@
 # Brief — step 2: tuning battery (flashes + moving edges vs. the literature table)
 
+**v2, 2026-09-16, after review by Ark and Zcode; v1 was posted at 06:23Z; no v1 sweep was run for
+step 2 (only step 1's v1 sweep was launched and discarded — see brief 1's header).**
+
+**Launch only on Mike's explicit «запускай» for this step in the DPC Research chat.**
+
 Aliases: `FV` = `.../63f3961a-.../scratchpad/flyvis-probe/.venv/Lib/site-packages/flyvis` (1.2.0); `CS` = `...\dpc-research\connectome-seed`; `CSD` = `...\dpc-research\connectome-seed-data`.
 
 ## 0. Network set — one correction
@@ -25,7 +30,17 @@ The request says "seven networks per seed". What exists is **12**: 6 runs x {`ch
 **Three silent traps.**
 - `MovingBar.dt` setter (`moving_bar.py:249-262`) **refuses** a dt different from the construction dt and only logs a warning, while `stimulus_response` assigns `stim_dataset.dt = dt` (`network.py:744`). Construct with the intended dt; `assert ds.dt == dt` afterwards.
 - `Flashes.dt` is a plain attribute (`flashes.py:159, 193`): assigning it does **not** re-render, it only shifts the time axis. Same rule.
-- dt choice: our nets trained at **dt = 0.02** (`rowB_eval_records.json:184`, asserted at `diag1_eval_paths.py:146`); flyvis defaults to 1/200; `simulate` warns only above 1/50 (`network.py:673-679`). Proposal: primary 1/200 (comparable to flyvis's own numbers), secondary 1/50. Ark decides, not the executor.
+- **dt decision (Ark, Zcode concurring): primary dt = 0.02**, the networks' own training regime
+  (`rowB_eval_records.json:184`, asserted at `diag1_eval_paths.py:146`); **secondary dt = 1/200**,
+  flyvis's own regime, kept for comparability with flyvis's published numbers. This is not only a
+  resolution choice: the Euler step enters the kinetics themselves — the rate term divides by
+  `max(time_const, dt)` (Zcode: `FV/network/dynamics.py:207-209`), so a different dt changes the
+  network's effective time constants, not merely how finely the trajectory is sampled. The
+  difference between the two dt runs is therefore declared a **third quantity**, not noise: tuning
+  that holds at both dt -> robust; tuning that holds only at dt = 1/200 -> an artefact of the step,
+  a result about the substrate (flyvis's own simulation regime), not about the trained network.
+  Both dt values require their own dataset construction, per the two traps above; `simulate` warns
+  only above 1/50 (`network.py:673-679`), so neither 0.02 nor 1/200 trips that warning.
 
 **Rendering writes into `CSD/renderings` unless redirected.** `RenderedFlashes` / `RenderedOffsets` are `@root(renderings_dir)` Directories (`flashes.py:25`, `moving_bar.py:30`), `renderings_dir = FLYVIS_ROOT_DIR/renderings` (`FV/__init__.py:57`) = `CSD/renderings`. `@root` defaults to `precedence=2` — "overrides global but not context settings" (`datamate/context.py:69-73`, logic `:121-127`). So wrap **only the dataset constructors** in `datamate.set_root_context(<scratchpad>/renderings)` (`context.py:143-160`); the solver build must see the real root (connectome, SintelDataSet, results).
 
@@ -44,10 +59,18 @@ The request says "seven networks per seed". What exists is **12**: 6 runs x {`ch
 The last two are **not called anywhere inside flyvis**, so the source does not say whether the edge or the bar dataset is intended. Both satisfy the required dims (edge has one width -> trivial argmax).
 
 ## 5. Outputs
-`CS/results/night4/diagnostics/tuning/`, brief-1 conventions (`PREVIEW DIAGNOSTIC -- NOT A TEST` header line, `# script_sha256=`, every number via `repr(float(x))` — `rowB.py:307-319`).
-- `tuning_per_type.csv` — `run,label,checkpoint_iter,cell_type` + FRI, DSI_on, DSI_off, PD_on, PD_off, and the 12-angle tuning vector per intensity (24 cols). 65 x 12 = 780 rows.
+`CS/results/diagnostics/tuning/`, brief-1 conventions (`PREVIEW DIAGNOSTIC -- NOT A TEST` header
+line, `# script_sha256=`, every number via `repr(float(x))` — `rowB.py:307-319`). Named by
+subject, not by night (Ark; Zcode agrees) — this directory hosts diagnostics over runs from
+several nights.
+- `tuning_per_type.csv` — `run,label,checkpoint_iter,cell_type` + FRI, DSI_on, DSI_off,
+  `PD_on_cos`, `PD_on_sin`, `PD_off_cos`, `PD_off_sin` (PD encoded circularly as (cos, sin), never
+  the raw angle — Ark; Zcode agrees), and the 12-angle tuning vector per intensity (24 cols).
+  65 x 12 = 780 rows. The raw `PD_on`/`PD_off` radians returned by `preferred_direction`
+  (`moving_bar_responses.py:515-552`) are computed as an intermediate but not stored as a column;
+  only their cosine and sine are.
 - `tuning_literature.json` — per network: `fri_correlation_to_known`, `dsi_correlation_to_known`, `correlation_to_known_tuning_curves` (8), `angular_distance_to_known` (8).
-- `tuning_controls.json` — meta as in brief 1 (sha256 of this script + `diag1_eval_paths.py`, `ablation.py`, `rowB.py`; flyvis/torch/python/GPU/utc) + `ds.config.to_dict()` verbatim for both datasets, n_samples, n_frames, NaN fractions, per-network wall time.
+- `tuning_controls.json` — meta as in brief 1 (sha256 of this script + `diag1_eval_paths.py`, `ablation.py`, `rowB.py`; flyvis/torch/python/GPU/utc) + `ds.config.to_dict()` verbatim for both datasets, both dt values (0.02 and 1/200), n_samples, n_frames, NaN fractions, per-network wall time.
 
 ## 6. Controls
 - **P0:** same network twice in one process -> per-type vectors bitwise identical (these datasets draw no RNG; `stimulus_response` sets none). Report max |delta|.
@@ -56,9 +79,9 @@ The last two are **not called anywhere inside flyvis**, so the source does not s
 - **What the literature-comparison functions return for an untrained vs a trained net: TO BE MEASURED.** The flyvis source states no range and nothing has been run. Do not put a number from the paper into the pre-registration.
 
 ## 7. Pre-registered readings (verbatim, with mechanics)
-(a) **twin trap in tuning space** — (0, 0') minimum of 15 pairwise distances by rank correlation across the concatenated per-type tuning vector, with the 1/15 floor as a sanity check. Mechanics: one vector per network = 65 types x [FRI, DSI_on, DSI_off, PD_on, PD_off, 24 tuning values]; distance = 1 - Spearman rho (`ablation.py` `spearman`, reused at `rowB.py:325`).
-(b) **dominant type functional?** — deviation of the dominant type's tuning (R2 in seed 2, Mi4 in seed 3, CT1 in seed 4) from the same type in the five other runs, ranked among 65 types, outcomes <= 3 / >= 30 / between. Exact names and sizes from `ablation_profiles.csv`: seed 2 **R2** +21157.5, seed 3 **Mi4** +4827.5, seed 4 **CT1(Lo1)** +10460.9 — not "CT1"; there are two CT1 types.
-(c) **count of the 65 types holding the literature polarity and direction per fly and its spread across flies.** *Not attainable as written:* only **32 of the 65** types have a non-zero `polarity` entry (`FV/utils/groundtruth_utils.py:16-82`; the other 33 are 0 = unknown) and only **8** have a `preferred_directions` entry (`:181-190`). The counts are out of 32 and out of 8.
+(a) **twin trap in tuning space** — (0, 0') minimum of 15 pairwise distances by rank correlation across the concatenated per-type tuning vector, with the 1/15 floor as a sanity check. Mechanics: one vector per network = 65 types x [FRI, DSI_on, DSI_off, cos PD_on, sin PD_on, cos PD_off, sin PD_off, 24 tuning values] — PD encoded circularly, never the raw angle (Ark; Zcode agrees); distance = 1 - Spearman rho (`ablation.py` `spearman`, reused at `rowB.py:325`).
+(b) **dominant type functional?** — deviation of the dominant type's tuning (**R2** in seed 2, **Mi4** in seed 3, **CT1(Lo1)** in seed 4 — named exactly, not "CT1"; there are two CT1 types) from the same type in the five other runs, ranked among 65 types, outcomes <= 3 / >= 30 / between. Exact names and sizes from `ablation_profiles.csv`: seed 2 **R2** +21157.5, seed 3 **Mi4** +4827.5, seed 4 **CT1(Lo1)** +10460.9.
+(c) **count of the 65 types holding the literature polarity and direction per fly and its spread across flies.** *Not attainable as written:* only **32 of the 65** types have a non-zero `polarity` entry (`FV/utils/groundtruth_utils.py:16-82`; the other 33 are 0 = unknown) and only **8** have a `preferred_directions` entry (`:181-190`). The counts are out of 32 and out of 8. These counts are **descriptive only** (Ark); the carrying quantities for reading (c) are `fri_correlation_to_known`, `dsi_correlation_to_known`, `correlation_to_known_tuning_curves`, and `angular_distance_to_known`.
 (d) **iteration 0 as null.**
 
 ## 8. Provenance question for Ark — `groundtruth_utils` fields
@@ -67,9 +90,16 @@ Docstring `:1-11`: "All data structures are based on published literature and ma
 **Derived in-file, not data:** `symmetric_inputs` (`:477`, from `asymmetric_input` minus the two exclusion lists, 33), `known_dsi_types` (`:510` = `no_motion_tuning + motion_tuning`, 18), `known_preferred_contrasts` (`:512`, from `polarity`, 32), `no_motion_tuning` (`:487`, 10, with three L-types commented out at `:488-490`, `:496-498`).
 No field anywhere is described as derived from connectivity. Question for Ark: `asymmetric_input` / `symmetric_inputs` read like connectome-derived quantities but carry no source — is there one outside the file?
 
+**Mandatory pre-S2 provenance check (Ark) — for the genome step, not for this battery.** Before
+`polarity` is used as an external label anywhere in step 3 (genome): recompute polarity from the
+input rule of the connectome itself (L1 -> ON, L2 -> OFF pathway) and compare it with
+`groundtruth_utils.polarity`. If it matches, the field is connectivity-derived, not an independent
+literature label, and is not usable as an external label for S2. **Not to be run without Mike's
+word.**
+
 ## 9. Runtime and memory — ESTIMATE
 Memory: `forward` stacks the whole run (`network.py:546`), so ~`batch x n_frames x 45669 x 4 B` for the activity plus the same for the stimulus buffer. MovingEdge at batch 4 x 1079 frames ~= 0.79 GiB each -> ~1.6-2.5 GiB peak; batch_size 4 (the flyvis default) is comfortable on 32 GiB.
-Time: our 16-item eval at dt=0.02 takes 0.18-0.49 s (`night2/.../ablation/README.md:130-132`; `night3/.../ablation_controls.json` `one_evaluation_wall_s`), but those items are ~19 Euler steps. MovingEdge is 36 batches x 1079 sequential steps ~= 38.8k steps per network; Flashes is 1 batch x 600. **ESTIMATE 3-8 min per network for edges, < 10 s for flashes -> 12 networks ~= 45-100 min**, plus a one-off `RenderedOffsets` render (144 angle x width x intensity, ESTIMATE 1-5 min). All of these are estimates with no measurement behind them: measure the first network's real wall time and report it before continuing with the other eleven.
+Time: our 16-item eval at dt=0.02 takes 0.18-0.49 s (`night2/.../ablation/README.md:130-132`; `night3/.../ablation_controls.json` `one_evaluation_wall_s`), but those items are ~19 Euler steps. MovingEdge is 36 batches x 1079 sequential steps ~= 38.8k steps per network; Flashes is 1 batch x 600. **ESTIMATE 3-8 min per network for edges, < 10 s for flashes -> 12 networks ~= 45-100 min**, plus a one-off `RenderedOffsets` render (144 angle x width x intensity, ESTIMATE 1-5 min). This estimate is now doubled by the two-dt decision (primary 0.02 + secondary 1/200) unless the two dt runs share a render. All of these are estimates with no measurement behind them: measure the first network's real wall time and report it before continuing with the other eleven.
 
 ## 10. Do not
 1. No `NetworkView`, `flash_responses()`, `moving_edge_responses()`, `moving_bar_responses()` or `Ensemble` — each writes `__cache__` into a network directory.
@@ -82,3 +112,21 @@ Time: our 16-item eval at dt=0.02 takes 0.18-0.49 s (`night2/.../ablation/README
 8. Do not quote a literature-correlation "expected range" that was not measured in this run.
 9. No rounding in outputs; `repr(float(x))`.
 10. Do not commit or push. Do not call this a test.
+
+## 11. Revision history
+- **v1 -> v2** (Ark, review posted 06:24Z 2026-09-16): output directory renamed to
+  `CS/results/diagnostics/tuning/`, named by subject not by night (§5); PD encoded circularly as
+  (cos, sin), never the raw angle, propagated into `tuning_per_type.csv` and reading (a)'s vector
+  (§5, §7(a)); dominant-type names in reading (b) stated exactly, `CT1(Lo1)` at first mention
+  (§7(b)); reading (c)'s 32-of and 8-of counts marked descriptive only, with the four
+  correlation/distance functions named as the carrying quantities (§7(c)); mandatory pre-S2
+  provenance check specified for the genome step (§8); dt = 0.02 primary / 1/200 secondary
+  decided, concurring with Zcode.
+- **v1 -> v2** (Zcode, review posted 06:27Z 2026-09-16): dt decision grounded mechanically — the
+  Euler step enters the kinetics via `max(time_const, dt)` in `FV/network/dynamics.py:207-209`, so
+  dt is not only a resolution choice; primary dt = 0.02 (training regime), secondary dt = 1/200
+  (flyvis regime), and the primary/secondary discrepancy declared a third, reportable quantity
+  rather than noise (§3); PD-circularity agreed (§5, §7(a)).
+- **v1 -> v2** (CC, mechanical follow-through): header and launch-rule lines added, matching
+  brief 1; runtime estimate note added for the two-dt cost (§9); no v1 sweep was run for step 2,
+  so no discard note is needed.
