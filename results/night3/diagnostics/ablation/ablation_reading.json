@@ -1,0 +1,424 @@
+{
+ "meta": {
+  "status": "UNREGISTERED DIAGNOSTIC; the READING is pre-registered in docs/next-session-plan.md Sec 2a (before the night-3 launch). A repeated observation is not a test.",
+  "script_sha256": {
+   "ablation_night3.py": "c20013b4ab0826af6d89cccd653d1cfa601915017fbbd04156fe1628ffac156a",
+   "night2/diagnostics/ablation/ablation.py": "1545b53b14b64758f0cc5630a8be8a635ff1e3cf0a1083aec375d251b0eff328",
+   "night2/diagnostics/diag1_eval_paths.py": "bfb3ca5eb1d20b3084d09cac57e333efae2a34b7ec4b503d60602275d13bd9f1",
+   "night2/diagnostics/rowB/rowB.py": "195a89b555bedf3a0ff00a4c4e0542eafa6370243fbf9ed954f5fe8fbf7f4082"
+  },
+  "flyvis": "1.2.0",
+  "torch": "2.9.1+cu128",
+  "python": "3.10.20",
+  "gpu": "NVIDIA RTX PRO 4500 Blackwell",
+  "netdir": "C:\\Users\\mikha\\AppData\\Local\\Temp\\claude\\c--Users-mikha-Documents-dpc-research-autoresearch-win-rtx\\03852100-01fd-45ef-82c3-e22ac607b0f7\\scratchpad\\abl3\\netdir\\flow\\9991\\000",
+  "device": "cuda",
+  "utc": "2026-09-16T04:54:35Z",
+  "chkpt": "chkpt_00071",
+  "state_label": "checkpoint 250,008 (chkpt_00071), per-item path",
+  "clamp_value": 0.0,
+  "clamped_quantity": "state.nodes.activity (membrane voltage, PPNeuronIGRSynapses)",
+  "hook_site": "flyvis/network/network.py:430-433 (_state_api), via register_state_hook:444-469",
+  "n_nodes": 45669,
+  "n_types": 65,
+  "types": [
+   "R1",
+   "R2",
+   "R3",
+   "R4",
+   "R5",
+   "R6",
+   "R7",
+   "R8",
+   "L1",
+   "L2",
+   "L3",
+   "L4",
+   "L5",
+   "Lawf1",
+   "Lawf2",
+   "Am",
+   "C2",
+   "C3",
+   "CT1(Lo1)",
+   "CT1(M10)",
+   "Mi1",
+   "Mi2",
+   "Mi3",
+   "Mi4",
+   "Mi9",
+   "Mi10",
+   "Mi11",
+   "Mi12",
+   "Mi13",
+   "Mi14",
+   "Mi15",
+   "T1",
+   "T2",
+   "T2a",
+   "T3",
+   "T4a",
+   "T4b",
+   "T4c",
+   "T4d",
+   "T5a",
+   "T5b",
+   "T5c",
+   "T5d",
+   "Tm1",
+   "Tm2",
+   "Tm3",
+   "Tm4",
+   "Tm5Y",
+   "Tm5a",
+   "Tm5b",
+   "Tm5c",
+   "Tm9",
+   "Tm16",
+   "Tm20",
+   "Tm28",
+   "Tm30",
+   "TmY3",
+   "TmY4",
+   "TmY5a",
+   "TmY9",
+   "TmY10",
+   "TmY13",
+   "TmY14",
+   "TmY15",
+   "TmY18"
+  ],
+  "type_counts": {
+   "R1": 721,
+   "R2": 721,
+   "R3": 721,
+   "R4": 721,
+   "R5": 721,
+   "R6": 721,
+   "R7": 721,
+   "R8": 721,
+   "L1": 721,
+   "L2": 721,
+   "L3": 721,
+   "L4": 721,
+   "L5": 721,
+   "Lawf1": 123,
+   "Lawf2": 123,
+   "Am": 721,
+   "C2": 721,
+   "C3": 721,
+   "CT1(Lo1)": 721,
+   "CT1(M10)": 721,
+   "Mi1": 721,
+   "Mi2": 721,
+   "Mi3": 721,
+   "Mi4": 721,
+   "Mi9": 721,
+   "Mi10": 721,
+   "Mi11": 721,
+   "Mi12": 721,
+   "Mi13": 721,
+   "Mi14": 721,
+   "Mi15": 721,
+   "T1": 721,
+   "T2": 721,
+   "T2a": 721,
+   "T3": 721,
+   "T4a": 721,
+   "T4b": 721,
+   "T4c": 721,
+   "T4d": 721,
+   "T5a": 721,
+   "T5b": 721,
+   "T5c": 721,
+   "T5d": 721,
+   "Tm1": 721,
+   "Tm2": 721,
+   "Tm3": 721,
+   "Tm4": 721,
+   "Tm5Y": 721,
+   "Tm5a": 721,
+   "Tm5b": 721,
+   "Tm5c": 721,
+   "Tm9": 721,
+   "Tm16": 721,
+   "Tm20": 721,
+   "Tm28": 721,
+   "Tm30": 721,
+   "TmY3": 721,
+   "TmY4": 721,
+   "TmY5a": 721,
+   "TmY9": 721,
+   "TmY10": 721,
+   "TmY13": 721,
+   "TmY14": 721,
+   "TmY15": 721,
+   "TmY18": 721
+  },
+  "input_cell_types": [
+   "R1",
+   "R2",
+   "R3",
+   "R4",
+   "R5",
+   "R6",
+   "R7",
+   "R8"
+  ],
+  "output_cell_types": [
+   "T1",
+   "T2",
+   "T2a",
+   "T3",
+   "T4a",
+   "T4b",
+   "T4c",
+   "T4d",
+   "T5a",
+   "T5b",
+   "T5c",
+   "T5d",
+   "Tm1",
+   "Tm2",
+   "Tm3",
+   "Tm4",
+   "Tm5Y",
+   "Tm5a",
+   "Tm5b",
+   "Tm5c",
+   "Tm9",
+   "Tm16",
+   "Tm20",
+   "Tm28",
+   "Tm30",
+   "TmY3",
+   "TmY4",
+   "TmY5a",
+   "TmY9",
+   "TmY10",
+   "TmY13",
+   "TmY14",
+   "TmY15",
+   "TmY18"
+  ],
+  "val_items": [
+   "sequence_02_ambush_2_split_00",
+   "sequence_02_ambush_2_split_01",
+   "sequence_02_ambush_2_split_02",
+   "sequence_07_bamboo_1_split_00",
+   "sequence_07_bamboo_1_split_01",
+   "sequence_07_bamboo_1_split_02",
+   "sequence_09_bandage_1_split_00",
+   "sequence_09_bandage_1_split_01",
+   "sequence_09_bandage_1_split_02",
+   "sequence_12_cave_4_split_00",
+   "sequence_13_market_2_split_00",
+   "sequence_13_market_2_split_01",
+   "sequence_13_market_2_split_02",
+   "sequence_16_mountain_1_split_00",
+   "sequence_16_mountain_1_split_01",
+   "sequence_16_mountain_1_split_02"
+  ],
+  "activation": "ReLU()",
+  "new_runs": {
+   "003": "seed3",
+   "004": "seed4"
+  },
+  "night2_runs": {
+   "000": "seed0",
+   "900": "seed0prime",
+   "001": "seed1",
+   "002": "seed2"
+  },
+  "noise_band": 0.002,
+  "prereg_twin_max_discrepancy": 2863.0
+ },
+ "rule_source": "docs/next-session-plan.md Sec 2a (Ark 08:23/08:28, Zcode 08:24)",
+ "rule": "negative: if NEITHER seed 3 nor seed 4 shows a single-type dependence of the size seen in seed 2, seed 2's R2 finding remains a single observation. positive: a type whose excess exceeds 2863 (the largest twin per-type discrepancy, T2a) in seed 3 OR seed 4 makes it a repeated observation -- still not a test.",
+ "threshold_abs": 2863.0,
+ "seed2_reference_R2": 21157.5,
+ "per_seed": {
+  "seed0": {
+   "max_delta_type": "Tm5c",
+   "max_delta": "2616.80778837204",
+   "second_delta_type": "Mi4",
+   "second_delta": "1323.5416140556335",
+   "third_delta_type": "R8",
+   "third_delta": "1040.3820605278015",
+   "ratio_max_over_second": "1.9771254342003979",
+   "order_of_magnitude_above_next": false,
+   "exceeds_2863": false,
+   "top3_by_abs": [
+    [
+     "Tm5c",
+     "2616.80778837204"
+    ],
+    [
+     "Mi4",
+     "1323.5416140556335"
+    ],
+    [
+     "R8",
+     "1040.3820605278015"
+    ]
+   ],
+   "delta_R2": "459.16550397872925"
+  },
+  "seed0prime": {
+   "max_delta_type": "Mi4",
+   "max_delta": "3266.583816051483",
+   "second_delta_type": "T2a",
+   "second_delta": "3171.9215693473816",
+   "third_delta_type": "L5",
+   "third_delta": "1995.025664806366",
+   "ratio_max_over_second": "1.029843816952756",
+   "order_of_magnitude_above_next": false,
+   "exceeds_2863": true,
+   "top3_by_abs": [
+    [
+     "Mi4",
+     "3266.583816051483"
+    ],
+    [
+     "T2a",
+     "3171.9215693473816"
+    ],
+    [
+     "L5",
+     "1995.025664806366"
+    ]
+   ],
+   "delta_R2": "679.8442225456238"
+  },
+  "seed1": {
+   "max_delta_type": "TmY15",
+   "max_delta": "3959.530424594879",
+   "second_delta_type": "T2a",
+   "second_delta": "3651.0101914405823",
+   "third_delta_type": "Mi4",
+   "third_delta": "2380.1875519752502",
+   "ratio_max_over_second": "1.0845027039030433",
+   "order_of_magnitude_above_next": false,
+   "exceeds_2863": true,
+   "top3_by_abs": [
+    [
+     "TmY15",
+     "3959.530424594879"
+    ],
+    [
+     "T2a",
+     "3651.0101914405823"
+    ],
+    [
+     "Mi4",
+     "2380.1875519752502"
+    ]
+   ],
+   "delta_R2": "-0.9974126815795898"
+  },
+  "seed2": {
+   "max_delta_type": "R2",
+   "max_delta": "21157.500619888306",
+   "second_delta_type": "Mi4",
+   "second_delta": "7475.934396743774",
+   "third_delta_type": "Mi2",
+   "third_delta": "4434.2061557769775",
+   "ratio_max_over_second": "2.830081097167424",
+   "order_of_magnitude_above_next": false,
+   "exceeds_2863": true,
+   "top3_by_abs": [
+    [
+     "R2",
+     "21157.500619888306"
+    ],
+    [
+     "Mi4",
+     "7475.934396743774"
+    ],
+    [
+     "Mi2",
+     "4434.2061557769775"
+    ]
+   ],
+   "delta_R2": "21157.500619888306"
+  },
+  "seed3": {
+   "max_delta_type": "Mi4",
+   "max_delta": "4827.536294460297",
+   "second_delta_type": "L5",
+   "second_delta": "1346.0652480125427",
+   "third_delta_type": "Mi9",
+   "third_delta": "575.141345500946",
+   "ratio_max_over_second": "3.5864058607769014",
+   "order_of_magnitude_above_next": false,
+   "exceeds_2863": true,
+   "top3_by_abs": [
+    [
+     "Mi4",
+     "4827.536294460297"
+    ],
+    [
+     "L5",
+     "1346.0652480125427"
+    ],
+    [
+     "Mi9",
+     "575.141345500946"
+    ]
+   ],
+   "delta_R2": "146.87932682037354"
+  },
+  "seed4": {
+   "max_delta_type": "CT1(Lo1)",
+   "max_delta": "10460.885339736938",
+   "second_delta_type": "Tm5b",
+   "second_delta": "1314.0955600738525",
+   "third_delta_type": "Tm2",
+   "third_delta": "1191.1632404327393",
+   "ratio_max_over_second": "7.960521028736323",
+   "order_of_magnitude_above_next": false,
+   "exceeds_2863": true,
+   "top3_by_abs": [
+    [
+     "CT1(Lo1)",
+     "10460.885339736938"
+    ],
+    [
+     "Tm5b",
+     "1314.0955600738525"
+    ],
+    [
+     "Tm2",
+     "1191.1632404327393"
+    ]
+   ],
+   "delta_R2": "41.780412673950195"
+  }
+ },
+ "verdict": {
+  "seed3_positive": true,
+  "seed4_positive": true,
+  "positive_reading_triggered": true,
+  "text": "POSITIVE: a single-type dependence exceeding 2863 appears in seed 3 or seed 4 -> the R2 finding becomes a REPEATED OBSERVATION, still not a test."
+ },
+ "R2_across_six_runs": {
+  "seed0": "459.16550397872925",
+  "seed0prime": "679.8442225456238",
+  "seed1": "-0.9974126815795898",
+  "seed2": "21157.500619888306",
+  "seed3": "146.87932682037354",
+  "seed4": "41.780412673950195"
+ },
+ "R2_prereg_recorded_night2": {
+  "seed0": 459.2,
+  "seed0prime": 679.8,
+  "seed1": -1.0,
+  "seed2": 21157.5
+ },
+ "R2_night2_recompute_check": {
+  "seed0": "0.034496021270740584",
+  "seed0prime": "0.04422254562382477",
+  "seed1": "0.0025873184204101562",
+  "seed2": "0.0006198883056640625"
+ }
+}

@@ -138,6 +138,12 @@ second-job offset does not hold on this pair alone (`docs/experiments/003-night3
 and the row-B preview extension are evaluated in `results/night3/diagnostics/{ablation,rowB}/`,
 pointers only — not resolved in this plan or in `003`.
 
+**Reading outcome 2026-09-16 (ablation):** clause (iii) positive for both seeds but
+non-discriminating (5/6 runs exceed 2863); clause (ii) unsatisfiable as written (no run, including
+seed 2, reaches 10×); clause (i) not met in size; R2 itself does not repeat (+147 / +42);
+one-type dominance repeats (3.6× / 8.0×). Verdict for Mike and the reviewers; the reading rule's
+defect is recorded in 003 §6.
+
 ## 3. Branches after night 2
 
 **2026-09-15:** the branch below is now decidable with the numbers in the Result paragraph

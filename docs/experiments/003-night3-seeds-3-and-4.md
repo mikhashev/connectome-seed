@@ -239,6 +239,45 @@ These readings are evaluated in the ablation and row-B diagnostic records, not i
 This record's §3 and §4 report only the loss-level (rung and checkpoint) numbers; the
 cell-type-level reading of the pre-registered clause is not made here.
 
+**Ablation profiles of seeds 3 and 4 and the pre-registered reading (2026-09-16; protocol of 002
+§5f, `ablation.py` imported not copied; run by CC's subagent on Opus; verified by CC)**
+
+1. Controls: stored val_loss 1155.7706 / 1156.8285 (seeds 3 / 4); P0 −1.3e-5 / −5.9e-5; P1 +1.3e-5
+   / +6.4e-5 (max item 4.9e-4, not bit-identical, within the noise floor); P2 R1–R8 +58.04 /
+   +79.26; P2 the 34 decoder-input types +409.92 (+35.5 %) / +388.15 (+33.6 %) — exploratory note:
+   twice the +16–23 % span of every night-2 run. 204 evaluations, seven invariants asserted;
+   repeatability seed 3 fresh process max |ΔΔ_T| 2.9e-4 (Tm3), ρ = 1.0000; run dirs unchanged (594
+   files); night-2 profiles re-read from the committed CSV, the 13/10-item columns recomputed from
+   the per-item columns (max deviation 9e-13).
+2. The pre-registered reading, clause by clause (the rule in plan §2a was written with three
+   clauses: (i) "a single-type dependence of the size seen in seed 2" (R2 +21,157); (ii) "an order
+   of magnitude above every other type in that run"; (iii) "above the largest twin per-type
+   discrepancy 2863"): table of top type / second type / ratio / > 2863 for all six runs — seed 0
+   Tm5c 2616.8 / Mi4 1323.5 / 1.98× / no; seed 0′ Mi4 3266.6 / T2a 3171.9 / 1.03× / yes; seed 1
+   TmY15 3959.5 / T2a 3651.0 / 1.08× / yes; seed 2 R2 21,157.5 / Mi4 7475.9 / 2.83× / yes; seed 3
+   Mi4 4827.5 / L5 1346.1 / 3.59× / yes; seed 4 CT1(Lo1) 10,460.9 / Tm5b 1314.1 / 7.96× / yes.
+   Clause (iii): positive for both seeds as written — but the threshold does not discriminate: 5 of
+   6 runs exceed it, including 0′ and 1 whose top/second ratio is ≈ 1. Clause (ii): satisfied by no
+   run, including the reference run seed 2 (2.83×, not 10×) — the clause was unsatisfiable as
+   written; what does repeat is one-type dominance: top/second 1.0–2.0× for seeds 0 / 0′ / 1 and
+   2.8× / 3.6× / 8.0× for seeds 2 / 3 / 4, seed 4's shape sharper than seed 2's. Clause (i): 10,461
+   is half of 21,157 and 4,828 a quarter — not "the same size". Δ_R2 across six runs: +459.2 /
+   +679.8 / −1.0 / +21,157.5 / +146.9 / +41.8 — R2 itself does not repeat and is not in the top 10
+   of seeds 3 or 4; the class (one type carries a disproportionate share) repeats, the type does
+   not. Statement: the reading rule was written ambiguously and one clause was unsatisfiable — a
+   defect of the pre-registered reading, CC's, recorded as such; all three clause outcomes are
+   recorded side by side; the verdict is the reviewers' and Mike's, not made here.
+3. Twin trap on 15 pairs (1−ρ, 16 items, ranked): (0,0′) 0.2847 · (1,3) 0.4558 · (0,3) 0.4653 ·
+   (0′,3) 0.5181 · (0,1) 0.5238 · (0′,2) 0.5571 · (0′,1) 0.5594 · (1,2) 0.5598 · (2,3) 0.6072 ·
+   (0,2) 0.6466 · (2,4) 0.6744 · (0,4) 0.7047 · (1,4) 0.7177 · (3,4) 0.9017 · (0′,4) 0.9117. On
+   1−ρ the twins remain the global minimum in all three item subsets (0.2847 / 0.2968 / 0.3168),
+   nearest foreign pair now (1,3) 0.4558; on Euclidean the twin trap FAILS: (0′,3) 3545 and (0,3)
+   4705 undercut the twins' 4798 (and in the 13/10-item subsets). Same-wave pair (3,4): 1−ρ 0.9017,
+   rank 14 of 15 (Euclidean 11,679, rank 8); cross-wave 1−ρ spans 0.456–0.912, median 0.560 — the
+   two runs of one night are nearly the farthest pair; no wave clustering on this instrument. Sign
+   agreement 6/6: 39 of 65 (16 items), 41 (13), 37 (10); noise band |Δ_T| < 2e-3: Mi11 only in
+   seeds 3 and 4 (Mi11 and Mi12 for seed 4 on 13 items).
+
 ## 7. Provenance
 
 - `results/night3/extract_night3.py` — this session's script; sha256
