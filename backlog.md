@@ -174,6 +174,67 @@ language_cutoff: 2026-09-13
   [[THE-INSTRUMENTS-WERE-AUDITED-THE-DAY-THEY-WERE-BUILT-AND-NINETEEN-FIXES-WAIT-ON-MIKES-WORD]].
 - **axis:** collective
 
+### THE-GRAY-STIMULUS-CONTROL-TESTS-LEARNED-EQUALS-VISION-FROM-THE-SECOND-SIDE: replacing the visual input with constant gray or zero on all seven checkpoints should return ~1212 for five runs and reproduce seed 2's explosion only if the photoreceptor-ablation dependence is real (HIGH, open, 2026-09-16 — CC, docs/plans/2026-09-16-functional-readout-plan.md step 1)
+
+- **Observed.** `docs/experiments/003-night3-seeds-3-and-4.md` §6c: held-out loss at iteration 0
+  is ≈1212.55 across all six seeds; R1–R8 silenced (photoreceptor ablation) returns five of six
+  seeds to 0.91–1.42× that level (essentially the whole learned gain removed) while seed 2
+  explodes to 31,773.93, 26× the untrained level. The reading that "five of six runs barely
+  depend on input" is withdrawn by its authors (Ark, Zcode, 06:03–06:04Z) precisely because
+  ablation *does* remove the gain in those five.
+- **Inferred.** Ablation forces photoreceptor activity to zero via a state hook; a gray/zero
+  stimulus control is a second, independent way to remove visual information and was not yet
+  run. If it reproduces (i) ≈1212 for five seeds and (ii) an explosion for seed 2, "learned =
+  vision" is closed from a second side and seed 2's dependence is confirmed as real rather than
+  an ablation-hook artefact.
+- **First step.** CC writes the brief; Zcode reviews before launch (control spec: iteration-0
+  gray ≈1212, fresh-process repeat ≤1e-4); then CC's subagent runs it against the six 250,008
+  checkpoints and each run's iteration-0 checkpoint, same 16 items and evaluator, no ablation.
+- **axis:** knowledge
+
+### THE-TUNING-BATTERY-CHECKS-WHETHER-THE-DOMINANT-ABLATION-TYPE-IS-FUNCTIONAL: flash and moving-edge tuning per cell type, compared against Maisak 2013, will show whether seed 2's R2, seed 3's Mi4 and seed 4's CT1 differ in tuning from the same type in the other five runs (HIGH, open, 2026-09-16 — CC, docs/plans/2026-09-16-functional-readout-plan.md step 2)
+
+- **Observed.** `docs/experiments/003-night3-seeds-3-and-4.md` §6 item 2: each of the six runs
+  has one cell type that dominates its own ablation profile (Tm5c / Mi4 / TmY15 / R2 / Mi4 /
+  CT1(Lo1) for seeds 0/0′/1/2/3/4), and the dominant type differs run to run — "the type that
+  blows up is different in every run that has one" (ablation README §5).
+- **Inferred.** Whether the dominant type is doing anything *functionally* distinctive (its
+  ON/OFF flash-response index or DSI/preferred direction, against the same type in the other
+  five runs and against the literature) is a separate question from whether it dominates the
+  ablation loss, and is untested.
+- **First step.** CC's subagent computes, per seed at 250,008 and at iteration 0: flash-response
+  index and DSI/preferred direction per type (65), using flyvis's own functions; brief reviewed
+  by Ark and Zcode before launch, readings (a)–(d) of the plan fixed before data (twin trap in
+  tuning space; dominant-type deviation ranked among 65, outcomes ≤3 / ≥30 / between;
+  literature-polarity count per fly; iteration-0 as the null). All diagnostics, not tests.
+- **axis:** knowledge
+
+### THE-GENOME-DESIGN-AROUND-S2-NEEDS-LABEL-PROVENANCE-BEFORE-EXTRACTION: Ark's design around S2 and CC's two-page "what is the genome here" note are the prerequisite for extracting the label array and rule bank (HIGH, open, 2026-09-16 — CC, docs/plans/2026-09-16-functional-readout-plan.md step 3)
+
+- **Observed.** No design for the genome track exists yet beyond the plan's naming of it; the
+  plan assigns provenance of the `groundtruth_utils` fields and the design rewrite around S2 to
+  Ark, and a two-page "what is the genome here" note with source addresses to CC, written after
+  Ark's design lands. Zcode owns the C6 control specification for the same track.
+- **Inferred.** CC cannot extract the label array or the rule bank before Ark hands over the
+  field list — the step is ordered, not parallel with its own prerequisite.
+- **First step.** Ark writes the design around S2 with label provenance; CC extracts the label
+  array and rule bank as soon as the field list is handed over, then writes the two-page note.
+- **axis:** knowledge
+
+### THE-LEARNED-GAIN-IS-SIXTY-LOSS-UNITS-ON-AN-UNTRAINED-LEVEL-OF-TWELVE-HUNDRED: rescaling the replicate difference and the between-seed sigma onto the learned-gain axis gives 21% and 6% respectively, a candidate basis for the next registration (HIGH, open, 2026-09-16 — CC, docs/experiments/003-night3-seeds-3-and-4.md §6c)
+
+- **Observed.** `docs/experiments/003-night3-seeds-3-and-4.md` §6c: untrained held-out loss
+  ≈1212.55 across six seeds, checkpoint-250,008 loss 1144.64–1160.98 → a learned gain of ≈60
+  loss units. On that scale the twin replicate difference (12.73) is 21% and the between-seed σ
+  at n=5 (3.54) is 6%.
+- **Inferred.** This is a proposal for how a future pre-registration might state its tolerance
+  (as a fraction of the learned gain rather than of the raw loss), not a re-reading of the
+  existing one — §7's tolerance and its FAIL stand exactly as written and are not revisited by
+  this observation.
+- **First step.** Mike + reviewers decide, at the next pre-registration, whether a
+  learned-gain-relative tolerance replaces or supplements the current raw-loss one.
+- **axis:** honesty
+
 
 
 ## IN PROGRESS

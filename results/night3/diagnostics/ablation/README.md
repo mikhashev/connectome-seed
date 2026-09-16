@@ -12,6 +12,26 @@ row B on the same GPU concurrently.
 
 ---
 
+> **Override of the machine verdict (2026-09-16, on Mike's word «давайте пробовать», reviewers
+> Ark 05:27Z and Zcode 05:27Z concurring).** `ablation_reading.json`'s own `verdict` field reads
+> `"positive_reading_triggered": true` and text *"POSITIVE: a single-type dependence exceeding
+> 2863 appears in seed 3 or seed 4 -> the R2 finding becomes a REPEATED OBSERVATION, still not a
+> test."* **That printed text is not this record's reading.** `docs/next-session-plan.md` §2a's
+> rule was written with two different size definitions for the same clause — "of the size seen
+> in seed 2, +21,157" in the sentence before, "exceeds 2863" (the twin discrepancy bound) in the
+> operational clause the script (`ablation_night3.py:466-476`) actually evaluated. The script
+> executed the operational clause literally and only that clause, which measures single-type
+> *dominance* (a ratio against the second-largest type in the same run), not a repeat of R2's
+> +21,157.5. It is not a repeat: Δ_R2 is +146.9 (seed 3) and +41.8 (seed 4) against +21,157.5
+> (seed 2) — half an order of magnitude short, not "the size seen in seed 2". The threshold 2863
+> is also met by 5 of the 6 runs on record (§5 below), so it does not discriminate a repeat from
+> the background rate. **The outcome under the registered rule is therefore undetermined by
+> defect of the rule, not positive** — this is recorded as a pre-registration defect (the rule's
+> two clauses disagree with each other and the script could only execute one of them), not as a
+> positive outcome, and not as a re-reading of what the script printed. `ablation_reading.json`
+> itself is left unchanged, as the artefact of what the script printed under the rule as written
+> — see checklist rule 16, `docs/CHECKLIST-research-repo.md`.
+
 ## 1. What was run, and what was reused
 
 The protocol is the night-2 one, unchanged: `chkpt_00071` (iteration 250,008 in the CSV

@@ -242,6 +242,26 @@ cell-type-level reading of the pre-registered clause is not made here.
 **Ablation profiles of seeds 3 and 4 and the pre-registered reading (2026-09-16; protocol of 002
 §5f, `ablation.py` imported not copied; run by CC's subagent on Opus; verified by CC)**
 
+> **Override of the machine verdict (2026-09-16, on Mike's word «давайте пробовать», reviewers
+> Ark 05:27Z and Zcode 05:27Z concurring).** `ablation_reading.json`'s own `verdict` field reads
+> `"positive_reading_triggered": true` and text *"POSITIVE: a single-type dependence exceeding
+> 2863 appears in seed 3 or seed 4 -> the R2 finding becomes a REPEATED OBSERVATION, still not a
+> test."* **That printed text is not this record's reading.** `docs/next-session-plan.md` §2a's
+> rule was written with two different size definitions for the same clause — "of the size seen
+> in seed 2, +21,157" in the sentence before, "exceeds 2863" (the twin discrepancy bound) in the
+> operational clause the script (`ablation_night3.py:466-476`) actually evaluated. The script
+> executed the operational clause literally and only that clause, which measures single-type
+> *dominance* (a ratio against the second-largest type in the same run), not a repeat of R2's
+> +21,157.5. It is not a repeat: Δ_R2 is +146.9 (seed 3) and +41.8 (seed 4) against +21,157.5
+> (seed 2) — half an order of magnitude short, not "the size seen in seed 2". The threshold 2863
+> is also met by 5 of the 6 runs on record (item 2 below), so it does not discriminate a repeat
+> from the background rate. **The outcome under the registered rule is therefore undetermined by
+> defect of the rule, not positive** — this is recorded as a pre-registration defect (the rule's
+> two clauses disagree with each other and the script could only execute one of them), not as a
+> positive outcome, and not as a re-reading of what the script printed. `ablation_reading.json`
+> itself is left unchanged, as the artefact of what the script printed under the rule as written
+> — see checklist rule 16, `docs/CHECKLIST-research-repo.md`.
+
 1. Controls: stored val_loss 1155.7706 / 1156.8285 (seeds 3 / 4); P0 −1.3e-5 / −5.9e-5; P1 +1.3e-5
    / +6.4e-5 (max item 4.9e-4, not bit-identical, within the noise floor); P2 R1–R8 +58.04 /
    +79.26; P2 the 34 decoder-input types +409.92 (+35.5 %) / +388.15 (+33.6 %) — exploratory note:
@@ -330,6 +350,44 @@ cell-type-level reading of the pre-registered clause is not made here.
    item 3 recorded in `002` itself.
 8. **Verdict**: none. This is a preview diagnostic, not the pre-registered (b)/(b2) test, which
    runs once at the registered N.
+
+## 6c. The scale of the loss: learned gain vs untrained level (observation, 2026-09-16)
+
+**Observed** (slim jsons' `checkpoint_metrics` at iteration 0, all six seeds;
+`results/night3/diagnostics/ablation/ablation_controls.json` P2a for R1–R8 silenced;
+`results/night2/diagnostics/per_item_250008.csv`, seed 0's per-item column). No rule change; this
+is a reading of scale, not a new registration.
+
+| quantity | seed 0 | seed 0′ | seed 1 | seed 2 | seed 3 | seed 4 |
+|---|---|---|---|---|---|---|
+| held-out loss, iteration 0 | 1212.56 | 1212.56 | 1212.55 | 1212.56 | 1212.55 | 1212.54 |
+| checkpoint 250,008 | 1148.81 | 1160.98 | 1144.64 | 1147.72 | 1155.77 | 1156.83 |
+| R1–R8 silenced (P2a) | 1207.24 | 1208.01 | 1209.50 | 31,773.93 | 1213.82 | 1236.09 |
+| fraction of learned gain removed by blinding | 0.917 | 0.912 | 0.955 | 472.3 | 1.022 | 1.423 |
+
+Held-out loss at iteration 0 is identical to two decimals across all six seeds — the untrained
+level does not depend on seed. Per-item scale (seed 0, checkpoint 250,008,
+`per_item_250008.csv`): min `bamboo_1_split_01` = 79.39, max `ambush_2_split_02` = 4,764.62; the
+three `ambush_2` splits (4,049 / 4,364 / 4,765) dominate the 16-item mean. The training loss is
+flyvis's `l2norm` — per-sample L2 norm over (frames, flow channels, hexals), averaged over the
+batch (`flyvis/task/objectives.py:10-22`) — not a per-pixel error, which is why individual items
+sit at such different scales.
+
+**Reading (observation, no rule change).** The learned gain is ≈ 60 loss units on an untrained
+level of ≈ 1,212. Silencing all photoreceptors removes essentially the whole learned gain in five
+of six runs (fraction 0.91–1.42, i.e. the silenced loss returns to at or above the untrained
+level) — **the earlier chat reading, "five of six runs barely depend on input," is withdrawn by
+its authors, Ark and Zcode, 06:03–06:04Z.** Seed 2 is a different phenomenon: it does not return
+to the untrained level, it explodes to 31,773.93, more than an order of magnitude above it — 26×
+the untrained level, not a return to it.
+
+**Consequence, stated as a proposal for the next registration only — not decided here.** On the
+learned-gain scale, the twin replicate difference (12.73, `002` §5a item 9 / `001` §4) is **21 %**
+of the ≈ 60-unit gain, and the between-seed σ at n = 5 (3.54, §2 above) is **6 %** of it. §7's
+tolerance and its FAIL (`docs/preregistration-cheap-vs-expensive.md` §7; the 1.11 % / 12.73 result
+recorded in `001` §4 and reproduced in §2 above) stand exactly as written — this observation
+proposes a possible next-registration reframing of scale, it does not revisit the registered
+percentage or its outcome.
 
 ## 7. Provenance
 

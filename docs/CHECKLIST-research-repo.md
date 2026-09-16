@@ -48,6 +48,15 @@ reading the incidents below, not by re-deriving the principles.
     columns — caught by someone else's recomputation, none by re-reading; and drop-k computed
     on 250,008 instead of the registered 250,000, which no recomputation from its CSV could
     have caught; 002 §5e/§5h/§5i.)
+16. If a script prints a verdict, its verdict text must be the rule's text verbatim (or a
+    pointer to it), and the verdict must be derived from every clause of the rule, not from
+    one operationalised clause; a divergence between the printed verdict and the rule is a
+    defect of the artefact, to be overridden in the record with a dated note, never silently
+    edited in the artefact. (2026-09-16: `ablation_reading.json`'s `verdict.text` printed only
+    the operational clause of `docs/next-session-plan.md` §2a — "exceeds 2863" — and called
+    seeds 3 and 4 POSITIVE, while the clause it dropped ("of the size seen in seed 2, +21,157")
+    was not met and R2 itself did not repeat; overridden in the record, not edited in the json —
+    003 §6.)
 
 Related: `docs/tool-hardening-package.md` (the code fixes these rules imply for this
 repository, with falsifiers); `docs/preregistration-cheap-vs-expensive.md` §7 (void

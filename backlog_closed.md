@@ -2,6 +2,33 @@
 
 ## 2026-09-16 — closed by CC
 
+### THE-MACHINE-VERDICT-ON-THE-NIGHT-3-ABLATION-READING-WAS-OVERRIDDEN: ablation_reading.json's own POSITIVE verdict evaluated only one of the pre-registered rule's two conflicting size definitions, and R2 itself did not repeat (HIGH, closed, 2026-09-16 — Mike «давайте пробовать», reviewers Ark 05:27Z and Zcode 05:27Z concurring)
+
+**Closed:** S2026-09-16.1 · 2026-09-16 · fixed · override note inserted at the top of
+`docs/experiments/003-night3-seeds-3-and-4.md` §6 (before item 1 of the ablation block) and at
+the top of `results/night3/diagnostics/ablation/README.md`; checklist rule 16 added
+(`docs/CHECKLIST-research-repo.md`); `ablation_reading.json` left unchanged as the artefact of
+what the script printed · closed by CC
+
+- **Observed.** `results/night3/diagnostics/ablation/ablation_reading.json`:
+  `"verdict": {"positive_reading_triggered": true, "text": "POSITIVE: a single-type dependence
+  exceeding 2863 appears in seed 3 or seed 4 -> the R2 finding becomes a REPEATED OBSERVATION,
+  still not a test."}`. `docs/next-session-plan.md` §2a's rule carries two different size
+  definitions for the same clause ("of the size seen in seed 2, +21,157" vs "exceeds 2863", the
+  twin discrepancy bound); `ablation_night3.py:466-476` executed only the second, operational
+  one. Δ_R2 across the six runs is +459.2 / +679.8 / −1.0 / +21,157.5 / +146.9 / +41.8 for
+  seeds 0/0′/1/2/3/4 (`docs/experiments/003-night3-seeds-3-and-4.md` §6 item 2) — seeds 3 and 4
+  are at +146.9 / +41.8, not the +21,157.5 seen in seed 2. The 2863 threshold is met by 5 of the
+  6 runs on record, so it does not discriminate a repeat from the background rate.
+- **Inferred.** The rule's own internal contradiction means the outcome under the rule as
+  written is undetermined by defect of the rule, not positive as the json's `verdict` field
+  states. This is a pre-registration defect, recorded in the record with a dated override note
+  rather than corrected in the json, which stays as the artefact of what the script printed —
+  checklist rule 16 generalises this.
+- **First step.** None — closed on completion.
+- **axis:** honesty
+- **filed:** CC · 2026-09-16
+
 ### NIGHT-3-RUNS-SEEDS-3-AND-4-ON-MIKES-WORD: seeds 3 and 4 trained to 250,000 in one wave with no reboot, the second same-wave pair after seeds 0/0prime, pushing the rung SD to n=5 (HIGH, closed, 2026-09-16 — Mike, DPC Research chat 2026-09-16T04:46Z: «Ночной прогон завершен»)
 
 **Closed:** S2026-09-16.1 · 2026-09-16 · fixed · seed 3 (9991/003) EXIT rc=0, 250,008 iterations, 14415.1s; seed 4 (9991/004) EXIT rc=0, 250,008 iterations, 14684.5s; WAVE DONE 2/2 ok 2026-09-16T04:40:23Z, one wave no reboot; six-run rung SD at n=5: 1.2698/0.8173/8.3788/3.5426 vs replicate 0.0000/0.0025/0.3365/12.7279; record docs/experiments/003-night3-seeds-3-and-4.md and results/night3/ · closed by CC

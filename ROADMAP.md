@@ -124,9 +124,9 @@ one that can be trusted to be current.
 | axis | decisions | board entries | awaiting observation |
 |---|---|---|---|
 | **collective** | — | 2 | 0 |
-| **knowledge** | — | 2 | 0 |
+| **knowledge** | — | 5 | 0 |
 | **network** | — | 0 | 0 |
-| **honesty** | ADR-002 accepted | 6 | 0 |
+| **honesty** | ADR-002 accepted | 7 | 0 |
 | **reach** | ADR-001 accepted | 2 | 0 |
 
 **Observation debt: 0 under an axis + 0 in entries that carry none = 0.** Work finished and never seen working; per axis it says which direction is running ahead of its evidence.
