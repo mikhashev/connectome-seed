@@ -12,6 +12,8 @@ Parameters
   -Seeds "0,1,2,3,4,5"  comma list and/or ranges ("0-5"); the replicate 0' (id <ENS>/900) runs right after seed 0
                    unless -NoReplicate is given
   -NoReplicate     omit --replicate from the launcher args: no run 0' (id <ENS>/900) is queued
+  -ReplicateOf "3" comma list of seeds S; each adds --replicate-of S to the launcher (run S', id
+                   <ENS>/9<S:02d>, tag rep); independent of -NoReplicate, which only controls run 0'
   -Extent N        flyvis hexagonal extent (default 15 = the flyvis default). When not 15 BOTH Hydra overrides are
                    passed: network.connectome.extent=N (config/network/connectome/connectome.yaml) and
                    task.dataset.boxfilter.extent=N (config/task/task.yaml) -- the task rendering does not
@@ -25,6 +27,7 @@ param(
     [switch]$DryRun,
     [switch]$FollowOnly,
     [switch]$NoReplicate,
+    [string]$ReplicateOf = "",
     [string]$Tag = "night1",
     [string]$Ensemble = "9991",
     [string]$Seeds = "0",
@@ -67,6 +70,16 @@ $launchArgs = @(
 if (-not $NoReplicate) {
     $launchArgs += "--replicate"
 }
+$replicateOfSeeds = @()
+if ($ReplicateOf -ne "") {
+    foreach ($part in ($ReplicateOf -split ',')) {
+        $p = $part.Trim()
+        if ($p -ne "") {
+            $replicateOfSeeds += $p
+            $launchArgs += @("--replicate-of", $p)
+        }
+    }
+}
 if ($Extent -ne 15) {
     # both keys are required: the connectome extent and the task's boxfilter (rendering) extent are set separately
     $launchArgs += @("--override", ("network.connectome.extent=" + $Extent),
@@ -84,11 +97,21 @@ if ($Extent -eq 15) {
 } else {
     Write-Output ("extent          : " + $Extent + "  (overrides network.connectome.extent=" + $Extent + " task.dataset.boxfilter.extent=" + $Extent + ")")
 }
-if ($NoReplicate) {
-    Write-Output ("seeds           : " + $Seeds + " (no replicate)")
-} else {
-    Write-Output ("seeds           : " + $Seeds + " + replicate 0' (id " + $Ensemble + "/900, runs right after seed 0)")
+$repOfDescs = @()
+foreach ($p in $replicateOfSeeds) {
+    $rid = $Ensemble + "/9" + ([int]$p).ToString("00")
+    $repOfDescs += ("seed " + $p + "' (id " + $rid + ")")
 }
+$seedsMsg = "seeds           : " + $Seeds
+if ($NoReplicate) {
+    $seedsMsg += " (no replicate)"
+} else {
+    $seedsMsg += " + replicate 0' (id " + $Ensemble + "/900, runs right after seed 0)"
+}
+if ($repOfDescs.Count -gt 0) {
+    $seedsMsg += " + replicate-of: " + ($repOfDescs -join ", ")
+}
+Write-Output $seedsMsg
 Write-Output ("PID file        : " + $pidFile)
 Write-Output ("wave progress   : " + $progressLog + "   (START/EXIT + iter/RUNG/CHECKPOINT/DONE of the running job)")
 Write-Output ("launcher log    : " + $launcherLog)

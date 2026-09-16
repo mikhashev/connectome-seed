@@ -1,7 +1,8 @@
 """Launch a wave of run_individual.py processes and wait for them.
 
 Seed/id mapping: seed s -> id <ENSEMBLE>/<s:03d>, tag <tag>.
---replicate adds run 0' : --seed 0 --id <ENSEMBLE>/900 --tag rep.
+--replicate-of S (repeatable) adds run S': --seed S --id <ENSEMBLE>/9<S:02d> --tag rep, placed right
+  after seed S's own job if S is in --seeds else first; --replicate is --replicate-of 0.
 Default: all runs start concurrently, staggered by --stagger seconds.
 --sequential: each run waits for the previous one to exit (stagger unused).
 --detach: the launcher re-spawns itself as a detached Windows process
@@ -59,6 +60,8 @@ def build_parser():
     p.add_argument("--ensemble", default="9990")
     p.add_argument("--seeds", default="0-7", help="comma list and/or ranges, e.g. 0-7 or 1,2")
     p.add_argument("--replicate", action="store_true", help="add run 0': seed 0, id <ENS>/900, tag rep")
+    p.add_argument("--replicate-of", type=int, action="append", default=[],
+                   help="add run S': seed S, id <ENS>/9<S:02d>, tag rep; repeatable; --replicate is --replicate-of 0")
     p.add_argument("--n-iters", type=int, default=250_000)
     p.add_argument("--rungs", default="1000,5000,25000,250000")
     p.add_argument("--stagger", type=float, default=5.0)
@@ -90,12 +93,29 @@ def main():
     jobs = []
     for s in parse_seeds(a.seeds):
         jobs.append({"seed": s, "id": f"{a.ensemble}/{s:03d}", "tag": a.tag})
-    if a.replicate:
-        # job order: the replicate 0' (seed 0, id <ENS>/900, tag rep) runs right AFTER seed 0 when seed 0 is
-        # in --seeds (so the pair that decides determinism finishes first), else first; other seeds follow
-        rep = {"seed": 0, "id": f"{a.ensemble}/900", "tag": "rep"}
-        pos = next((i + 1 for i, j in enumerate(jobs) if j["seed"] == 0), 0)
-        jobs.insert(pos, rep)
+    seeds_in_wave = {j["seed"] for j in jobs}
+
+    # job order: a replicate-of job (seed S, id <ENS>/9<S:02d>, tag rep) runs right AFTER seed S's own
+    # job when S is in --seeds (so the pair that decides determinism finishes first), else it is placed
+    # first (before any seed job); among several front-placed replicates, earlier --replicate-of wins.
+    rep_seeds = ([0] if a.replicate else []) + list(a.replicate_of)
+    seen_ids = {j["id"] for j in jobs}
+    front_pos = 0
+    for s in rep_seeds:
+        if s >= 100:
+            print(f"--replicate-of {s}: seed must be < 100", file=sys.stderr)
+            return 2
+        rep = {"seed": s, "id": f"{a.ensemble}/9{s:02d}", "tag": "rep"}
+        if rep["id"] in seen_ids:
+            print(f"--replicate-of {s}: id {rep['id']} already queued", file=sys.stderr)
+            return 2
+        seen_ids.add(rep["id"])
+        if s in seeds_in_wave:
+            pos = next(i + 1 for i, j in enumerate(jobs) if j["seed"] == s and j["tag"] == a.tag)
+            jobs.insert(pos, rep)
+        else:
+            jobs.insert(front_pos, rep)
+            front_pos += 1
     for j in jobs:
         j["cmd"] = [a.python, script, "--seed", str(j["seed"]), "--id", j["id"],
                     "--n-iters", str(a.n_iters), "--rungs", a.rungs, "--tag", j["tag"],
