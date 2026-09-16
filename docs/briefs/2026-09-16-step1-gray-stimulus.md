@@ -4,6 +4,20 @@
 ~06:30Z before the review arrived and its output was discarded unread (CC's protocol error,
 recorded in chat); nothing from it is used.**
 
+**v3 (2026-09-16 evening, after the gate stop).** v2 was launched on Mike's word at 19:52Z
+(actually 19:50:18Z per the run record) and stopped at §6's copy-fidelity gate: the identity-
+transform copy passes bitwise at `chkpt_00000` but cannot pass "exactly equal" at `chkpt_00071`,
+because `D.per_item_eval` itself does not reproduce itself in the same process at that checkpoint
+(five repeat calls on the same loaded checkpoint give five distinct 16-item means, spread
+8.58e-05, per-item spread 0.0009765625; source: `cudnn.deterministic=False` in `build_solver`,
+`diag1_eval_paths.py:90-93`, matching the night runs' `--no-determinism`). The copy's deviation
+from the original equals the original's own repeat floor exactly. P0 passed at both checkpoints.
+Nothing else ran. §6 and §7 below are revised to state the evaluator's own measured floor as the
+bar, in place of exact equality and an unstated "explodes" threshold; v2's text is kept and the
+diffs are itemised in the revision history (§10). **Launch of v3 requires Mike's explicit
+«запускай» in the chat again; the v2 launch word was consumed by the run that stopped at the
+gate.**
+
 **Launch only on Mike's explicit «запускай» for this step in the DPC Research chat.**
 
 Path aliases used below:
@@ -85,16 +99,32 @@ several nights (Ark; Zcode agrees).
   `device`, `utc`, `val_items`, checkpoint names, the exact definition of each condition
   (including, for `shuffled`, the per-item frame-permutation seed), the seven invariants per
   evaluation, and `constant_output_null` (§6).
+- `gray_repeat_controls.json` **(v3, named here so it is not a surprise)** — the fresh-process
+  repeat pass (§6): per checkpoint, the in-process floor (max |B-C|, per-item and on the 16-item
+  mean, from two repeat calls of the original `D.per_item_eval`); per cell, the second-process
+  16-item-mean delta against the first process; and, per cell, whether it passes <= 3 x the
+  in-process floor and whether it also passes <= 1e-4.
 
 ## 6. Controls
 - **P0 reproduction.** Condition (c) must reproduce each checkpoint's stored `val_loss`
   (`diag1_eval_paths.py:147`) to <= 1e-4, and `per_item_mean - hook_eval()` to <= 1e-4. Prior
   observed values: -1.29e-05 and -5.91e-05 (`night3/.../ablation/README.md:117-120`).
-- **Copy fidelity.** On one checkpoint, the new copy with the identity transform must return a
-  per-item vector **exactly equal** to `D.per_item_eval(solver)`. If it does not, the copy is wrong
-  and nothing else in the run is interpretable.
-- **Fresh process.** Repeat all 48 cells in a second process; gate max |delta| <= 1e-4; record the
-  actual spread rather than asserting it.
+- **Copy fidelity (v3, revised at the gate stop).** On each checkpoint, the new copy with the
+  identity transform (A) must deviate from `D.per_item_eval(solver)` (B) by no more than the
+  evaluator's own in-process repeat floor, measured in the same process on the same checkpoint:
+  max per-item |A−B| ≤ max per-item |B−C|, where B and C are two separate calls of the original
+  `D.per_item_eval` on the same loaded checkpoint. At iteration 0 the floor is 0.0 and equality
+  must be bitwise. If the copy's deviation exceeds the floor, the copy is wrong and nothing else
+  in the run is interpretable. Record the floor (max |B−C|, per-item and on the 16-item mean) per
+  checkpoint in `gray_controls.json`.
+- **Fresh process (v3, revised at the gate stop).** Repeat all 48 cells in a second process. The
+  target on the 16-item mean remains ≤ 1e-4; state next to it the measured in-process spread of
+  that checkpoint (8.6e-05 at `chkpt_00071`, from five repeat calls of the original
+  `D.per_item_eval` in one process — see Copy fidelity above). Gate: max |delta| of the 16-item
+  mean between the two processes ≤ 3 × the in-process floor of that checkpoint, and additionally
+  report whether it is also ≤ 1e-4. Record the actual spread rather than asserting it. Rationale:
+  the evaluator runs with `cudnn.deterministic=False` by the night runs' own configuration
+  (`build_solver`, `diag1_eval_paths.py:90-93`); changing that would change the evaluator.
 - **Iteration 0, gray vs real.** Expectation, stated in advance: a *difference*, but a small one.
   The stored iteration-0 losses are 1212.5556 / 1212.5556 / 1212.5530 / 1212.5592 / 1212.5497 /
   1212.5379 for seeds 0/0'/1/2/3/4 (`night2` and `night3` `rowB_eval_records.json`), i.e. the six
@@ -123,6 +153,16 @@ seed, on real input). Reading (i) holds for seed `s` if
 the per-seed formula above.
 
 (ii) **Seed 2, stated on both (a) and (b) explicitly** (Ark + Zcode):
+
+**Operationalisation of "explodes" (v3, pre-registered at the gate stop).** For a trained network
+under condition `cond` in `{gray, zero}`, define
+`excess_cond(s) = L_trained,cond(s) - L_untrained_gray(s)` — the excess of the trained network's
+loss under that condition over its own (same-seed) untrained-on-gray loss. Then, in units of
+`gain_s` (§7(i)): `excess_cond(s) >= 10 * gain_s` -> "explodes"; `excess_cond(s) <= 0.1 * gain_s`
+-> "returns"; otherwise -> "between". Ablation reference point, for scale: seed 2, R1–R8 full
+clamp (night-3), excess `+30,626` ≈ 500 × `gain_s` — two orders of magnitude above the "explodes"
+threshold.
+
 - explosion on both (a) gray and (b) zero -> fragility to absence of drive is real;
 - explosion only under the ablation's forced-zero state, i.e. neither (a) nor (b) explode -> the
   ablation deltas — **+21,158** (R2 single-type clamp-to-0, `delta_16` = +21157.5,
@@ -138,12 +178,16 @@ Reference: seed 2's dominant single-type ablation is **R2, delta_16 = +21157.5**
 Trained-checkpoint losses for the five other runs at 250,008: 1148.81, 1160.98, 1144.64, 1155.77,
 1156.83; seed 2 is 1147.72.
 
-(iii) **Reading for (d) shuffled frames**, fixed now, using the same per-seed gain band as (i):
-- shuffled ~ real, i.e. within `0.1 * gain_s` of `L_trained_real(s)` -> the learned gain is not
-  about motion;
-- shuffled ~ gray, i.e. within `0.1 * gain_s` of `L_untrained_gray(s)` -> the learned gain is
-  about temporal content;
-- neither -> recorded as between.
+(iii) **Reading for (d) shuffled frames**, fixed now, using the same per-seed gain band as (i)
+(**v3: branches made exclusive at the gate stop**). Shuffled is read against the **nearer** of the
+two references, `L_trained_real(s)` and `L_untrained_gray(s)`:
+- "not about motion" if shuffled is within `0.1 * gain_s` of `L_trained_real(s)` **and** farther
+  than `0.1 * gain_s` from `L_untrained_gray(s)`;
+- "about temporal content" if the reverse: within `0.1 * gain_s` of `L_untrained_gray(s)` **and**
+  farther than `0.1 * gain_s` from `L_trained_real(s)`;
+- "between" otherwise — including the case where the two references themselves lie within
+  `0.2 * gain_s` of each other, in which case both branches can be satisfied at once and the
+  reading is **void for that seed**, recorded as void rather than assigned to either branch.
 
 ## 8. Runtime — ESTIMATE
 Measured reference points: night-2 ablation did 276 sixteen-item evaluations in 113.8 s wall,
@@ -167,6 +211,12 @@ total, ESTIMATE**. No new rendering is needed: the Sintel rendering already exis
 7. Do not commit, do not push, do not touch the `connectome-seed` working tree.
 8. Do not label this a test. Header on every output: `PREVIEW DIAGNOSTIC -- NOT A TEST`.
 9. If any of the seven invariants is False, stop and report — do not continue the sweep.
+10. **(v3, added at the gate stop)** Exception to §3's "only the argument of line 191 changes":
+    the loop-variable rename `_` -> `_i` in the copied `per_item_eval` (now
+    `per_item_eval_transformed`) is allowed — the executor needed it to index the per-item frame
+    permutation of condition (d) (shuffled). It must be declared in the script's docstring; it
+    already is (`gray_stimulus.py`, module docstring and `per_item_eval_transformed`'s own
+    docstring).
 
 ## 10. Revision history
 - **v1 -> v2** (Ark, review posted 06:24Z 2026-09-16): output directory renamed to
@@ -185,3 +235,18 @@ total, ESTIMATE**. No new rendering is needed: the Sintel rendering already exis
   §6, §8; the iteration-0 gray-vs-real control sentence kept but restated as a recorded control
   number only, not used in the reading (§6); header and launch-rule lines added; v1's discarded
   sweep noted at the top.
+- **v2 -> v3** (2026-09-16 evening, after the gate stop; source: the executor's run at 19:50:18Z
+  and `results/diagnostics/gray/README.md` §3, §7): copy-fidelity control (§6) restated against
+  the evaluator's own in-process repeat floor instead of exact equality, since
+  `cudnn.deterministic=False` (`diag1_eval_paths.py:90-93`) makes `D.per_item_eval` itself
+  non-reproducible in-process at `chkpt_00071` (spread 8.58e-05 on the 16-item mean, 0.0009765625
+  per-item) while iteration 0 stays bitwise; fresh-process gate (§6) restated as <= 3x that floor,
+  with the existing 1e-4 target kept and reported separately; reading (ii) (§7) given a
+  pre-registered numeric "explodes"/"returns"/"between" operationalisation in units of `gain_s`,
+  referenced against the R1-R8 clamp excess (+30,626 ~ 500 x `gain_s`), replacing the executor's
+  provisional trained-real-baseline threshold; reading (iii) (§7) branches made mutually exclusive
+  by nearest-reference, with the overlap case (references within 0.2 x `gain_s`) recorded as void
+  rather than double-satisfied; §5 gains `gray_repeat_controls.json`; §9 gains an explicit
+  exception for the `_` -> `_i` loop-variable rename already declared in `gray_stimulus.py`'s
+  docstrings; header gains the v3 note and a fresh launch-word requirement. v2's text is otherwise
+  unchanged.

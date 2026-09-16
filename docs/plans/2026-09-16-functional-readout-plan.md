@@ -81,6 +81,25 @@ Ark writes the design around S2 with label provenance; CC writes the two-page "w
 here" with source addresses after the design; Zcode writes the C6 control specification. CC
 extracts the label array and the rule bank as soon as Ark hands over the field list.
 
+**Boundary (Ark, 2026-09-16 19:51Z, recorded on his request):** C6/S2 fit the *compiled* rule bank
+(the h5 edge table: 2,355 rows `(source_type, target_type, du, dv) → n_syn, sign`, identical at
+extent 5 and 15); the transition json → compiled bank is **not verified and not licensed** by
+either test. Measured 2026-09-16 (CC, read-only): the json carries 605 `(src, tar)` entries with
+2,140 offset rows; 2,117 of those keys match the bank one-to-one, 238 bank rows are added by the
+convex-hull fill (`n_syn_fill = 1`, all n_syn = 1.0), and 23 json rows have no bank counterpart
+(all self-projections of the `stride [3, 2]` types Lawf1/Lawf2 whose offset is not on the type's own
+stride lattice, dropped by the `KeyError` suppression at `connectome.py:497-498`). On the 2,117
+matched keys the bank is an **identity copy of the json up to a float32 cast**: max |n_syn_bank −
+n_synapses_json| = 6.5e-6, and `n_syn_certainty` = `lambda_mult` to 4.4e-6 (`connectome.py:403-432,
+473-499, 248, 258`; no scaling, averaging or rounding exists in the code). CC's chat figure of
+2026-09-16 19:49Z, "only 807 of 2,117 keys carry the same n_syn", was an artefact of comparing a
+float64 json value with the float32 bank at a 1e-9 tolerance and is withdrawn (corrected in chat
+the same evening). So the json → bank transition is deterministic and, apart from the hull fill and
+the stride-dropping, value-preserving; it is still not exercised by C6/S2 themselves, so a success
+of S2 licenses "predict the bank from the bank" plus this documented transition, not more. The pair count is 605 in the json and 604 instantiated: `Lawf1 → Lawf1`
+with its single offset `[1, 0]` never lands on a Lawf1 cell under that type's `stride [3, 2]`
+(mechanism inferred from the layout pattern, not executed).
+
 ## Step 4 — night 4 (Mike launches; independent of steps 1–3)
 
 Replicate 3′ first in the wave, new seed 5 second, `-NoReplicate`, Windows Update paused until
@@ -95,3 +114,6 @@ measurements — the first thing reported after launch is the actual time.
 **Rule (Mike, 06:3xZ): nothing launches without Mike's explicit «запускай» in the chat; plan
 approval is not a launch word. On 2026-09-16 CC launched step 1 before the reviews arrived; the
 output was discarded unread and step 1 is re-run from brief v2 only on Mike's word.**
+
+2026-09-16 20:03Z: step 1 (v2) launched on Mike's word and stopped at the copy-fidelity gate
+(evaluator floor, not a copy defect); brief amended to v3; re-launch on Mike's word.
