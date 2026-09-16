@@ -40,10 +40,14 @@ reading the incidents below, not by re-deriving the principles.
 14. A new readout is a new registration; it never judges a registered hypothesis after the
     data exist. (Row B, the ablation profile, MI in autoresearch: UNINFORMATIVE by its own
     pre-registration.)
-15. Any table in a record is verified by recomputation from the primary file, not by reading.
-    (2026-09-15: five reviewer figures — a 40× noise ratio, an "unreachable region", "six
-    invariants", and a distance table with labels swapped in two columns — were caught by
-    someone else's recomputation, none by re-reading; 002 §5h/§5i.)
+15. Any table in a record is verified by recomputation from the primary file, not by reading —
+    AND the primary file is verified by reading the code that produced it, not by
+    recomputation. Recomputation catches a label/value mismatch; it cannot catch an error the
+    primary file itself carries. (2026-09-15: five reviewer figures — a 40× noise ratio, an
+    "unreachable region", "six invariants", a distance table with labels swapped in two
+    columns — caught by someone else's recomputation, none by re-reading; and drop-k computed
+    on 250,008 instead of the registered 250,000, which no recomputation from its CSV could
+    have caught; 002 §5e/§5h/§5i.)
 
 Related: `docs/tool-hardening-package.md` (the code fixes these rules imply for this
 repository, with falsifiers); `docs/preregistration-cheap-vs-expensive.md` §7 (void
