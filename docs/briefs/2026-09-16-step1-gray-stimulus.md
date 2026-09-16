@@ -112,8 +112,11 @@ several nights (Ark; Zcode agrees).
 - **Copy fidelity (v3, revised at the gate stop).** On each checkpoint, the new copy with the
   identity transform (A) must deviate from `D.per_item_eval(solver)` (B) by no more than the
   evaluator's own in-process repeat floor, measured in the same process on the same checkpoint:
-  max per-item |A−B| ≤ max per-item |B−C|, where B and C are two separate calls of the original
-  `D.per_item_eval` on the same loaded checkpoint. At iteration 0 the floor is 0.0 and equality
+  max per-item |A−B| ≤ the floor, where the floor is the maximum per-item deviation over **all
+  pairs** among five separate calls of the original `D.per_item_eval` on the same loaded checkpoint
+  (10 pairs; v3.1, Ark 20:09Z — a single pair's maximum over 16 items is itself noisy and would
+  risk a second false stop). A is also compared against each of the five calls and the worst pair
+  is reported. At iteration 0 the floor is 0.0 and equality
   must be bitwise. If the copy's deviation exceeds the floor, the copy is wrong and nothing else
   in the run is interpretable. Record the floor (max |B−C|, per-item and on the 16-item mean) per
   checkpoint in `gray_controls.json`.
@@ -250,3 +253,6 @@ total, ESTIMATE**. No new rendering is needed: the Sintel rendering already exis
   exception for the `_` -> `_i` loop-variable rename already declared in `gray_stimulus.py`'s
   docstrings; header gains the v3 note and a fresh launch-word requirement. v2's text is otherwise
   unchanged.
+- **v3 -> v3.1** (2026-09-16 20:09Z, Ark): the copy-fidelity floor is the maximum over all 10
+  pairs of five calls of the original evaluator, not one pair; no other change. Reviewer pass on
+  v3: Ark 20:09Z, no objections to the four v3 edits. Launch still requires Mike's «запускай».
