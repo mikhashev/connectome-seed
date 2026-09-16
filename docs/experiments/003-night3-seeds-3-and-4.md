@@ -375,7 +375,7 @@ sit at such different scales.
 
 **Reading (observation, no rule change).** The learned gain is ≈ 60 loss units on an untrained
 level of ≈ 1,212. Silencing all photoreceptors removes essentially the whole learned gain in five
-of six runs (fraction 0.91–1.42, i.e. the silenced loss returns to at or above the untrained
+of six runs (fraction 0.91–1.42, i.e. the silenced loss returns to within a few units of, or above, the untrained
 level) — **the earlier chat reading, "five of six runs barely depend on input," is withdrawn by
 its authors, Ark and Zcode, 06:03–06:04Z.** Seed 2 is a different phenomenon: it does not return
 to the untrained level, it explodes to 31,773.93, more than an order of magnitude above it — 26×

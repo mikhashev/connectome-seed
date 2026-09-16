@@ -1,0 +1,84 @@
+# Brief — step 2: tuning battery (flashes + moving edges vs. the literature table)
+
+Aliases: `FV` = `.../63f3961a-.../scratchpad/flyvis-probe/.venv/Lib/site-packages/flyvis` (1.2.0); `CS` = `...\dpc-research\connectome-seed`; `CSD` = `...\dpc-research\connectome-seed-data`.
+
+## 0. Network set — one correction
+The request says "seven networks per seed". What exists is **12**: 6 runs x {`chkpt_00071` = iteration 250,008, `chkpt_00000` = iteration 0} (`rowB.py:56-57`, `:287-295`). I read "65 x 7 x 6" as **65 cell types x 7 per-type quantities x 6 runs**, one such table per checkpoint. Ark to confirm.
+
+## 1. The wrapper API does NOT support our checkpoints — plainly
+`flash_responses` / `moving_edge_responses` / `moving_bar_responses` all funnel into `generic_responses` (`FV/analysis/stimulus_responses.py:111-256`), which requires a `flyvis.NetworkView` (`:123` isinstance) and uses `.memory` `:147`, `.connectome` `:212`, `.dir.config` `:253`, `.name` `:247`.
+`NetworkView.__init__` (`FV/network/network_view.py:85-122`) needs a flyvis `NetworkDir` with `dir.config.network`, resolvable `chkpts`, a best-checkpoint validation-loss file — **and it creates a joblib `Memory` at `self.dir.path/"__cache__"` (`:109-114`), i.e. it writes inside the run directory.** The whole wrapper layer is unusable for us. Do not fake a NetworkView.
+
+## 2. The minimal adapter that IS supported
+`Network.stimulus_response(stim_dataset, dt, indices=None, t_pre=1.0, t_fade_in=0.0, grad=False, default_stim_key="lum", batch_size=1)` is a plain `Network` method with no NetworkView in it (`FV/network/network.py:712-799`). So:
+1. `solver = D.build_solver(scratch_root)`; `D.load_checkpoint(solver, <chkpt>)` — the ablation path (`CS/results/night2/diagnostics/diag1_eval_paths.py:81`, `:132`).
+2. `net = solver.network`; iterate `net.stimulus_response(ds, dt=..., t_pre=1.0, t_fade_in=0.0, batch_size=4)`.
+3. Build the `xr.Dataset` ourselves, copying `stimulus_responses.py:58-108` (batch concat, `np.take(responses, cell_index, axis=-1)`) and `:204-254` (coords `frame/channel/hex_pixel/neuron`; `time = arange(n)*dt - t_pre`; `cell_type/u/v` from `net.connectome.nodes`; `attrs['config'] = ds.config.to_dict()`). All analysis functions read only from that Dataset.
+   - `cell_index = net.connectome.central_cells_index[:]` (`stimulus_responses.py:56`) -> 65 central cells, one per type; type strings via `ablation.py:87-89`.
+   - `import flyvis.utils` first: it registers the `.custom` accessor at import (`FV/utils/__init__.py:40-47`, called at `:60`), needed by `correlation_to_known_tuning_curves` and `angular_tuning`.
+
+## 3. Datasets — flyvis defaults, kept as-is
+**Flashes** (`FV/datasets/flashes.py:162-171`), config from `stimulus_responses.py:270-277`: `boxfilter=dict(extent=15, kernel_size=13)` (= our training extent), `dynamic_range=[0,1]`, `t_stim=1`, `t_pre=1.0`, `dt=1/200`, `radius=[-1,6]`, `alternations=(0,1,0)` -> 4 samples (`flashes.py:186-191`), n_frames = 3/dt = 600.
+**MovingEdge** (`FV/datasets/moving_bar.py:662-695`), config from `stimulus_responses.py:300-310`: `offsets=(-10,11)`, `intensities=[0,1]`, `speeds=(2.4,4.8,9.7,13,19,25)`, `height=80`, `post_pad_mode="continue"`, `dt=1/200`, `t_pre=1.0`, `t_post=1.0`, `device=flyvis.device`; `angles=[0,30..330]` (`:676`), `widths` forced to `[80]` (`:680`) -> **144 samples**. `t_stim = len(offsets)*led_width/(speed*omm_width)` (`:198-200`; `led_width=radians(2.25)` `:161`, `omm_width=radians(5.8)` `:158`) -> slowest speed 3.39 s, n_frames = (1+3.39+1)/dt ~= **1079**.
+**MovingBar** (432 samples, widths [1,2,4]): OMIT in pass 1 — 3x cost, and flyvis's own ensemble view uses the *edge* set for DSI (`FV/network/ensemble_view.py:269-270`) and flashes with `radius=6` for FRI (`:237-238`).
+
+**Three silent traps.**
+- `MovingBar.dt` setter (`moving_bar.py:249-262`) **refuses** a dt different from the construction dt and only logs a warning, while `stimulus_response` assigns `stim_dataset.dt = dt` (`network.py:744`). Construct with the intended dt; `assert ds.dt == dt` afterwards.
+- `Flashes.dt` is a plain attribute (`flashes.py:159, 193`): assigning it does **not** re-render, it only shifts the time axis. Same rule.
+- dt choice: our nets trained at **dt = 0.02** (`rowB_eval_records.json:184`, asserted at `diag1_eval_paths.py:146`); flyvis defaults to 1/200; `simulate` warns only above 1/50 (`network.py:673-679`). Proposal: primary 1/200 (comparable to flyvis's own numbers), secondary 1/50. Ark decides, not the executor.
+
+**Rendering writes into `CSD/renderings` unless redirected.** `RenderedFlashes` / `RenderedOffsets` are `@root(renderings_dir)` Directories (`flashes.py:25`, `moving_bar.py:30`), `renderings_dir = FLYVIS_ROOT_DIR/renderings` (`FV/__init__.py:57`) = `CSD/renderings`. `@root` defaults to `precedence=2` — "overrides global but not context settings" (`datamate/context.py:69-73`, logic `:121-127`). So wrap **only the dataset constructors** in `datamate.set_root_context(<scratchpad>/renderings)` (`context.py:143-160`); the solver build must see the real root (connectome, SintelDataSet, results).
+
+**NaN padding is expected.** `MovingBar._resample` pads to `t_stim_max` with NaN (`moving_bar.py:340-346`), so faster speeds feed NaN after their stimulus ends and the state goes NaN for the rest of that sample. `peak_responses` masks it (`moving_bar_responses.py:64-71`, `.where(masks, other=0)`). Do not repair it; record the NaN frame fraction per sample.
+
+## 4. Analysis calls — exact signatures
+- `flash_responses.flash_response_index(dataset, radius=6, on_intensity=1.0, off_intensity=0.0, nonnegative=True)` — `:25-31`; asserts `alternations == (0,1,0)` at `:50`.
+- `flash_responses.fri_correlation_to_known(fris)` — `:91-115`; uses only `polarity != 0` types.
+- `moving_bar_responses.peak_responses(dataset, norm=None, from_degree=None, to_degree=None)` — `:41`.
+- `moving_bar_responses.direction_selectivity_index(dataset, average=True)` — `:155-194`.
+- `moving_bar_responses.preferred_direction(dataset, average=True)` — `:515-552` (radians).
+- `moving_bar_responses.angular_tuning(peak_responses(ds), cell_type=<str>, intensity=<0|1>)` — `:637`.
+- `moving_bar_responses.dsi_correlation_to_known(dsis)` — `:395-439`; asserts `sizes['intensity'] == 2`.
+- `moving_bar_responses.correlation_to_known_tuning_curves(dataset, absmax=False)` — `:442-481`; T4a-d/T5a-d only; ground truth via `get_known_tuning_curves(cell_types, angles)` `:484-512`.
+- `moving_bar_responses.angular_distance_to_known(pds)` — `:555-572`; T4 at intensity 1, T5 at 0.
+The last two are **not called anywhere inside flyvis**, so the source does not say whether the edge or the bar dataset is intended. Both satisfy the required dims (edge has one width -> trivial argmax).
+
+## 5. Outputs
+`CS/results/night4/diagnostics/tuning/`, brief-1 conventions (`PREVIEW DIAGNOSTIC -- NOT A TEST` header line, `# script_sha256=`, every number via `repr(float(x))` — `rowB.py:307-319`).
+- `tuning_per_type.csv` — `run,label,checkpoint_iter,cell_type` + FRI, DSI_on, DSI_off, PD_on, PD_off, and the 12-angle tuning vector per intensity (24 cols). 65 x 12 = 780 rows.
+- `tuning_literature.json` — per network: `fri_correlation_to_known`, `dsi_correlation_to_known`, `correlation_to_known_tuning_curves` (8), `angular_distance_to_known` (8).
+- `tuning_controls.json` — meta as in brief 1 (sha256 of this script + `diag1_eval_paths.py`, `ablation.py`, `rowB.py`; flyvis/torch/python/GPU/utc) + `ds.config.to_dict()` verbatim for both datasets, n_samples, n_frames, NaN fractions, per-network wall time.
+
+## 6. Controls
+- **P0:** same network twice in one process -> per-type vectors bitwise identical (these datasets draw no RNG; `stimulus_response` sets none). Report max |delta|.
+- **P0-bis:** fresh process; record the spread. No gate pre-set.
+- **Iteration-0 baseline:** the whole battery on `chkpt_00000` of every run.
+- **What the literature-comparison functions return for an untrained vs a trained net: TO BE MEASURED.** The flyvis source states no range and nothing has been run. Do not put a number from the paper into the pre-registration.
+
+## 7. Pre-registered readings (verbatim, with mechanics)
+(a) **twin trap in tuning space** — (0, 0') minimum of 15 pairwise distances by rank correlation across the concatenated per-type tuning vector, with the 1/15 floor as a sanity check. Mechanics: one vector per network = 65 types x [FRI, DSI_on, DSI_off, PD_on, PD_off, 24 tuning values]; distance = 1 - Spearman rho (`ablation.py` `spearman`, reused at `rowB.py:325`).
+(b) **dominant type functional?** — deviation of the dominant type's tuning (R2 in seed 2, Mi4 in seed 3, CT1 in seed 4) from the same type in the five other runs, ranked among 65 types, outcomes <= 3 / >= 30 / between. Exact names and sizes from `ablation_profiles.csv`: seed 2 **R2** +21157.5, seed 3 **Mi4** +4827.5, seed 4 **CT1(Lo1)** +10460.9 — not "CT1"; there are two CT1 types.
+(c) **count of the 65 types holding the literature polarity and direction per fly and its spread across flies.** *Not attainable as written:* only **32 of the 65** types have a non-zero `polarity` entry (`FV/utils/groundtruth_utils.py:16-82`; the other 33 are 0 = unknown) and only **8** have a `preferred_directions` entry (`:181-190`). The counts are out of 32 and out of 8.
+(d) **iteration 0 as null.**
+
+## 8. Provenance question for Ark — `groundtruth_utils` fields
+Docstring `:1-11`: "All data structures are based on published literature and may need to be updated as new research becomes available." **The file contains exactly two citations**, quoted in full: `"L5": 1,  # Drews 2020, Matulis 2020` (`:29`) and `# from Maisak et al. 2013 Fig. 3 g, h` (`:514`, covering `tuning_curves`, T4a-d/T5a-d). Other comments are definitions, not sources: `# 1 is ON, 0 is unknown, -1 is OFF` (`:15`), `# no motion tuning in T4 and T5 inputs` (`:486`).
+**No source stated at all** for: `polarity` as a whole (`:16`), `on_pathway` (`:84`), `off_pathway` (`:98`), `layout` (`:113`), `preferred_directions` (`:181`), `on_direction_selective` (`:192`), `off_direction_selective` (`:260`), `not_direction_selective` (`:328`), `asymmetric_input` (`:397`), `unsufficient_data` (`:464`), `noisy_data` (`:475`), `motion_tuning`/`on_`/`off_` (`:506-508`).
+**Derived in-file, not data:** `symmetric_inputs` (`:477`, from `asymmetric_input` minus the two exclusion lists, 33), `known_dsi_types` (`:510` = `no_motion_tuning + motion_tuning`, 18), `known_preferred_contrasts` (`:512`, from `polarity`, 32), `no_motion_tuning` (`:487`, 10, with three L-types commented out at `:488-490`, `:496-498`).
+No field anywhere is described as derived from connectivity. Question for Ark: `asymmetric_input` / `symmetric_inputs` read like connectome-derived quantities but carry no source — is there one outside the file?
+
+## 9. Runtime and memory — ESTIMATE
+Memory: `forward` stacks the whole run (`network.py:546`), so ~`batch x n_frames x 45669 x 4 B` for the activity plus the same for the stimulus buffer. MovingEdge at batch 4 x 1079 frames ~= 0.79 GiB each -> ~1.6-2.5 GiB peak; batch_size 4 (the flyvis default) is comfortable on 32 GiB.
+Time: our 16-item eval at dt=0.02 takes 0.18-0.49 s (`night2/.../ablation/README.md:130-132`; `night3/.../ablation_controls.json` `one_evaluation_wall_s`), but those items are ~19 Euler steps. MovingEdge is 36 batches x 1079 sequential steps ~= 38.8k steps per network; Flashes is 1 batch x 600. **ESTIMATE 3-8 min per network for edges, < 10 s for flashes -> 12 networks ~= 45-100 min**, plus a one-off `RenderedOffsets` render (144 angle x width x intensity, ESTIMATE 1-5 min). All of these are estimates with no measurement behind them: measure the first network's real wall time and report it before continuing with the other eleven.
+
+## 10. Do not
+1. No `NetworkView`, `flash_responses()`, `moving_edge_responses()`, `moving_bar_responses()` or `Ensemble` — each writes `__cache__` into a network directory.
+2. Nothing written under `CSD/results/flow/9991/**`; diff the 594-file listing (size + mtime) before and after, as `night3/.../ablation/README.md:107-111` does.
+3. No `RenderedFlashes`/`RenderedOffsets` in `CSD/renderings` — `set_root_context` around the dataset constructors only.
+4. No training; never call `solver.checkpoint()` or `solver.test(track_loss=True)`.
+5. No edits under `CS/results/night2/`, `CS/results/night3/`, or anywhere in `CS`.
+6. No change to any flyvis dataset default. If one must change, stop and ask.
+7. Do not drop, interpolate or zero the NaN padding outside `peak_responses`' own masking.
+8. Do not quote a literature-correlation "expected range" that was not measured in this run.
+9. No rounding in outputs; `repr(float(x))`.
+10. Do not commit or push. Do not call this a test.
