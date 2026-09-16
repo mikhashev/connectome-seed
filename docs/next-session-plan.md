@@ -108,6 +108,36 @@ only; row-B activity on T5c/T5d and profile compression (sd, range) are recorded
 no verdict; night 3's (3, 4) is the second same-wave pair — within-pair vs between-pair closeness
 across the two same-wave pairs is the first free separation of individual from night.
 
+**Result 2026-09-16.** Both jobs ran in one wave, start to end, no reboot. Seed 3 (`9991/003`)
+EXIT rc=0, 250,008 iterations, 14,415.1 s (launcher wall); seed 4 (`9991/004`) EXIT rc=0,
+250,008 iterations, 14,684.5 s. `WAVE DONE 2/2 ok` 2026-09-16T04:40:23Z. Mike, chat 04:46Z:
+«Ночной прогон завершен». Full record: `docs/experiments/003-night3-seeds-3-and-4.md`,
+`results/night3/`.
+
+Rung SD at n=5 (seeds 0, 1, 2, 3, 4) against the run 0/run 0′ replicate offset, with the 95 % χ²
+interval for σ at n=5 (4 degrees of freedom, χ²₀.₉₇₅,₄ = 11.143, χ²₀.₀₂₅,₄ = 0.4844):
+
+| rung | SD (n=3) | SD (n=5) | 95 % CI for σ (n=5) | replicate \|0′−0\| | SD(n=5)/replicate |
+|---|---|---|---|---|---|
+| 1,000 | 0.8543 | 1.2698 | [0.7608, 3.6489] | 0.0000 | undefined (÷0) |
+| 5,000 | 0.5151 | 0.8173 | [0.4897, 2.3486] | 0.0025 | 322.04 |
+| 25,000 (C3) | 7.7627 | 8.3788 | [5.0201, 24.0774] | 0.3365 | 24.90 |
+| 250,000 | 1.7953 | 3.5426 | [2.1225, 10.1801] | 12.7279 | 0.278 |
+
+n=5 gives an SD with 4 degrees of freedom; §7's measurability clause is still applied only as a
+preview (registered N — 8 or 10 — still undecided, decision 3 above). Direction is unchanged
+from n=3: at 250,000 the CI upper bound (10.18) is further below the replicate (12.73) than the
+n=3 upper bound was (11.29); at 25,000 the CI lower bound (5.02) stays well above the replicate
+(0.34). These are distances only — no ρ, no ranks, no verdict on (b)/(b2) yet.
+
+The second same-wave pair (seed 4 − seed 3, mean −3.51, min −23.43, max +11.59) is positive at
+only 6 of 29 late checkpoints, against (seed 0′ − seed 0)'s 29/29 — the two same-wave pairs do
+not repeat each other's sign, so a within-wave position effect predicting a positive
+second-job offset does not hold on this pair alone (`docs/experiments/003-night3-seeds-3-and-4.md`
+§3). The pre-registered ablation reading (R2-sized single-type dependence in seed 3 or seed 4)
+and the row-B preview extension are evaluated in `results/night3/diagnostics/{ablation,rowB}/`,
+pointers only — not resolved in this plan or in `003`.
+
 ## 3. Branches after night 2
 
 **2026-09-15:** the branch below is now decidable with the numbers in the Result paragraph

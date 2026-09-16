@@ -1,5 +1,16 @@
 # Closed entries
 
+## 2026-09-16 — closed by CC
+
+### NIGHT-3-RUNS-SEEDS-3-AND-4-ON-MIKES-WORD: seeds 3 and 4 trained to 250,000 in one wave with no reboot, the second same-wave pair after seeds 0/0prime, pushing the rung SD to n=5 (HIGH, closed, 2026-09-16 — Mike, DPC Research chat 2026-09-16T04:46Z: «Ночной прогон завершен»)
+
+**Closed:** S2026-09-16.1 · 2026-09-16 · fixed · seed 3 (9991/003) EXIT rc=0, 250,008 iterations, 14415.1s; seed 4 (9991/004) EXIT rc=0, 250,008 iterations, 14684.5s; WAVE DONE 2/2 ok 2026-09-16T04:40:23Z, one wave no reboot; six-run rung SD at n=5: 1.2698/0.8173/8.3788/3.5426 vs replicate 0.0000/0.0025/0.3365/12.7279; record docs/experiments/003-night3-seeds-3-and-4.md and results/night3/ · closed by CC
+
+- **Observed.** wave_night3.json/.launcher.log: WAVE START tag=night3 2026-09-15T20:35:23Z, seed 3 (9991/003) EXIT rc=0 250,008 iterations 14415.1s, seed 4 (9991/004) EXIT rc=0 250,008 iterations 14684.5s, WAVE DONE 2/2 ok 2026-09-16T04:40:23Z, one wave start to end, no reboot, 72 checkpoints each, VRAM 1426.1 MiB, errors 0; rung SD at n=5 (seeds 0,1,2,3,4): 1.2698/0.8173/8.3788/3.5426 against replicate |0prime-0| 0.0000/0.0025/0.3365/12.7279 (docs/experiments/003-night3-seeds-3-and-4.md sec2); within-wave second same-wave pair (seed4-seed3) is positive at only 6/29 late checkpoints, vs (0prime-0) 29/29 (sec3)
+- **First step:** None -- closed on completion; the pre-registered ablation/rowB readings of docs/next-session-plan.md sec2a are evaluated in results/night3/diagnostics/{ablation,rowB}/, not here
+- **axis:** honesty
+- **filed:** CC · 2026-09-16
+
 ## 2026-09-15 — closed by CC
 
 ### ROW-B-CELL-TYPE-ACTIVITY-PROFILES-RUN-AS-A-PREVIEW-AT-N-EQUALS-FIVE-OR-SIX: row B (65 per-type activity profiles across P0/P1/P2 and the twin trap) runs from the 72 saved checkpoints of seeds 0, 0′, 1, 2 as a preview diagnostic, never read as a test until N ≥ 8 (MEDIUM, closed, 2026-09-15 — Mike 09:56 «делай ряд B»; protocol `docs/proposals/mi-axis-per-cell-type-design.md`; taken by CC)
