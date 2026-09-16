@@ -1,9 +1,10 @@
 """Gray-stimulus control -- 6 runs x 2 checkpoints x 4 input conditions on the 16 held-out items.
 
 PREVIEW DIAGNOSTIC -- NOT A TEST.  The protocol is fixed in
-`docs/briefs/2026-09-16-step1-gray-stimulus.md` (v2, after review by Ark and Zcode), written and
-saved before this script was run for the first time.  Launched on Mike's explicit word in the DPC
-Research chat, 2026-09-16 19:50:18Z.
+`docs/briefs/2026-09-16-step1-gray-stimulus.md` (v3.1, commit 54823c4; v2 after review by Ark and
+Zcode, v3/v3.1 after the v2 run stopped at the copy-fidelity gate).  The v2 launch (Mike's word,
+2026-09-16 19:50:18Z) stopped at that gate (README_v2_gate_stop.md).  The v3.1 run was launched on
+Mike's explicit word in the DPC Research chat, 2026-09-16 20:14:03Z: «@CC_windows запускай шаг 1».
 
 WHAT THIS SCRIPT DOES NOT DO: it never trains, never writes into
 connectome-seed-data/results/flow/9991/*, never calls solver.checkpoint() or
@@ -29,8 +30,19 @@ the decoder call (:196), the loss call (:198) -- is byte-identical.  The only ot
 difference is the loop variable `_` -> `_i` on the `for` of :188, needed to index the per-item
 frame permutation of condition (d); it is recorded here and in README.md as a deviation from
 "only the argument of line 191 changes".  Copy fidelity is measured, not assumed, by
---task control: the copy with the identity transform against D.per_item_eval, with
-D.per_item_eval's own repeat-in-the-same-process floor measured beside it.
+--task control (brief v3.1 Sec 6): the copy with the identity transform (A) against each of FIVE
+calls B_1..B_5 of D.per_item_eval on the same loaded checkpoint; the floor is the maximum
+per-item |B_j - B_k| over all 10 pairs; pass iff max_k max per-item |A - B_k| <= floor, and at
+iteration 0 equality must be bitwise.
+
+v3.1 CHANGES TO THIS SCRIPT (after the v2 gate stop; conditions, the transform line and the
+evaluator reuse are untouched): `copy_fidelity_control` (five-call floor, used by --task control
+and --task main); --task main stops before the sweep if that control fails; --task repeat gates
+max |delta loss_16| per checkpoint against 3 x the in-process floor on the 16-item mean recorded
+in gray_controls.json and reports <= 1e-4 separately; --task readings implements brief Sec 7 v3 --
+reading (ii) `excess_cond = L_trained,cond - L_untrained_gray`, >= 10 gain_s explodes /
+<= 0.1 gain_s returns / else between (the v2 executor's provisional 3062.6 threshold is removed);
+reading (iii) void when the two references lie within 0.2 gain_s.
 """
 
 import os
@@ -79,14 +91,19 @@ GRAY_VALUE = 0.5                                 # brief Sec 4
 ZERO_VALUE = 0.0
 SHUFFLE_SEED = 20260916                          # brief Sec 1/3: fixed, recorded here
 P0_TOL = 1e-4                                    # brief Sec 6
-FRESH_PROCESS_TOL = 1e-4                         # brief Sec 6
+FRESH_PROCESS_TOL = 1e-4                         # brief Sec 6 (reported separately, v3)
+FRESH_PROCESS_FLOOR_MULT = 3.0                   # brief Sec 6 v3: gate <= 3 x in-process floor
+N_FLOOR_CALLS = 5                                # brief Sec 6 v3.1: five calls, all 10 pairs
 BAND_FRACTION = 0.1                              # brief Sec 7 (i)/(iii): 0.1 * gain_s
+EXPLODE_MULT = 10.0                              # brief Sec 7 (ii) v3: excess >= 10 gain_s
+RETURN_FRACTION = 0.1                            # brief Sec 7 (ii) v3: excess <= 0.1 gain_s
+VOID_FRACTION = 0.2                              # brief Sec 7 (iii) v3: refs within 0.2 gain_s
 # brief Sec 7 (ii), pre-registered reference numbers
 PREREG_SEED2_R2_DELTA = 21157.5
 PREREG_SEED2_R1R8_CLAMP_EXCESS = 30626.0
 
 STATUS = ("PREVIEW DIAGNOSTIC -- NOT A TEST (gray-stimulus control, brief "
-          "docs/briefs/2026-09-16-step1-gray-stimulus.md v2; n=6 individuals)")
+          "docs/briefs/2026-09-16-step1-gray-stimulus.md v3.1; n=6 individuals)")
 
 
 def sha256_file(p):
@@ -217,6 +234,80 @@ def load_named(solver, run, chkpt_index):
     return solver_it, path, info
 
 
+def copy_fidelity_control(solver, run, ci):
+    """Brief Sec 6 v3.1: copy fidelity against the evaluator's own five-call floor, plus P0.
+
+    A = the copy with the identity transform; B_1..B_5 = five calls of the ORIGINAL
+    D.per_item_eval on the same loaded checkpoint, in the same process.  floor = max per-item
+    |B_j - B_k| over all 10 pairs.  Pass iff max_k max per-item |A - B_k| <= floor; at iteration 0
+    the floor must be 0.0 and A must equal every B_k bitwise.  P0: mean(A) - stored val_loss and
+    mean(A) - hook_eval() both <= 1e-4.
+    """
+    solver_it, path, info = load_named(solver, run, ci)
+    net = solver.network
+    assert net._state_hooks == (), net._state_hooks
+    a_items = np.array(
+        per_item_eval_transformed(solver, make_transform("real"))["flow"],
+        dtype=np.float64)                                 # the copy, identity transform
+    assert net._state_hooks == (), net._state_hooks
+    B = []
+    for _k in range(N_FLOOR_CALLS):
+        B.append(np.array(D.per_item_eval(solver)["flow"], dtype=np.float64))   # the original
+        assert net._state_hooks == (), net._state_hooks
+    B = np.stack(B)
+    hook = D.hook_eval(solver)
+    assert net._state_hooks == (), net._state_hooks
+    pairs = [(j, k) for j in range(N_FLOOR_CALLS) for k in range(j + 1, N_FLOOR_CALLS)]
+    assert len(pairs) == 10, len(pairs)
+    pair_item = {f"B{j + 1}-B{k + 1}": float(np.max(np.abs(B[j] - B[k]))) for j, k in pairs}
+    pair_mean = {f"B{j + 1}-B{k + 1}": float(abs(float(B[j].mean()) - float(B[k].mean())))
+                 for j, k in pairs}
+    floor_item = max(pair_item.values())
+    floor_mean = max(pair_mean.values())
+    a_vs_item = {f"A-B{k + 1}": float(np.max(np.abs(a_items - B[k])))
+                 for k in range(N_FLOOR_CALLS)}
+    a_vs_mean = {f"A-B{k + 1}": float(a_items.mean()) - float(B[k].mean())
+                 for k in range(N_FLOOR_CALLS)}
+    worst_key = max(a_vs_item, key=lambda k: a_vs_item[k])
+    worst = a_vs_item[worst_key]
+    bitwise = {f"A==B{k + 1}": bool(np.array_equal(a_items, B[k])) for k in range(N_FLOOR_CALLS)}
+    if solver_it == 0:
+        cf_pass = bool(floor_item == 0.0 and all(bitwise.values()))
+        cf_rule = "iteration 0: floor must be 0.0 and A must equal every B_k bitwise"
+    else:
+        cf_pass = bool(worst <= floor_item)
+        cf_rule = ("max_k max per-item |A - B_k| <= floor "
+                   "(max per-item |B_j - B_k| over all 10 pairs)")
+    p0 = float(a_items.mean()) - info["stored_val_loss"]
+    p0h = float(a_items.mean()) - hook
+    p0_pass = bool(abs(p0) <= P0_TOL and abs(p0h) <= P0_TOL)
+    rec = {
+        "run": run, "chkpt": path.name, "solver_iteration": solver_it,
+        "n_original_calls": N_FLOOR_CALLS, "n_pairs": len(pairs),
+        "floor_max_abs_per_item_diff_over_10_pairs": repr(floor_item),
+        "floor_max_abs_mean_diff_over_10_pairs": repr(floor_mean),
+        "floor_per_pair_max_abs_per_item_diff": {k: repr(v) for k, v in pair_item.items()},
+        "floor_per_pair_abs_mean_diff": {k: repr(v) for k, v in pair_mean.items()},
+        "original_means_B1_to_B5": [repr(float(x)) for x in B.mean(axis=1)],
+        "n_distinct_original_means": len(set(B.mean(axis=1).tolist())),
+        "copy_A_mean": repr(float(a_items.mean())),
+        "copy_vs_each_original_max_abs_per_item": {k: repr(v) for k, v in a_vs_item.items()},
+        "copy_vs_each_original_mean_diff": {k: repr(v) for k, v in a_vs_mean.items()},
+        "copy_vs_each_original_bitwise_equal": bitwise,
+        "copy_worst_pair": worst_key,
+        "copy_worst_max_abs_per_item": repr(worst),
+        "copy_fidelity_rule": cf_rule,
+        "copy_fidelity_pass": cf_pass,
+        "stored_checkpoint_val_loss": repr(info["stored_val_loss"]),
+        "P0_per_item_mean": repr(float(a_items.mean())),
+        "P0_mean_minus_stored": repr(p0),
+        "P0_hook_path_value": repr(hook),
+        "P0_per_item_mean_minus_hook": repr(p0h),
+        "P0_pass_1e-4": p0_pass,
+    }
+    return rec, bool(cf_pass and p0_pass)
+
+
 def item_short(n):
     """rowB.py:296-297."""
     return n.replace("sequence_", "")
@@ -328,7 +419,8 @@ def sweep(solver, item_names, print_tag):
 
 # ---------------------------------------------------------------- tasks
 def task_control(a):
-    """Brief Sec 6, step 1: copy fidelity + P0 reproduction.  Writes nothing."""
+    """Brief Sec 6 v3.1, step 1: copy fidelity (five-call floor) + P0 reproduction.  Writes
+    nothing."""
     solver = D.build_solver(Path(a.netdir_root))
     import flyvis
     print("CONTROL META", json.dumps({
@@ -341,37 +433,9 @@ def task_control(a):
     ok = True
     for run in ("000",):
         for ci in sorted(CHKPTS):
-            solver_it, path, info = load_named(solver, run, ci)
-            net = solver.network
-            assert net._state_hooks == (), net._state_hooks
-            a_items = np.array(
-                per_item_eval_transformed(solver, make_transform("real"))["flow"],
-                dtype=np.float64)                                 # the copy, identity transform
-            b_items = np.array(D.per_item_eval(solver)["flow"], dtype=np.float64)   # the original
-            c_items = np.array(D.per_item_eval(solver)["flow"], dtype=np.float64)   # the floor
-            assert net._state_hooks == (), net._state_hooks
-            hook = D.hook_eval(solver)
-            exact = bool(np.array_equal(a_items, b_items))
-            max_ab = float(np.max(np.abs(a_items - b_items)))
-            max_bc = float(np.max(np.abs(b_items - c_items)))
-            p0 = float(a_items.mean()) - info["stored_val_loss"]
-            p0h = float(a_items.mean()) - hook
-            rec = {
-                "run": run, "chkpt": path.name, "solver_iteration": solver_it,
-                "copy_fidelity_bitwise_equal": exact,
-                "copy_max_abs_per_item_diff": repr(max_ab),
-                "evaluator_own_repeat_floor_max_abs_per_item_diff": repr(max_bc),
-                "copy_mean_minus_original_mean": repr(
-                    float(a_items.mean()) - float(b_items.mean())),
-                "stored_checkpoint_val_loss": repr(info["stored_val_loss"]),
-                "P0_per_item_mean": repr(float(a_items.mean())),
-                "P0_mean_minus_stored": repr(p0),
-                "P0_hook_path_value": repr(hook),
-                "P0_per_item_mean_minus_hook": repr(p0h),
-                "P0_pass_1e-4": bool(abs(p0) <= P0_TOL and abs(p0h) <= P0_TOL),
-            }
+            rec, passed = copy_fidelity_control(solver, run, ci)
             print("CONTROL", json.dumps(rec), flush=True)
-            ok = ok and exact and rec["P0_pass_1e-4"]
+            ok = ok and passed
     print("CONTROL VERDICT", "PASS" if ok else "FAIL", flush=True)
     return 0 if ok else 3
 
@@ -449,9 +513,9 @@ def task_main(a):
 
     meta = {
         "status": STATUS,
-        "brief": "docs/briefs/2026-09-16-step1-gray-stimulus.md (v2, 2026-09-16)",
+        "brief": "docs/briefs/2026-09-16-step1-gray-stimulus.md (v3.1, commit 54823c4)",
         "launch": ("Mike's explicit word in the DPC Research chat, "
-                   "2026-09-16T19:50:18Z: «@CC_windows запускай»"),
+                   "2026-09-16T20:14:03Z: «@CC_windows запускай шаг 1»"),
         "script_sha256": SCRIPT_HASHES,
         "flyvis": flyvis.__version__, "torch": torch.__version__,
         "python": sys.version.split()[0],
@@ -480,32 +544,17 @@ def task_main(a):
 
     # ------------------------------------------------------------------ controls (re-run here)
     controls = {}
+    ctrl_ok = True
     for run in ("000",):
         for ci in sorted(CHKPTS):
-            solver_it, path, info = load_named(solver, run, ci)
-            net = solver.network
-            assert net._state_hooks == (), net._state_hooks
-            a_items = np.array(
-                per_item_eval_transformed(solver, make_transform("real"))["flow"],
-                dtype=np.float64)
-            b_items = np.array(D.per_item_eval(solver)["flow"], dtype=np.float64)
-            c_items = np.array(D.per_item_eval(solver)["flow"], dtype=np.float64)
-            assert net._state_hooks == (), net._state_hooks
-            hook = D.hook_eval(solver)
-            controls[f"{run}@{solver_it}"] = {
-                "run": run, "chkpt": path.name, "solver_iteration": solver_it,
-                "copy_fidelity_bitwise_equal": bool(np.array_equal(a_items, b_items)),
-                "copy_max_abs_per_item_diff": repr(
-                    float(np.max(np.abs(a_items - b_items)))),
-                "evaluator_own_repeat_floor_max_abs_per_item_diff": repr(
-                    float(np.max(np.abs(b_items - c_items)))),
-                "stored_checkpoint_val_loss": repr(info["stored_val_loss"]),
-                "P0_per_item_mean": repr(float(a_items.mean())),
-                "P0_mean_minus_stored": repr(float(a_items.mean()) - info["stored_val_loss"]),
-                "P0_hook_path_value": repr(hook),
-                "P0_per_item_mean_minus_hook": repr(float(a_items.mean()) - hook),
-            }
-            print("CONTROL", json.dumps(controls[f"{run}@{solver_it}"]), flush=True)
+            rec, passed = copy_fidelity_control(solver, run, ci)
+            controls[f"{run}@{rec['solver_iteration']}"] = rec
+            print("CONTROL", json.dumps(rec), flush=True)
+            ctrl_ok = ctrl_ok and passed
+    if not ctrl_ok:
+        print("CONTROL VERDICT FAIL (in --task main) -- stopping before the sweep; "
+              "nothing written", flush=True)
+        return 3
 
     null = constant_output_null(solver)
     print("NULL constant_output_null", null["constant_output_null"],
@@ -576,6 +625,43 @@ def task_repeat(a):
                     float(np.max(np.abs(second[k]["per_item"] - first[k]["per_item"])))
                     for k in first}
     worst = max(deltas, key=lambda k: abs(deltas[k]))
+    # brief Sec 6 v3: gate per checkpoint against 3 x the in-process floor (16-item mean) of that
+    # checkpoint, as measured by copy_fidelity_control in the --task main process
+    first_ctrl = json.loads((out / "gray_controls.json").read_text(encoding="utf-8"))
+    floors = {}
+    for rec in first_ctrl["copy_fidelity_and_P0"].values():
+        floors[int(rec["solver_iteration"])] = {
+            "run": rec["run"], "chkpt": rec["chkpt"],
+            "floor_max_abs_mean_diff_over_10_pairs": float(
+                rec["floor_max_abs_mean_diff_over_10_pairs"]),
+            "floor_max_abs_per_item_diff_over_10_pairs": float(
+                rec["floor_max_abs_per_item_diff_over_10_pairs"])}
+    per_ckpt = {}
+    for it in sorted(floors):
+        keys = [k for k in first if k[1] == it]
+        assert len(keys) == 24, (it, len(keys))
+        wk = max(keys, key=lambda k: abs(second[k]["loss_16"] - first[k]["loss_16"]))
+        mx = abs(second[wk]["loss_16"] - first[wk]["loss_16"])
+        thr = FRESH_PROCESS_FLOOR_MULT * floors[it]["floor_max_abs_mean_diff_over_10_pairs"]
+        per_ckpt[str(it)] = {
+            "in_process_floor_source": {k: (repr(v) if isinstance(v, float) else v)
+                                        for k, v in floors[it].items()},
+            "gate_threshold_3x_floor": repr(thr),
+            "max_abs_delta_loss_16": repr(mx),
+            "max_abs_delta_cell": f"{wk[0]}|{wk[1]}|{wk[2]}",
+            "n_cells": len(keys),
+            "n_cells_bitwise_identical_loss_16": int(sum(
+                1 for k in keys if second[k]["loss_16"] == first[k]["loss_16"])),
+            "gate_pass_le_3x_floor": bool(mx <= thr),
+            "also_le_1e-4": bool(mx <= FRESH_PROCESS_TOL),
+        }
+    cell_gate = {}
+    for k in first:
+        d = abs(second[k]["loss_16"] - first[k]["loss_16"])
+        thr = FRESH_PROCESS_FLOOR_MULT * floors[k[1]]["floor_max_abs_mean_diff_over_10_pairs"]
+        cell_gate[f"{k[0]}|{k[1]}|{k[2]}"] = {
+            "abs_delta_loss_16": repr(d), "threshold_3x_floor": repr(thr),
+            "pass_le_3x_floor": bool(d <= thr), "pass_le_1e-4": bool(d <= FRESH_PROCESS_TOL)}
     rep = {
         "status": STATUS,
         "script_sha256": SCRIPT_HASHES,
@@ -584,12 +670,18 @@ def task_repeat(a):
         "python": sys.version.split()[0],
         "gpu": torch.cuda.get_device_name(0) if torch.cuda.is_available() else None,
         "utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-        "gate": f"max |delta| of loss_16 over the 48 cells <= {FRESH_PROCESS_TOL}",
+        "gate": ("brief Sec 6 v3: per checkpoint, max |delta loss_16| between the two processes "
+                 "<= 3 x the in-process floor of that checkpoint on the 16-item mean (max over "
+                 "10 pairs of five D.per_item_eval calls on run 000, gray_controls.json); "
+                 "<= 1e-4 reported separately"),
+        "per_checkpoint": per_ckpt,
+        "per_cell_gate": cell_gate,
         "max_abs_delta_loss_16": repr(max(abs(v) for v in deltas.values())),
         "max_abs_delta_cell": worst,
         "n_cells_bitwise_identical_loss_16": int(sum(1 for v in deltas.values() if v == 0.0)),
         "max_abs_per_item_delta": repr(max(per_item_max.values())),
-        "gate_pass": bool(max(abs(v) for v in deltas.values()) <= FRESH_PROCESS_TOL),
+        "gate_pass": bool(all(v["gate_pass_le_3x_floor"] for v in per_ckpt.values())),
+        "also_all_le_1e-4": bool(max(abs(v) for v in deltas.values()) <= FRESH_PROCESS_TOL),
         "delta_loss_16_per_cell": {k: repr(v) for k, v in deltas.items()},
         "max_abs_per_item_delta_per_cell": {k: repr(v) for k, v in per_item_max.items()},
         "first_evaluation_real_wall_s": repr(first_real_wall),
@@ -597,12 +689,29 @@ def task_repeat(a):
     }
     (out / "gray_repeat_controls.json").write_text(json.dumps(rep, indent=1))
     print("REPEAT MAX ABS DELTA", rep["max_abs_delta_loss_16"], rep["max_abs_delta_cell"],
-          "gate_pass", rep["gate_pass"], flush=True)
+          "gate_pass", rep["gate_pass"], "also_all_le_1e-4", rep["also_all_le_1e-4"], flush=True)
+    print("REPEAT PER CHECKPOINT", json.dumps(per_ckpt), flush=True)
     print("TOTAL WALL S", rep["wall_s_total"], flush=True)
     return 0
 
 
 # ---------------------------------------------------------------- the pre-registered readings
+def reading_ii_text(cls_gray, cls_zero):
+    """Brief Sec 7 (ii) branches, verbatim; 'between' and 'returns' both count as not exploding."""
+    expl_gray = cls_gray == "explodes"
+    expl_zero = cls_zero == "explodes"
+    if expl_gray and expl_zero:
+        return "fragility to absence of drive is real"
+    if not expl_gray and not expl_zero:
+        return ("explosion only under the ablation's forced-zero state, i.e. neither (a) nor (b) "
+                "explode -> the ablation deltas -- +21,158 (R2 single-type clamp-to-0) and "
+                "+30,626 (full R1-R8 clamp-to-0) -- measure the dynamics' fragility to a zero "
+                "clamp specifically, an instrument artefact, not a vision dependence, and the R2 "
+                "ablation finding must be reworded accordingly")
+    return ("only one of (a) gray and (b) zero explodes -- neither pre-registered branch "
+            "applies; recorded as measured, no branch selected")
+
+
 def task_readings(a):
     """Brief Sec 7, evaluated mechanically from gray_losses.csv.  No GPU, no interpretation."""
     out = Path(a.out_dir)
@@ -630,16 +739,34 @@ def task_readings(a):
         d_iii_gray = L(lab, T, "shuffled") - L(lab, U, "gray")
         near_real = bool(abs(d_iii_real) <= band)
         near_gray = bool(abs(d_iii_gray) <= band)
-        if near_real and not near_gray:
-            text_iii = "the learned gain is not about motion"
+        # brief Sec 7 (iii) v3: exclusive branches; void when the two references lie within
+        # 0.2 * gain_s of each other
+        ref_sep = L(lab, T, "real") - L(lab, U, "gray")
+        void_iii = bool(abs(ref_sep) <= VOID_FRACTION * gain)
+        nearer = "L_trained_real" if abs(d_iii_real) <= abs(d_iii_gray) else "L_untrained_gray"
+        if void_iii:
+            text_iii = ("between -- void for this seed (the two references lie within "
+                        "0.2 * gain_s of each other)")
+        elif near_real and not near_gray:
+            text_iii = "not about motion"
         elif near_gray and not near_real:
-            text_iii = "the learned gain is about temporal content"
-        elif near_real and near_gray:
-            text_iii = ("BOTH branches satisfied simultaneously -- recorded as measured; "
-                        "the brief's three branches are not exclusive when "
-                        "|L_trained_real - L_untrained_gray| <= 0.2 * gain_s")
+            text_iii = "about temporal content"
         else:
             text_iii = "between"
+        # brief Sec 7 (ii) v3, computed for every seed (the pre-registered reading is seed 2)
+        ii = {}
+        for cond in ("gray", "zero"):
+            exc = L(lab, T, cond) - L(lab, U, "gray")
+            if exc >= EXPLODE_MULT * gain:
+                cls = "explodes"
+            elif exc <= RETURN_FRACTION * gain:
+                cls = "returns"
+            else:
+                cls = "between"
+            ii[cond] = {"L_trained": repr(L(lab, T, cond)),
+                        "excess_over_untrained_gray": repr(exc),
+                        "excess_in_units_of_gain_s": repr(exc / gain),
+                        "class": cls}
         readings["per_seed"][lab] = {
             "L_untrained_real": repr(L(lab, U, "real")),
             "L_trained_real": repr(L(lab, T, "real")),
@@ -664,53 +791,36 @@ def task_readings(a):
             "reading_iii_delta_to_untrained_gray": repr(d_iii_gray),
             "reading_iii_within_band_of_trained_real": near_real,
             "reading_iii_within_band_of_untrained_gray": near_gray,
+            "reading_iii_reference_separation_trained_real_minus_untrained_gray": repr(ref_sep),
+            "reading_iii_void_threshold_0.2_gain_s": repr(VOID_FRACTION * gain),
+            "reading_iii_void": void_iii,
+            "reading_iii_nearer_reference": nearer,
             "reading_iii_text": text_iii,
+            "reading_ii_excess_explodes_threshold_10_gain_s": repr(EXPLODE_MULT * gain),
+            "reading_ii_excess_returns_threshold_0.1_gain_s": repr(RETURN_FRACTION * gain),
+            "reading_ii_a_gray": ii["gray"],
+            "reading_ii_b_zero": ii["zero"],
+            "reading_ii_text": reading_ii_text(ii["gray"]["class"], ii["zero"]["class"]),
         }
 
-    # ---- reading (ii): seed 2, on (a) gray and (b) zero separately
-    base2 = L("seed2", T, "real")
-    exc_gray = L("seed2", T, "gray") - base2
-    exc_zero = L("seed2", T, "zero") - base2
-    # The brief pre-registers no numeric threshold for "explosion"; it pre-registers the two
-    # reference magnitudes below.  Operationalisation by the executor, recorded as a deviation:
-    # "explodes" = the seed-2 excess over its own trained-real baseline is within one order of
-    # magnitude of the R1-R8 clamp excess (+30,626), i.e. >= 3062.6.
-    thr = PREREG_SEED2_R1R8_CLAMP_EXCESS / 10.0
-    expl_gray = bool(exc_gray >= thr)
-    expl_zero = bool(exc_zero >= thr)
-    if expl_gray and expl_zero:
-        text_ii = "fragility to absence of drive is real"
-    elif not expl_gray and not expl_zero:
-        text_ii = ("the ablation deltas -- +21,158 (R2 single-type clamp-to-0) and +30,626 "
-                   "(full R1-R8 clamp-to-0) -- measure the dynamics' fragility to a zero clamp "
-                   "specifically, an instrument artefact, not a vision dependence, and the R2 "
-                   "ablation finding must be reworded accordingly")
-    else:
-        text_ii = ("only one of (a) gray and (b) zero explodes -- neither pre-registered branch "
-                   "applies; recorded as measured, no branch selected")
+    # ---- reading (ii): seed 2, on (a) gray and (b) zero separately (brief Sec 7 (ii) v3)
+    p2 = readings["per_seed"]["seed2"]
     readings["reading_ii_seed2"] = {
-        "seed2_trained_real_baseline": repr(base2),
+        "definition": ("excess_cond(s) = L_trained,cond(s) - L_untrained_gray(s), cond in "
+                       "{gray, zero}; >= 10 * gain_s -> explodes; <= 0.1 * gain_s -> returns; "
+                       "otherwise between (brief Sec 7 (ii) v3, pre-registered at the gate stop)"),
+        "seed2_L_untrained_gray": p2["L_untrained_gray"],
+        "seed2_L_trained_real": p2["L_trained_real"],
+        "seed2_gain_s": p2["gain_s"],
+        "explodes_threshold_10_gain_s": p2["reading_ii_excess_explodes_threshold_10_gain_s"],
+        "returns_threshold_0.1_gain_s": p2["reading_ii_excess_returns_threshold_0.1_gain_s"],
+        "a_gray": p2["reading_ii_a_gray"],
+        "b_zero": p2["reading_ii_b_zero"],
         "other_five_trained_real": {lab: repr(L(lab, T, "real"))
                                     for lab in LABELS6 if lab != "seed2"},
-        "a_gray_L_trained": repr(L("seed2", T, "gray")),
-        "a_gray_excess_over_trained_real": repr(exc_gray),
-        "b_zero_L_trained": repr(L("seed2", T, "zero")),
-        "b_zero_excess_over_trained_real": repr(exc_zero),
-        "other_five_gray_excess": {lab: repr(L(lab, T, "gray") - L(lab, T, "real"))
-                                   for lab in LABELS6 if lab != "seed2"},
-        "other_five_zero_excess": {lab: repr(L(lab, T, "zero") - L(lab, T, "real"))
-                                   for lab in LABELS6 if lab != "seed2"},
         "prereg_reference_R2_single_type_clamp_delta_16": PREREG_SEED2_R2_DELTA,
         "prereg_reference_R1_R8_clamp_excess": PREREG_SEED2_R1R8_CLAMP_EXCESS,
-        "explosion_operationalisation": (
-            "EXECUTOR'S OPERATIONALISATION, not in the brief: 'explodes' = excess over the "
-            "seed-2 trained-real baseline >= 3062.6, one tenth of the pre-registered R1-R8 "
-            "clamp excess +30,626. The raw excesses are recorded above so any other threshold "
-            "can be applied."),
-        "explosion_threshold": thr,
-        "a_gray_explodes": expl_gray,
-        "b_zero_explodes": expl_zero,
-        "reading_ii_text": text_ii,
+        "reading_ii_text": p2["reading_ii_text"],
     }
     readings["reading_i_summary"] = {
         "n_seeds_holding": int(sum(1 for lab in LABELS6
@@ -730,7 +840,11 @@ def task_readings(a):
         print("READING_III", lab, "d_real", p["reading_iii_delta_to_trained_real"],
               "d_untrained_gray", p["reading_iii_delta_to_untrained_gray"],
               "->", p["reading_iii_text"], flush=True)
-    print("READING_II", json.dumps(readings["reading_ii_seed2"]), flush=True)
+    for lab in LABELS6:
+        p = readings["per_seed"][lab]
+        print("READING_II", lab, "gray", json.dumps(p["reading_ii_a_gray"]),
+              "zero", json.dumps(p["reading_ii_b_zero"]), flush=True)
+    print("READING_II_SEED2", json.dumps(readings["reading_ii_seed2"]), flush=True)
     return 0
 
 

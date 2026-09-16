@@ -1,0 +1,218 @@
+C:\Users\mikha\AppData\Local\Temp\claude\c--Users-mikha-Documents-dpc-research-autoresearch-win-rtx\63f3961a-96ce-4048-8338-72c162ea66f8\scratchpad\flyvis-probe\.venv\lib\site-packages\flyvis_cli\training\train_single.py:56: Hydra14MigrationWarning: 
+version_base="1.1" selects Hydra 1.1 compatibility behavior.
+Hydra 1.4 will remove this compatibility behavior.
+Before upgrading to Hydra 1.4, set version_base="1.3" and test your application.
+See https://hydra.cc/docs/upgrades/1.3_to_1.4/prepare_for_1_4/ for preparation instructions.
+  @hydra.main(
+C:\Users/mikha/Documents/dpc-research/connectome-seed\results/night2/diagnostics\diag1_eval_paths.py:110: Hydra14MigrationWarning: 
+version_base="1.1" selects Hydra 1.1 compatibility behavior.
+Hydra 1.4 will remove this compatibility behavior.
+Before upgrading to Hydra 1.4, set version_base="1.3" and test your application.
+See https://hydra.cc/docs/upgrades/1.3_to_1.4/prepare_for_1_4/ for preparation instructions.
+  with initialize_config_dir(config_dir=ts.CONFIG_PATH, version_base="1.1"):
+[2026-09-16 22:19:34] network:222 Initialized network with NumberOfParams(free=734, fixed=2959) parameters.
+[2026-09-16 22:19:34] sintel_utils:331 Found Sintel at C:\Users\mikha\Documents\dpc-research\connectome-seed-data\SintelDataSet
+Rendering:   0%|          | 0/23 [00:00<?, ?it/s]Rendering:   4%|4         | 1/23 [00:00<00:18,  1.20it/s]Rendering:   9%|8         | 2/23 [00:01<00:17,  1.22it/s]Rendering:  13%|#3        | 3/23 [00:01<00:11,  1.71it/s]Rendering:  17%|#7        | 4/23 [00:02<00:10,  1.89it/s]Rendering:  22%|##1       | 5/23 [00:03<00:10,  1.76it/s]Rendering:  26%|##6       | 6/23 [00:03<00:07,  2.14it/s]Rendering:  30%|###       | 7/23 [00:03<00:08,  1.91it/s]Rendering:  35%|###4      | 8/23 [00:04<00:08,  1.71it/s]Rendering:  39%|###9      | 9/23 [00:05<00:08,  1.59it/s]Rendering:  43%|####3     | 10/23 [00:06<00:08,  1.56it/s]Rendering:  48%|####7     | 11/23 [00:06<00:07,  1.55it/s]Rendering:  52%|#####2    | 12/23 [00:07<00:06,  1.58it/s]Rendering:  57%|#####6    | 13/23 [00:07<00:06,  1.60it/s]Rendering:  61%|######    | 14/23 [00:08<00:05,  1.58it/s]Rendering:  65%|######5   | 15/23 [00:09<00:05,  1.58it/s]Rendering:  70%|######9   | 16/23 [00:09<00:04,  1.66it/s]Rendering:  74%|#######3  | 17/23 [00:10<00:03,  1.65it/s]Rendering:  78%|#######8  | 18/23 [00:10<00:03,  1.62it/s]Rendering:  83%|########2 | 19/23 [00:11<00:02,  1.64it/s]Rendering:  87%|########6 | 20/23 [00:12<00:01,  1.60it/s]Rendering:  91%|#########1| 21/23 [00:12<00:01,  1.54it/s]Rendering:  96%|#########5| 22/23 [00:13<00:00,  1.57it/s]Rendering: 100%|##########| 23/23 [00:14<00:00,  1.60it/s]Rendering: 100%|##########| 23/23 [00:14<00:00,  1.63it/s]
+[2026-09-16 22:19:49] tasks:100 Initialized dataloader with training sequence indices 
+[0, 1, 2, 3, 4, 5, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 24, 25, 26, 30, 31, 32, 33, 34, 35, 42, 43, 44, 45, 46, 47, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68]
+[2026-09-16 22:19:49] tasks:115 Initialized dataloader with validation sequence indices 
+[6, 7, 8, 21, 22, 23, 27, 28, 29, 36, 39, 40, 41, 48, 49, 50]
+[2026-09-16 22:19:51] decoder:282 Initialized decoder with NumberOfParams(free=7427, fixed=0) parameters.
+[2026-09-16 22:19:51] decoder:283 DecoderGAVP(
+  (base): Sequential(
+    (0): Conv2dHexSpace(34, 8, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+    (1): BatchNorm2d(8, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): Softplus(beta=1.0, threshold=20.0)
+    (3): Dropout(p=0.5, inplace=False)
+  )
+  (decoder): Sequential(
+    (0): Conv2dHexSpace(8, 3, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+  )
+  (head): Sequential()
+)
+[2026-09-16 22:19:51] solver:227 Initializing Adam for network and decoder.
+[2026-09-16 22:19:51] solver:1002 Init schedule for lr_net
+[2026-09-16 22:19:51] solver:1002 Init schedule for lr_dec
+[2026-09-16 22:19:51] solver:1002 Init schedule for lr_pen
+[2026-09-16 22:19:51] solver:1002 Init schedule for dt
+[2026-09-16 22:19:51] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-16 22:19:51] solver:134 Initialized solver.
+[2026-09-16 22:19:51] solver:135 Namespace(
+  type = 'NetworkDir',
+  network_name = 'flow/9991/000',
+  description = 'diag1',
+  network = Namespace(
+    connectome = Namespace(
+      type = 'ConnectomeFromAvgFilters',
+      file = 'fib25-fib19_v2.2.json',
+      extent = 15,
+      n_syn_fill = 1
+    ),
+    dynamics = Namespace(
+      type = 'PPNeuronIGRSynapses',
+      activation = Namespace(type='relu')
+    ),
+    edge_config = Namespace(
+      sign = Namespace(
+        type = 'SynapseSign',
+        form = 'value',
+        requires_grad = False,
+        initial_dist = 'Value',
+        groupby = ['source_type', 'target_type']
+      ),
+      syn_count = Namespace(
+        type = 'SynapseCount',
+        initial_dist = 'Lognormal',
+        mode = 'mean',
+        requires_grad = False,
+        std = 1.0,
+        groupby = ['source_type', 'target_type', 'dv', 'du'],
+        penalize = Namespace(
+          function = 'weight_decay',
+          kwargs = Namespace(lambda=0)
+        )
+      ),
+      syn_strength = Namespace(
+        type = 'SynapseCountScaling',
+        initial_dist = 'Value',
+        requires_grad = True,
+        scale = 0.01,
+        clamp = 'non_negative',
+        groupby = ['source_type', 'target_type'],
+        penalize = Namespace(
+          function = 'weight_decay',
+          kwargs = Namespace(lambda=0)
+        )
+      )
+    ),
+    node_config = Namespace(
+      bias = Namespace(
+        type = 'RestingPotential',
+        groupby = ['type'],
+        initial_dist = 'Normal',
+        mode = 'sample',
+        requires_grad = True,
+        seed = 0,
+        mean = 0.5,
+        std = 0.05,
+        symmetric = [],
+        penalize = Namespace(activity=True)
+      ),
+      time_const = Namespace(
+        type = 'TimeConstant',
+        groupby = ['type'],
+        initial_dist = 'Value',
+        value = 0.05,
+        requires_grad = True
+      )
+    ),
+    stimulus_config = Namespace(type='Stimulus', init_buffer=False)
+  ),
+  task = Namespace(
+    dataset = Namespace(
+      type = 'MultiTaskSintel',
+      tasks = ['flow'],
+      boxfilter = Namespace(extent=15, kernel_size=13),
+      vertical_splits = 3,
+      n_frames = 19,
+      center_crop_fraction = 0.7,
+      dt = 0.02,
+      augment = True,
+      random_temporal_crop = True,
+      all_frames = False,
+      resampling = True,
+      interpolate = True,
+      p_flip = 0.5,
+      p_rot = 0.5,
+      contrast_std = 0.2,
+      brightness_std = 0.1,
+      gaussian_white_noise = 0.08,
+      gamma_std = None,
+      _init_cache = True,
+      unittest = False,
+      flip_axes = [0, 1, 2, 3]
+    ),
+    decoder = Namespace(
+      flow = Namespace(
+        type = 'DecoderGAVP',
+        shape = [8, 2],
+        kernel_size = 5,
+        const_weight = 0.001,
+        n_out_features = None,
+        p_dropout = 0.5
+      )
+    ),
+    loss = Namespace(flow='l2norm'),
+    task_weights = None,
+    batch_size = 4,
+    n_iters = 250000,
+    n_folds = 4,
+    fold = 1,
+    seed = 0,
+    original_split = True
+  ),
+  optim = Namespace(
+    type = 'Adam',
+    optim_dec = Namespace(lr=5e-05),
+    optim_net = Namespace(lr=5e-05)
+  ),
+  penalizer = Namespace(
+    activity_penalty = Namespace(
+      activity_baseline = 5.0,
+      activity_penalty = 0.1,
+      stop_iter = 150000,
+      below_baseline_penalty_weight = 1.0,
+      above_baseline_penalty_weight = 0.1
+    ),
+    optim = 'SGD'
+  ),
+  scheduler = Namespace(
+    lr_net = Namespace(function='stepwise', start=5e-05, stop=5e-06, steps=10),
+    lr_dec = Namespace(function='stepwise', start=5e-05, stop=5e-06, steps=10),
+    lr_pen = Namespace(function='stepwise', start=5e-05, stop=5e-06, steps=10),
+    dt = Namespace(function='stepwise', start=0.02, stop=0.02, steps=10),
+    chkpt_every_epoch = 300
+  ),
+  delete_if_exists = False
+)
+CONTROL META {"flyvis": "1.2.0", "torch": "2.9.1+cu128", "python": "3.10.20", "gpu": "NVIDIA RTX PRO 4500 Blackwell", "device": "cuda", "netdir": "C:\\Users\\mikha\\AppData\\Local\\Temp\\claude\\c--Users-mikha-Documents-dpc-research-autoresearch-win-rtx\\03852100-01fd-45ef-82c3-e22ac607b0f7\\scratchpad\\gray\\netdir_v31_control\\flow\\9991\\000", "pid": 29812, "utc": "2026-09-16T20:19:51Z"}
+[2026-09-16 22:19:51] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-16 22:19:51] chkpt_utils:36 Recovered network state.
+[2026-09-16 22:19:51] chkpt_utils:65 Recovered flow decoder state.
+[2026-09-16 22:19:51] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+C:\Users\mikha\AppData\Local\Temp\claude\c--Users-mikha-Documents-dpc-research-autoresearch-win-rtx\63f3961a-96ce-4048-8338-72c162ea66f8\scratchpad\flyvis-probe\.venv\lib\site-packages\torch\utils\_device.py:103: UserWarning: Using a non-tuple sequence for multidimensional indexing is deprecated and will be changed in pytorch 2.9; use x[tuple(seq)] instead of x[seq]. In pytorch 2.9 this will be interpreted as tensor index, x[torch.tensor(seq)], which will result either in an error or a different result (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\pytorch\torch\csrc\autograd\python_variable_indexing.cpp:351.)
+  return func(*args, **kwargs)
+[2026-09-16 22:19:51] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-16 22:19:51] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-16 22:19:51] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-16 22:19:52] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-16 22:19:52] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-16 22:19:52] solver:501 Test
+CONTROL {"run": "000", "chkpt": "chkpt_00000", "solver_iteration": 0, "n_original_calls": 5, "n_pairs": 10, "floor_max_abs_per_item_diff_over_10_pairs": "0.0", "floor_max_abs_mean_diff_over_10_pairs": "0.0", "floor_per_pair_max_abs_per_item_diff": {"B1-B2": "0.0", "B1-B3": "0.0", "B1-B4": "0.0", "B1-B5": "0.0", "B2-B3": "0.0", "B2-B4": "0.0", "B2-B5": "0.0", "B3-B4": "0.0", "B3-B5": "0.0", "B4-B5": "0.0"}, "floor_per_pair_abs_mean_diff": {"B1-B2": "0.0", "B1-B3": "0.0", "B1-B4": "0.0", "B1-B5": "0.0", "B2-B3": "0.0", "B2-B4": "0.0", "B2-B5": "0.0", "B3-B4": "0.0", "B3-B5": "0.0", "B4-B5": "0.0"}, "original_means_B1_to_B5": ["1212.5555891990662", "1212.5555891990662", "1212.5555891990662", "1212.5555891990662", "1212.5555891990662"], "n_distinct_original_means": 1, "copy_A_mean": "1212.5555891990662", "copy_vs_each_original_max_abs_per_item": {"A-B1": "0.0", "A-B2": "0.0", "A-B3": "0.0", "A-B4": "0.0", "A-B5": "0.0"}, "copy_vs_each_original_mean_diff": {"A-B1": "0.0", "A-B2": "0.0", "A-B3": "0.0", "A-B4": "0.0", "A-B5": "0.0"}, "copy_vs_each_original_bitwise_equal": {"A==B1": true, "A==B2": true, "A==B3": true, "A==B4": true, "A==B5": true}, "copy_worst_pair": "A-B1", "copy_worst_max_abs_per_item": "0.0", "copy_fidelity_rule": "iteration 0: floor must be 0.0 and A must equal every B_k bitwise", "copy_fidelity_pass": true, "stored_checkpoint_val_loss": "1212.5555891990662", "P0_per_item_mean": "1212.5555891990662", "P0_mean_minus_stored": "0.0", "P0_hook_path_value": "1212.5555891990662", "P0_per_item_mean_minus_hook": "0.0", "P0_pass_1e-4": true}
+[2026-09-16 22:19:52] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-16 22:19:52] chkpt_utils:36 Recovered network state.
+[2026-09-16 22:19:52] chkpt_utils:65 Recovered flow decoder state.
+[2026-09-16 22:19:52] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-16 22:19:52] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-16 22:19:52] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-16 22:19:53] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-16 22:19:53] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-16 22:19:53] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-16 22:19:53] solver:501 Test
+CONTROL {"run": "000", "chkpt": "chkpt_00071", "solver_iteration": 250008, "n_original_calls": 5, "n_pairs": 10, "floor_max_abs_per_item_diff_over_10_pairs": "0.00048828125", "floor_max_abs_mean_diff_over_10_pairs": "8.869171142578125e-05", "floor_per_pair_max_abs_per_item_diff": {"B1-B2": "0.00048828125", "B1-B3": "0.00048828125", "B1-B4": "0.00048828125", "B1-B5": "0.000244140625", "B2-B3": "0.00048828125", "B2-B4": "0.00048828125", "B2-B5": "0.000244140625", "B3-B4": "0.00048828125", "B3-B5": "0.00048828125", "B4-B5": "0.00048828125"}, "floor_per_pair_abs_mean_diff": {"B1-B2": "1.811981201171875e-05", "B1-B3": "8.869171142578125e-05", "B1-B4": "6.818771362304688e-05", "B1-B5": "0.0", "B2-B3": "7.05718994140625e-05", "B2-B4": "5.0067901611328125e-05", "B2-B5": "1.811981201171875e-05", "B3-B4": "2.0503997802734375e-05", "B3-B5": "8.869171142578125e-05", "B4-B5": "6.818771362304688e-05"}, "original_means_B1_to_B5": ["1148.8074097633362", "1148.8074278831482", "1148.8074984550476", "1148.8074779510498", "1148.8074097633362"], "n_distinct_original_means": 4, "copy_A_mean": "1148.807454586029", "copy_vs_each_original_max_abs_per_item": {"A-B1": "0.000732421875", "A-B2": "0.000244140625", "A-B3": "0.00048828125", "A-B4": "0.00048828125", "A-B5": "0.00048828125"}, "copy_vs_each_original_mean_diff": {"A-B1": "4.482269287109375e-05", "A-B2": "2.6702880859375e-05", "A-B3": "-4.38690185546875e-05", "A-B4": "-2.3365020751953125e-05", "A-B5": "4.482269287109375e-05"}, "copy_vs_each_original_bitwise_equal": {"A==B1": false, "A==B2": false, "A==B3": false, "A==B4": false, "A==B5": false}, "copy_worst_pair": "A-B1", "copy_worst_max_abs_per_item": "0.000732421875", "copy_fidelity_rule": "max_k max per-item |A - B_k| <= floor (max per-item |B_j - B_k| over all 10 pairs)", "copy_fidelity_pass": false, "stored_checkpoint_val_loss": "1148.8074851036072", "P0_per_item_mean": "1148.807454586029", "P0_mean_minus_stored": "-3.0517578125e-05", "P0_hook_path_value": "1148.8074479103088", "P0_per_item_mean_minus_hook": "6.67572021484375e-06", "P0_pass_1e-4": true}
+CONTROL VERDICT FAIL
