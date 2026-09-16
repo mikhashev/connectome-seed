@@ -152,6 +152,37 @@ effect. The row-B channel shows no single-type dominance (top/second ratio 1.0�
 runs), while the ablation channel does (2.8–8.0× for seeds 2/3/4); the T5c signature present in
 seeds 0/1/2 is absent in seeds 3/4. All of the above is preview/exploratory, not a verdict.
 
+**Pre-registered reading of night 4 (Ark 19:58Z, Zcode 20:14Z; recorded 2026-09-16 before the
+launch):** as launched from `tools/night/start_night.ps1 -Tag night4 -Seeds 5 -ReplicateOf 3
+-NoReplicate` (launcher commit `3f4af81`), the wave runs the replicate 3′ (seed 3, id 9991/903,
+tag `rep`) FIRST and the new seed 5 (id 9991/005) second, sequential, `--no-determinism`,
+250,000 iterations, rungs 1,000/5,000/25,000/250,000. The 903 command differs from night 3's 003
+command only in `--id`, `--tag` and `--progress-file`; `run_individual.py` is unchanged since
+night 3 (byte-identical repo/scratchpad).
+
+**Position correction recorded:** seed 3 ran FIRST in night 3 (`wave_night3.json`: 003 launched
+20:35:23Z, 004 at 00:35:38Z); so (3, 3′) is a replicate at the SAME wave position (first vs
+first). CC's chat message of 19:57Z wrongly called seed 3 "second"; corrected in chat 20:07Z
+after Ark's catch.
+
+**Three explanations of the night-1 replicate offset** (0, 0′) = +12.73 at the 250,000 hook, and
+what each predicts for |3′ − 3| at 250,000 (Ark 19:58Z): **P — position effect** (the second run
+in a wave ends worse): predicts ≈ 0, because positions coincide; **U — replicate divergence is
+universal**: predicts ≈ +12.7; **S — the offset depends on the seed** (seed 0's trajectory
+diverges, seed 3's may not): predicts anything.
+
+**Asymmetry of information, stated before data:** a large |3′ − 3| rules out P; a small one does
+not separate P from S. A small value also means 12.73 is a property of one pair, not a floor, so
+every rule that uses 12.73 as the instrument resolution (§7, b2 measurability) rests on a single
+observation.
+
+**Supporting fact already on record (not a test):** within-pair sign persistence over the 29
+checkpoints after 150,000 — (0, 0′): 29 of 29 positive; (3, 4) (two individuals, same wave): 6 of
+29 positive — so "the second is worse" has no consistent sign across the two same-wave pairs on
+record.
+
+Nothing here changes a rule; the reading is descriptive for n = 2 replicate pairs.
+
 ## 3. Branches after night 2
 
 **2026-09-15:** the branch below is now decidable with the numbers in the Result paragraph

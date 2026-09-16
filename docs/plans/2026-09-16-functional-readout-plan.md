@@ -117,3 +117,21 @@ output was discarded unread and step 1 is re-run from brief v2 only on Mike's wo
 
 2026-09-16 20:03Z: step 1 (v2) launched on Mike's word and stopped at the copy-fidelity gate
 (evaluator floor, not a copy defect); brief amended to v3; re-launch on Mike's word.
+
+## After night 4 (proposed, each on Mike's word)
+
+(a) **Jitter at C3** (CC, proposed 2026-09-16 05:38Z; Ark 19:58Z: only after night 4): re-run one
+seed to 26,000 iterations with the validation hook every 100 iterations to see the trajectory
+jitter at C3 directly; requires an optional flag in `run_individual.py` whose default path is
+byte-identical to the current one, shown by diff before any run.
+
+(b) **Evaluator floor by path, state and repeat type** (Ark 20:09Z, 20:11Z; Zcode 20:14Z): three
+readings at checkpoints 0 / 25,212 / 250,008 of one seed × both evaluation paths (state-hook path
+used by ablation/rowB; `per_item_eval` → `solver.test` path used by diag1/splice/gray) ×
+within-process and between-process repeats. Known so far: `per_item_eval` within process at
+250,008 = 8.6e-05 on the 16-item mean (0.0 at iteration 0); state-hook path between three fresh
+processes at 250,008 = 8e-08 (`rowB_controls.json`); the state-hook path was never repeated
+within one process. Answers both "does the floor grow with training" and "is the floor a
+property of the checkpoint, the path, or the process". Rule to carry into the next registration
+(Ark 20:11Z): the two paths differ in the nature of their repeat, and a floor measured on one
+path must not be substituted into a rule for the other.
