@@ -1,0 +1,309 @@
+{
+ "status": "PREVIEW DIAGNOSTIC -- NOT A TEST (n=6, critical rho 0.90-1.00; N>=8 rule)",
+ "script": "rowB3.py + rowB.py (byte-identical copy)",
+ "rowB.py_sha256": "195a89b555bedf3a0ff00a4c4e0542eafa6370243fbf9ed954f5fe8fbf7f4082",
+ "rowB3.py_sha256": "f5ab3e5f80f3b8b59d72f76c06c3853b87a3a77066bf59281054f97fa9c9684a",
+ "utc": "2026-09-16T05:05:48Z",
+ "measure": "Spearman rho over the 65 types; distance = 1 - rho (rowB/README.md Sec 4, fixed before the first look)",
+ "primary_summary": "mean over the whole simulation window, all 65 types",
+ "secondary_summary": "value at the last simulation step",
+ "item_composition": "all 16 (primary); 13 without ambush_2 and 10 without bandage_1 are context only",
+ "n": 6,
+ "individuals": [
+  "seed0",
+  "seed0prime",
+  "seed1",
+  "seed2",
+  "seed3",
+  "seed4"
+ ],
+ "runs": {
+  "seed0": "000",
+  "seed0prime": "900",
+  "seed1": "001",
+  "seed2": "002",
+  "seed3": "003",
+  "seed4": "004"
+ },
+ "wave": {
+  "seed0": "night1",
+  "seed0prime": "night1",
+  "seed1": "night2",
+  "seed2": "night2b",
+  "seed3": "night3",
+  "seed4": "night3"
+ },
+ "night2_profiles_reused_not_recomputed": [
+  "C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed\\results\\night2\\diagnostics\\rowB\\rowB_profiles_250008.csv",
+  "C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed\\results\\night2\\diagnostics\\rowB\\rowB_profiles_25212.csv",
+  "C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed\\results\\night2\\diagnostics\\rowB\\rowB_profiles_iter0.csv"
+ ],
+ "night2_rowB_script_sha256": "195a89b555bedf3a0ff00a4c4e0542eafa6370243fbf9ed954f5fe8fbf7f4082",
+ "twin_amplitude_band_recomputed": {
+  "why": "002 Sec 5i second pass item 3 states the twin amplitude band as 'T5c 41.6 vs 23.8 (1.75x)'. Recomputed from night2/diagnostics/rowB/rowB_profiles_250008.csv, column mean_window: seed 0's T5c is 41.6183 and seed 0-prime's T5c is -0.0365; 23.8381 is seed 0-prime's Tm4, which is that profile's maximum. 1.7459 is therefore the ratio of the two profiles' MAXIMA, which sit on DIFFERENT types -- not a per-type T5c ratio. The number is right for what it measures; the type label attached to it is not. Reported, not corrected in the night-2 file.",
+  "seed0_T5c": "41.61827439924136",
+  "seed0prime_T5c": "-0.036486694903879624",
+  "seed0prime_Tm4": "23.838097662357008",
+  "ratio_of_profile_maxima_0_over_0prime": "1.7458723002448813",
+  "profile_sd_ratio_0_over_0prime_unaffected": "1.4132838282147915",
+  "per_type_band_twins": {
+   "pair": "seed0|seed0prime",
+   "max_per_type_abs_deltaB": "41.654761094145236",
+   "median_per_type_abs_deltaB": "0.7339220513133344",
+   "top8_per_type": [
+    [
+     "T5c",
+     "41.61827439924136",
+     "-0.036486694903879624",
+     "41.654761094145236"
+    ],
+    [
+     "Tm4",
+     "2.3742540353865156",
+     "23.838097662357008",
+     "21.463843626970494"
+    ],
+    [
+     "T5d",
+     "40.64552051386953",
+     "19.968416826602656",
+     "20.67710368726687"
+    ],
+    [
+     "T2a",
+     "2.385578318850503",
+     "18.6358537080823",
+     "16.2502753892318"
+    ],
+    [
+     "Tm2",
+     "15.321908150745578",
+     "0.2158304556492964",
+     "15.106077695096282"
+    ],
+    [
+     "Tm1",
+     "1.8139362971837119",
+     "15.97585451035307",
+     "14.161918213169358"
+    ],
+    [
+     "Tm20",
+     "0.7596631110960048",
+     "9.370204506512735",
+     "8.61054139541673"
+    ],
+    [
+     "TmY14",
+     "2.30806261152551",
+     "8.601957639891024",
+     "6.293895028365514"
+    ]
+   ],
+   "argmax_type_x": "T5c",
+   "max_x": "41.61827439924136",
+   "argmax_type_y": "Tm4",
+   "max_y": "23.838097662357008",
+   "ratio_of_the_two_profile_maxima": "1.7458723002448813"
+  },
+  "per_type_band_pair_3_4": {
+   "pair": "seed3|seed4",
+   "max_per_type_abs_deltaB": "28.802797915207627",
+   "median_per_type_abs_deltaB": "1.1259025881922071",
+   "top8_per_type": [
+    [
+     "Tm3",
+     "4.227179465945306",
+     "33.02997738115293",
+     "28.802797915207627"
+    ],
+    [
+     "Mi4",
+     "2.0925987073509544",
+     "18.013574781183067",
+     "15.920976073832112"
+    ],
+    [
+     "T2a",
+     "9.657871652848698",
+     "24.808064097084937",
+     "15.15019244423624"
+    ],
+    [
+     "Mi2",
+     "0.565612358918695",
+     "11.615437304437286",
+     "11.04982494551859"
+    ],
+    [
+     "T3",
+     "10.7912679651083",
+     "0.09899800703512057",
+     "10.69226995807318"
+    ],
+    [
+     "TmY5a",
+     "-0.5625190033676561",
+     "8.714816509746822",
+     "9.277335513114478"
+    ],
+    [
+     "Mi14",
+     "7.267557290458958",
+     "0.030032467195561068",
+     "7.2375248232633975"
+    ],
+    [
+     "TmY13",
+     "-0.11195717505744468",
+     "6.132199961660811",
+     "6.244157136718256"
+    ]
+   ],
+   "argmax_type_x": "T3",
+   "max_x": "10.7912679651083",
+   "argmax_type_y": "Tm3",
+   "max_y": "33.02997738115293",
+   "ratio_of_the_two_profile_maxima": "0.3267113337857098"
+  },
+  "consequence_stated_not_decided": "the per-type twin amplitude band is max|dB| = 41.65 (T5c 41.62 -> -0.04 between two runs of ONE seed), not a factor of 1.75; a threshold of the form 'exceed 1.75x to be a real per-type difference' is therefore more permissive than the twin data support. Whether the rule of 002 Sec 5i second pass item 3 should be restated is Mike's and the reviewers' call, not this diagnostic's. The qualitative conclusion it was written to support -- amplitude floats between twins, rank does not -- is unchanged and is strengthened.",
+  "note": "PREVIEW DIAGNOSTIC -- NOT A TEST (n=6, critical rho 0.90-1.00; N>=8 rule)"
+ },
+ "axis_1_activity_on_T5c_T5d_T2": {
+  "declared": "docs/next-session-plan.md Sec 2a 'Exploratory axes for night 3 (Ark 10:25)' -- named BEFORE the launch; exploratory, no verdict",
+  "twin_amplitude_band_as_published": "T5c 41.62 vs 23.84 between the two runs of seed 0 = 1.75x (002 Sec 5i second pass item 3); profile sd 7.38 vs 5.22 = 1.42x; the band is the measured non-determinism floor of row B in AMPLITUDE (rank is unaffected: twin minimum in 16/16 items)",
+  "twin_amplitude_band_see_also": "twin_amplitude_band_recomputed in this file -- 23.84 is seed 0-prime's Tm4, not its T5c (which is -0.0365); the 1.42x sd figure is unaffected",
+  "types": {
+   "T5c": {
+    "mean_window": {
+     "seed0": "41.61827439924136",
+     "seed0prime": "-0.036486694903879624",
+     "seed1": "12.309131665345948",
+     "seed2": "11.141969380164507",
+     "seed3": "2.1890872869538622",
+     "seed4": "0.3540869850140981"
+    },
+    "ratio_seed3_over_seed4": "6.182343264796087",
+    "abs_ratio_max_over_min_in_pair_3_4": "6.182343264796087",
+    "abs_ratio_max_over_min_in_twins_0_0prime": "1140.6424864976218"
+   },
+   "T5d": {
+    "mean_window": {
+     "seed0": "40.64552051386953",
+     "seed0prime": "19.968416826602656",
+     "seed1": "-0.80892795531276",
+     "seed2": "-0.13093573244930942",
+     "seed3": "0.3766102809609859",
+     "seed4": "0.09638907542178046"
+    },
+    "ratio_seed3_over_seed4": "3.907188437206293",
+    "abs_ratio_max_over_min_in_pair_3_4": "3.907188437206293",
+    "abs_ratio_max_over_min_in_twins_0_0prime": "2.0354903879870974"
+   },
+   "T2": {
+    "mean_window": {
+     "seed0": "12.94147719209452",
+     "seed0prime": "16.796844484367277",
+     "seed1": "2.658408941514855",
+     "seed2": "-0.20760615998852833",
+     "seed3": "0.8486224719679852",
+     "seed4": "3.8005877336130665"
+    },
+    "ratio_seed3_over_seed4": "0.22328716805104085",
+    "abs_ratio_max_over_min_in_pair_3_4": "4.4785376998082205",
+    "abs_ratio_max_over_min_in_twins_0_0prime": "1.2979078226578231"
+   }
+  }
+ },
+ "axis_2_profile_compression": {
+  "declared": "docs/next-session-plan.md Sec 2a; exploratory, no verdict",
+  "night2_published_sd": {
+   "seed0": "7.38",
+   "seed0prime": "5.22",
+   "seed1": "2.44",
+   "seed2": "2.72",
+   "source": "002 Sec 5i CC check (iii), population sd over the 65 mean_window values"
+  },
+  "per_individual": {
+   "seed0": {
+    "sd_65": "7.376210986130039",
+    "sd_65_population": "7.319250975509143",
+    "min": "-1.909290766082456",
+    "max": "41.61827439924136",
+    "range": "43.527565165323814",
+    "mean": "2.8922594351538935",
+    "argmax_type": "T5c",
+    "argmin_type": "Mi12",
+    "n_types_abs_below_1e-3": 1,
+    "wave": "night1"
+   },
+   "seed0prime": {
+    "sd_65": "5.2192000211644665",
+    "sd_65_population": "5.178896715145006",
+    "min": "-0.8438010739820412",
+    "max": "23.838097662357008",
+    "range": "24.68189873633905",
+    "mean": "2.823406824212207",
+    "argmax_type": "Tm4",
+    "argmin_type": "TmY5a",
+    "n_types_abs_below_1e-3": 0,
+    "wave": "night1"
+   },
+   "seed1": {
+    "sd_65": "2.4410417164990568",
+    "sd_65_population": "2.422191691417171",
+    "min": "-8.811473566987623",
+    "max": "12.309131665345948",
+    "range": "21.12060523233357",
+    "mean": "0.9736509723920251",
+    "argmax_type": "T5c",
+    "argmin_type": "C3",
+    "n_types_abs_below_1e-3": 0,
+    "wave": "night2"
+   },
+   "seed2": {
+    "sd_65": "2.7173460856194485",
+    "sd_65_population": "2.6963624041346623",
+    "min": "-0.7514491153117716",
+    "max": "11.141969380164507",
+    "range": "11.89341849547628",
+    "mean": "1.8447985248790562",
+    "argmax_type": "T5c",
+    "argmin_type": "TmY5a",
+    "n_types_abs_below_1e-3": 0,
+    "wave": "night2b"
+   },
+   "seed3": {
+    "sd_65": "2.2147948362457144",
+    "sd_65_population": "2.1976919174662926",
+    "min": "-2.9234644347518115",
+    "max": "10.7912679651083",
+    "range": "13.714732399860111",
+    "mean": "1.3355921722380961",
+    "argmax_type": "T3",
+    "argmin_type": "Mi13",
+    "n_types_abs_below_1e-3": 0,
+    "wave": "night3"
+   },
+   "seed4": {
+    "sd_65": "5.804257420142532",
+    "sd_65_population": "5.759436228758582",
+    "min": "-1.5440657097733248",
+    "max": "33.02997738115293",
+    "range": "34.57404309092626",
+    "mean": "2.721070731821037",
+    "argmax_type": "Tm3",
+    "argmin_type": "L1",
+    "n_types_abs_below_1e-3": 0,
+    "wave": "night3"
+   }
+  },
+  "within_pair_amplitude_ratio_3_4": {
+   "sd_ratio": "2.6206749831425897",
+   "range_ratio": "2.520941866228386",
+   "twin_reference_sd_ratio_0_0prime": "1.4132838282147915",
+   "note": "(3,4) are DIFFERENT seeds in one wave; (0,0') are the SAME seed in one wave -- the two ratios are not the same quantity"
+  },
+  "confound_named_before_night_3": "002 Sec 5i second pass item 5 (Ark): compression splits by NIGHT, not by individual, with two nights; night 3 adds a third night and a second same-wave pair"
+ }
+}

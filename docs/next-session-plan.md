@@ -144,6 +144,14 @@ seed 2, reaches 10×); clause (i) not met in size; R2 itself does not repeat (+1
 one-type dominance repeats (3.6× / 8.0×). Verdict for Mike and the reviewers; the reading rule's
 defect is recorded in 003 §6.
 
+**Reading outcome 2026-09-16 (row B, n = 6 preview):** row B for seeds 3/4 is done
+(`docs/experiments/003-night3-seeds-3-and-4.md` §6b). The twin trap holds on 1 − ρ, margin 0.056
+against the nearest foreign pair (1, 3) — same as the ablation channel — and fails on Euclidean
+distance for both channels. The same-wave pair (3, 4) ranks 14 of 15 on both channels: no wave
+effect. The row-B channel shows no single-type dominance (top/second ratio 1.0–1.4× for all six
+runs), while the ablation channel does (2.8–8.0× for seeds 2/3/4); the T5c signature present in
+seeds 0/1/2 is absent in seeds 3/4. All of the above is preview/exploratory, not a verdict.
+
 ## 3. Branches after night 2
 
 **2026-09-15:** the branch below is now decidable with the numbers in the Result paragraph

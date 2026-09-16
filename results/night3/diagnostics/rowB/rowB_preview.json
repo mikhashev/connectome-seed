@@ -1,0 +1,192 @@
+{
+ "status": "PREVIEW DIAGNOSTIC -- NOT A TEST (n=6, critical rho 0.90-1.00; N>=8 rule)",
+ "script": "rowB3.py + rowB.py (byte-identical copy)",
+ "rowB.py_sha256": "195a89b555bedf3a0ff00a4c4e0542eafa6370243fbf9ed954f5fe8fbf7f4082",
+ "rowB3.py_sha256": "f5ab3e5f80f3b8b59d72f76c06c3853b87a3a77066bf59281054f97fa9c9684a",
+ "utc": "2026-09-16T05:05:48Z",
+ "measure": "Spearman rho over the 65 types; distance = 1 - rho (rowB/README.md Sec 4, fixed before the first look)",
+ "primary_summary": "mean over the whole simulation window, all 65 types",
+ "secondary_summary": "value at the last simulation step",
+ "item_composition": "all 16 (primary); 13 without ambush_2 and 10 without bandage_1 are context only",
+ "n": 6,
+ "individuals": [
+  "seed0",
+  "seed0prime",
+  "seed1",
+  "seed2",
+  "seed3",
+  "seed4"
+ ],
+ "runs": {
+  "seed0": "000",
+  "seed0prime": "900",
+  "seed1": "001",
+  "seed2": "002",
+  "seed3": "003",
+  "seed4": "004"
+ },
+ "wave": {
+  "seed0": "night1",
+  "seed0prime": "night1",
+  "seed1": "night2",
+  "seed2": "night2b",
+  "seed3": "night3",
+  "seed4": "night3"
+ },
+ "night2_profiles_reused_not_recomputed": [
+  "C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed\\results\\night2\\diagnostics\\rowB\\rowB_profiles_250008.csv",
+  "C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed\\results\\night2\\diagnostics\\rowB\\rowB_profiles_25212.csv",
+  "C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed\\results\\night2\\diagnostics\\rowB\\rowB_profiles_iter0.csv"
+ ],
+ "night2_rowB_script_sha256": "195a89b555bedf3a0ff00a4c4e0542eafa6370243fbf9ed954f5fe8fbf7f4082",
+ "within_run_B25212_vs_B250008": {
+  "seed0": {
+   "spearman_rho": "0.5813374125874126",
+   "max_abs_deltaB": "35.29424531233759",
+   "wave": "night1",
+   "source": "night2 csv (not recomputed)"
+  },
+  "seed0prime": {
+   "spearman_rho": "0.6748688811188811",
+   "max_abs_deltaB": "18.48576705131529",
+   "wave": "night1",
+   "source": "night2 csv (not recomputed)"
+  },
+  "seed1": {
+   "spearman_rho": "0.789729020979021",
+   "max_abs_deltaB": "46.45744724182032",
+   "wave": "night2",
+   "source": "night2 csv (not recomputed)"
+  },
+  "seed2": {
+   "spearman_rho": "0.3584353146853147",
+   "max_abs_deltaB": "26.167775956107803",
+   "wave": "night2b",
+   "source": "night2 csv (not recomputed)"
+  },
+  "seed3": {
+   "spearman_rho": "0.6948863636363637",
+   "max_abs_deltaB": "32.455997954633354",
+   "wave": "night3",
+   "source": "night3 csv"
+  },
+  "seed4": {
+   "spearman_rho": "0.3773601398601399",
+   "max_abs_deltaB": "32.433176011747285",
+   "wave": "night3",
+   "source": "night3 csv"
+  }
+ },
+ "self_consistency_ranking_ascending": [
+  [
+   "seed2",
+   "0.3584353146853147"
+  ],
+  [
+   "seed4",
+   "0.3773601398601399"
+  ],
+  [
+   "seed0",
+   "0.5813374125874126"
+  ],
+  [
+   "seed0prime",
+   "0.6748688811188811"
+  ],
+  [
+   "seed3",
+   "0.6948863636363637"
+  ],
+  [
+   "seed1",
+   "0.789729020979021"
+  ]
+ ],
+ "seed2_0_36_in_context": {
+  "seed2": "0.3584353146853147",
+  "seed3": "0.6948863636363637",
+  "seed4": "0.3773601398601399",
+  "rank_of_seed2_ascending": 1,
+  "rank_of_seed3_ascending": 5,
+  "rank_of_seed4_ascending": 2,
+  "n": 6,
+  "night2_open_question": "002 Sec 5i second pass item 4: 'why seed 2's self-consistency is 0.36 -- no explanation'; this is context for it, not an answer"
+ },
+ "between_run_distances_15_pairs": {
+  "pairs": [
+   "seed0|seed0prime",
+   "seed0|seed1",
+   "seed0|seed2",
+   "seed0|seed3",
+   "seed0|seed4",
+   "seed0prime|seed1",
+   "seed0prime|seed2",
+   "seed0prime|seed3",
+   "seed0prime|seed4",
+   "seed1|seed2",
+   "seed1|seed3",
+   "seed1|seed4",
+   "seed2|seed3",
+   "seed2|seed4",
+   "seed3|seed4"
+  ],
+  "at_25212": [
+   "0.12456293706293708",
+   "0.46555944055944054",
+   "0.5812062937062937",
+   "0.4751311188811189",
+   "1.0008741258741258",
+   "0.4961975524475525",
+   "0.6015734265734265",
+   "0.5317307692307692",
+   "0.9433129370629371",
+   "0.5196241258741259",
+   "0.33579545454545456",
+   "0.6496503496503496",
+   "0.5315559440559441",
+   "0.9387674825174825",
+   "0.8533216783216784"
+  ],
+  "at_250008": [
+   "0.34873251748251743",
+   "0.5689248251748251",
+   "0.545541958041958",
+   "0.4969405594405595",
+   "0.7312937062937063",
+   "0.634965034965035",
+   "0.8212412587412588",
+   "0.5990384615384615",
+   "0.864729020979021",
+   "0.5759178321678322",
+   "0.4043269230769231",
+   "0.747770979020979",
+   "0.4751748251748251",
+   "0.8085227272727273",
+   "0.8565122377622377"
+  ],
+  "spearman_over_the_15_distances": "0.825",
+  "pearson_over_the_15_distances_context_only": "0.858299170238885",
+  "twin_is_minimum_of_15_at_25212": true,
+  "night2_value_over_6_distances": "0.6",
+  "note": "the 15 distances are derived from 6 objects and are not independent (002 Sec 5i second pass item 6)"
+ },
+ "iteration_0_for_reference": {
+  "seed0|seed0prime": "0.0",
+  "seed0|seed1": "0.17360139860139856",
+  "seed0|seed2": "0.19742132867132867",
+  "seed0|seed3": "0.11918706293706294",
+  "seed0|seed4": "0.19401223776223775",
+  "seed0prime|seed1": "0.17360139860139856",
+  "seed0prime|seed2": "0.19742132867132867",
+  "seed0prime|seed3": "0.11918706293706294",
+  "seed0prime|seed4": "0.19401223776223775",
+  "seed1|seed2": "0.21101398601398602",
+  "seed1|seed3": "0.191215034965035",
+  "seed1|seed4": "0.21118881118881117",
+  "seed2|seed3": "0.18946678321678323",
+  "seed2|seed4": "0.17696678321678316",
+  "seed3|seed4": "0.17906468531468533"
+ },
+ "note": "preview, not a test (PREVIEW DIAGNOSTIC -- NOT A TEST (n=6, critical rho 0.90-1.00; N>=8 rule))"
+}

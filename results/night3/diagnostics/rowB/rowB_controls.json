@@ -1,0 +1,633 @@
+{
+ "status": "PREVIEW DIAGNOSTIC -- NOT A TEST (n=6, critical rho 0.90-1.00; N>=8 rule)",
+ "script": "rowB3.py + rowB.py (byte-identical copy)",
+ "rowB.py_sha256": "195a89b555bedf3a0ff00a4c4e0542eafa6370243fbf9ed954f5fe8fbf7f4082",
+ "rowB3.py_sha256": "f5ab3e5f80f3b8b59d72f76c06c3853b87a3a77066bf59281054f97fa9c9684a",
+ "utc": "2026-09-16T05:05:48Z",
+ "measure": "Spearman rho over the 65 types; distance = 1 - rho (rowB/README.md Sec 4, fixed before the first look)",
+ "primary_summary": "mean over the whole simulation window, all 65 types",
+ "secondary_summary": "value at the last simulation step",
+ "item_composition": "all 16 (primary); 13 without ambush_2 and 10 without bandage_1 are context only",
+ "n": 6,
+ "individuals": [
+  "seed0",
+  "seed0prime",
+  "seed1",
+  "seed2",
+  "seed3",
+  "seed4"
+ ],
+ "runs": {
+  "seed0": "000",
+  "seed0prime": "900",
+  "seed1": "001",
+  "seed2": "002",
+  "seed3": "003",
+  "seed4": "004"
+ },
+ "wave": {
+  "seed0": "night1",
+  "seed0prime": "night1",
+  "seed1": "night2",
+  "seed2": "night2b",
+  "seed3": "night3",
+  "seed4": "night3"
+ },
+ "night2_profiles_reused_not_recomputed": [
+  "C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed\\results\\night2\\diagnostics\\rowB\\rowB_profiles_250008.csv",
+  "C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed\\results\\night2\\diagnostics\\rowB\\rowB_profiles_25212.csv",
+  "C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed\\results\\night2\\diagnostics\\rowB\\rowB_profiles_iter0.csv"
+ ],
+ "night2_rowB_script_sha256": "195a89b555bedf3a0ff00a4c4e0542eafa6370243fbf9ed954f5fe8fbf7f4082",
+ "eval_rung_invariants": {
+  "the_seven": [
+   "lr_unchanged",
+   "pen_lr_unchanged",
+   "dt_unchanged",
+   "scheduler_iter_unchanged",
+   "back_in_train_mode",
+   "was_in_train_mode_before",
+   "dataset_augment_restored"
+  ],
+  "n_evaluations_with_all_seven_recorded_and_asserted_true": 19,
+  "of_which": "12 in the profiles task (6 evaluations x with-hook/without-hook), 4 in P2 (2 runs x base/ablated), 3 in the repro processes",
+  "row_C_trajectory_evaluations": {
+   "n_rows": 144,
+   "all_invariants_pass": true,
+   "note": "asserted per evaluation in rowB.task_traj:480-481; the aggregate flag is carried here from the scratch rowC_meta.json"
+  },
+  "total_evaluations_with_the_seven_asserted": 163,
+  "note": "hardening item 1; recorded per evaluation in rowB_eval_records.json (profiles), in the P2 block and in each repro json",
+  "distinct_invariant_tuples_observed": 1
+ },
+ "hook_purity_new_seeds": {
+  "seed3@0": {
+   "purity_abs_diff_of_the_16_item_loss": "0.0",
+   "purity_tol": 0.0001,
+   "purity_pass": true,
+   "purity_bitwise_identical_per_item": true,
+   "per_item_max_abs_diff_hook_vs_nohook": "0.0",
+   "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": "0.0",
+   "per_item_max_abs_diff_hook_vs_nohook_in_float32_ulps": "0.0",
+   "per_item_mean_with_hook": "1212.549735546112",
+   "per_item_mean_without_hook": "1212.549735546112",
+   "n_state_hook_calls": 653,
+   "steps_steady_state": 13,
+   "steps_per_item_unique": [
+    40
+   ]
+  },
+  "seed4@0": {
+   "purity_abs_diff_of_the_16_item_loss": "0.0",
+   "purity_tol": 0.0001,
+   "purity_pass": true,
+   "purity_bitwise_identical_per_item": true,
+   "per_item_max_abs_diff_hook_vs_nohook": "0.0",
+   "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": "0.0",
+   "per_item_max_abs_diff_hook_vs_nohook_in_float32_ulps": "0.0",
+   "per_item_mean_with_hook": "1212.5379438400269",
+   "per_item_mean_without_hook": "1212.5379438400269",
+   "n_state_hook_calls": 653,
+   "steps_steady_state": 13,
+   "steps_per_item_unique": [
+    40
+   ]
+  },
+  "seed3@25212": {
+   "purity_abs_diff_of_the_16_item_loss": "3.0517578125e-05",
+   "purity_tol": 0.0001,
+   "purity_pass": true,
+   "purity_bitwise_identical_per_item": false,
+   "per_item_max_abs_diff_hook_vs_nohook": "0.00048828125",
+   "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": "0.0001220703125",
+   "per_item_max_abs_diff_hook_vs_nohook_in_float32_ulps": "1.0",
+   "per_item_mean_with_hook": "1190.0516896247864",
+   "per_item_mean_without_hook": "1190.0516591072083",
+   "n_state_hook_calls": 653,
+   "steps_steady_state": 13,
+   "steps_per_item_unique": [
+    40
+   ]
+  },
+  "seed4@25212": {
+   "purity_abs_diff_of_the_16_item_loss": "3.337860107421875e-06",
+   "purity_tol": 0.0001,
+   "purity_pass": true,
+   "purity_bitwise_identical_per_item": false,
+   "per_item_max_abs_diff_hook_vs_nohook": "6.103515625e-05",
+   "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": "6.103515625e-05",
+   "per_item_max_abs_diff_hook_vs_nohook_in_float32_ulps": "0.125",
+   "per_item_mean_with_hook": "1203.2849326133728",
+   "per_item_mean_without_hook": "1203.284935951233",
+   "n_state_hook_calls": 653,
+   "steps_steady_state": 13,
+   "steps_per_item_unique": [
+    40
+   ]
+  },
+  "seed3@250008": {
+   "purity_abs_diff_of_the_16_item_loss": "3.147125244140625e-05",
+   "purity_tol": 0.0001,
+   "purity_pass": true,
+   "purity_bitwise_identical_per_item": false,
+   "per_item_max_abs_diff_hook_vs_nohook": "0.00048828125",
+   "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": "0.00048828125",
+   "per_item_max_abs_diff_hook_vs_nohook_in_float32_ulps": "1.0",
+   "per_item_mean_with_hook": "1155.7706546783447",
+   "per_item_mean_without_hook": "1155.7706861495972",
+   "n_state_hook_calls": 653,
+   "steps_steady_state": 13,
+   "steps_per_item_unique": [
+    40
+   ]
+  },
+  "seed4@250008": {
+   "purity_abs_diff_of_the_16_item_loss": "2.47955322265625e-05",
+   "purity_tol": 0.0001,
+   "purity_pass": true,
+   "purity_bitwise_identical_per_item": false,
+   "per_item_max_abs_diff_hook_vs_nohook": "0.00048828125",
+   "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": "0.000244140625",
+   "per_item_max_abs_diff_hook_vs_nohook_in_float32_ulps": "1.0",
+   "per_item_mean_with_hook": "1156.8284525871277",
+   "per_item_mean_without_hook": "1156.8284277915955",
+   "n_state_hook_calls": 653,
+   "steps_steady_state": 13,
+   "steps_per_item_unique": [
+    40
+   ]
+  }
+ },
+ "hook_purity_rule": "rowB/README.md Sec 2 with its 2026-09-15T12:07Z amendment: the 1e-4 tolerance applies to THE 16-item loss; the per-item max difference, the same figure in float32 ULPs and its own no-hook-vs-no-hook floor are recorded beside it, measured not assumed",
+ "P0_ladder_iteration_0_all_15_pairs": {
+  "seed0|seed0prime": {
+   "spearman_rho": "1.0",
+   "distance_1_minus_rho": "0.0",
+   "max_abs_deltaB": "1.39762867945592e-10",
+   "bitwise_identical": false,
+   "new_pair_in_night3": false
+  },
+  "seed0|seed1": {
+   "spearman_rho": "0.8263986013986014",
+   "distance_1_minus_rho": "0.17360139860139856",
+   "max_abs_deltaB": "0.15448729917161597",
+   "bitwise_identical": false,
+   "new_pair_in_night3": false
+  },
+  "seed0|seed2": {
+   "spearman_rho": "0.8025786713286713",
+   "distance_1_minus_rho": "0.19742132867132867",
+   "max_abs_deltaB": "0.16579620879364365",
+   "bitwise_identical": false,
+   "new_pair_in_night3": false
+  },
+  "seed0|seed3": {
+   "spearman_rho": "0.8808129370629371",
+   "distance_1_minus_rho": "0.11918706293706294",
+   "max_abs_deltaB": "0.16152263436228792",
+   "bitwise_identical": false,
+   "new_pair_in_night3": true
+  },
+  "seed0|seed4": {
+   "spearman_rho": "0.8059877622377623",
+   "distance_1_minus_rho": "0.19401223776223775",
+   "max_abs_deltaB": "0.18982049963384062",
+   "bitwise_identical": false,
+   "new_pair_in_night3": true
+  },
+  "seed0prime|seed1": {
+   "spearman_rho": "0.8263986013986014",
+   "distance_1_minus_rho": "0.17360139860139856",
+   "max_abs_deltaB": "0.15448729916864523",
+   "bitwise_identical": false,
+   "new_pair_in_night3": false
+  },
+  "seed0prime|seed2": {
+   "spearman_rho": "0.8025786713286713",
+   "distance_1_minus_rho": "0.19742132867132867",
+   "max_abs_deltaB": "0.165796208787508",
+   "bitwise_identical": false,
+   "new_pair_in_night3": false
+  },
+  "seed0prime|seed3": {
+   "spearman_rho": "0.8808129370629371",
+   "distance_1_minus_rho": "0.11918706293706294",
+   "max_abs_deltaB": "0.16152263439412845",
+   "bitwise_identical": false,
+   "new_pair_in_night3": true
+  },
+  "seed0prime|seed4": {
+   "spearman_rho": "0.8059877622377623",
+   "distance_1_minus_rho": "0.19401223776223775",
+   "max_abs_deltaB": "0.18982049953844782",
+   "bitwise_identical": false,
+   "new_pair_in_night3": true
+  },
+  "seed1|seed2": {
+   "spearman_rho": "0.788986013986014",
+   "distance_1_minus_rho": "0.21101398601398602",
+   "max_abs_deltaB": "0.2508061805549633",
+   "bitwise_identical": false,
+   "new_pair_in_night3": false
+  },
+  "seed1|seed3": {
+   "spearman_rho": "0.808784965034965",
+   "distance_1_minus_rho": "0.191215034965035",
+   "max_abs_deltaB": "0.27366510555233703",
+   "bitwise_identical": false,
+   "new_pair_in_night3": true
+  },
+  "seed1|seed4": {
+   "spearman_rho": "0.7888111888111888",
+   "distance_1_minus_rho": "0.21118881118881117",
+   "max_abs_deltaB": "0.208825495406041",
+   "bitwise_identical": false,
+   "new_pair_in_night3": true
+  },
+  "seed2|seed3": {
+   "spearman_rho": "0.8105332167832168",
+   "distance_1_minus_rho": "0.18946678321678323",
+   "max_abs_deltaB": "0.17425809993251035",
+   "bitwise_identical": false,
+   "new_pair_in_night3": true
+  },
+  "seed2|seed4": {
+   "spearman_rho": "0.8230332167832168",
+   "distance_1_minus_rho": "0.17696678321678316",
+   "max_abs_deltaB": "0.23177002838511807",
+   "bitwise_identical": false,
+   "new_pair_in_night3": true
+  },
+  "seed3|seed4": {
+   "spearman_rho": "0.8209353146853147",
+   "distance_1_minus_rho": "0.17906468531468533",
+   "max_abs_deltaB": "0.20314013435148176",
+   "bitwise_identical": false,
+   "new_pair_in_night3": true
+  }
+ },
+ "P0_ladder_250008_for_contrast": {
+  "seed0|seed0prime": "0.34873251748251743",
+  "seed0|seed1": "0.5689248251748251",
+  "seed0|seed2": "0.545541958041958",
+  "seed0|seed3": "0.4969405594405595",
+  "seed0|seed4": "0.7312937062937063",
+  "seed0prime|seed1": "0.634965034965035",
+  "seed0prime|seed2": "0.8212412587412588",
+  "seed0prime|seed3": "0.5990384615384615",
+  "seed0prime|seed4": "0.864729020979021",
+  "seed1|seed2": "0.5759178321678322",
+  "seed1|seed3": "0.4043269230769231",
+  "seed1|seed4": "0.747770979020979",
+  "seed2|seed3": "0.4751748251748251",
+  "seed2|seed4": "0.8085227272727273",
+  "seed3|seed4": "0.8565122377622377"
+ },
+ "floor_new_seeds": {
+  "what": "seed 3 @ 250,008 evaluated in 3 fresh processes; measured for THIS metric at THIS state on the NEW seeds, not inherited from night 2 (rule R1 / hardening item 13, README Sec 5)",
+  "spearman_rho_between_processes": {
+   "proc1|proc2": "1.0",
+   "proc1|proc3": "1.0",
+   "proc2|proc3": "1.0"
+  },
+  "floor_1_minus_rho": "0.0",
+  "max_per_type_abs_deltaB": {
+   "proc1|proc2": "7.1371231147310255e-09",
+   "proc1|proc3": "9.917746623955281e-09",
+   "proc2|proc3": "1.3516189945050883e-08"
+  },
+  "floor_max_abs_deltaB": "1.3516189945050883e-08",
+  "per_item_mean_loss_per_process": [
+   "1155.7706570625305",
+   "1155.7706489562988",
+   "1155.7706718444824"
+  ],
+  "pids": [
+   32776,
+   29216,
+   36368
+  ],
+  "night2_floor_seed0_for_reference": {
+   "floor_1_minus_rho": "0.0",
+   "floor_max_abs_deltaB": "8.251646477219765e-08",
+   "source": "C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed\\results\\night2\\diagnostics\\rowB\\rowB_controls.json"
+  },
+  "caveat": "a rank floor of exactly 0.0 makes 'margin exceeds the floor' trivially satisfiable (002 Sec 5i review item 1); the load-bearing figure is the value-level max|dB|"
+ },
+ "P2_silence_R1_R8_new_seeds": {
+  "seed3": {
+   "run": "003",
+   "solver_iteration": 250008,
+   "base_loss_16": "1155.7706665992737",
+   "ablated_loss_16": "1213.8150749206543",
+   "loss_delta": "58.044408321380615",
+   "eval_rung_invariants_base": {
+    "lr_unchanged": true,
+    "pen_lr_unchanged": true,
+    "dt_unchanged": true,
+    "scheduler_iter_unchanged": true,
+    "back_in_train_mode": true,
+    "was_in_train_mode_before": true,
+    "dataset_augment_restored": true
+   },
+   "eval_rung_invariants_ablated": {
+    "lr_unchanged": true,
+    "pen_lr_unchanged": true,
+    "dt_unchanged": true,
+    "scheduler_iter_unchanged": true,
+    "back_in_train_mode": true,
+    "was_in_train_mode_before": true,
+    "dataset_augment_restored": true
+   },
+   "max_abs_deltaB": "16.733640976691355",
+   "n_types_moved_gt_1e-3": 64,
+   "top10_changed_types": [
+    [
+     "Tm3",
+     "-16.733640976691355",
+     "4.227179463371963",
+     "-12.50646151331939"
+    ],
+    [
+     "Mi1",
+     "-15.36630134886239",
+     "5.177621992671379",
+     "-10.188679356191011"
+    ],
+    [
+     "Lawf2",
+     "-7.988245582447681",
+     "2.681868807626585",
+     "-5.306376774821096"
+    ],
+    [
+     "T3",
+     "-7.194051034428727",
+     "10.791267965577708",
+     "3.5972169311489806"
+    ],
+    [
+     "Mi14",
+     "-6.8363622814040355",
+     "7.267557285296965",
+     "0.43119500389292936"
+    ],
+    [
+     "T2a",
+     "-6.141666623553452",
+     "9.657871655836683",
+     "3.5162050322832306"
+    ],
+    [
+     "C2",
+     "-4.7452721180277155",
+     "0.9936396998733469",
+     "-3.7516324181543683"
+    ],
+    [
+     "Mi4",
+     "-4.626420281338081",
+     "2.0925987051840536",
+     "-2.5338215761540277"
+    ],
+    [
+     "L5",
+     "-4.278310327964615",
+     "2.7789676099619656",
+     "-1.4993427180026493"
+    ],
+    [
+     "T4c",
+     "-3.731769126459338",
+     "1.5295606346391493",
+     "-2.2022084918201887"
+    ]
+   ],
+   "top10_changed_downstream_types": [
+    [
+     "Tm3",
+     "-16.733640976691355",
+     "4.227179463371963",
+     "-12.50646151331939"
+    ],
+    [
+     "Mi1",
+     "-15.36630134886239",
+     "5.177621992671379",
+     "-10.188679356191011"
+    ],
+    [
+     "Lawf2",
+     "-7.988245582447681",
+     "2.681868807626585",
+     "-5.306376774821096"
+    ],
+    [
+     "T3",
+     "-7.194051034428727",
+     "10.791267965577708",
+     "3.5972169311489806"
+    ],
+    [
+     "Mi14",
+     "-6.8363622814040355",
+     "7.267557285296965",
+     "0.43119500389292936"
+    ],
+    [
+     "T2a",
+     "-6.141666623553452",
+     "9.657871655836683",
+     "3.5162050322832306"
+    ],
+    [
+     "C2",
+     "-4.7452721180277155",
+     "0.9936396998733469",
+     "-3.7516324181543683"
+    ],
+    [
+     "Mi4",
+     "-4.626420281338081",
+     "2.0925987051840536",
+     "-2.5338215761540277"
+    ],
+    [
+     "L5",
+     "-4.278310327964615",
+     "2.7789676099619656",
+     "-1.4993427180026493"
+    ],
+    [
+     "T4c",
+     "-3.731769126459338",
+     "1.5295606346391493",
+     "-2.2022084918201887"
+    ]
+   ],
+   "spearman_B_base_vs_ablated": "0.1793605026522657"
+  },
+  "seed4": {
+   "run": "004",
+   "solver_iteration": 250008,
+   "base_loss_16": "1156.8284182548523",
+   "ablated_loss_16": "1236.092758655548",
+   "loss_delta": "79.2643404006958",
+   "eval_rung_invariants_base": {
+    "lr_unchanged": true,
+    "pen_lr_unchanged": true,
+    "dt_unchanged": true,
+    "scheduler_iter_unchanged": true,
+    "back_in_train_mode": true,
+    "was_in_train_mode_before": true,
+    "dataset_augment_restored": true
+   },
+   "eval_rung_invariants_ablated": {
+    "lr_unchanged": true,
+    "pen_lr_unchanged": true,
+    "dt_unchanged": true,
+    "scheduler_iter_unchanged": true,
+    "back_in_train_mode": true,
+    "was_in_train_mode_before": true,
+    "dataset_augment_restored": true
+   },
+   "max_abs_deltaB": "34.11383015452657",
+   "n_types_moved_gt_1e-3": 64,
+   "top10_changed_types": [
+    [
+     "Mi4",
+     "34.11383015452657",
+     "18.013574783894622",
+     "52.12740493842119"
+    ],
+    [
+     "Tm3",
+     "16.282932653463085",
+     "33.029977331146206",
+     "49.31290998460929"
+    ],
+    [
+     "T2a",
+     "13.968396029655981",
+     "24.808064077239113",
+     "38.776460106895094"
+    ],
+    [
+     "Mi2",
+     "11.34637041256948",
+     "11.615437293256248",
+     "22.961807705825727"
+    ],
+    [
+     "L5",
+     "10.311388095100146",
+     "4.053460210916456",
+     "14.364848306016603"
+    ],
+    [
+     "TmY15",
+     "-9.967591306103408",
+     "3.81596360969631",
+     "-6.151627696407098"
+    ],
+    [
+     "T4b",
+     "-7.5316414487382195",
+     "0.0913951677548597",
+     "-7.440246280983359"
+    ],
+    [
+     "TmY5a",
+     "-7.481305773914921",
+     "8.714816551749529",
+     "1.233510777834607"
+    ],
+    [
+     "T4c",
+     "-6.973224727883098",
+     "2.400008360152318",
+     "-4.57321636773078"
+    ],
+    [
+     "T4a",
+     "-6.0775410673523975",
+     "6.234564852540933",
+     "0.1570237851885352"
+    ]
+   ],
+   "top10_changed_downstream_types": [
+    [
+     "Mi4",
+     "34.11383015452657",
+     "18.013574783894622",
+     "52.12740493842119"
+    ],
+    [
+     "Tm3",
+     "16.282932653463085",
+     "33.029977331146206",
+     "49.31290998460929"
+    ],
+    [
+     "T2a",
+     "13.968396029655981",
+     "24.808064077239113",
+     "38.776460106895094"
+    ],
+    [
+     "Mi2",
+     "11.34637041256948",
+     "11.615437293256248",
+     "22.961807705825727"
+    ],
+    [
+     "L5",
+     "10.311388095100146",
+     "4.053460210916456",
+     "14.364848306016603"
+    ],
+    [
+     "TmY15",
+     "-9.967591306103408",
+     "3.81596360969631",
+     "-6.151627696407098"
+    ],
+    [
+     "T4b",
+     "-7.5316414487382195",
+     "0.0913951677548597",
+     "-7.440246280983359"
+    ],
+    [
+     "TmY5a",
+     "-7.481305773914921",
+     "8.714816551749529",
+     "1.233510777834607"
+    ],
+    [
+     "T4c",
+     "-6.973224727883098",
+     "2.400008360152318",
+     "-4.57321636773078"
+    ],
+    [
+     "T4a",
+     "-6.0775410673523975",
+     "6.234564852540933",
+     "0.1570237851885352"
+    ]
+   ],
+   "spearman_B_base_vs_ablated": "0.5650730762827599"
+  }
+ },
+ "P2_ablated_types": [
+  "R1",
+  "R2",
+  "R3",
+  "R4",
+  "R5",
+  "R6",
+  "R7",
+  "R8"
+ ]
+}

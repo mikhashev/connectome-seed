@@ -278,6 +278,59 @@ cell-type-level reading of the pre-registered clause is not made here.
    agreement 6/6: 39 of 65 (16 items), 41 (13), 37 (10); noise band |Δ_T| < 2e-3: Mi11 only in
    seeds 3 and 4 (Mi11 and Mi12 for seed 4 on 13 items).
 
+## 6b. Row B (observational profile), seeds 3 and 4 — preview, n = 6, not a test
+
+**Reported / recomputed from committed artefacts**, not run in this session
+(`results/night3/diagnostics/rowB/`; run by CC's subagent on Opus; verified by CC).
+
+1. Artefacts: `rowB3.py` (this directory's driver) and `rowB.py` (a byte-identical copy of
+   night 2's `rowB.py`, imported as a module — the three deliberate differences from night 2 are
+   stated in `rowB3.py`'s own docstring). Seeds 0–2's profiles are not recomputed here; they are
+   read from `results/night2/diagnostics/rowB/rowB_profiles_250008.csv`. `SHA256.txt` lists the
+   hash of every file in the directory. Outputs: `rowB_profiles_{iter0,25212,250008}.csv`,
+   `rowB_distances.json`, `rowB_exploratory.json`, `rowB_preview.json`, `rowB_vs_rowA.json`,
+   `rowB_controls.json`, `rowB_eval_records.json`, `rowC_trajectory.csv`, `README.md`.
+2. Controls: hook purity 0…3e-5 against a tolerance of 1e-4; seven `eval_rung` invariants
+   asserted on 163 evaluations; P0 ladder at iteration 0 over all 15 pairs — twins **0.000000**,
+   the nine new cross-seed pairs **0.119–0.211**; floor for seed 3 across three fresh processes,
+   ρ = **1.0000**, max |ΔB| **1.4e-8**; P2 (silencing R1–R8) moves B on **64 of 65** types in both
+   seeds.
+3. The 15 pairwise distances (1 − ρ, Spearman over the 16-item aggregate, 65 types) at 250,008,
+   ascending: (0, 0′) 0.3487 · (1, 3) 0.4043 · (2, 3) 0.4752 · (0, 3) 0.4969 · (0, 2) 0.5455 ·
+   (0, 1) 0.5689 · (1, 2) 0.5759 · (0′, 3) 0.5990 · (0′, 1) 0.6350 · (0, 4) 0.7313 · (1, 4) 0.7478
+   · (2, 4) 0.8085 · (0′, 2) 0.8212 · (3, 4) 0.8565 · (0′, 4) 0.8647.
+4. **Twin trap**: (0, 0′) is the minimum of the 15, in 16/16 items and on both secondary
+   readings. The nearest foreign pair moves from (0, 2) (night 2) to **(1, 3) 0.4043**; the
+   margin falls from 0.197 to **0.056**. On Euclidean distance the twin trap fails — as it does
+   for the ablation (row-A) profile, §6 item 3 above.
+5. **Same-wave pair (3, 4)**: 0.8565, rank 14 of 15, above 12 of the 13 cross-wave pairs
+   (cross-wave median 0.599). The same answer as the ablation channel: no wave effect on this
+   instrument.
+6. **Exploratory axes** (numbers, no verdict), order seeds 0 / 0′ / 1 / 2 / 3 / 4:
+   - T5c mean activity: 41.62 / −0.04 / 12.31 / 11.14 / 2.19 / 0.35; T5d: 40.65 / 19.97 / −0.81 /
+     −0.13 / 0.38 / 0.10. T5c was the top type of the row-B profile for seeds 0, 1 and 2; for
+     seeds 3 and 4 the top types are T3 and Tm3.
+   - Profile sd: 7.32 / 5.18 / 2.42 / 2.70 / 2.20 / 5.76; range: 43.5 / 24.7 / 21.1 / 11.9 / 13.7
+     / 34.6. Seed 3 is the most compressed of the six, seed 4 the second-widest. The same-wave
+     pair straddles the "night 1 / night 2" compression split named in `002` §5i second pass
+     item 5, so a per-night compression confound is not supported by these two points.
+   - Top/second ratio by |mean| at 250,008 (requested by Ark for the channel comparison): seed 0
+     T5c/T5d 1.02×; 0′ Tm4/T5d 1.19×; 1 T5c/C3 1.40×; 2 T5c/Tm2 1.04×; 3 T3/T2a 1.12×; 4
+     Tm3/T2a 1.33× — all six in 1.0–1.4×. The ablation channel (§6 item 2 above) gives 1.98 /
+     1.03 / 1.08 / 2.83 / 3.59 / 7.96×. The "one dominant type" form exists only in the causal
+     (ablation) channel; the observational row-B channel does not show it for any run.
+   - B ↔ A within-individual Spearman: seeds 3/4 = **+0.549 / +0.573** (night-2 runs: 0.389 /
+     0.481 / 0.563 / 0.653).
+   - Preview 25,212 → 250,008 at n = 6: Spearman between the 15 distances at the two checkpoints
+     = **0.825** (was 0.60 over six pairs at n = 4); within-run self-consistency (25,212 vs
+     250,008 profile ρ): seed 2 0.358, seed 4 0.377, seed 0 0.581, 0′ 0.675, seed 3 0.695, seed 1
+     0.790.
+7. **Twin amplitude band per type**: max |ΔB| between seed 0 and seed 0′ = **41.65** (median
+   0.73), larger than the (3, 4) pair's **28.80**. See the correction to `002` §5i second pass
+   item 3 recorded in `002` itself.
+8. **Verdict**: none. This is a preview diagnostic, not the pre-registered (b)/(b2) test, which
+   runs once at the registered N.
+
 ## 7. Provenance
 
 - `results/night3/extract_night3.py` — this session's script; sha256

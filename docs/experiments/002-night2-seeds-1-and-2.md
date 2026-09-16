@@ -1036,7 +1036,21 @@ recorded plainly; and the "36 % vs 4 % margin" is not a comparison of instrument
 the quantities differ (the observational channel is a precise instrument by nature, the causal
 one coarser by nature).
 3. Amplitude floats between twins, rank does not (Ark, on CC's numbers): T5c 41.6 vs 23.8
-(1.75×), profile sd 7.4 vs 5.2 (1.42×) between the two runs of one seed. Consequences: the
+(1.75×), profile sd 7.4 vs 5.2 (1.42×) between the two runs of one seed.
+
+**Поправка 2026-09-16 (CC):** per the night-2 CSV
+(`results/night2/diagnostics/rowB/rowB_profiles_250008.csv`), seed 0′'s T5c is **−0.04**, not
+23.8; **23.84 is seed 0′'s Tm4**, that profile's maximum. 1.75 was the ratio of two profiles'
+maxima sitting on *different types* (seed 0's T5c against seed 0′'s Tm4), not a per-type ratio —
+the number was right for what it measured, the type label on it was not. Measured per type, the
+twin amplitude band is max |ΔB| = **41.65** (T5c; median 0.73 over all 65 types), larger than
+the (3, 4) same-wave pair's **28.80** (`results/night3/diagnostics/rowB/README.md` §8,
+`rowB_exploratory.json`). Consequence: the threshold "1.75× per type" was looser than the twin
+data support. The conclusion this item was written to carry — amplitude floats between twins,
+rank does not — is unchanged and strengthened by the correction. Restating the amplitude rule
+remains Ark's and the reviewers' call, not made here.
+
+Consequences: the
 pre-fixed choice of Spearman ρ is confirmed by measurement, not taste; any future claim "type Y
 burns in seed X" must be rank-based, or exceed the twin amplitude band (41.6 vs 11.1 = 3.75× is
 a real difference; 20 vs 15 is run noise). The twin amplitude band is the measured
