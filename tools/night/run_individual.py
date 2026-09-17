@@ -90,7 +90,16 @@ def parse_args():
                    help="progress log path (appended); default <out-dir>/<tag>_<id>.progress.log")
     p.add_argument("--override", action="append", default=[],
                    help="extra Hydra override KEY=VAL, repeatable; appended after the built-in overrides")
+    p.add_argument("--stop-after-iter", type=int, default=None,
+                   help="diagnostic only (docs/briefs/2026-09-17-c3-jitter-and-evaluator-floor.md): stop training "
+                        "right after the rung hook of completed iteration K (K must be one of --rungs, K < --n-iters, "
+                        "no --resume). --n-iters is NOT changed, so the lr schedule (flyvis solver.py:995, stepwise "
+                        "over task.n_iters) and the epoch count stay the night runs'. Default None: no effect.")
     return p.parse_args()
+
+
+class _StopAfterIter(Exception):
+    """Raised by the iteration hook when --stop-after-iter is reached; only ever raised under that flag."""
 
 
 # ---------------- progress lines (output only; nothing here touches training or the json) ----------------
@@ -154,6 +163,11 @@ class _NoopScheduler:
 def main():
     a = parse_args()
     rungs = sorted({int(x) for x in a.rungs.split(",") if x.strip()})
+    if a.stop_after_iter is not None and (a.stop_after_iter not in rungs or a.resume
+                                          or not 0 < a.stop_after_iter < a.n_iters):
+        print(f"refused: --stop-after-iter {a.stop_after_iter} must be one of --rungs, < --n-iters, "
+              f"and not combined with --resume", flush=True)
+        return 2
     out_dir = Path(a.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     stem = f"{a.tag}_{a.id.replace('/', '-')}"
@@ -596,6 +610,8 @@ def main():
         if k in rung_set:
             eval_rung(k)
             state["last_t"] = time.perf_counter()  # exclude the hook from the next iteration's time
+        if a.stop_after_iter is not None and k == a.stop_after_iter:
+            raise _StopAfterIter(k)  # after the penalty step and the hook of iteration k; caught below
 
     def progress_line(k):
         # elapsed = wall since the training loop started; s/iter = mean of the existing per-iteration
@@ -633,6 +649,10 @@ def main():
         solver.train(overfit=False)
         torch.cuda.synchronize()
         rec["exit"] = "ok"
+    except _StopAfterIter as e:  # reachable only under --stop-after-iter
+        torch.cuda.synchronize()
+        rec["exit"] = "ok"
+        rec["stopped_after_iter"] = int(e.args[0])  # solver.iteration stays k-1: solver.py increments after the batch
     except BaseException as e:  # noqa: BLE001
         rec["exit"] = f"error: {e!r}"
         rec["errors"].append(traceback.format_exc())
