@@ -58,6 +58,17 @@ reading the incidents below, not by re-deriving the principles.
     was not met and R2 itself did not repeat; overridden in the record, not edited in the json —
     003 §6.)
 
+17. A numeric control must not compare one measurement with an extremum of another on a
+    quantised quantity. Before writing a numeric gate: (a) state what it proves — identity of
+    code is proven by a code diff, not by a number; (b) derive any threshold from more than one
+    realisation (several processes), with a documented margin, never from a single run; (c) check
+    the quantisation step of the gated quantity (for float32 per-item losses: the ulp of the
+    largest per-item values) and that the threshold is a multiple of it with room; (d) ask what
+    the probability is that a correct implementation fails the gate — if it cannot be answered,
+    the gate is not ready. (2026-09-16: step 1 stopped twice falsely at its copy-fidelity gate —
+    exact equality, then one quantisation step over a 10-pair floor; Ark 20:23Z, Zcode 20:24Z;
+    records in results/diagnostics/gray/.)
+
 Related: `docs/tool-hardening-package.md` (the code fixes these rules imply for this
 repository, with falsifiers); `docs/preregistration-cheap-vs-expensive.md` §7 (void
 conditions).

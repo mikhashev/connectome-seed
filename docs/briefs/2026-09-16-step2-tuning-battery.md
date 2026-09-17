@@ -77,6 +77,10 @@ several nights.
 - **P0-bis:** fresh process; record the spread. No gate pre-set.
 - **Iteration-0 baseline:** the whole battery on `chkpt_00000` of every run.
 - **What the literature-comparison functions return for an untrained vs a trained net: TO BE MEASURED.** The flyvis source states no range and nothing has been run. Do not put a number from the paper into the pre-registration.
+- **Controls follow checklist rule 17 (added 2026-09-17).** Any copy of flyvis code (should one be
+  needed here) is gated by a code diff, not by a number; numeric reproducibility of tuning
+  quantities (P0, P0-bis above) is recorded, with stops only on documented ceilings derived from
+  ≥ 2 processes; no control compares one realisation with an extremum of another.
 
 ## 7. Pre-registered readings (verbatim, with mechanics)
 (a) **twin trap in tuning space** — (0, 0') minimum of 15 pairwise distances by rank correlation across the concatenated per-type tuning vector, with the 1/15 floor as a sanity check. Mechanics: one vector per network = 65 types x [FRI, DSI_on, DSI_off, cos PD_on, sin PD_on, cos PD_off, sin PD_off, 24 tuning values] — PD encoded circularly, never the raw angle (Ark; Zcode agrees); distance = 1 - Spearman rho (`ablation.py` `spearman`, reused at `rowB.py:325`).
@@ -130,3 +134,9 @@ Time: our 16-item eval at dt=0.02 takes 0.18-0.49 s (`night2/.../ablation/README
 - **v1 -> v2** (CC, mechanical follow-through): header and launch-rule lines added, matching
   brief 1; runtime estimate note added for the two-dt cost (§9); no v1 sweep was run for step 2,
   so no discard note is needed.
+- **v2, addendum** (2026-09-17, CC): §6 gains a note that controls follow checklist rule 17,
+  added after step 1's copy-fidelity gate stopped twice falsely (exact equality, then one
+  quantisation step over a 10-pair floor; Ark 20:23Z, Zcode 20:24Z) — any copy of flyvis code is
+  gated by a code diff, numeric reproducibility is recorded with stops only on documented
+  ceilings derived from ≥ 2 processes, and no control compares one realisation with an extremum
+  of another. No other change.

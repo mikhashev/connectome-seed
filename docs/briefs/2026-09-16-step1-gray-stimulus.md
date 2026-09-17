@@ -18,7 +18,24 @@ diffs are itemised in the revision history (§10). **Launch of v3 requires Mike'
 «запускай» in the chat again; the v2 launch word was consumed by the run that stopped at the
 gate.**
 
-**Launch only on Mike's explicit «запускай» for this step in the DPC Research chat.**
+**v4, 2026-09-17, after the second gate stop.** v3.1 was launched on Mike's word and stopped a
+second time at §6's copy-fidelity gate, now failing on a numeric comparison rather than exact
+equality: the copy's worst per-item deviation (0.000732421875) exceeded the 10-pair floor
+(0.00048828125) by one quantisation step (step 0.000244140625) — records
+`results/diagnostics/gray/README.md` and `README_v2_gate_stop.md`, commits `4e54965`, `8f0208f`.
+On the 16-item mean the copy lay inside the originals' own range (max |mean(A) − mean(B_k)|
+4.48e-05 vs a floor on the mean of 8.87e-05); the per-item floor itself varied 2x between processes
+(0.0009765625 measured in the v2 process). CC proposed v4; Ark (20:23Z) and Zcode (20:24Z)
+accepted with additions. §6's copy-fidelity control is replaced by a **code gate** — a diff of the
+copied function against its source, not a number (Ark: the diff replaces the numeric gate in that
+role) — and the numeric comparisons between copy and original become recorded quantities with a
+documented ceiling, never a comparison against another run's extremum; see checklist rule 17. See
+revised §6 and the v3.1 -> v4 entry in §10. **Launch of v4 requires Mike's explicit «запускай шаг
+1» in the chat again, naming the step; the v3.1 launch word was consumed by the run that stopped
+at the gate a second time; not while a training wave runs.**
+
+**Launch only on Mike's explicit «запускай шаг 1» for this step in the DPC Research chat; not
+while a training wave runs.**
 
 Path aliases used below:
 `FV` = `.../63f3961a-.../scratchpad/flyvis-probe/.venv/Lib/site-packages/flyvis` (flyvis 1.2.0)
@@ -99,35 +116,43 @@ several nights (Ark; Zcode agrees).
   `device`, `utc`, `val_items`, checkpoint names, the exact definition of each condition
   (including, for `shuffled`, the per-item frame-permutation seed), the seven invariants per
   evaluation, and `constant_output_null` (§6).
-- `gray_repeat_controls.json` **(v3, named here so it is not a surprise)** — the fresh-process
-  repeat pass (§6): per checkpoint, the in-process floor (max |B-C|, per-item and on the 16-item
-  mean, from two repeat calls of the original `D.per_item_eval`); per cell, the second-process
-  16-item-mean delta against the first process; and, per cell, whether it passes <= 3 x the
-  in-process floor and whether it also passes <= 1e-4.
+- `gray_repeat_controls.json` **(v3, named here so it is not a surprise; gate updated in v4)** —
+  the fresh-process repeat pass (§6): per checkpoint, the in-process floor (max |B-C|, per-item
+  and on the 16-item mean, from two repeat calls of the original `D.per_item_eval`); per cell, the
+  second-process 16-item-mean delta against the first process, recorded per-item as well but
+  gating only on the 16-item mean; and, per cell, whether it passes <= 1e-4.
 
 ## 6. Controls
 - **P0 reproduction.** Condition (c) must reproduce each checkpoint's stored `val_loss`
   (`diag1_eval_paths.py:147`) to <= 1e-4, and `per_item_mean - hook_eval()` to <= 1e-4. Prior
   observed values: -1.29e-05 and -5.91e-05 (`night3/.../ablation/README.md:117-120`).
-- **Copy fidelity (v3, revised at the gate stop).** On each checkpoint, the new copy with the
-  identity transform (A) must deviate from `D.per_item_eval(solver)` (B) by no more than the
-  evaluator's own in-process repeat floor, measured in the same process on the same checkpoint:
-  max per-item |A−B| ≤ the floor, where the floor is the maximum per-item deviation over **all
-  pairs** among five separate calls of the original `D.per_item_eval` on the same loaded checkpoint
-  (10 pairs; v3.1, Ark 20:09Z — a single pair's maximum over 16 items is itself noisy and would
-  risk a second false stop). A is also compared against each of the five calls and the worst pair
-  is reported. At iteration 0 the floor is 0.0 and equality
-  must be bitwise. If the copy's deviation exceeds the floor, the copy is wrong and nothing else
-  in the run is interpretable. Record the floor (max |B−C|, per-item and on the 16-item mean) per
-  checkpoint in `gray_controls.json`.
-- **Fresh process (v3, revised at the gate stop).** Repeat all 48 cells in a second process. The
-  target on the 16-item mean remains ≤ 1e-4; state next to it the measured in-process spread of
-  that checkpoint (8.6e-05 at `chkpt_00071`, from five repeat calls of the original
-  `D.per_item_eval` in one process — see Copy fidelity above). Gate: max |delta| of the 16-item
-  mean between the two processes ≤ 3 × the in-process floor of that checkpoint, and additionally
-  report whether it is also ≤ 1e-4. Record the actual spread rather than asserting it. Rationale:
-  the evaluator runs with `cudnn.deterministic=False` by the night runs' own configuration
-  (`build_solver`, `diag1_eval_paths.py:90-93`); changing that would change the evaluator.
+- **Copy fidelity (v4, revised at the second gate stop) — a code gate, not a number.** (Ark: the
+  diff replaces the numeric gate in that role.) The copied `per_item_eval` must differ from
+  `diag1_eval_paths.py`'s `per_item_eval` only in the declared lines: the transform on the
+  `add_input` argument (diag1 line 191, §3) and the loop-variable rename `_` -> `_i` (line 188,
+  §9.10). The executor prints the unified diff of the two function bodies into `gray_controls.json`
+  and the README; any other difference -> stop.
+  Numbers comparing the copy and the original are **recorded, not gating**: on each checkpoint,
+  five original calls B_1..B_5 and the copy A; record per-item and 16-item-mean deviations for all
+  pairs among B_1..B_5 and for A against each B_k. Stop only on a **documented ceiling**: per-item
+  |A−B_k| > 1.5 x 0.0009765625 = 0.00146484375 (the maximum per-item floor measured on this path
+  over the two processes so far x 1.5, per Ark), or 16-item-mean |mean(A) − mean(B)| > 1e-4 (the
+  P0 threshold). At iteration 0 equality stays bitwise (measured bitwise in both processes). Record
+  the floor (max |B−C|, per-item and on the 16-item mean, over all 10 pairs) per checkpoint in
+  `gray_controls.json`.
+  **Note (Zcode) — the quantisation step.** Per-item losses are float32; the unit in the last place
+  (ulp) of a float32 value in [2048, 4096) is 2⁻¹² = 2.44140625e-4, and in [4096, 8192) it is
+  2⁻¹¹ = 4.8828125e-4; the largest per-item losses (ambush_2 splits ≈ 4049–4765) set the lattice,
+  so per-item differences are multiples of these steps. The grid is a property of the largest
+  per-item values, not of the mean.
+- **Fresh process (v4, revised at the second gate stop).** Repeat all 48 cells in a second
+  process. Gate on the 16-item mean alone: max |delta| of the 16-item mean between the two
+  processes ≤ 1e-4, per cell. Per-item repeat differences between the two processes are
+  **recorded, not gating** — state next to the gate the measured in-process spread of that
+  checkpoint (8.6e-05 at `chkpt_00071`, from five repeat calls of the original `D.per_item_eval` in
+  one process — see Copy fidelity above). Rationale: the evaluator runs with
+  `cudnn.deterministic=False` by the night runs' own configuration (`build_solver`,
+  `diag1_eval_paths.py:90-93`); changing that would change the evaluator.
 - **Iteration 0, gray vs real.** Expectation, stated in advance: a *difference*, but a small one.
   The stored iteration-0 losses are 1212.5556 / 1212.5556 / 1212.5530 / 1212.5592 / 1212.5497 /
   1212.5379 for seeds 0/0'/1/2/3/4 (`night2` and `night3` `rowB_eval_records.json`), i.e. the six
@@ -256,3 +281,24 @@ total, ESTIMATE**. No new rendering is needed: the Sintel rendering already exis
 - **v3 -> v3.1** (2026-09-16 20:09Z, Ark): the copy-fidelity floor is the maximum over all 10
   pairs of five calls of the original evaluator, not one pair; no other change. Reviewer pass on
   v3: Ark 20:09Z, no objections to the four v3 edits. Launch still requires Mike's «запускай».
+- **v3.1 -> v4** (2026-09-17, after the second gate stop; source: DPC Research chat 20:23–20:29Z;
+  records `results/diagnostics/gray/README.md` and `README_v2_gate_stop.md`, commits `4e54965`,
+  `8f0208f`): v3.1 was launched and stopped a second time at §6's copy-fidelity gate — the copy's
+  worst per-item deviation (0.000732421875) exceeded the 10-pair floor (0.00048828125) by one
+  quantisation step (0.000244140625), while on the 16-item mean the copy lay inside the originals'
+  own range (max |mean(A) − mean(B_k)| 4.48e-05 vs floor 8.87e-05) and the per-item floor itself
+  varied 2x between processes (0.0009765625 in the v2 process). Copy fidelity (§6) is replaced by
+  a **code gate** (Ark: the diff replaces the numeric gate in that role): the executor prints the
+  unified diff of the copied `per_item_eval` against `diag1_eval_paths.py`'s `per_item_eval` into
+  `gray_controls.json` and the README, gating on any difference beyond the two declared lines
+  (the `add_input` transform, line 191, and the `_` -> `_i` rename, line 188). Numeric comparisons
+  between copy and original are now recorded, not gating, with a documented ceiling: per-item
+  |A−B_k| > 1.5 x 0.0009765625 = 0.00146484375, or 16-item-mean |mean(A) − mean(B)| > 1e-4;
+  iteration 0 stays bitwise. Zcode's account of the quantisation step added as a note in §6 (per-
+  item float32 ulp 2.44140625e-4 in [2048,4096), 4.8828125e-4 in [4096,8192), set by the largest
+  per-item losses, e.g. ambush_2 ≈ 4049–4765, so the grid is a property of the largest values, not
+  the mean). Fresh-process repeat (§6) gate simplified to the 16-item mean alone (≤ 1e-4 per cell);
+  per-item repeat differences between the two processes recorded, not gating. Header gains the v4
+  note and a fresh launch-word requirement naming the step, «запускай шаг 1», and excluding launch
+  while a training wave runs. New checklist rule 17 (`docs/CHECKLIST-research-repo.md`) records the
+  general defect. Ark 20:23Z, Zcode 20:24Z, both accepted with additions.
