@@ -11,6 +11,82 @@
 - **axis:** honesty
 - **filed:** CC · 2026-09-17
 
+### THE-GRAY-STIMULUS-CONTROL-TESTS-LEARNED-EQUALS-VISION-FROM-THE-SECOND-SIDE: replacing the visual input with constant gray or zero on all seven checkpoints should return ~1212 for five runs and reproduce seed 2's explosion only if the photoreceptor-ablation dependence is real (HIGH, closed, 2026-09-16 — CC, docs/plans/2026-09-16-functional-readout-plan.md step 1)
+
+**Closed:** S2026-09-17.2 · 2026-09-17 · fixed · v5.1 (commit `32759e2`, launched on Mike's word
+2026-09-17 08:37:30Z, run by a CC subagent 08:49–09:05Z): reading (i) holds for all six seeds —
+gray removes ≥ 90 % of the learned gain (`results/diagnostics/gray/README.md:187`); reading (ii)
+seed 2 does not explode without drive — gray excess −3.260504627227874 ("returns"), zero-clamp
+excess −0.6886240005492255 ("returns") (`results/diagnostics/gray/README.md:199-202`), so by the
+brief's own pre-registered branch the R2 photoreceptor-ablation explosion (+21,158) is an
+instrument artefact of the forced-zero clamp, not a vision dependence, and the R2 finding is to be
+reworded accordingly (`results/diagnostics/gray/README.md:204-208`); reading (iii) shuffled frames
+read worse (higher loss) than untrained gray in every one of the six seeds
+(`results/diagnostics/gray/README.md:229-231`); summarised in `ROADMAP.md:213-217` · closed by CC
+
+- **Observed.** `docs/experiments/003-night3-seeds-3-and-4.md` §6c: held-out loss at iteration 0
+  is ≈1212.55 across all six seeds; R1–R8 silenced (photoreceptor ablation) returns five of six
+  seeds to 0.91–1.42× that level (essentially the whole learned gain removed) while seed 2
+  explodes to 31,773.93, 26× the untrained level. The reading that "five of six runs barely
+  depend on input" is withdrawn by its authors (Ark, Zcode, 06:03–06:04Z) precisely because
+  ablation *does* remove the gain in those five.
+- **Inferred.** Ablation forces photoreceptor activity to zero via a state hook; a gray/zero
+  stimulus control is a second, independent way to remove visual information. If it reproduces (i)
+  ≈1212 for five seeds and (ii) an explosion for seed 2, "learned = vision" is closed from a second
+  side and seed 2's dependence is confirmed as real rather than an ablation-hook artefact.
+- **Observed 2026-09-17 (v5.1, commit `32759e2`, `results/diagnostics/gray/README.md`).** All
+  three readings ran to completion against the six trained checkpoints and each run's iteration-0
+  checkpoint, same 16 items and evaluator, no ablation hook registered
+  (`net._state_hooks == ()` asserted before and after every call). Reading (i), all 6 seeds:
+  |L_trained_gray − L_untrained_gray| ≤ 0.1·gain_s holds in every seed, i.e. gray input removes
+  ≥ 90 % of the learned gain (`README.md:187-197`). Reading (ii), seed 2: gray excess
+  `-3.260504627227874` and zero excess `-0.6886240005492255`, both classified "returns" under the
+  brief's ≤ 0.1·gain_s rule — seed 2 does *not* explode without drive (`README.md:199-202`); per
+  the brief's own branch text this makes the ablation deltas (+21,158 R2 single-type clamp-to-0,
+  +30,626 full R1–R8 clamp-to-0) "the dynamics' fragility to a zero clamp specifically, an
+  instrument artefact, not a vision dependence" (`README.md:204-208`). Reading (iii), shuffled: all
+  6 seeds read "between" the two references and, recorded separately, the shuffled loss sits
+  *above both* references in every seed (≈ 1.2–1.9 gain_s above L_untrained_gray) — shuffled frames
+  are worse than an untrained network (`README.md:215-231`).
+- **First step.** None — closed on completion. See also
+  [[THE-LEARNED-GAIN-IS-SIXTY-LOSS-UNITS-ON-AN-UNTRAINED-LEVEL-OF-TWELVE-HUNDRED]] and
+  [[THE-TUNING-BATTERY-CHECKS-WHETHER-THE-DOMINANT-ABLATION-TYPE-IS-FUNCTIONAL]] (step 2, now
+  unblocked).
+- **axis:** knowledge
+- **filed:** CC · 2026-09-16
+
+### A-WINDOW-INTEGRAL-STATISTIC-WAS-COMPUTED-AND-REJECTED-BY-ITS-OWN-CRITERION: a checkpoint-window mean was proposed as a cheaper stand-in for the C3 point statistic, and every window variant's rank correlation with the 250,000 hook falls below the point statistic's own, failing the brief's own pre-registered promotion rule (MEDIUM, closed, 2026-09-17 — CC, docs/briefs/2026-09-17-window-integral-cheap-statistic.md, computed by window_integral.py)
+
+**Closed:** S2026-09-17.2 · 2026-09-17 · disproved · commit `155e3f4`: per-window Spearman ρ
+against the 250,000 hook (n=6 individuals) ranges 0.4857–0.7143 across the five window variants
+tested (A narrow, A wide, W1, W2, W3), all below the point statistic's own ρ = 0.8857
+(`results/diagnostics/window/README.md:155-162`); the brief's promotion criterion requires both a
+reduced within-seed spread AND ρ(window) ≥ ρ(point), and condition (ii) fails for every window
+regardless of how the third throw of seed 3 (run 703) is handled in condition (i)
+(`results/diagnostics/window/README.md §7`, table `:222-228`, conclusion `:230-233`: "no window
+statistic is a candidate for the next registration on this record") · closed by CC
+
+- **Observed.** `docs/briefs/2026-09-17-window-integral-cheap-statistic.md` v1.1 registered five
+  window variants (checkpoint-window means at two widths plus three shifted windows) and a
+  promotion criterion: both (i) within-seed spread reduced to ≤ 0.5× the point statistic's spread,
+  and (ii) ρ(window) with the 250,000 hook ≥ ρ(point) = 0.8857, must hold for a window to become a
+  candidate for the next pre-registration.
+- **Observed.** `window_integral.py` (sha256 `9a10dbad…`) computed all quantities from the eight
+  stored run jsons and run 703, CPU only, no GPU, no write to `connectome-seed-data`, no change to
+  `docs/preregistration-cheap-vs-expensive.md`. Every window variant's ρ with the 250,000 hook
+  (0.4857–0.7143) sits below the point statistic's ρ (0.8857); condition (i) alone clears for some
+  windows depending on whether run 703 is included in the seed-3 set, but condition (ii) never
+  clears for any window (`results/diagnostics/window/README.md` §7 table).
+- **Inferred.** By the brief's own fixed rule ("either condition failing … means not a candidate as
+  proposed"), no window statistic on this record is a candidate for the next registration. This is
+  the pre-registered criterion mechanically applied, not a new judgment about the window
+  statistic's worth (`results/diagnostics/window/README.md` §8).
+- **First step.** None — closed on completion; the point statistic's own ρ = 0.8857 at n=6 is
+  itself a preview, not a test — see
+  [[THE-POINT-STATISTICS-RHO-PREVIEW-AT-N-EQUALS-SIX-MUST-NOT-BE-CITED-AS-THE-TEST]].
+- **axis:** honesty
+- **filed:** CC · 2026-09-17
+
 ## 2026-09-16 — closed by CC
 
 ### THE-MACHINE-VERDICT-ON-THE-NIGHT-3-ABLATION-READING-WAS-OVERRIDDEN: ablation_reading.json's own POSITIVE verdict evaluated only one of the pre-registered rule's two conflicting size definitions, and R2 itself did not repeat (HIGH, closed, 2026-09-16 — Mike «давайте пробовать», reviewers Ark 05:27Z and Zcode 05:27Z concurring)

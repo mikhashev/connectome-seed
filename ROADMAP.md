@@ -162,9 +162,22 @@ the pre-registration's own §9 — that confirmation line is still unfilled in t
      [docs/briefs/2026-09-17-window-integral-cheap-statistic.md](docs/briefs/2026-09-17-window-integral-cheap-statistic.md).
      Computed; its pre-registered criterion rejected every window as a candidate for the next
      registration — [results/diagnostics/window/README.md](results/diagnostics/window/README.md).
+   - **(iii) The point statistic's own rank correlation with the 250,000 hook, at the current n,
+     carries a preview label at its source.** It was computed before N is chosen, so it is a
+     preview of the registered (b) test rather than a reading of it, and it rests on one pair — the
+     label, with its own recomputation showing how fragile the value is, sits at
+     [results/diagnostics/window/README.md](results/diagnostics/window/README.md), not restated
+     here.
 
-   Neither complication changes a registered rule; both are Observed, feeding a possible future
-   registration, not this one.
+   None of the three complications changes a registered rule; all are Observed, feeding a
+   possible future registration, not this one.
+
+   - **(iv) A plan document records a recommended order of work** —
+     [docs/plans/2026-09-17-endpoint-before-n.md](docs/plans/2026-09-17-endpoint-before-n.md):
+     pre-register and read a reachability endpoint on the checkpoints already on disk before
+     the N floor is chosen, on the ground that the cost of N is currently not estimable. It is
+     a recommendation from the 2026-09-17 review thread, **not a decision and not a
+     registration** — no rule in this file changes by it.
 
 **Scale (proposal only, no rule change).** What training learns is a small fraction of the
 untrained held-out loss level —

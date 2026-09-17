@@ -1,9 +1,30 @@
 # Next-session plan
 
-**Date:** 2026-09-14 · **Written for:** Mike and the reviewers (Ark, Johnny, Warren, Zcode) ·
+**Written:** 2026-09-14, updated in place through night 4 (last touch commit `f3b02e2`,
+2026-09-17 12:56 local) · **Written for:** Mike and the reviewers (Ark, Johnny, Warren, Zcode) ·
 **Context:** run 0 and run 0′ are complete; the §7 replicate tolerance (< 1 % at 250,000) was
 missed at 1.1104 %. Full record: `docs/experiments/001-run0-and-replicate.md`. Tooling record:
-`tools/night/README.md`.
+`tools/night/README.md`. **See also:** `docs/plans/2026-09-16-functional-readout-plan.md`, which
+governs steps 0–3 of the diagnostics track (records; the C3 measurement; the gray stimulus
+control; the tuning battery; the genome design) that runs alongside the N accrual this plan
+otherwise tracks.
+
+## 0. Status, 2026-09-17 UTC / 2026-09-18 local (CC, recording status only — no decision made here)
+
+- **Step 1 (gray stimulus) is closed.** Commit `32759e2`; closure recorded in `backlog_closed.md`
+  under `THE-GRAY-STIMULUS-CONTROL-TESTS-LEARNED-EQUALS-VISION-FROM-THE-SECOND-SIDE`.
+- **Step 2 (the tuning battery) is unblocked but not launched.** Its own prerequisite (step 1) is
+  now satisfied; its brief (`docs/briefs/2026-09-16-step2-tuning-battery.md`) is ready and waits
+  on the owner's word, same as any other launch.
+- **N is still undecided.** The floor — 8 or 10 — is decision 3 in §1 below, unchanged since
+  night 4.
+- **Night 5 has not been briefed and has not run.** No `night5`-named file or record exists
+  anywhere in this repository.
+- **The order of work is now recorded separately.** After the 2026-09-17 USPEX review thread,
+  `docs/plans/2026-09-17-endpoint-before-n.md` carries the recommended order — pre-register and
+  read a reachability endpoint on the checkpoints already on disk before choosing the N floor —
+  together with what may and may not be cited from the night records. The decisions in §1 below
+  are unchanged by it; that file decides nothing.
 
 ## 1. Decisions Mike must give before anything runs
 
