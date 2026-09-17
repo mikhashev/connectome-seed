@@ -84,8 +84,8 @@ as `:30-33`; writes the sha256 of itself and of `D`, `ABL`, `RB` into every outp
   005 900 903` — 700/703 are free, and `run_individual.py:301-308` refuses if the dir exists. flyvis
   writes the new network dir `CSD/results/flow/9991/703` (checkpoints 0–8); the run json/log/progress
   go to `--out-dir CS/results/diagnostics/c3/partA/` (stem `jitter_9991-703`), not to a night dir.
-- **Rungs (125, v1.1):** `1000,5000,20000,20100,20200,20300,20400,20500,20600,20700,20800,20900,21000,21100,21200,21300,21400,21500,21600,21612,21700,21800,21900,22000,22100,22200,22300,22400,22500,22600,22700,22800,22900,23000,23100,23200,23300,23400,23500,23600,23700,23800,23900,24000,24025,24050,24075,24100,24125,24150,24175,24200,24225,24250,24275,24300,24325,24350,24375,24400,24425,24450,24475,24500,24525,24550,24575,24600,24625,24650,24675,24700,24725,24750,24775,24800,24825,24850,24875,24900,24925,24950,24975,25000,25025,25050,25075,25100,25125,25150,25175,25200,25212,25225,25250,25275,25300,25325,25350,25375,25400,25425,25450,25475,25500,25525,25550,25575,25600,25625,25650,25675,25700,25725,25750,25775,25800,25825,25850,25875,25900,25925,25950,25975,26000`
-  = {1,000, 5,000} ∪ {20,000…23,900 step 100} (40) ∪ {24,000…26,000 step 25} (81) ∪ {21,612, 25,212}. (v1.1, Ark 06:19Z: step 25 in the last 2,000 iterations, to see whether movement over windows of 8–25 steps is smooth or bursty; ≈ +16 s of hooks, estimate.) No window flag is needed:
+- **Rungs (139, v1.2):** `1000,5000,6000,7000,8000,9000,10000,11000,12000,13000,14000,15000,16000,17000,18000,19000,20000,20100,20200,20300,20400,20500,20600,20700,20800,20900,21000,21100,21200,21300,21400,21500,21600,21612,21700,21800,21900,22000,22100,22200,22300,22400,22500,22600,22700,22800,22900,23000,23100,23200,23300,23400,23500,23600,23700,23800,23900,24000,24025,24050,24075,24100,24125,24150,24175,24200,24225,24250,24275,24300,24325,24350,24375,24400,24425,24450,24475,24500,24525,24550,24575,24600,24625,24650,24675,24700,24725,24750,24775,24800,24825,24850,24875,24900,24925,24950,24975,25000,25025,25050,25075,25100,25125,25150,25175,25200,25212,25225,25250,25275,25300,25325,25350,25375,25400,25425,25450,25475,25500,25525,25550,25575,25600,25625,25650,25675,25700,25725,25750,25775,25800,25825,25850,25875,25900,25925,25950,25975,26000`
+  = {1,000, 5,000} ∪ {6,000…19,000 step 1,000} (14, v1.2 — Ark/Zcode: shape of the transient) ∪ {20,000…23,900 step 100} (40) ∪ {24,000…26,000 step 25} (81) ∪ {21,612, 25,212}. The grid differs from the nights': comparisons with nights 3–4 use the common points only (1,000, 5,000, 25,000 hooks; checkpoints).
   `--rungs` already takes any list (`run_individual.py:156, 579, 596`). 21,612 and 25,212 are the
   completed-iteration counts of checkpoints 7 and 8: the hook there fires after the last parameter
   update of that epoch (penalty step, flyvis `solver.py:812-827`) and before the epoch-end
@@ -145,6 +145,15 @@ Script `CS/results/diagnostics/c3/c3_jitter_reading.py`, committed before A1, CP
   report the three pairwise differences of the hook at 25,000 — (3′, 3) = −5.1847 on record, (703, 3),
   (703, 3′) — and the same three at checkpoint 25,212. First spread of C3 values within one seed
   (n = 3), recorded, no threshold.
+- **(g) Lag scaling (v1.2, Ark 06:31Z; Zcode 06:41Z: on residuals).** On the step-25 window,
+  after removing a local linear trend: median |Δresidual| at lags 25 / 50 / 75 / 100 and the slope
+  of log|Δ| on log lag (≈ 0.5 random walk; ≈ 0 mean reversion); extrapolated expectation at lag 8
+  beside 3.26 / 0.44. Descriptive.
+- **(h) Transient (v1.2).** Where 703 sits at 25,000 relative to 1192.59 (003) and 1187.40 (903)
+  and to the lagging value band of seeds 2/4/5 (≈ 1204–1209); read on the 1,000-step grid shape.
+- **Machine state (v1.2, Ark/Zcode).** Before and after each part the executor records into
+  `results/diagnostics/c3/machine_state.json`: `nvidia-smi` process list and memory, system uptime,
+  other python/GPU processes. No code change to run_individual.py for this.
 - **(e) Recorded only:** v(1,000), v(5,000), c at 0…25,212 beside 003 and 903; whether c(12) equals
   003's/903's bitwise (before any hook — where divergence begins).
 
@@ -205,3 +214,10 @@ Script `CS/results/diagnostics/c3/c3_jitter_reading.py`, committed before A1, CP
   differences 3.26 / 0.44 (250k, 8 iterations) and 2.54 / 0.27 (C3, 212 iterations) are trajectory
   movement plus a path difference on record ≤ 6.2e-05 — not path differences. Launch word: Mike
   06:16:45Z; launch after the reviewer pass on this version.
+- **v1.1 → v1.2** (2026-09-17, reviewer pass: Ark 06:31Z, Zcode 06:41Z — both green): decisions
+  1 yes (grid every 1,000 before 20,000), 2 yes (P0 on the mean of five E2 calls), 3 yes (B′, if
+  703 saves checkpoints 7/8 — it does under `--n-iters 250000`); readings (g) lag scaling on
+  residuals and (h) transient; machine-state record; boundary: 703 stops at 26,000 and does **not**
+  address 250k — "both replicates end worse than their originals" (n = 2) stays an observation
+  until a separate 4-hour run. Ark's "300× faster than average" retracted by Ark (06:31Z). Launch
+  under Mike's word 06:16:45Z, after this pass.
