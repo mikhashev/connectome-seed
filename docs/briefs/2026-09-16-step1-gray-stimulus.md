@@ -34,6 +34,21 @@ revised §6 and the v3.1 -> v4 entry in §10. **Launch of v4 requires Mike's exp
 1» in the chat again, naming the step; the v3.1 launch word was consumed by the run that stopped
 at the gate a second time; not while a training wave runs.**
 
+**v5, 2026-09-17, after the third gate stop.** v4 was launched on Mike's word (08:14:48Z) and
+stopped a third time at §6: the code-diff gate passed and P0 passed, but the stop applied the
+copy-fidelity 1e-4 mean ceiling to a single original call (|mean(A) − mean(B_1)| = 1.20e-04) while
+the original's own five calls differ up to 1.11e-04 on the mean in one process (commit `b7c2879`;
+`results/diagnostics/gray/README.md`, `gray_v4_main_gate_stop.log`). CC proposed v5 in chat
+08:25:52Z; Ark (08:27:19Z) and Zcode (08:28:59Z) accepted, Ark with two additions. The numeric
+comparison between copy and original (§6) is redefined from a single original call to the mean of
+five copy calls vs the mean of five original calls, same checkpoint, same process, ceiling raised
+to **1e-2**, with the ceiling and its derivation printed next to every number (Ark). P0 (§6) is
+likewise redefined on the mean of five calls against the stored `val_loss`, ceiling **1e-3**. The
+fresh-process repeat (§6) is likewise redefined on the mean of five calls per cell, ceiling
+**1e-2**. §6 gains an explicit Stops enumeration; §8 gains a cost note reflecting the five-call
+design. See revised §6, §8 and the v4 -> v5 entry in §10. **Launch requires Mike's new «запускай
+шаг 1» in the chat; the 08:14:48Z word was used by the v4 run.**
+
 **Launch only on Mike's explicit «запускай шаг 1» for this step in the DPC Research chat; not
 while a training wave runs.**
 
@@ -123,36 +138,48 @@ several nights (Ark; Zcode agrees).
   gating only on the 16-item mean; and, per cell, whether it passes <= 1e-4.
 
 ## 6. Controls
-- **P0 reproduction.** Condition (c) must reproduce each checkpoint's stored `val_loss`
-  (`diag1_eval_paths.py:147`) to <= 1e-4, and `per_item_mean - hook_eval()` to <= 1e-4. Prior
-  observed values: -1.29e-05 and -5.91e-05 (`night3/.../ablation/README.md:117-120`).
-- **Copy fidelity (v4, revised at the second gate stop) — a code gate, not a number.** (Ark: the
-  diff replaces the numeric gate in that role.) The copied `per_item_eval` must differ from
-  `diag1_eval_paths.py`'s `per_item_eval` only in the declared lines: the transform on the
-  `add_input` argument (diag1 line 191, §3) and the loop-variable rename `_` -> `_i` (line 188,
-  §9.10). The executor prints the unified diff of the two function bodies into `gray_controls.json`
-  and the README; any other difference -> stop.
-  Numbers comparing the copy and the original are **recorded, not gating**: on each checkpoint,
-  five original calls B_1..B_5 and the copy A; record per-item and 16-item-mean deviations for all
-  pairs among B_1..B_5 and for A against each B_k. Stop only on a **documented ceiling**: per-item
-  |A−B_k| > 1.5 x 0.0009765625 = 0.00146484375 (the maximum per-item floor measured on this path
-  over the two processes so far x 1.5, per Ark), or 16-item-mean |mean(A) − mean(B)| > 1e-4 (the
-  P0 threshold). At iteration 0 equality stays bitwise (measured bitwise in both processes). Record
-  the floor (max |B−C|, per-item and on the 16-item mean, over all 10 pairs) per checkpoint in
-  `gray_controls.json`.
+- **P0 reproduction (v5, revised at the third gate stop).** Condition (c) must reproduce each
+  checkpoint's stored `val_loss` (`diag1_eval_paths.py:147`): the gating quantity is the mean of
+  five calls of condition (c) against the stored `val_loss`, ceiling **1e-3** (the largest value
+  on record on this path is 7e-05). `per_item_mean - hook_eval()` stays gated at <= 1e-4 as
+  before. Prior observed values: -1.29e-05 and -5.91e-05 (`night3/.../ablation/README.md:117-120`).
+- **Copy fidelity — code gate (v4, unchanged in v5).** (Ark: the diff replaces the numeric gate in
+  that role.) The copied `per_item_eval` must differ from `diag1_eval_paths.py`'s `per_item_eval`
+  only in the declared lines: the transform on the `add_input` argument (diag1 line 191, §3) and
+  the loop-variable rename `_` -> `_i` (line 188, §9.10). The executor prints the unified diff of
+  the two function bodies into `gray_controls.json` and the README; any other difference -> stop.
+  This gate passed on every run to date, including the v4 run that stopped on the numeric
+  comparison below (v5 header note).
+  **Numeric comparison (v5, revised at the third gate stop) — mean of five vs mean of five.** On
+  each checkpoint, five original calls B_1..B_5 and five copy calls A_1..A_5, all in the same
+  process; the gating quantity is |mean(A_1..A_5) − mean(B_1..B_5)| on the 16-item mean, ceiling
+  **1e-2**. Print the ceiling and its derivation next to every number (Ark): ≈ 50x above all
+  measured noise on this comparison to date (≤ 2.0e-4 between processes, C3 Part B
+  `results/diagnostics/c3/README.md`), and ≈ 500x below the narrowest pre-registered reading band
+  (`0.1 * gain_s` ≈ 5–6, §7). The ceiling is a **sanity bound, not a precision bound** (Ark): it
+  catches a wrong copy — wrong checkpoint, data, or index — whose error is in units, not a subtle
+  numeric drift. Per-item deviations for all pairs among B_1..B_5 and for each A_i against each
+  B_k, and the pairwise floor among B_1..B_5 itself (max over all 10 pairs, per-item and on the
+  16-item mean), are recorded per checkpoint in `gray_controls.json` but do not gate. At iteration
+  0 equality stays bitwise (measured bitwise in both processes).
   **Note (Zcode) — the quantisation step.** Per-item losses are float32; the unit in the last place
   (ulp) of a float32 value in [2048, 4096) is 2⁻¹² = 2.44140625e-4, and in [4096, 8192) it is
   2⁻¹¹ = 4.8828125e-4; the largest per-item losses (ambush_2 splits ≈ 4049–4765) set the lattice,
   so per-item differences are multiples of these steps. The grid is a property of the largest
   per-item values, not of the mean.
-- **Fresh process (v4, revised at the second gate stop).** Repeat all 48 cells in a second
-  process. Gate on the 16-item mean alone: max |delta| of the 16-item mean between the two
-  processes ≤ 1e-4, per cell. Per-item repeat differences between the two processes are
-  **recorded, not gating** — state next to the gate the measured in-process spread of that
-  checkpoint (8.6e-05 at `chkpt_00071`, from five repeat calls of the original `D.per_item_eval` in
-  one process — see Copy fidelity above). Rationale: the evaluator runs with
-  `cudnn.deterministic=False` by the night runs' own configuration (`build_solver`,
-  `diag1_eval_paths.py:90-93`); changing that would change the evaluator.
+- **Fresh process (v5, revised at the third gate stop).** Repeat all 48 cells in a second process.
+  Each cell's value is the mean of five copy (A) calls, matching the numeric-comparison definition
+  above. Gate on that per-cell mean: |delta| between the two processes ≤ **1e-2** per cell.
+  Per-item repeat differences between the two processes stay **recorded, not gating** — state next
+  to the gate the measured in-process spread of that checkpoint (8.6e-05 at `chkpt_00071`, from
+  five repeat calls of the original `D.per_item_eval` in one process — see Copy fidelity above).
+  Rationale: the evaluator runs with `cudnn.deterministic=False` by the night runs' own
+  configuration (`build_solver`, `diag1_eval_paths.py:90-93`); changing that would change the
+  evaluator.
+- **Stops (v5).** crash; NaN/inf; code-diff failure (Copy fidelity above); any of the three
+  ceilings above (numeric-comparison ceiling 1e-2, P0 ceiling 1e-3, fresh-process ceiling 1e-2); a
+  run-dir file change (§9.2). One line (Ark): in stops 1–3 (the v2, v3.1, and v4 gate stops) the
+  decisive gate — the code diff — passed whenever it ran, and P0 passed; the stops cost no data.
 - **Iteration 0, gray vs real.** Expectation, stated in advance: a *difference*, but a small one.
   The stored iteration-0 losses are 1212.5556 / 1212.5556 / 1212.5530 / 1212.5592 / 1212.5497 /
   1212.5379 for seeds 0/0'/1/2/3/4 (`night2` and `night3` `rowB_eval_records.json`), i.e. the six
@@ -221,9 +248,9 @@ two references, `L_trained_real(s)` and `L_untrained_gray(s)`:
 Measured reference points: night-2 ablation did 276 sixteen-item evaluations in 113.8 s wall,
 0.18-0.34 s per evaluation (`night2/.../ablation/README.md:130-132`); night-3 recorded
 `one_evaluation_wall_s` 0.492 (seed 3) and 0.179 (seed 4) (`ablation_controls.json`).
-48 evaluations + 48 for the repeat + one solver build (~20-40 s, ESTIMATE) -> **~2-3 minutes
-total, ESTIMATE**. No new rendering is needed: the Sintel rendering already exists under
-`CSD/renderings/RenderedSintel_0000`.
+**Cost note (v5, revised at the third gate stop):** 48 cells × 5 calls + repeat ≈ 1–2 min of
+evaluation plus solver builds (estimate). No new rendering is needed: the Sintel rendering already
+exists under `CSD/renderings/RenderedSintel_0000`.
 
 ## 9. Do not
 1. Do not train, do not call `solver.checkpoint()` or `solver.test(track_loss=True)` — those are
@@ -302,3 +329,26 @@ total, ESTIMATE**. No new rendering is needed: the Sintel rendering already exis
   note and a fresh launch-word requirement naming the step, «запускай шаг 1», and excluding launch
   while a training wave runs. New checklist rule 17 (`docs/CHECKLIST-research-repo.md`) records the
   general defect. Ark 20:23Z, Zcode 20:24Z, both accepted with additions.
+- **v4 -> v5** (2026-09-17, after the third gate stop; source: DPC Research chat 08:25:52–08:28:59Z;
+  records `results/diagnostics/gray/README.md`, `gray_v4_main_gate_stop.log`, commit `b7c2879`):
+  v4 was launched (08:14:48Z) and stopped a third time — the code-diff gate passed and P0 passed,
+  but the stop applied the copy-fidelity 1e-4 mean ceiling to a single original call
+  (|mean(A) − mean(B_1)| = 1.20e-04) while the original's own five calls differ up to 1.11e-04 on
+  the mean in one process. CC proposed v5 in chat 08:25:52Z; Ark (08:27:19Z) and Zcode (08:28:59Z)
+  accepted, Ark with two additions. Copy fidelity's numeric comparison (§6) is redefined from a
+  single original call to the mean of five copy calls vs the mean of five original calls, same
+  checkpoint, same process, ceiling **1e-2**, stated with its derivation next to every number
+  (Ark): ≈ 50x above all measured noise (≤ 2.0e-4 between processes, C3 Part B
+  `results/diagnostics/c3/README.md`) and ≈ 500x below the narrowest pre-registered reading band
+  (`0.1 * gain_s` ≈ 5-6, §7); the ceiling is stated explicitly as a sanity bound, not a precision
+  bound (Ark) — it catches a wrong copy (wrong checkpoint, data, or index), an error in units, not
+  a subtle drift. Per-item numbers stay recorded, not gating. P0 reproduction (§6) is likewise
+  redefined on the mean of five calls against the stored `val_loss`, ceiling **1e-3** (the largest
+  value on record on this path is 7e-05). Fresh-process repeat (§6) is likewise redefined on the
+  mean of five calls per cell, gate |delta| <= **1e-2** per cell between processes. §6 gains an
+  explicit Stops enumeration (crash, NaN/inf, code-diff failure, the three ceilings above, a
+  run-dir file change) with Ark's note that in the first three gate stops the decisive gate (the
+  code diff) passed whenever it ran, and P0 passed, so those stops cost no data. §8 gains a cost
+  note: 48 cells x 5 calls + repeat ~= 1-2 min of evaluation plus solver builds (estimate). Header
+  gains the v5 note and a fresh launch-word requirement; the 08:14:48Z word was used by the v4
+  run.
