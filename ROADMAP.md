@@ -105,8 +105,7 @@ the pre-registration's own §9 — that confirmation line is still unfilled in t
    additional individuals of N):**
 
    - **Night 1 (2026-09-13/14):** run 0 (seed 0, `9991/000`) and its replicate run 0′
-     (`9991/900`), sequential. h_run = 4.00 h. §7 replicate tolerance (< 1 % at 250,000)
-     **not met**: 1.1104 % (\|Δ\| 12.7279). Record:
+     (`9991/900`), sequential. The §7 replicate tolerance at 250,000 was **not met**. Record:
      [docs/experiments/001-run0-and-replicate.md](docs/experiments/001-run0-and-replicate.md).
    - **Night 2 (2026-09-14/15):** seeds 1 and 2. Seed 2's first attempt (`9991/002`, wave
      `night2`) was killed at iteration 12,700 by a Windows Update planned restart (KB5129195)
@@ -120,23 +119,25 @@ the pre-registration's own §9 — that confirmation line is still unfilled in t
      one wave, no interruption. Record:
      [docs/experiments/004-night4-replicate-3prime-and-seed-5.md](docs/experiments/004-night4-replicate-3prime-and-seed-5.md).
 
-   **Observed, n = 6 individuals + 2 replicate pairs** (record 004 §2/§4): replicate difference
-   at the 250,000 hook — 0′ vs 0: **12.7279**; 3′ vs 3: **10.4309**. Between-individual sample sd
-   at 250,000 over seeds {0,1,2,3,4,5} (n = 6, 5 degrees of freedom): **5.1425**, 95 % χ²
-   interval **[3.210, 12.613]**. The night-4 pre-registered reading (three explanations named
-   before the data: position, universal divergence, seed-dependence) **rules out a within-wave
-   position effect** — \|3′ − 3\| is large (+10.4309), not near zero as a position effect would
-   predict; it does not separate universal divergence from a seed-dependent magnitude.
+   **Observed, individuals trained so far plus two replicate pairs** — numbers in
+   [docs/experiments/004-night4-replicate-3prime-and-seed-5.md](docs/experiments/004-night4-replicate-3prime-and-seed-5.md)
+   §2/§4. Both replicate pairs differ from their originals at the 250,000 hook by amounts on the
+   same order as each other, and the between-individual spread across the trained seeds (with
+   its confidence interval) reaches into that same range — the §7 measurability rule has not yet
+   been applied at the registered N (below). The night-4 pre-registered reading (three
+   explanations named before the data: position, universal divergence, seed-dependence) **rules
+   out a within-wave position effect** — the replicate difference is large, not near zero as a
+   position effect would predict — without separating universal divergence from a
+   seed-dependent magnitude.
 
    **The §7 measurability rule** ("a rung whose between-seed standard deviation does not exceed
    the replicate difference is unmeasurable, not a failure of the surrogate") **is applied once,
    at the registered N, and has not been applied.** Every SD / χ² figure recorded through night 4
-   (n = 3, 5, 6 so far) is an explicit preview, one degree of freedom short of whatever N is
-   finally registered.
+   is an explicit preview, short of whatever N is finally registered.
 
    **N remains undecided** (§4's floor — 8 or 10, Mike's open choice —
-   [[N-EQUALS-EIGHT-IS-BELOW-THE-FILES-OWN-MINIMUM]]); at floor 8, two more individuals are
-   needed (seeds 6, 7); at floor 10, four more (seeds 6–9).
+   [[N-EQUALS-EIGHT-IS-BELOW-THE-FILES-OWN-MINIMUM]]); more individuals are needed at either
+   floor before N is reached (per-night records above).
 
    Next session: [docs/next-session-plan.md](docs/next-session-plan.md).
 3. The cheap evaluation of the same individuals, and the rank correlation between the two. The
@@ -144,35 +145,35 @@ the pre-registration's own §9 — that confirmation line is still unfilled in t
    every run above; ρ, and the b2 top-k statistic, are each computed once, at N — neither has
    been computed yet.
 
-   **Observed complications, no rule changed by either:**
+   **Observed complications:**
    - **(i) C3 sits on a steep descent; a point value there catches the phase of that descent.**
-     Whether the onset varies between runs is Inferred (run 703 holds a plateau of 1204–1208 until
-     ≈ 17,000; seeds 2, 4 and 5 read 1204–1209 at 25,000), not measured. A dense-hook diagnostic
-     run (id `9991/703`, a third throw of seed 3,
-     [results/diagnostics/c3/](results/diagnostics/c3/README.md)) reads the hook every 100 (and
-     every 25) iterations across 20,000–26,000: local slope ≈ −0.0027 to −0.0033/iteration,
-     residual sd around the fitted trend **≈ 1.8–2.2**, flat across lags 25–100. Against that:
-     the registered C3 replicate difference from the one pair on record before night 4 was
-     **0.3365** (0/0′, §7 of the pre-registration); the second replicate pair (3/3′, night 4)
-     gives **−5.18** at the exact hook (from −5.1847: ≈15× the magnitude and the opposite sign of
-     0/0′'s +0.3365) and −2.92 at the neighbouring checkpoint 25,212; a third throw gives 703 − 003 =
-     −4.76 and 703 − 903 = +0.43 at the hook — the §4/§7 b2 measurability threshold
-     (0.3365) rests on a single replicate pair and is not stable across replicates of the same
-     seed (`docs/experiments/004-night4-replicate-3prime-and-seed-5.md` §4, "The C3 finding").
-   - **(ii) A window-integral statistic is under review as a candidate for the next
-     registration** — [docs/briefs/2026-09-17-window-integral-cheap-statistic.md](docs/briefs/2026-09-17-window-integral-cheap-statistic.md)
-     (draft, text only, Mike's launch word not yet given). No number here is computed and no
-     rule is changed by either complication; both are Observed, feeding a possible future
-     registration, not this one.
+     Measured: runs start the descent at different iterations, in two groups —
+     [results/diagnostics/window/README.md](results/diagnostics/window/README.md) §1. A
+     dense-hook diagnostic run (id `9991/703`, a third throw of seed 3,
+     [results/diagnostics/c3/](results/diagnostics/c3/README.md)) reads the hook densely across
+     the descent: a near-linear local slope, with read noise of a few loss units, flat across
+     the lags checked. Against that: the second replicate pair (3′/3, night 4) differs from the
+     first (0/0′) on a comparable scale at the top rung and far more at C3, on the opposite
+     sign; a third throw of the same seed reads close to the replicate and far from the
+     original — the §4/§7 b2 measurability threshold set from the first pair is not stable
+     across replicates of the same seed
+     (`docs/experiments/004-night4-replicate-3prime-and-seed-5.md` §2–§4, "The C3 finding").
+   - **(ii) A window-integral statistic was proposed as a candidate for the next registration** —
+     [docs/briefs/2026-09-17-window-integral-cheap-statistic.md](docs/briefs/2026-09-17-window-integral-cheap-statistic.md).
+     Computed; its pre-registered criterion rejected every window as a candidate for the next
+     registration — [results/diagnostics/window/README.md](results/diagnostics/window/README.md).
 
-**Scale (proposal only, no rule change).** The loss learned by training is ≈ 60 loss units on an
-untrained held-out level of ≈ 1,212
-([docs/experiments/003-night3-seeds-3-and-4.md](docs/experiments/003-night3-seeds-3-and-4.md) §6c)
-— so percentages of the raw loss (e.g. §7's 1.11 % tolerance figure at the top rung) are
-percentages of an untrained background, not of the learned signal. On the learned-gain scale the
-twin replicate difference is ≈ 21 % of the gain and the n = 5 between-seed σ is ≈ 6 % of it (003
-§6c); proposed only for the next registration — §7's tolerance and its recorded FAIL stand
-exactly as written.
+   Neither complication changes a registered rule; both are Observed, feeding a possible future
+   registration, not this one.
+
+**Scale (proposal only, no rule change).** What training learns is a small fraction of the
+untrained held-out loss level —
+[docs/experiments/003-night3-seeds-3-and-4.md](docs/experiments/003-night3-seeds-3-and-4.md)
+§6c. So a percentage of the raw loss (e.g. §7's tolerance figure at the top rung) is a
+percentage of that untrained background, not of the learned signal; on the learned-gain scale
+the replicate difference and the between-seed spread are each a much larger fraction of the
+signal than the raw-loss percentages suggest (003 §6c). Proposed only for the next
+registration — §7's tolerance and its recorded FAIL stand exactly as written.
 
 **Outcomes, both of them results:** cheap ranking *disagrees* with expensive → the 2508.17464
 finding extended from a 3×3 voxel grid with a 1,417-parameter controller to a real optic-lobe
@@ -204,15 +205,16 @@ one dense diagnostic run, and none of it changes a pre-registration rule.
   machine-verdict in 003 §6, checklist rule 16, the "scale 60" paragraph).
 - **C3 measurement** (jitter and evaluator-floor by path). Done 2026-09-17 —
   [results/diagnostics/c3/](results/diagnostics/c3/README.md); see Phase 2 item 3(i) above.
-- **Step 1 — gray stimulus.** Three gate stops on the copy-fidelity control, none of them the
-  48-cell sweep running yet: v2 ("exactly equal" was unsatisfiable at `chkpt_00071` because the
-  evaluator itself does not reproduce itself bitwise there); v3.1 (failed by one quantisation
-  step over a 10-pair floor — checklist rule 17); v4 (code gate passed, but the recorded
-  copy-vs-original 16-item-mean difference, 0.00012016…, breached the documented 1e-4 ceiling —
-  the per-item ceiling held). Relaunched each time on Mike's word; latest stop 2026-09-17 08:25Z.
-  [results/diagnostics/gray/README.md](results/diagnostics/gray/README.md) (v4, current) and its
-  v2/v3.1 predecessors kept beside it in the same directory. **Status: stopped, not running** —
-  the sweep has not executed under any brief version yet.
+- **Step 1 — gray stimulus.** Three gate stops on the copy-fidelity control before the sweep ran
+  (v2: an exact-equality gate unsatisfiable because the evaluator does not reproduce itself
+  bitwise there; v3.1: a quantisation-step gate failure; v4: the code gate passed but a
+  mean-difference ceiling was breached while the per-item ceiling held), each relaunched on
+  Mike's word; predecessors kept beside the current record in the same directory.
+  **Complete, 2026-09-17** (v5.1, commit `32759e2`): trained networks lose their learned gain
+  under gray input; seed 2 does not explode without input, so the clamp-to-zero ablation effect
+  is an instrument artefact by the brief's pre-registered branch; shuffled frames do worse than
+  an untrained network.
+  [results/diagnostics/gray/README.md](results/diagnostics/gray/README.md).
 - **Step 2 — tuning battery.** Brief ready
   ([docs/briefs/2026-09-16-step2-tuning-battery.md](docs/briefs/2026-09-16-step2-tuning-battery.md)),
   waits on step 1.
@@ -245,10 +247,19 @@ step — and it is written as that, without claiming an experiment.
 - Within-type specificity. flyvis discards it by construction; nothing in Phases 1–2 can
   speak to it, and the roadmap says so rather than letting a type-level result be read as more.
 
-## Maintenance (proposal, awaiting Mike's word)
+## Maintenance
 
-Ark, chat 2026-09-17 08:18Z: a plan change that changes a phase's state should carry its
-ROADMAP line in the same commit. Recorded as a proposal, not yet adopted as a rule.
+**This file's number convention (adopted).** Mike asked (chat, 2026-09-17 08:51:50Z) why this
+file carries numbers that change. Zcode's rule (chat, 2026-09-17 08:53:12Z), adopted: a number
+may stand in this file only (a) as a registered decision (tolerance, floor, N rule,
+critical-ρ reference — changed only by a new registration, not by a run) or (b) as a word with
+a pointer into the record that carries it ("measured, see 004 §2"). Test for every line: will
+it go stale after the next run without any decision changing? If yes, the number does not
+belong here — it lives in `docs/experiments/00X`, `results/*/README.md` and the backlog.
+
+**Proposal, awaiting Mike's word.** Ark, chat 2026-09-17 08:18Z: a plan change that changes a
+phase's state should carry its ROADMAP line in the same commit. Recorded as a proposal, not yet
+adopted as a rule.
 
 ## Status — generated
 
