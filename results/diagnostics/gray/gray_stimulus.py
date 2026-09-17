@@ -1,10 +1,12 @@
 """Gray-stimulus control -- 6 runs x 2 checkpoints x 4 input conditions on the 16 held-out items.
 
 PREVIEW DIAGNOSTIC -- NOT A TEST.  The protocol is fixed in
-`docs/briefs/2026-09-16-step1-gray-stimulus.md` (v3.1, commit 54823c4; v2 after review by Ark and
-Zcode, v3/v3.1 after the v2 run stopped at the copy-fidelity gate).  The v2 launch (Mike's word,
-2026-09-16 19:50:18Z) stopped at that gate (README_v2_gate_stop.md).  The v3.1 run was launched on
-Mike's explicit word in the DPC Research chat, 2026-09-16 20:14:03Z: «@CC_windows запускай шаг 1».
+`docs/briefs/2026-09-16-step1-gray-stimulus.md` (v4, commit f915d59; v2 after review by Ark and
+Zcode, v3/v3.1 after the v2 run stopped at the copy-fidelity gate, v4 after the v3.1 run stopped
+there a second time).  The v2 launch (Mike's word, 2026-09-16 19:50:18Z) stopped at that gate
+(README_v2_gate_stop.md); the v3.1 launch (2026-09-16 20:14:03Z) stopped at it again
+(README_v31_gate_stop.md).  The v4 run was launched on Mike's explicit word in the DPC Research
+chat, 2026-09-17 08:14:48Z: «@CC_windows «запускай шаг 1».
 
 WHAT THIS SCRIPT DOES NOT DO: it never trains, never writes into
 connectome-seed-data/results/flow/9991/*, never calls solver.checkpoint() or
@@ -43,6 +45,28 @@ in gray_controls.json and reports <= 1e-4 separately; --task readings implements
 reading (ii) `excess_cond = L_trained,cond - L_untrained_gray`, >= 10 gain_s explodes /
 <= 0.1 gain_s returns / else between (the v2 executor's provisional 3062.6 threshold is removed);
 reading (iii) void when the two references lie within 0.2 gain_s.
+
+v4 CHANGES TO THIS SCRIPT (after the v3.1 gate stop; conditions, transforms, the evaluator reuse and
+the readings are untouched):
+- Copy fidelity is a CODE GATE (`code_gate`, brief v4 Sec 6): the source of
+  `per_item_eval_transformed` and of `D.per_item_eval` is extracted with `inspect.getsource`, and
+  a unified diff is computed.  Pass iff (1) the executable body (the statements after the
+  docstring) of the copy equals the original's body with exactly the two declared substitutions
+  applied, at original file lines 188 (`for _, data` -> `for _i, data`) and 191
+  (`add_input(data["lum"])` -> `add_input(transform(data["lum"], _i))`), and (2) the signature
+  differs only by the function name and the inserted `transform` parameter (the vehicle of the
+  line-191 transform).  The docstrings differ as text and are shown in the diff; they are not
+  executable and are not gated.  The diff is printed and written into gray_controls.json.  Runs
+  first in --task codegate / control / main, before the solver is built; failure -> stop.
+- The numeric copy-vs-original comparisons (A vs five calls B_1..B_5 of D.per_item_eval, all 10
+  B pairs, per-item and 16-item mean) are RECORDED, NOT GATING.  Stop only on the documented
+  ceilings: per-item |A - B_k| > 1.5 x 0.0009765625 = 0.00146484375, or
+  |mean(A) - mean(B_k)| > 1e-4, for any k.  At iteration 0 bitwise equality is recorded but not
+  required (C3 Part B, results/diagnostics/c3/README.md: single D.per_item_eval calls at
+  iteration 0 were occasionally one float64 step of the mean off); the same ceilings apply.
+- --task repeat gates per cell on |delta loss_16| between the two processes <= 1e-4; per-item
+  deltas and the in-process floor of each checkpoint (from gray_controls.json) are recorded next
+  to the gate, not gating.
 """
 
 import os
@@ -67,8 +91,12 @@ sys.path.insert(0, N2_ABL)
 sys.path.insert(0, N2_ROWB)
 
 import argparse
+import ast
+import difflib
 import hashlib
+import inspect
 import json
+import textwrap
 import time
 from pathlib import Path
 
@@ -91,9 +119,18 @@ GRAY_VALUE = 0.5                                 # brief Sec 4
 ZERO_VALUE = 0.0
 SHUFFLE_SEED = 20260916                          # brief Sec 1/3: fixed, recorded here
 P0_TOL = 1e-4                                    # brief Sec 6
-FRESH_PROCESS_TOL = 1e-4                         # brief Sec 6 (reported separately, v3)
-FRESH_PROCESS_FLOOR_MULT = 3.0                   # brief Sec 6 v3: gate <= 3 x in-process floor
-N_FLOOR_CALLS = 5                                # brief Sec 6 v3.1: five calls, all 10 pairs
+FRESH_PROCESS_TOL = 1e-4                         # brief Sec 6 v4: gate on the 16-item mean
+N_FLOOR_CALLS = 5                                # brief Sec 6 v3.1/v4: five calls, all 10 pairs
+CEILING_PER_ITEM = 1.5 * 0.0009765625            # brief Sec 6 v4: documented ceiling, per item
+CEILING_MEAN = 1e-4                              # brief Sec 6 v4: documented ceiling, 16-item mean
+BRIEF_CHKPT_00071_SPREAD = 8.6e-05               # brief Sec 6 v4: stated next to the repeat gate
+# brief Sec 6 v4 / Sec 3 / Sec 9.10: the two declared differences of the copy, by original line
+DECLARED_SUBSTITUTIONS = {
+    188: ("for _, data in enumerate(dataloader):",
+          "for _i, data in enumerate(dataloader):"),
+    191: ('solver.network.stimulus.add_input(data["lum"])',
+          'solver.network.stimulus.add_input(transform(data["lum"], _i))'),
+}
 BAND_FRACTION = 0.1                              # brief Sec 7 (i)/(iii): 0.1 * gain_s
 EXPLODE_MULT = 10.0                              # brief Sec 7 (ii) v3: excess >= 10 gain_s
 RETURN_FRACTION = 0.1                            # brief Sec 7 (ii) v3: excess <= 0.1 gain_s
@@ -103,7 +140,7 @@ PREREG_SEED2_R2_DELTA = 21157.5
 PREREG_SEED2_R1R8_CLAMP_EXCESS = 30626.0
 
 STATUS = ("PREVIEW DIAGNOSTIC -- NOT A TEST (gray-stimulus control, brief "
-          "docs/briefs/2026-09-16-step1-gray-stimulus.md v3.1; n=6 individuals)")
+          "docs/briefs/2026-09-16-step1-gray-stimulus.md v4; n=6 individuals)")
 
 
 def sha256_file(p):
@@ -128,7 +165,7 @@ SCRIPT_HASHES = {
 def parse_args():
     p = argparse.ArgumentParser()
     p.add_argument("--task", required=True,
-                   choices=["control", "floor", "main", "repeat", "readings"])
+                   choices=["codegate", "control", "floor", "main", "repeat", "readings"])
     p.add_argument("--out-dir", required=True)
     p.add_argument("--netdir-root", required=False)
     return p.parse_args()
@@ -202,6 +239,117 @@ def per_item_eval_transformed(solver, transform, t_pre=0.25):
     return losses
 
 
+# ---------------------------------------------------------------- v4 code gate
+def _split_function_source(fn):
+    """(absolute start line, def-header lines, docstring lines, body lines) of `fn`, from
+    inspect.getsourcelines; the split points come from the AST, not from text matching."""
+    lines, start = inspect.getsourcelines(fn)
+    tree = ast.parse(textwrap.dedent("".join(lines)))
+    fdef = tree.body[0]
+    assert isinstance(fdef, ast.FunctionDef), type(fdef)
+    first = fdef.body[0]
+    has_doc = (isinstance(first, ast.Expr) and isinstance(first.value, ast.Constant)
+               and isinstance(first.value.value, str))
+    assert has_doc, fn.__name__
+    doc_first = first.lineno - 1                 # 0-based index into `lines`
+    doc_last = first.end_lineno - 1
+    body_first = fdef.body[1].lineno - 1
+    assert body_first == doc_last + 1, (fn.__name__, body_first, doc_last)
+    return (start, lines[:doc_first], lines[doc_first:doc_last + 1], lines[body_first:],
+            body_first)
+
+
+def code_gate():
+    """Brief v4 Sec 6: copy fidelity as a code diff, not a number.  Writes nothing."""
+    orig_src_lines, orig_start = inspect.getsourcelines(D.per_item_eval)
+    copy_src_lines, copy_start = inspect.getsourcelines(per_item_eval_transformed)
+    orig_file = inspect.getsourcefile(D.per_item_eval)
+    copy_file = inspect.getsourcefile(per_item_eval_transformed)
+    full_diff = list(difflib.unified_diff(
+        orig_src_lines, copy_src_lines,
+        fromfile=f"diag1_eval_paths.py:per_item_eval (lines {orig_start}-"
+                 f"{orig_start + len(orig_src_lines) - 1})",
+        tofile=f"gray_stimulus.py:per_item_eval_transformed (lines {copy_start}-"
+               f"{copy_start + len(copy_src_lines) - 1})"))
+
+    o_start, o_hdr, o_doc, o_body, o_body_off = _split_function_source(D.per_item_eval)
+    c_start, c_hdr, c_doc, c_body, c_body_off = _split_function_source(per_item_eval_transformed)
+    body_diff = list(difflib.unified_diff(
+        o_body, c_body,
+        fromfile=f"diag1_eval_paths.py:per_item_eval body (lines {o_start + o_body_off}-"
+                 f"{o_start + o_body_off + len(o_body) - 1})",
+        tofile=f"gray_stimulus.py:per_item_eval_transformed body (lines "
+               f"{c_start + c_body_off}-{c_start + c_body_off + len(c_body) - 1})"))
+
+    # (1) body: the original body with exactly the declared substitutions applied must equal the
+    #     copy's body, byte for byte (indentation included)
+    expected = list(o_body)
+    applied = {}
+    for abs_line, (old, new) in DECLARED_SUBSTITUTIONS.items():
+        idx = abs_line - (o_start + o_body_off)
+        ok_idx = 0 <= idx < len(expected)
+        line = expected[idx] if ok_idx else ""
+        ok_old = ok_idx and line.strip() == old
+        if ok_old:
+            indent = line[:len(line) - len(line.lstrip())]
+            expected[idx] = indent + new + "\n"
+        applied[str(abs_line)] = {"original_line_text": line.rstrip("\n"),
+                                  "declared_old": old, "declared_new": new,
+                                  "original_line_matches_declared_old": bool(ok_old)}
+    all_old_match = all(v["original_line_matches_declared_old"] for v in applied.values())
+    body_equal = bool(all_old_match and expected == list(c_body))
+    n_changed = sum(1 for a_, b_ in zip(o_body, c_body) if a_ != b_) if len(o_body) == len(
+        c_body) else None
+
+    # (2) signature: only the name and the inserted `transform` parameter differ
+    so = inspect.signature(D.per_item_eval)
+    sc = inspect.signature(per_item_eval_transformed)
+    po = [(p.name, p.kind, p.default) for p in so.parameters.values()]
+    pc = [(p.name, p.kind, p.default) for p in sc.parameters.values()
+          if p.name != "transform"]
+    sig_ok = bool(po == pc and "transform" in sc.parameters
+                  and len(sc.parameters) == len(so.parameters) + 1)
+
+    passed = bool(body_equal and sig_ok and n_changed == len(DECLARED_SUBSTITUTIONS))
+    return {
+        "rule": ("brief v4 Sec 6: the copied per_item_eval must differ from "
+                 "diag1_eval_paths.py's per_item_eval only in the declared lines -- the "
+                 "transform on the add_input argument (line 191) and the loop-variable rename "
+                 "`_` -> `_i` (line 188); any other difference -> stop"),
+        "operationalisation": (
+            "pass iff (1) the executable body (statements after the docstring, located via "
+            "ast) of the copy equals the original body with exactly the two declared "
+            "substitutions applied at original lines 188 and 191, byte for byte, and exactly "
+            "2 body lines differ; and (2) inspect.signature differs only by the function name "
+            "and the inserted `transform` parameter.  The def line and the docstring necessarily "
+            "differ as text; they are shown in full_unified_diff and not gated"),
+        "original_file": orig_file, "copy_file": copy_file,
+        "original_lines": [orig_start, orig_start + len(orig_src_lines) - 1],
+        "copy_lines": [copy_start, copy_start + len(copy_src_lines) - 1],
+        "original_signature": f"per_item_eval{so}",
+        "copy_signature": f"per_item_eval_transformed{sc}",
+        "declared_substitutions": applied,
+        "n_body_lines_original": len(o_body), "n_body_lines_copy": len(c_body),
+        "n_body_lines_differing": n_changed,
+        "body_equals_original_with_declared_substitutions": body_equal,
+        "signature_differs_only_by_name_and_transform_param": sig_ok,
+        "body_unified_diff": "".join(body_diff),
+        "full_unified_diff": "".join(full_diff),
+        "code_gate_pass": passed,
+    }
+
+
+def run_code_gate():
+    cg = code_gate()
+    print("CODE GATE BODY DIFF\n" + cg["body_unified_diff"], flush=True)
+    print("CODE GATE FULL DIFF\n" + cg["full_unified_diff"], flush=True)
+    print("CODE GATE", json.dumps({k: v for k, v in cg.items()
+                                   if k not in ("body_unified_diff", "full_unified_diff")}),
+          flush=True)
+    print("CODE GATE VERDICT", "PASS" if cg["code_gate_pass"] else "FAIL", flush=True)
+    return cg
+
+
 def eval_condition(solver, condition):
     """One 16-item evaluation under one input condition, wrapped in the seven eval_rung
     invariants (ablation_night3.py:96-102) and the no-ablation-hook assertion
@@ -235,13 +383,15 @@ def load_named(solver, run, chkpt_index):
 
 
 def copy_fidelity_control(solver, run, ci):
-    """Brief Sec 6 v3.1: copy fidelity against the evaluator's own five-call floor, plus P0.
+    """Brief Sec 6 v4: copy-vs-original numbers RECORDED, stop only on documented ceilings; P0.
 
     A = the copy with the identity transform; B_1..B_5 = five calls of the ORIGINAL
-    D.per_item_eval on the same loaded checkpoint, in the same process.  floor = max per-item
-    |B_j - B_k| over all 10 pairs.  Pass iff max_k max per-item |A - B_k| <= floor; at iteration 0
-    the floor must be 0.0 and A must equal every B_k bitwise.  P0: mean(A) - stored val_loss and
-    mean(A) - hook_eval() both <= 1e-4.
+    D.per_item_eval on the same loaded checkpoint, in the same process.  Recorded: per-item max
+    and 16-item-mean |diff| for all 10 B pairs (floor = max over pairs) and for A vs each B_k,
+    bitwise equality of A with each B_k, and the raw per-item vectors.  Ceilings (stop): per-item
+    |A - B_k| > CEILING_PER_ITEM or |mean(A) - mean(B_k)| > CEILING_MEAN for any k -- at every
+    checkpoint, iteration 0 included (bitwise recorded, not required; C3 Part B).  P0 (stop):
+    mean(A) - stored val_loss and mean(A) - hook_eval() both <= 1e-4.
     """
     solver_it, path, info = load_named(solver, run, ci)
     net = solver.network
@@ -270,14 +420,17 @@ def copy_fidelity_control(solver, run, ci):
                  for k in range(N_FLOOR_CALLS)}
     worst_key = max(a_vs_item, key=lambda k: a_vs_item[k])
     worst = a_vs_item[worst_key]
+    worst_mean_key = max(a_vs_mean, key=lambda k: abs(a_vs_mean[k]))
+    worst_mean = abs(a_vs_mean[worst_mean_key])
     bitwise = {f"A==B{k + 1}": bool(np.array_equal(a_items, B[k])) for k in range(N_FLOOR_CALLS)}
-    if solver_it == 0:
-        cf_pass = bool(floor_item == 0.0 and all(bitwise.values()))
-        cf_rule = "iteration 0: floor must be 0.0 and A must equal every B_k bitwise"
-    else:
-        cf_pass = bool(worst <= floor_item)
-        cf_rule = ("max_k max per-item |A - B_k| <= floor "
-                   "(max per-item |B_j - B_k| over all 10 pairs)")
+    b_pair_bitwise = {f"B{j + 1}==B{k + 1}": bool(np.array_equal(B[j], B[k])) for j, k in pairs}
+    ceiling_item_ok = bool(worst <= CEILING_PER_ITEM)
+    ceiling_mean_ok = bool(worst_mean <= CEILING_MEAN)
+    cf_pass = bool(ceiling_item_ok and ceiling_mean_ok)
+    cf_rule = ("brief v4 Sec 6: numbers recorded, not gating; stop only on a documented ceiling: "
+               "per-item |A - B_k| > 1.5 x 0.0009765625 = 0.00146484375, or 16-item-mean "
+               "|mean(A) - mean(B_k)| > 1e-4, for any k; iteration 0: bitwise recorded, same "
+               "ceilings (deviation from 'at iteration 0 equality stays bitwise', per C3 Part B)")
     p0 = float(a_items.mean()) - info["stored_val_loss"]
     p0h = float(a_items.mean()) - hook
     p0_pass = bool(abs(p0) <= P0_TOL and abs(p0h) <= P0_TOL)
@@ -294,10 +447,23 @@ def copy_fidelity_control(solver, run, ci):
         "copy_vs_each_original_max_abs_per_item": {k: repr(v) for k, v in a_vs_item.items()},
         "copy_vs_each_original_mean_diff": {k: repr(v) for k, v in a_vs_mean.items()},
         "copy_vs_each_original_bitwise_equal": bitwise,
+        "copy_bitwise_equal_to_all_originals": bool(all(bitwise.values())),
+        "original_pairs_bitwise_equal": b_pair_bitwise,
         "copy_worst_pair": worst_key,
         "copy_worst_max_abs_per_item": repr(worst),
+        "copy_worst_mean_pair": worst_mean_key,
+        "copy_worst_abs_mean_diff": repr(worst_mean),
+        "ceiling_per_item": repr(CEILING_PER_ITEM),
+        "ceiling_mean": repr(CEILING_MEAN),
+        "ceiling_per_item_respected": ceiling_item_ok,
+        "ceiling_mean_respected": ceiling_mean_ok,
+        "originals_floor_exceeds_ceiling_per_item_recorded_only": bool(
+            floor_item > CEILING_PER_ITEM),
+        "originals_floor_exceeds_ceiling_mean_recorded_only": bool(floor_mean > CEILING_MEAN),
+        "copy_A_per_item": [repr(float(x)) for x in a_items],
+        "original_B_per_item": [[repr(float(x)) for x in B[k]] for k in range(N_FLOOR_CALLS)],
         "copy_fidelity_rule": cf_rule,
-        "copy_fidelity_pass": cf_pass,
+        "copy_fidelity_ceilings_pass": cf_pass,
         "stored_checkpoint_val_loss": repr(info["stored_val_loss"]),
         "P0_per_item_mean": repr(float(a_items.mean())),
         "P0_mean_minus_stored": repr(p0),
@@ -418,9 +584,16 @@ def sweep(solver, item_names, print_tag):
 
 
 # ---------------------------------------------------------------- tasks
+def task_codegate(a):
+    """Brief v4 Sec 6 code gate only; no solver, no GPU work.  Writes nothing."""
+    return 0 if run_code_gate()["code_gate_pass"] else 3
+
+
 def task_control(a):
-    """Brief Sec 6 v3.1, step 1: copy fidelity (five-call floor) + P0 reproduction.  Writes
-    nothing."""
+    """Brief Sec 6 v4, step 1: code gate, then recorded copy/original numbers with documented
+    ceilings + P0 reproduction.  Writes nothing."""
+    if not run_code_gate()["code_gate_pass"]:
+        return 3
     solver = D.build_solver(Path(a.netdir_root))
     import flyvis
     print("CONTROL META", json.dumps({
@@ -503,6 +676,11 @@ def task_main(a):
     out = Path(a.out_dir)
     out.mkdir(parents=True, exist_ok=True)
     t_start = time.perf_counter()
+    cg = run_code_gate()
+    if not cg["code_gate_pass"]:
+        print("CODE GATE FAIL (in --task main) -- stopping before the solver is built; "
+              "nothing written", flush=True)
+        return 3
     solver = D.build_solver(Path(a.netdir_root))
     import flyvis
     item_names = D.val_item_names(solver)
@@ -513,9 +691,9 @@ def task_main(a):
 
     meta = {
         "status": STATUS,
-        "brief": "docs/briefs/2026-09-16-step1-gray-stimulus.md (v3.1, commit 54823c4)",
+        "brief": "docs/briefs/2026-09-16-step1-gray-stimulus.md (v4, commit f915d59)",
         "launch": ("Mike's explicit word in the DPC Research chat, "
-                   "2026-09-16T20:14:03Z: «@CC_windows запускай шаг 1»"),
+                   "2026-09-17T08:14:48Z: «@CC_windows «запускай шаг 1»"),
         "script_sha256": SCRIPT_HASHES,
         "flyvis": flyvis.__version__, "torch": torch.__version__,
         "python": sys.version.split()[0],
@@ -538,7 +716,8 @@ def task_main(a):
         "ablation_hook_registered": False,
         "copy_note": ("per_item_eval_transformed is a line-for-line copy of "
                       "diag1_eval_paths.py:176-201; only the argument of :191 and the loop "
-                      "variable `_`->`_i` on :188 differ"),
+                      "variable `_`->`_i` on :188 differ -- verified by code_gate (brief v4 "
+                      "Sec 6), see code_gate in this json"),
     }
     print("META", json.dumps({k: v for k, v in meta.items() if k != "val_items"}), flush=True)
 
@@ -552,8 +731,8 @@ def task_main(a):
             print("CONTROL", json.dumps(rec), flush=True)
             ctrl_ok = ctrl_ok and passed
     if not ctrl_ok:
-        print("CONTROL VERDICT FAIL (in --task main) -- stopping before the sweep; "
-              "nothing written", flush=True)
+        print("CONTROL VERDICT FAIL (in --task main: documented ceiling breached or P0 > 1e-4) "
+              "-- stopping before the sweep; nothing written", flush=True)
         return 3
 
     null = constant_output_null(solver)
@@ -582,6 +761,7 @@ def task_main(a):
               if v.get("P0_mean_minus_stored") is not None}
     ctrl = {
         "meta": meta,
+        "code_gate": cg,
         "copy_fidelity_and_P0": controls,
         "constant_output_null": null,
         "P0_mean_minus_stored_all_12_checkpoints": {
@@ -625,8 +805,9 @@ def task_repeat(a):
                     float(np.max(np.abs(second[k]["per_item"] - first[k]["per_item"])))
                     for k in first}
     worst = max(deltas, key=lambda k: abs(deltas[k]))
-    # brief Sec 6 v3: gate per checkpoint against 3 x the in-process floor (16-item mean) of that
-    # checkpoint, as measured by copy_fidelity_control in the --task main process
+    # brief Sec 6 v4: gate per cell on |delta loss_16| <= 1e-4; the in-process floor of each
+    # checkpoint (copy_fidelity_control in the --task main process, run 000) is stated next to
+    # the gate, recorded, not gating; per-item deltas recorded, not gating
     first_ctrl = json.loads((out / "gray_controls.json").read_text(encoding="utf-8"))
     floors = {}
     for rec in first_ctrl["copy_fidelity_and_P0"].values():
@@ -642,26 +823,30 @@ def task_repeat(a):
         assert len(keys) == 24, (it, len(keys))
         wk = max(keys, key=lambda k: abs(second[k]["loss_16"] - first[k]["loss_16"]))
         mx = abs(second[wk]["loss_16"] - first[wk]["loss_16"])
-        thr = FRESH_PROCESS_FLOOR_MULT * floors[it]["floor_max_abs_mean_diff_over_10_pairs"]
+        wki = max(keys, key=lambda k: per_item_max[f"{k[0]}|{k[1]}|{k[2]}"])
         per_ckpt[str(it)] = {
-            "in_process_floor_source": {k: (repr(v) if isinstance(v, float) else v)
-                                        for k, v in floors[it].items()},
-            "gate_threshold_3x_floor": repr(thr),
+            "gate": "per cell |delta loss_16| <= 1e-4 (brief Sec 6 v4)",
+            "in_process_spread_this_run_recorded_not_gating": {
+                k: (repr(v) if isinstance(v, float) else v) for k, v in floors[it].items()},
+            "in_process_spread_stated_in_brief_chkpt_00071": repr(BRIEF_CHKPT_00071_SPREAD),
             "max_abs_delta_loss_16": repr(mx),
             "max_abs_delta_cell": f"{wk[0]}|{wk[1]}|{wk[2]}",
+            "max_abs_per_item_delta_recorded_not_gating": repr(
+                per_item_max[f"{wki[0]}|{wki[1]}|{wki[2]}"]),
+            "max_abs_per_item_delta_cell": f"{wki[0]}|{wki[1]}|{wki[2]}",
             "n_cells": len(keys),
             "n_cells_bitwise_identical_loss_16": int(sum(
                 1 for k in keys if second[k]["loss_16"] == first[k]["loss_16"])),
-            "gate_pass_le_3x_floor": bool(mx <= thr),
-            "also_le_1e-4": bool(mx <= FRESH_PROCESS_TOL),
+            "all_cells_pass_le_1e-4": bool(mx <= FRESH_PROCESS_TOL),
         }
     cell_gate = {}
     for k in first:
         d = abs(second[k]["loss_16"] - first[k]["loss_16"])
-        thr = FRESH_PROCESS_FLOOR_MULT * floors[k[1]]["floor_max_abs_mean_diff_over_10_pairs"]
         cell_gate[f"{k[0]}|{k[1]}|{k[2]}"] = {
-            "abs_delta_loss_16": repr(d), "threshold_3x_floor": repr(thr),
-            "pass_le_3x_floor": bool(d <= thr), "pass_le_1e-4": bool(d <= FRESH_PROCESS_TOL)}
+            "abs_delta_loss_16": repr(d), "threshold": repr(FRESH_PROCESS_TOL),
+            "pass_le_1e-4": bool(d <= FRESH_PROCESS_TOL),
+            "max_abs_per_item_delta_recorded_not_gating": repr(
+                per_item_max[f"{k[0]}|{k[1]}|{k[2]}"])}
     rep = {
         "status": STATUS,
         "script_sha256": SCRIPT_HASHES,
@@ -670,18 +855,19 @@ def task_repeat(a):
         "python": sys.version.split()[0],
         "gpu": torch.cuda.get_device_name(0) if torch.cuda.is_available() else None,
         "utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-        "gate": ("brief Sec 6 v3: per checkpoint, max |delta loss_16| between the two processes "
-                 "<= 3 x the in-process floor of that checkpoint on the 16-item mean (max over "
-                 "10 pairs of five D.per_item_eval calls on run 000, gray_controls.json); "
-                 "<= 1e-4 reported separately"),
+        "gate": ("brief Sec 6 v4: per cell, |delta| of the 16-item mean between the two "
+                 "processes <= 1e-4; per-item repeat differences recorded, not gating; the "
+                 "in-process spread of each checkpoint (five D.per_item_eval calls on run 000, "
+                 "gray_controls.json; brief states 8.6e-05 at chkpt_00071) stated next to the "
+                 "gate, not gating"),
         "per_checkpoint": per_ckpt,
         "per_cell_gate": cell_gate,
         "max_abs_delta_loss_16": repr(max(abs(v) for v in deltas.values())),
         "max_abs_delta_cell": worst,
         "n_cells_bitwise_identical_loss_16": int(sum(1 for v in deltas.values() if v == 0.0)),
         "max_abs_per_item_delta": repr(max(per_item_max.values())),
-        "gate_pass": bool(all(v["gate_pass_le_3x_floor"] for v in per_ckpt.values())),
-        "also_all_le_1e-4": bool(max(abs(v) for v in deltas.values()) <= FRESH_PROCESS_TOL),
+        "gate_pass": bool(all(v["pass_le_1e-4"] for v in cell_gate.values())),
+        "n_cells_pass_le_1e-4": int(sum(1 for v in cell_gate.values() if v["pass_le_1e-4"])),
         "delta_loss_16_per_cell": {k: repr(v) for k, v in deltas.items()},
         "max_abs_per_item_delta_per_cell": {k: repr(v) for k, v in per_item_max.items()},
         "first_evaluation_real_wall_s": repr(first_real_wall),
@@ -689,7 +875,8 @@ def task_repeat(a):
     }
     (out / "gray_repeat_controls.json").write_text(json.dumps(rep, indent=1))
     print("REPEAT MAX ABS DELTA", rep["max_abs_delta_loss_16"], rep["max_abs_delta_cell"],
-          "gate_pass", rep["gate_pass"], "also_all_le_1e-4", rep["also_all_le_1e-4"], flush=True)
+          "gate_pass_all_cells_le_1e-4", rep["gate_pass"], "n_cells_pass",
+          rep["n_cells_pass_le_1e-4"], flush=True)
     print("REPEAT PER CHECKPOINT", json.dumps(per_ckpt), flush=True)
     print("TOTAL WALL S", rep["wall_s_total"], flush=True)
     return 0
@@ -850,7 +1037,8 @@ def task_readings(a):
 
 def main():
     a = parse_args()
-    return {"control": task_control, "floor": task_floor, "main": task_main,
+    return {"codegate": task_codegate, "control": task_control, "floor": task_floor,
+            "main": task_main,
             "repeat": task_repeat, "readings": task_readings}[a.task](a)
 
 

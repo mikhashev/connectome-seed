@@ -1,0 +1,94 @@
+diff --git a/tools/night/run_individual.py b/tools/night/run_individual.py
+index ae8dd9c..d6bcafb 100644
+--- a/tools/night/run_individual.py
++++ b/tools/night/run_individual.py
+@@ -49,11 +49,13 @@ os.environ.setdefault(
+ )
+ 
+ import argparse
++import ctypes
+ import hashlib
+ import json
+ import logging
+ import random
+ import re
++import socket
+ import statistics
+ import subprocess
+ import time
+@@ -145,6 +147,56 @@ def nvidia_smi_used_mib():
+         return f"error: {e!r}"
+ 
+ 
++def _machine_state():
++    """Read-only system snapshot for the json (docs/briefs/2026-09-17-machine-state-field.md):
++    nvidia-smi compute-process list + memory + driver version, system uptime, other python
++    processes, hostname. Called only before training starts and after it ends -- never inside
++    the training loop -- so it has no effect on training order, RNG, or timing. Every external
++    query is read-only with a --timeout; a failure in any one field is caught there and recorded
++    as {"error": repr(e)} for that field alone, so this function itself never raises and never
++    fails the run."""
++    state = {}
++    try:
++        out = subprocess.run(
++            ["nvidia-smi", "--query-compute-apps=pid,process_name,used_memory",
++             "--format=csv,noheader"],
++            capture_output=True, text=True, timeout=10,
++        )
++        state["nvidia_smi_compute_processes"] = out.stdout.strip()
++    except Exception as e:  # noqa: BLE001
++        state["nvidia_smi_compute_processes"] = {"error": repr(e)}
++    try:
++        out = subprocess.run(
++            ["nvidia-smi", "--query-gpu=memory.used,memory.total,driver_version",
++             "--format=csv,noheader"],
++            capture_output=True, text=True, timeout=10,
++        )
++        state["nvidia_smi_memory_used_total_driver"] = out.stdout.strip()
++    except Exception as e:  # noqa: BLE001
++        state["nvidia_smi_memory_used_total_driver"] = {"error": repr(e)}
++    try:
++        _gtc = ctypes.windll.kernel32.GetTickCount64
++        _gtc.restype = ctypes.c_uint64  # default c_int would truncate the 64-bit tick count
++        state["uptime_s"] = _gtc() / 1000.0
++    except Exception as e:  # noqa: BLE001
++        state["uptime_s"] = {"error": repr(e)}
++    try:
++        state["hostname"] = socket.gethostname()
++    except Exception as e:  # noqa: BLE001
++        state["hostname"] = {"error": repr(e)}
++    try:
++        out = subprocess.run(
++            ["powershell.exe", "-NoProfile", "-NonInteractive", "-Command",
++             "Get-CimInstance Win32_Process | Where-Object { $_.Name -match 'python' } | "
++             "ForEach-Object { \"$($_.ProcessId) | $($_.CommandLine)\" }"],
++            capture_output=True, text=True, timeout=10,
++        )
++        state["other_python_processes"] = [line[:300] for line in out.stdout.strip().splitlines()]
++    except Exception as e:  # noqa: BLE001
++        state["other_python_processes"] = {"error": repr(e)}
++    return state
++
++
+ def scene_of(item_name: str) -> str:
+     """'sequence_01_ambush_2_split_00' -> 'ambush_2' (name format: sintel.py:157)."""
+     m = re.match(r"^sequence_\d+_(.+)_split_\d+$", item_name)
+@@ -635,6 +687,10 @@ def main():
+ 
+     solver.penalty.__class__ = PenaltyHooked
+ 
++    # ---------------- machine state, before training starts (read-only; no effect on RNG/timing) --
++    rec["machine_state_start"] = _machine_state()
++    dump()
++
+     # ---------------- train ----------------
+     random.seed(a.seed)
+     np.random.seed(a.seed)
+@@ -682,6 +738,7 @@ def main():
+             rec["train_loss_per_iter"] = [float(x) for x in solver.dir.loss[()]]
+         except Exception as e:  # noqa: BLE001
+             rec["train_loss_error"] = repr(e)
++        rec["machine_state_end"] = _machine_state()
+         rec["finished_utc"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+         dump()
+         log.info("EXIT %s final_iteration=%s total_wall=%.1fs json=%s", rec["exit"],

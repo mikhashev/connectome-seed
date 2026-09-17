@@ -1,0 +1,266 @@
+CODE GATE BODY DIFF
+--- diag1_eval_paths.py:per_item_eval body (lines 180-201)
++++ gray_stimulus.py:per_item_eval_transformed body (lines 218-239)
+@@ -6,10 +6,10 @@
+     losses = {t: [] for t in task.dataset.tasks}
+     with torch.no_grad():
+         with task.dataset.augmentation(False):
+-            for _, data in enumerate(dataloader):
++            for _i, data in enumerate(dataloader):
+                 n_samples, n_frames, _, _ = data["lum"].shape
+                 solver.network.stimulus.zero(n_samples, n_frames)
+-                solver.network.stimulus.add_input(data["lum"])
++                solver.network.stimulus.add_input(transform(data["lum"], _i))
+                 activity = solver.network(solver.network.stimulus(), task.dataset.dt,
+                                           state=initial_state)
+                 for t in task.dataset.tasks:
+
+CODE GATE FULL DIFF
+--- diag1_eval_paths.py:per_item_eval (lines 176-201)
++++ gray_stimulus.py:per_item_eval_transformed (lines 214-239)
+@@ -1,7 +1,7 @@
+-def per_item_eval(solver, t_pre=0.25):
+-    """A copy of flyvis/solver.py:474-556 `MultiTaskSolver.test` with track_loss removed
+-    and the per-item losses returned instead of only their mean.  NOT the hook path --
+-    used only for the per-item breakdown (c); its mean is checked against hook_eval()."""
++def per_item_eval_transformed(solver, transform, t_pre=0.25):
++    """diag1_eval_paths.py:176-201 `per_item_eval`, copied line for line; the ONLY changes are
++    the argument of :191 (`data["lum"]` -> `transform(data["lum"], _i)`) and the loop variable
++    `_` -> `_i` on :188."""
+     task, dataloader = solver.task, solver.task.val_data
+     solver._eval()
+     solver.scheduler(solver.iteration)  # solver.py:504
+@@ -10,10 +10,10 @@
+     losses = {t: [] for t in task.dataset.tasks}
+     with torch.no_grad():
+         with task.dataset.augmentation(False):
+-            for _, data in enumerate(dataloader):
++            for _i, data in enumerate(dataloader):
+                 n_samples, n_frames, _, _ = data["lum"].shape
+                 solver.network.stimulus.zero(n_samples, n_frames)
+-                solver.network.stimulus.add_input(data["lum"])
++                solver.network.stimulus.add_input(transform(data["lum"], _i))
+                 activity = solver.network(solver.network.stimulus(), task.dataset.dt,
+                                           state=initial_state)
+                 for t in task.dataset.tasks:
+
+CODE GATE {"rule": "brief v4 Sec 6: the copied per_item_eval must differ from diag1_eval_paths.py's per_item_eval only in the declared lines -- the transform on the add_input argument (line 191) and the loop-variable rename `_` -> `_i` (line 188); any other difference -> stop", "operationalisation": "pass iff (1) the executable body (statements after the docstring, located via ast) of the copy equals the original body with exactly the two declared substitutions applied at original lines 188 and 191, byte for byte, and exactly 2 body lines differ; and (2) inspect.signature differs only by the function name and the inserted `transform` parameter.  The def line and the docstring necessarily differ as text; they are shown in full_unified_diff and not gated", "original_file": "C:\\Users/mikha/Documents/dpc-research/connectome-seed\\results/night2/diagnostics\\diag1_eval_paths.py", "copy_file": "C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed\\results\\diagnostics\\gray\\gray_stimulus.py", "original_lines": [176, 201], "copy_lines": [214, 239], "original_signature": "per_item_eval(solver, t_pre=0.25)", "copy_signature": "per_item_eval_transformed(solver, transform, t_pre=0.25)", "declared_substitutions": {"188": {"original_line_text": "            for _, data in enumerate(dataloader):", "declared_old": "for _, data in enumerate(dataloader):", "declared_new": "for _i, data in enumerate(dataloader):", "original_line_matches_declared_old": true}, "191": {"original_line_text": "                solver.network.stimulus.add_input(data[\"lum\"])", "declared_old": "solver.network.stimulus.add_input(data[\"lum\"])", "declared_new": "solver.network.stimulus.add_input(transform(data[\"lum\"], _i))", "original_line_matches_declared_old": true}}, "n_body_lines_original": 22, "n_body_lines_copy": 22, "n_body_lines_differing": 2, "body_equals_original_with_declared_substitutions": true, "signature_differs_only_by_name_and_transform_param": true, "code_gate_pass": true}
+CODE GATE VERDICT PASS
+C:\Users\mikha\AppData\Local\Temp\claude\c--Users-mikha-Documents-dpc-research-autoresearch-win-rtx\63f3961a-96ce-4048-8338-72c162ea66f8\scratchpad\flyvis-probe\.venv\lib\site-packages\flyvis_cli\training\train_single.py:56: Hydra14MigrationWarning: 
+version_base="1.1" selects Hydra 1.1 compatibility behavior.
+Hydra 1.4 will remove this compatibility behavior.
+Before upgrading to Hydra 1.4, set version_base="1.3" and test your application.
+See https://hydra.cc/docs/upgrades/1.3_to_1.4/prepare_for_1_4/ for preparation instructions.
+  @hydra.main(
+C:\Users/mikha/Documents/dpc-research/connectome-seed\results/night2/diagnostics\diag1_eval_paths.py:110: Hydra14MigrationWarning: 
+version_base="1.1" selects Hydra 1.1 compatibility behavior.
+Hydra 1.4 will remove this compatibility behavior.
+Before upgrading to Hydra 1.4, set version_base="1.3" and test your application.
+See https://hydra.cc/docs/upgrades/1.3_to_1.4/prepare_for_1_4/ for preparation instructions.
+  with initialize_config_dir(config_dir=ts.CONFIG_PATH, version_base="1.1"):
+[2026-09-17 10:21:31] network:222 Initialized network with NumberOfParams(free=734, fixed=2959) parameters.
+[2026-09-17 10:21:31] sintel_utils:331 Found Sintel at C:\Users\mikha\Documents\dpc-research\connectome-seed-data\SintelDataSet
+Rendering:   0%|          | 0/23 [00:00<?, ?it/s]Rendering:   4%|4         | 1/23 [00:00<00:15,  1.41it/s]Rendering:   9%|8         | 2/23 [00:01<00:14,  1.46it/s]Rendering:  13%|#3        | 3/23 [00:01<00:09,  2.04it/s]Rendering:  17%|#7        | 4/23 [00:02<00:08,  2.12it/s]Rendering:  22%|##1       | 5/23 [00:02<00:09,  1.92it/s]Rendering:  26%|##6       | 6/23 [00:02<00:07,  2.33it/s]Rendering:  30%|###       | 7/23 [00:03<00:07,  2.03it/s]Rendering:  35%|###4      | 8/23 [00:04<00:08,  1.79it/s]Rendering:  39%|###9      | 9/23 [00:04<00:08,  1.68it/s]Rendering:  43%|####3     | 10/23 [00:05<00:07,  1.63it/s]Rendering:  48%|####7     | 11/23 [00:06<00:07,  1.60it/s]Rendering:  52%|#####2    | 12/23 [00:06<00:06,  1.64it/s]Rendering:  57%|#####6    | 13/23 [00:07<00:06,  1.65it/s]Rendering:  61%|######    | 14/23 [00:08<00:05,  1.61it/s]Rendering:  65%|######5   | 15/23 [00:08<00:04,  1.62it/s]Rendering:  70%|######9   | 16/23 [00:09<00:04,  1.70it/s]Rendering:  74%|#######3  | 17/23 [00:09<00:03,  1.72it/s]Rendering:  78%|#######8  | 18/23 [00:10<00:02,  1.68it/s]Rendering:  83%|########2 | 19/23 [00:10<00:02,  1.69it/s]Rendering:  87%|########6 | 20/23 [00:11<00:01,  1.66it/s]Rendering:  91%|#########1| 21/23 [00:12<00:01,  1.59it/s]Rendering:  96%|#########5| 22/23 [00:12<00:00,  1.61it/s]Rendering: 100%|##########| 23/23 [00:13<00:00,  1.64it/s]Rendering: 100%|##########| 23/23 [00:13<00:00,  1.71it/s]
+[2026-09-17 10:21:45] tasks:100 Initialized dataloader with training sequence indices 
+[0, 1, 2, 3, 4, 5, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 24, 25, 26, 30, 31, 32, 33, 34, 35, 42, 43, 44, 45, 46, 47, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68]
+[2026-09-17 10:21:45] tasks:115 Initialized dataloader with validation sequence indices 
+[6, 7, 8, 21, 22, 23, 27, 28, 29, 36, 39, 40, 41, 48, 49, 50]
+[2026-09-17 10:21:48] decoder:282 Initialized decoder with NumberOfParams(free=7427, fixed=0) parameters.
+[2026-09-17 10:21:48] decoder:283 DecoderGAVP(
+  (base): Sequential(
+    (0): Conv2dHexSpace(34, 8, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+    (1): BatchNorm2d(8, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): Softplus(beta=1.0, threshold=20.0)
+    (3): Dropout(p=0.5, inplace=False)
+  )
+  (decoder): Sequential(
+    (0): Conv2dHexSpace(8, 3, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+  )
+  (head): Sequential()
+)
+[2026-09-17 10:21:48] solver:227 Initializing Adam for network and decoder.
+[2026-09-17 10:21:48] solver:1002 Init schedule for lr_net
+[2026-09-17 10:21:48] solver:1002 Init schedule for lr_dec
+[2026-09-17 10:21:48] solver:1002 Init schedule for lr_pen
+[2026-09-17 10:21:48] solver:1002 Init schedule for dt
+[2026-09-17 10:21:48] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:21:48] solver:134 Initialized solver.
+[2026-09-17 10:21:48] solver:135 Namespace(
+  type = 'NetworkDir',
+  network_name = 'flow/9991/000',
+  description = 'diag1',
+  network = Namespace(
+    connectome = Namespace(
+      type = 'ConnectomeFromAvgFilters',
+      file = 'fib25-fib19_v2.2.json',
+      extent = 15,
+      n_syn_fill = 1
+    ),
+    dynamics = Namespace(
+      type = 'PPNeuronIGRSynapses',
+      activation = Namespace(type='relu')
+    ),
+    edge_config = Namespace(
+      sign = Namespace(
+        type = 'SynapseSign',
+        form = 'value',
+        requires_grad = False,
+        initial_dist = 'Value',
+        groupby = ['source_type', 'target_type']
+      ),
+      syn_count = Namespace(
+        type = 'SynapseCount',
+        initial_dist = 'Lognormal',
+        mode = 'mean',
+        requires_grad = False,
+        std = 1.0,
+        groupby = ['source_type', 'target_type', 'dv', 'du'],
+        penalize = Namespace(
+          function = 'weight_decay',
+          kwargs = Namespace(lambda=0)
+        )
+      ),
+      syn_strength = Namespace(
+        type = 'SynapseCountScaling',
+        initial_dist = 'Value',
+        requires_grad = True,
+        scale = 0.01,
+        clamp = 'non_negative',
+        groupby = ['source_type', 'target_type'],
+        penalize = Namespace(
+          function = 'weight_decay',
+          kwargs = Namespace(lambda=0)
+        )
+      )
+    ),
+    node_config = Namespace(
+      bias = Namespace(
+        type = 'RestingPotential',
+        groupby = ['type'],
+        initial_dist = 'Normal',
+        mode = 'sample',
+        requires_grad = True,
+        seed = 0,
+        mean = 0.5,
+        std = 0.05,
+        symmetric = [],
+        penalize = Namespace(activity=True)
+      ),
+      time_const = Namespace(
+        type = 'TimeConstant',
+        groupby = ['type'],
+        initial_dist = 'Value',
+        value = 0.05,
+        requires_grad = True
+      )
+    ),
+    stimulus_config = Namespace(type='Stimulus', init_buffer=False)
+  ),
+  task = Namespace(
+    dataset = Namespace(
+      type = 'MultiTaskSintel',
+      tasks = ['flow'],
+      boxfilter = Namespace(extent=15, kernel_size=13),
+      vertical_splits = 3,
+      n_frames = 19,
+      center_crop_fraction = 0.7,
+      dt = 0.02,
+      augment = True,
+      random_temporal_crop = True,
+      all_frames = False,
+      resampling = True,
+      interpolate = True,
+      p_flip = 0.5,
+      p_rot = 0.5,
+      contrast_std = 0.2,
+      brightness_std = 0.1,
+      gaussian_white_noise = 0.08,
+      gamma_std = None,
+      _init_cache = True,
+      unittest = False,
+      flip_axes = [0, 1, 2, 3]
+    ),
+    decoder = Namespace(
+      flow = Namespace(
+        type = 'DecoderGAVP',
+        shape = [8, 2],
+        kernel_size = 5,
+        const_weight = 0.001,
+        n_out_features = None,
+        p_dropout = 0.5
+      )
+    ),
+    loss = Namespace(flow='l2norm'),
+    task_weights = None,
+    batch_size = 4,
+    n_iters = 250000,
+    n_folds = 4,
+    fold = 1,
+    seed = 0,
+    original_split = True
+  ),
+  optim = Namespace(
+    type = 'Adam',
+    optim_dec = Namespace(lr=5e-05),
+    optim_net = Namespace(lr=5e-05)
+  ),
+  penalizer = Namespace(
+    activity_penalty = Namespace(
+      activity_baseline = 5.0,
+      activity_penalty = 0.1,
+      stop_iter = 150000,
+      below_baseline_penalty_weight = 1.0,
+      above_baseline_penalty_weight = 0.1
+    ),
+    optim = 'SGD'
+  ),
+  scheduler = Namespace(
+    lr_net = Namespace(function='stepwise', start=5e-05, stop=5e-06, steps=10),
+    lr_dec = Namespace(function='stepwise', start=5e-05, stop=5e-06, steps=10),
+    lr_pen = Namespace(function='stepwise', start=5e-05, stop=5e-06, steps=10),
+    dt = Namespace(function='stepwise', start=0.02, stop=0.02, steps=10),
+    chkpt_every_epoch = 300
+  ),
+  delete_if_exists = False
+)
+META {"status": "PREVIEW DIAGNOSTIC -- NOT A TEST (gray-stimulus control, brief docs/briefs/2026-09-16-step1-gray-stimulus.md v4; n=6 individuals)", "brief": "docs/briefs/2026-09-16-step1-gray-stimulus.md (v4, commit f915d59)", "launch": "Mike's explicit word in the DPC Research chat, 2026-09-17T08:14:48Z: \u00ab@CC_windows \u00ab\u0437\u0430\u043f\u0443\u0441\u043a\u0430\u0439 \u0448\u0430\u0433 1\u00bb", "script_sha256": {"results/diagnostics/gray/gray_stimulus.py": "2c66e661a142823b743014602adbe756e9966d058de775e6dc5fa02c5b951422", "results/night2/diagnostics/diag1_eval_paths.py": "bfb3ca5eb1d20b3084d09cac57e333efae2a34b7ec4b503d60602275d13bd9f1", "results/night2/diagnostics/ablation/ablation.py": "1545b53b14b64758f0cc5630a8be8a635ff1e3cf0a1083aec375d251b0eff328", "results/night2/diagnostics/rowB/rowB.py": "195a89b555bedf3a0ff00a4c4e0542eafa6370243fbf9ed954f5fe8fbf7f4082", "results/night3/diagnostics/rowB/rowB.py": "195a89b555bedf3a0ff00a4c4e0542eafa6370243fbf9ed954f5fe8fbf7f4082", "results/night3/diagnostics/ablation/ablation_night3.py": "c20013b4ab0826af6d89cccd653d1cfa601915017fbbd04156fe1628ffac156a"}, "flyvis": "1.2.0", "torch": "2.9.1+cu128", "python": "3.10.20", "gpu": "NVIDIA RTX PRO 4500 Blackwell", "netdir": "C:\\Users\\mikha\\AppData\\Local\\Temp\\claude\\c--Users-mikha-Documents-dpc-research-autoresearch-win-rtx\\03852100-01fd-45ef-82c3-e22ac607b0f7\\scratchpad\\gray_v4\\netdir_v4_main\\flow\\9991\\000", "device": "cuda", "utc": "2026-09-17T08:21:48Z", "pid": 48468, "runs": {"000": "seed0", "900": "seed0prime", "001": "seed1", "002": "seed2", "003": "seed3", "004": "seed4"}, "labels": ["seed0", "seed0prime", "seed1", "seed2", "seed3", "seed4"], "checkpoints": {"chkpt_00000": 0, "chkpt_00071": 250008}, "checkpoint_index_to_solver_iteration": {"0": 0, "71": 250008}, "conditions": {"real": "condition (c): the unmodified data['lum'] -- the identity transform; diag1_eval_paths.py:191 unchanged", "gray": "condition (a): torch.full_like(data['lum'], 0.5) -- every input element 0.5, flyvis's own resting/background value (network.py:548-586, moving_bar.py:194)", "zero": "condition (b): torch.zeros_like(data['lum']) -- every input element 0.0, full-field black; NOT the resting state", "shuffled": "condition (d): data['lum'] with its frame axis (dim 1) permuted by numpy.random.default_rng([SHUFFLE_SEED, item_index]).permutation(n_frames), SHUFFLE_SEED=20260916; content and per-frame image statistics preserved, temporal ordering destroyed; the target is NOT permuted"}, "shuffle_seed": 20260916, "shuffle_derivation": "numpy.random.default_rng([SHUFFLE_SEED, item_index]).permutation(n_frames), item_index = the dataloader enumeration index 0..15; identical in every process", "batch_size": 1, "dt": 0.02, "t_pre": 0.25, "steady_state_value": 0.5, "augmentation": false, "ablation_hook_registered": false, "copy_note": "per_item_eval_transformed is a line-for-line copy of diag1_eval_paths.py:176-201; only the argument of :191 and the loop variable `_`->`_i` on :188 differ -- verified by code_gate (brief v4 Sec 6), see code_gate in this json"}
+[2026-09-17 10:21:48] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:21:48] chkpt_utils:36 Recovered network state.
+[2026-09-17 10:21:48] chkpt_utils:65 Recovered flow decoder state.
+[2026-09-17 10:21:48] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+C:\Users\mikha\AppData\Local\Temp\claude\c--Users-mikha-Documents-dpc-research-autoresearch-win-rtx\63f3961a-96ce-4048-8338-72c162ea66f8\scratchpad\flyvis-probe\.venv\lib\site-packages\torch\utils\_device.py:103: UserWarning: Using a non-tuple sequence for multidimensional indexing is deprecated and will be changed in pytorch 2.9; use x[tuple(seq)] instead of x[seq]. In pytorch 2.9 this will be interpreted as tensor index, x[torch.tensor(seq)], which will result either in an error or a different result (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\pytorch\torch\csrc\autograd\python_variable_indexing.cpp:351.)
+  return func(*args, **kwargs)
+[2026-09-17 10:21:48] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:21:48] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:21:48] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:21:48] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:21:49] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:21:49] solver:501 Test
+CONTROL {"run": "000", "chkpt": "chkpt_00000", "solver_iteration": 0, "n_original_calls": 5, "n_pairs": 10, "floor_max_abs_per_item_diff_over_10_pairs": "0.0", "floor_max_abs_mean_diff_over_10_pairs": "0.0", "floor_per_pair_max_abs_per_item_diff": {"B1-B2": "0.0", "B1-B3": "0.0", "B1-B4": "0.0", "B1-B5": "0.0", "B2-B3": "0.0", "B2-B4": "0.0", "B2-B5": "0.0", "B3-B4": "0.0", "B3-B5": "0.0", "B4-B5": "0.0"}, "floor_per_pair_abs_mean_diff": {"B1-B2": "0.0", "B1-B3": "0.0", "B1-B4": "0.0", "B1-B5": "0.0", "B2-B3": "0.0", "B2-B4": "0.0", "B2-B5": "0.0", "B3-B4": "0.0", "B3-B5": "0.0", "B4-B5": "0.0"}, "original_means_B1_to_B5": ["1212.5555891990662", "1212.5555891990662", "1212.5555891990662", "1212.5555891990662", "1212.5555891990662"], "n_distinct_original_means": 1, "copy_A_mean": "1212.5555891990662", "copy_vs_each_original_max_abs_per_item": {"A-B1": "0.0", "A-B2": "0.0", "A-B3": "0.0", "A-B4": "0.0", "A-B5": "0.0"}, "copy_vs_each_original_mean_diff": {"A-B1": "0.0", "A-B2": "0.0", "A-B3": "0.0", "A-B4": "0.0", "A-B5": "0.0"}, "copy_vs_each_original_bitwise_equal": {"A==B1": true, "A==B2": true, "A==B3": true, "A==B4": true, "A==B5": true}, "copy_bitwise_equal_to_all_originals": true, "original_pairs_bitwise_equal": {"B1==B2": true, "B1==B3": true, "B1==B4": true, "B1==B5": true, "B2==B3": true, "B2==B4": true, "B2==B5": true, "B3==B4": true, "B3==B5": true, "B4==B5": true}, "copy_worst_pair": "A-B1", "copy_worst_max_abs_per_item": "0.0", "copy_worst_mean_pair": "A-B1", "copy_worst_abs_mean_diff": "0.0", "ceiling_per_item": "0.00146484375", "ceiling_mean": "0.0001", "ceiling_per_item_respected": true, "ceiling_mean_respected": true, "originals_floor_exceeds_ceiling_per_item_recorded_only": false, "originals_floor_exceeds_ceiling_mean_recorded_only": false, "copy_A_per_item": ["4222.93798828125", "4526.18994140625", "4928.9189453125", "123.35961151123047", "106.6323471069336", "130.35470581054688", "774.1333618164062", "780.2822875976562", "633.8546142578125", "1196.8843994140625", "769.3876953125", "495.92431640625", "227.32440185546875", "186.8564910888672", "89.11231231689453", "208.7360076904297"], "original_B_per_item": [["4222.93798828125", "4526.18994140625", "4928.9189453125", "123.35961151123047", "106.6323471069336", "130.35470581054688", "774.1333618164062", "780.2822875976562", "633.8546142578125", "1196.8843994140625", "769.3876953125", "495.92431640625", "227.32440185546875", "186.8564910888672", "89.11231231689453", "208.7360076904297"], ["4222.93798828125", "4526.18994140625", "4928.9189453125", "123.35961151123047", "106.6323471069336", "130.35470581054688", "774.1333618164062", "780.2822875976562", "633.8546142578125", "1196.8843994140625", "769.3876953125", "495.92431640625", "227.32440185546875", "186.8564910888672", "89.11231231689453", "208.7360076904297"], ["4222.93798828125", "4526.18994140625", "4928.9189453125", "123.35961151123047", "106.6323471069336", "130.35470581054688", "774.1333618164062", "780.2822875976562", "633.8546142578125", "1196.8843994140625", "769.3876953125", "495.92431640625", "227.32440185546875", "186.8564910888672", "89.11231231689453", "208.7360076904297"], ["4222.93798828125", "4526.18994140625", "4928.9189453125", "123.35961151123047", "106.6323471069336", "130.35470581054688", "774.1333618164062", "780.2822875976562", "633.8546142578125", "1196.8843994140625", "769.3876953125", "495.92431640625", "227.32440185546875", "186.8564910888672", "89.11231231689453", "208.7360076904297"], ["4222.93798828125", "4526.18994140625", "4928.9189453125", "123.35961151123047", "106.6323471069336", "130.35470581054688", "774.1333618164062", "780.2822875976562", "633.8546142578125", "1196.8843994140625", "769.3876953125", "495.92431640625", "227.32440185546875", "186.8564910888672", "89.11231231689453", "208.7360076904297"]], "copy_fidelity_rule": "brief v4 Sec 6: numbers recorded, not gating; stop only on a documented ceiling: per-item |A - B_k| > 1.5 x 0.0009765625 = 0.00146484375, or 16-item-mean |mean(A) - mean(B_k)| > 1e-4, for any k; iteration 0: bitwise recorded, same ceilings (deviation from 'at iteration 0 equality stays bitwise', per C3 Part B)", "copy_fidelity_ceilings_pass": true, "stored_checkpoint_val_loss": "1212.5555891990662", "P0_per_item_mean": "1212.5555891990662", "P0_mean_minus_stored": "0.0", "P0_hook_path_value": "1212.5555891990662", "P0_per_item_mean_minus_hook": "0.0", "P0_pass_1e-4": true}
+[2026-09-17 10:21:49] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:21:49] chkpt_utils:36 Recovered network state.
+[2026-09-17 10:21:49] chkpt_utils:65 Recovered flow decoder state.
+[2026-09-17 10:21:49] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:21:49] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:21:49] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:21:50] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:21:50] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:21:50] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:21:50] solver:501 Test
+CONTROL {"run": "000", "chkpt": "chkpt_00071", "solver_iteration": 250008, "n_original_calls": 5, "n_pairs": 10, "floor_max_abs_per_item_diff_over_10_pairs": "0.000732421875", "floor_max_abs_mean_diff_over_10_pairs": "0.000110626220703125", "floor_per_pair_max_abs_per_item_diff": {"B1-B2": "0.00048828125", "B1-B3": "0.00048828125", "B1-B4": "0.00048828125", "B1-B5": "0.000732421875", "B2-B3": "0.00048828125", "B2-B4": "0.00048828125", "B2-B5": "0.0003662109375", "B3-B4": "0.000244140625", "B3-B5": "0.00048828125", "B4-B5": "0.00048828125"}, "floor_per_pair_abs_mean_diff": {"B1-B2": "0.00010967254638671875", "B1-B3": "0.00010061264038085938", "B1-B4": "0.000110626220703125", "B1-B5": "8.821487426757812e-05", "B2-B3": "9.059906005859375e-06", "B2-B4": "9.5367431640625e-07", "B2-B5": "2.1457672119140625e-05", "B3-B4": "1.0013580322265625e-05", "B3-B5": "1.239776611328125e-05", "B4-B5": "2.2411346435546875e-05"}, "original_means_B1_to_B5": ["1148.8075399398804", "1148.807430267334", "1148.80743932724", "1148.8074293136597", "1148.807451725006"], "n_distinct_original_means": 5, "copy_A_mean": "1148.8074197769165", "copy_vs_each_original_max_abs_per_item": {"A-B1": "0.00048828125", "A-B2": "0.00048828125", "A-B3": "0.000244140625", "A-B4": "0.000244140625", "A-B5": "0.00048828125"}, "copy_vs_each_original_mean_diff": {"A-B1": "-0.0001201629638671875", "A-B2": "-1.049041748046875e-05", "A-B3": "-1.9550323486328125e-05", "A-B4": "-9.5367431640625e-06", "A-B5": "-3.1948089599609375e-05"}, "copy_vs_each_original_bitwise_equal": {"A==B1": false, "A==B2": false, "A==B3": false, "A==B4": false, "A==B5": false}, "copy_bitwise_equal_to_all_originals": false, "original_pairs_bitwise_equal": {"B1==B2": false, "B1==B3": false, "B1==B4": false, "B1==B5": false, "B2==B3": false, "B2==B4": false, "B2==B5": false, "B3==B4": false, "B3==B5": false, "B4==B5": false}, "copy_worst_pair": "A-B1", "copy_worst_max_abs_per_item": "0.00048828125", "copy_worst_mean_pair": "A-B1", "copy_worst_abs_mean_diff": "0.0001201629638671875", "ceiling_per_item": "0.00146484375", "ceiling_mean": "0.0001", "ceiling_per_item_respected": true, "ceiling_mean_respected": false, "originals_floor_exceeds_ceiling_per_item_recorded_only": false, "originals_floor_exceeds_ceiling_mean_recorded_only": true, "copy_A_per_item": ["4048.844970703125", "4363.814453125", "4764.62109375", "93.36492919921875", "79.38644409179688", "104.89823913574219", "687.7188720703125", "690.90625", "546.3439331054688", "1181.232666015625", "679.7901611328125", "445.0691223144531", "208.05987548828125", "183.49951171875", "101.5423583984375", "201.82583618164062"], "original_B_per_item": [["4048.845458984375", "4363.81494140625", "4764.62158203125", "93.36491394042969", "79.38642120361328", "104.89820861816406", "687.7188110351562", "690.9063720703125", "546.3441162109375", "1181.232666015625", "679.7901611328125", "445.0693054199219", "208.0598907470703", "183.4995574951172", "101.54236602783203", "201.82586669921875"], ["4048.844970703125", "4363.81494140625", "4764.62109375", "93.36492156982422", "79.38642883300781", "104.89818572998047", "687.7188720703125", "690.9061279296875", "546.343994140625", "1181.2325439453125", "679.7902221679688", "445.0690612792969", "208.05987548828125", "183.49952697753906", "101.54232788085938", "201.82579040527344"], ["4048.844970703125", "4363.814453125", "4764.62109375", "93.36491394042969", "79.3864517211914", "104.89818572998047", "687.7188720703125", "690.906494140625", "546.343994140625", "1181.232666015625", "679.7901000976562", "445.0692443847656", "208.05990600585938", "183.49949645996094", "101.54235076904297", "201.82583618164062"], ["4048.84521484375", "4363.814453125", "4764.62109375", "93.36492919921875", "79.38640594482422", "104.89820098876953", "687.7186889648438", "690.9063110351562", "546.3441162109375", "1181.2325439453125", "679.7901611328125", "445.069091796875", "208.0599365234375", "183.49951171875", "101.54237365722656", "201.82583618164062"], ["4048.8447265625", "4363.81494140625", "4764.62109375", "93.36492919921875", "79.38644409179688", "104.89816284179688", "687.7188110351562", "690.906494140625", "546.3440551757812", "1181.232666015625", "679.7902221679688", "445.069091796875", "208.0599365234375", "183.49949645996094", "101.54230499267578", "201.8258514404297"]], "copy_fidelity_rule": "brief v4 Sec 6: numbers recorded, not gating; stop only on a documented ceiling: per-item |A - B_k| > 1.5 x 0.0009765625 = 0.00146484375, or 16-item-mean |mean(A) - mean(B_k)| > 1e-4, for any k; iteration 0: bitwise recorded, same ceilings (deviation from 'at iteration 0 equality stays bitwise', per C3 Part B)", "copy_fidelity_ceilings_pass": false, "stored_checkpoint_val_loss": "1148.8074851036072", "P0_per_item_mean": "1148.8074197769165", "P0_mean_minus_stored": "-6.532669067382812e-05", "P0_hook_path_value": "1148.8074426651", "P0_per_item_mean_minus_hook": "-2.288818359375e-05", "P0_pass_1e-4": true}
+CONTROL VERDICT FAIL (in --task main: documented ceiling breached or P0 > 1e-4) -- stopping before the sweep; nothing written
