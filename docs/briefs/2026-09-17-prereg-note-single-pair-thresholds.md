@@ -1,5 +1,7 @@
 # Brief — pre-registration note: the two b2 measurability thresholds rest on a single pair
 
+**Applied 2026-09-17 in <hash-to-be>.**
+
 **Date:** 2026-09-17. Proposed text only — **not applied** to
 `docs/preregistration-cheap-vs-expensive.md`. Written by CC's subagent, from
 `docs/preregistration-cheap-vs-expensive.md` §4 (the top-k measurability paragraph), §7 (the run
