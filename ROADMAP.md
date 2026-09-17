@@ -145,15 +145,18 @@ the pre-registration's own §9 — that confirmation line is still unfilled in t
    been computed yet.
 
    **Observed complications, no rule changed by either:**
-   - **(i) C3 sits on a steep descent whose onset varies between runs.** A dense-hook diagnostic
+   - **(i) C3 sits on a steep descent; a point value there catches the phase of that descent.**
+     Whether the onset varies between runs is Inferred (run 703 holds a plateau of 1204–1208 until
+     ≈ 17,000; seeds 2, 4 and 5 read 1204–1209 at 25,000), not measured. A dense-hook diagnostic
      run (id `9991/703`, a third throw of seed 3,
      [results/diagnostics/c3/](results/diagnostics/c3/README.md)) reads the hook every 100 (and
      every 25) iterations across 20,000–26,000: local slope ≈ −0.0027 to −0.0033/iteration,
      residual sd around the fitted trend **≈ 1.8–2.2**, flat across lags 25–100. Against that:
      the registered C3 replicate difference from the one pair on record before night 4 was
      **0.3365** (0/0′, §7 of the pre-registration); the second replicate pair (3/3′, night 4)
-     gives **5.18** at the exact hook (rounds from 5.1847, ≈15× larger) and the opposite sign at
-     the neighbouring checkpoint (25,212: −2.9157) — the §4/§7 b2 measurability threshold
+     gives **−5.18** at the exact hook (from −5.1847: ≈15× the magnitude and the opposite sign of
+     0/0′'s +0.3365) and −2.92 at the neighbouring checkpoint 25,212; a third throw gives 703 − 003 =
+     −4.76 and 703 − 903 = +0.43 at the hook — the §4/§7 b2 measurability threshold
      (0.3365) rests on a single replicate pair and is not stable across replicates of the same
      seed (`docs/experiments/004-night4-replicate-3prime-and-seed-5.md` §4, "The C3 finding").
    - **(ii) A window-integral statistic is under review as a candidate for the next
