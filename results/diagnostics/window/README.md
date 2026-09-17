@@ -161,6 +161,19 @@ pass/fail statement; at n = 6 nothing below 0.829 is resolvable from chance.
 | W2 21612–28812 (=A narrow) | 0.4857 |
 | W3 25212–32412 | 0.7143 |
 
+> **Preview of the registered statistic (b) at n = 6, before N is chosen — not a test, changes
+> no decision; the registered test is read once at the final N with that N's critical value.**
+> Honest reading: in this six the descent phase covaried with the final ranking. The value
+> rests on one pair: swapping the ranks of seeds 4 and 5 (250k difference 6.01 against a
+> reproducibility of ±2.64; C3 difference 3.83 against ±2) gives ρ = 0.714, below the n = 6
+> critical value 0.829 (Ark, recomputed by hand). Any citation of this number carries this
+> label. — confirmed by Ark (chat, 2026-09-17 08:51:11Z) and Zcode (chat, 2026-09-17
+> 08:52:47Z).
+
+Ark's recomputation of the group split (chat, 2026-09-17 08:51Z; reported here, not
+recomputed): early-onset seeds (0, 1, 3) mean 1148.0 vs late-onset seeds (2, 4, 5) mean 1153.7
+at 250k, F = 2.25 on 1 and 4 degrees of freedom, not significant.
+
 Critical ρ at n = 6 is **0.829** (same table, same caveat as §3). Read plainly: the point
 statistic's ρ (0.8857) is above that value; every window statistic's ρ (0.4857–0.7143) is
 below it. **This is not the registered (b) test** (that test is defined at C3 with its own N
