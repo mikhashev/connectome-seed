@@ -1,0 +1,6 @@
+# PREVIEW DIAGNOSTIC -- NOT A TEST
+# recorded 2026-09-17T06:59:15Z, before the A1 launch; repo HEAD a8a800813448ec2979a717a380a58955a17fea6a
+4aafb2c481551e2b51a7ca65f02a04fd691c81d80a14a591b72688b8534e7d5d *tools/night/run_individual.py
+25b9050319fc78ae4cc8894c31fc8753c07b6f5edc6eccc5c90e91f8985cc705 *results/diagnostics/c3/c3_jitter_reading.py
+d402eb4140ead741a9c3fcf603647dbfd210ff7facd034b0bbe943ea7f57e531 *results/diagnostics/c3/c3_evaluator_floor.py
+4aafb2c481551e2b51a7ca65f02a04fd691c81d80a14a591b72688b8534e7d5d */c/Users/mikha/AppData/Local/Temp/claude/c--Users-mikha-Documents-dpc-research-autoresearch-win-rtx/03852100-01fd-45ef-82c3-e22ac607b0f7/scratchpad/../../63f3961a-96ce-4048-8338-72c162ea66f8/scratchpad/flyvis-probe/night/run_individual.py

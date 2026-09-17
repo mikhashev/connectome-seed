@@ -1,0 +1,5 @@
+argv ['--seed', '3', '--id', '9991/903', '--n-iters', '250000', '--rungs', '1000,5000,25000,250000', '--tag', 'rep', '--out-dir', 'C:\\Users\\mikha\\AppData\\Local\\Temp\\claude\\c--Users-mikha-Documents-dpc-research-autoresearch-win-rtx\\63f3961a-96ce-4048-8338-72c162ea66f8\\scratchpad\\flyvis-probe\\night', '--no-determinism', '--progress-every', '100', '--progress-file', 'C:\\Users\\mikha\\AppData\\Local\\Temp\\claude\\c--Users-mikha-Documents-dpc-research-autoresearch-win-rtx\\63f3961a-96ce-4048-8338-72c162ea66f8\\scratchpad\\flyvis-probe\\night\\wave_night4.progress.log']
+orig keys 12 patched keys 13
+equal common keys: True ['id', 'n_iters', 'no_determinism', 'out_dir', 'override', 'progress_every', 'progress_file', 'resume', 'rungs', 'seed', 'sync_every', 'tag']
+extra in patched: {'stop_after_iter': None}
+missing in patched: []
