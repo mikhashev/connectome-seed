@@ -1,0 +1,1067 @@
+{
+  "script_sha256_note": "hash of this script BEFORE this run appended it below (computed pre-write; the written window_readings.json necessarily postdates it)",
+  "script_sha256": "9a10dbad7535e32f6446cc3eda28352b9c0739ceb7189fc334c7fd7bc6e8c60c",
+  "windows": {
+    "A_narrow_20k_30k": [
+      21612,
+      25212,
+      28812
+    ],
+    "A_wide_18012_32412": [
+      18012,
+      21612,
+      25212,
+      28812,
+      32412
+    ],
+    "W1_18012_25212": [
+      18012,
+      21612,
+      25212
+    ],
+    "W2_21612_28812": [
+      21612,
+      25212,
+      28812
+    ],
+    "W3_25212_32412": [
+      25212,
+      28812,
+      32412
+    ]
+  },
+  "onset_level": 1200.0,
+  "ckpt_interval": 3600,
+  "per_run": {
+    "seed0": {
+      "point_25000_hook": 1191.737461090088,
+      "point_250000_hook": 1146.1958270072937,
+      "checkpoints_in_window": {},
+      "window_means": {
+        "A_narrow_20k_30k": {
+          "mean": 1192.129298845927,
+          "used_iterations": [
+            21612,
+            25212,
+            28812
+          ],
+          "missing_iterations": [],
+          "n_points": 3
+        },
+        "A_wide_18012_32412": {
+          "mean": 1191.636166191101,
+          "used_iterations": [
+            18012,
+            21612,
+            25212,
+            28812,
+            32412
+          ],
+          "missing_iterations": [],
+          "n_points": 5
+        },
+        "W1_18012_25212": {
+          "mean": 1199.3537979125977,
+          "used_iterations": [
+            18012,
+            21612,
+            25212
+          ],
+          "missing_iterations": [],
+          "n_points": 3
+        },
+        "W2_21612_28812": {
+          "mean": 1192.129298845927,
+          "used_iterations": [
+            21612,
+            25212,
+            28812
+          ],
+          "missing_iterations": [],
+          "n_points": 3
+        },
+        "W3_25212_32412": {
+          "mean": 1184.2895943323772,
+          "used_iterations": [
+            25212,
+            28812,
+            32412
+          ],
+          "missing_iterations": [],
+          "n_points": 3
+        }
+      },
+      "onset_estimate": {
+        "iteration": 21273.74827409646,
+        "bracket": [
+          18012,
+          21612
+        ],
+        "source": "checkpoint_metrics (linear interpolation)"
+      }
+    },
+    "seed1": {
+      "point_25000_hook": 1190.2234511375427,
+      "point_250000_hook": 1145.3572120666504,
+      "checkpoints_in_window": {},
+      "window_means": {
+        "A_narrow_20k_30k": {
+          "mean": 1192.1817838350933,
+          "used_iterations": [
+            21612,
+            25212,
+            28812
+          ],
+          "missing_iterations": [],
+          "n_points": 3
+        },
+        "A_wide_18012_32412": {
+          "mean": 1190.8346088409423,
+          "used_iterations": [
+            18012,
+            21612,
+            25212,
+            28812,
+            32412
+          ],
+          "missing_iterations": [],
+          "n_points": 5
+        },
+        "W1_18012_25212": {
+          "mean": 1199.748531659444,
+          "used_iterations": [
+            18012,
+            21612,
+            25212
+          ],
+          "missing_iterations": [],
+          "n_points": 3
+        },
+        "W2_21612_28812": {
+          "mean": 1192.1817838350933,
+          "used_iterations": [
+            21612,
+            25212,
+            28812
+          ],
+          "missing_iterations": [],
+          "n_points": 3
+        },
+        "W3_25212_32412": {
+          "mean": 1182.4459257125854,
+          "used_iterations": [
+            25212,
+            28812,
+            32412
+          ],
+          "missing_iterations": [],
+          "n_points": 3
+        }
+      },
+      "onset_estimate": {
+        "iteration": 22384.240134899195,
+        "bracket": [
+          21612,
+          25212
+        ],
+        "source": "checkpoint_metrics (linear interpolation)"
+      }
+    },
+    "seed2": {
+      "point_25000_hook": 1204.361764907837,
+      "point_250000_hook": 1148.8000235557556,
+      "checkpoints_in_window": {},
+      "window_means": {
+        "A_narrow_20k_30k": {
+          "mean": 1203.9744923909504,
+          "used_iterations": [
+            21612,
+            25212,
+            28812
+          ],
+          "missing_iterations": [],
+          "n_points": 3
+        },
+        "A_wide_18012_32412": {
+          "mean": 1203.558271598816,
+          "used_iterations": [
+            18012,
+            21612,
+            25212,
+            28812,
+            32412
+          ],
+          "missing_iterations": [],
+          "n_points": 5
+        },
+        "W1_18012_25212": {
+          "mean": 1205.8219804763794,
+          "used_iterations": [
+            18012,
+            21612,
+            25212
+          ],
+          "missing_iterations": [],
+          "n_points": 3
+        },
+        "W2_21612_28812": {
+          "mean": 1203.9744923909504,
+          "used_iterations": [
+            21612,
+            25212,
+            28812
+          ],
+          "missing_iterations": [],
+          "n_points": 3
+        },
+        "W3_25212_32412": {
+          "mean": 1202.1012002627056,
+          "used_iterations": [
+            25212,
+            28812,
+            32412
+          ],
+          "missing_iterations": [],
+          "n_points": 3
+        }
+      },
+      "onset_estimate": {
+        "iteration": 31098.234536088596,
+        "bracket": [
+          28812,
+          32412
+        ],
+        "source": "checkpoint_metrics (linear interpolation)"
+      }
+    },
+    "seed3": {
+      "point_25000_hook": 1192.585838317871,
+      "point_250000_hook": 1152.5065627098083,
+      "checkpoints_in_window": {},
+      "window_means": {
+        "A_narrow_20k_30k": {
+          "mean": 1192.1106499036152,
+          "used_iterations": [
+            21612,
+            25212,
+            28812
+          ],
+          "missing_iterations": [],
+          "n_points": 3
+        },
+        "A_wide_18012_32412": {
+          "mean": 1190.9610054016114,
+          "used_iterations": [
+            18012,
+            21612,
+            25212,
+            28812,
+            32412
+          ],
+          "missing_iterations": [],
+          "n_points": 5
+        },
+        "W1_18012_25212": {
+          "mean": 1198.6656416257222,
+          "used_iterations": [
+            18012,
+            21612,
+            25212
+          ],
+          "missing_iterations": [],
+          "n_points": 3
+        },
+        "W2_21612_28812": {
+          "mean": 1192.1106499036152,
+          "used_iterations": [
+            21612,
+            25212,
+            28812
+          ],
+          "missing_iterations": [],
+          "n_points": 3
+        },
+        "W3_25212_32412": {
+          "mean": 1182.9532651901245,
+          "used_iterations": [
+            25212,
+            28812,
+            32412
+          ],
+          "missing_iterations": [],
+          "n_points": 3
+        }
+      },
+      "onset_estimate": {
+        "iteration": 22152.44208125643,
+        "bracket": [
+          21612,
+          25212
+        ],
+        "source": "checkpoint_metrics (linear interpolation)"
+      }
+    },
+    "seed4": {
+      "point_25000_hook": 1208.6099381446838,
+      "point_250000_hook": 1153.1134448051453,
+      "checkpoints_in_window": {},
+      "window_means": {
+        "A_narrow_20k_30k": {
+          "mean": 1203.2534755071003,
+          "used_iterations": [
+            21612,
+            25212,
+            28812
+          ],
+          "missing_iterations": [],
+          "n_points": 3
+        },
+        "A_wide_18012_32412": {
+          "mean": 1203.3126575469971,
+          "used_iterations": [
+            18012,
+            21612,
+            25212,
+            28812,
+            32412
+          ],
+          "missing_iterations": [],
+          "n_points": 5
+        },
+        "W1_18012_25212": {
+          "mean": 1205.5280243555706,
+          "used_iterations": [
+            18012,
+            21612,
+            25212
+          ],
+          "missing_iterations": [],
+          "n_points": 3
+        },
+        "W2_21612_28812": {
+          "mean": 1203.2534755071003,
+          "used_iterations": [
+            21612,
+            25212,
+            28812
+          ],
+          "missing_iterations": [],
+          "n_points": 3
+        },
+        "W3_25212_32412": {
+          "mean": 1201.088049252828,
+          "used_iterations": [
+            25212,
+            28812,
+            32412
+          ],
+          "missing_iterations": [],
+          "n_points": 3
+        }
+      },
+      "onset_estimate": {
+        "iteration": 30487.211527450854,
+        "bracket": [
+          28812,
+          32412
+        ],
+        "source": "checkpoint_metrics (linear interpolation)"
+      }
+    },
+    "seed5": {
+      "point_25000_hook": 1204.7794456481934,
+      "point_250000_hook": 1159.1157937049866,
+      "checkpoints_in_window": {},
+      "window_means": {
+        "A_narrow_20k_30k": {
+          "mean": 1207.0529710451763,
+          "used_iterations": [
+            21612,
+            25212,
+            28812
+          ],
+          "missing_iterations": [],
+          "n_points": 3
+        },
+        "A_wide_18012_32412": {
+          "mean": 1204.2487565040587,
+          "used_iterations": [
+            18012,
+            21612,
+            25212,
+            28812,
+            32412
+          ],
+          "missing_iterations": [],
+          "n_points": 5
+        },
+        "W1_18012_25212": {
+          "mean": 1208.818257490794,
+          "used_iterations": [
+            18012,
+            21612,
+            25212
+          ],
+          "missing_iterations": [],
+          "n_points": 3
+        },
+        "W2_21612_28812": {
+          "mean": 1207.0529710451763,
+          "used_iterations": [
+            21612,
+            25212,
+            28812
+          ],
+          "missing_iterations": [],
+          "n_points": 3
+        },
+        "W3_25212_32412": {
+          "mean": 1202.771516640981,
+          "used_iterations": [
+            25212,
+            28812,
+            32412
+          ],
+          "missing_iterations": [],
+          "n_points": 3
+        }
+      },
+      "onset_estimate": {
+        "iteration": 29296.08944496869,
+        "bracket": [
+          28812,
+          32412
+        ],
+        "source": "checkpoint_metrics (linear interpolation)"
+      }
+    },
+    "0prime": {
+      "point_25000_hook": 1192.0739254951477,
+      "point_250000_hook": 1158.9237432479858,
+      "checkpoints_in_window": {},
+      "window_means": {
+        "A_narrow_20k_30k": {
+          "mean": 1192.174305121104,
+          "used_iterations": [
+            21612,
+            25212,
+            28812
+          ],
+          "missing_iterations": [],
+          "n_points": 3
+        },
+        "A_wide_18012_32412": {
+          "mean": 1192.1392483711243,
+          "used_iterations": [
+            18012,
+            21612,
+            25212,
+            28812,
+            32412
+          ],
+          "missing_iterations": [],
+          "n_points": 5
+        },
+        "W1_18012_25212": {
+          "mean": 1199.5832414627075,
+          "used_iterations": [
+            18012,
+            21612,
+            25212
+          ],
+          "missing_iterations": [],
+          "n_points": 3
+        },
+        "W2_21612_28812": {
+          "mean": 1192.174305121104,
+          "used_iterations": [
+            21612,
+            25212,
+            28812
+          ],
+          "missing_iterations": [],
+          "n_points": 3
+        },
+        "W3_25212_32412": {
+          "mean": 1184.9238053957622,
+          "used_iterations": [
+            25212,
+            28812,
+            32412
+          ],
+          "missing_iterations": [],
+          "n_points": 3
+        }
+      },
+      "onset_estimate": {
+        "iteration": 21642.09441004415,
+        "bracket": [
+          21612,
+          25212
+        ],
+        "source": "checkpoint_metrics (linear interpolation)"
+      }
+    },
+    "3prime": {
+      "point_25000_hook": 1187.4011011123657,
+      "point_250000_hook": 1162.9374842643738,
+      "checkpoints_in_window": {},
+      "window_means": {
+        "A_narrow_20k_30k": {
+          "mean": 1190.4034649531047,
+          "used_iterations": [
+            21612,
+            25212,
+            28812
+          ],
+          "missing_iterations": [],
+          "n_points": 3
+        },
+        "A_wide_18012_32412": {
+          "mean": 1189.7096963882445,
+          "used_iterations": [
+            18012,
+            21612,
+            25212,
+            28812,
+            32412
+          ],
+          "missing_iterations": [],
+          "n_points": 5
+        },
+        "W1_18012_25212": {
+          "mean": 1197.7077061335247,
+          "used_iterations": [
+            18012,
+            21612,
+            25212
+          ],
+          "missing_iterations": [],
+          "n_points": 3
+        },
+        "W2_21612_28812": {
+          "mean": 1190.4034649531047,
+          "used_iterations": [
+            21612,
+            25212,
+            28812
+          ],
+          "missing_iterations": [],
+          "n_points": 3
+        },
+        "W3_25212_32412": {
+          "mean": 1180.8537990252178,
+          "used_iterations": [
+            25212,
+            28812,
+            32412
+          ],
+          "missing_iterations": [],
+          "n_points": 3
+        }
+      },
+      "onset_estimate": {
+        "iteration": 22046.14207262381,
+        "bracket": [
+          21612,
+          25212
+        ],
+        "source": "checkpoint_metrics (linear interpolation)"
+      }
+    },
+    "703": {
+      "point_25000_hook": 1187.8275809288025,
+      "point_250000_hook": null,
+      "checkpoints_in_window": {},
+      "window_means": {
+        "A_narrow_20k_30k": {
+          "mean": 1195.182784795761,
+          "used_iterations": [
+            21612,
+            25212
+          ],
+          "missing_iterations": [
+            28812
+          ],
+          "n_points": 2
+        },
+        "A_wide_18012_32412": {
+          "mean": 1198.2183853785198,
+          "used_iterations": [
+            18012,
+            21612,
+            25212
+          ],
+          "missing_iterations": [
+            28812,
+            32412
+          ],
+          "n_points": 3
+        },
+        "W1_18012_25212": {
+          "mean": 1198.2183853785198,
+          "used_iterations": [
+            18012,
+            21612,
+            25212
+          ],
+          "missing_iterations": [],
+          "n_points": 3
+        },
+        "W2_21612_28812": {
+          "mean": 1195.182784795761,
+          "used_iterations": [
+            21612,
+            25212
+          ],
+          "missing_iterations": [
+            28812
+          ],
+          "n_points": 2
+        },
+        "W3_25212_32412": {
+          "mean": 1187.9686732292175,
+          "used_iterations": [
+            25212
+          ],
+          "missing_iterations": [
+            28812,
+            32412
+          ],
+          "n_points": 1
+        }
+      },
+      "onset_estimate": {
+        "iteration": 21428.564750195343,
+        "bracket": [
+          21400,
+          21500
+        ],
+        "source": "dense rung_metrics (1000-26000)"
+      }
+    }
+  },
+  "run703_onset_calibration": {
+    "dense_onset_iteration": 21428.564750195343,
+    "dense_bracket": [
+      21400,
+      21500
+    ],
+    "checkpoint_subsample_onset_iteration": 22210.05194476852,
+    "checkpoint_subsample_bracket": [
+      21612,
+      25212
+    ],
+    "difference_subsample_minus_dense": 781.4871945731757,
+    "one_checkpoint_interval": 3600,
+    "onset_estimate_on_seven_full_runs_reliable": true
+  },
+  "within_seed_spread": {
+    "point_25000_hook": {
+      "seed0_pair_values": [
+        1191.737461090088,
+        1192.0739254951477
+      ],
+      "seed0_pair_sd": 0.2379162624456921,
+      "seed3_trio_values_703_included": [
+        1192.585838317871,
+        1187.4011011123657,
+        1187.8275809288025
+      ],
+      "seed3_trio_sd_703_included": 2.8782054103383454,
+      "seed3_pair_values_703_excluded": [
+        1192.585838317871,
+        1187.4011011123657
+      ],
+      "seed3_pair_sd_703_excluded": 3.6661628366830383,
+      "individuals_n6_values": [
+        1191.737461090088,
+        1190.2234511375427,
+        1204.361764907837,
+        1192.585838317871,
+        1208.6099381446838,
+        1204.7794456481934
+      ],
+      "individuals_n6_sd": 8.061418233539573,
+      "ratio_to_point_seed0": 1.0,
+      "ratio_to_point_seed3_703_included": 1.0,
+      "ratio_to_point_seed3_703_excluded": 1.0,
+      "clears_0.5x_seed0": false,
+      "clears_0.5x_seed3_703_included": false,
+      "clears_0.5x_seed3_703_excluded": false
+    },
+    "A_narrow_20k_30k": {
+      "seed0_pair_values": [
+        1192.129298845927,
+        1192.174305121104
+      ],
+      "seed0_pair_sd": 0.031824242373605864,
+      "seed3_trio_values_703_included": [
+        1192.1106499036152,
+        1190.4034649531047,
+        1195.182784795761
+      ],
+      "seed3_trio_sd_703_included": 2.421927311364466,
+      "seed3_pair_values_703_excluded": [
+        1192.1106499036152,
+        1190.4034649531047
+      ],
+      "seed3_pair_sd_703_excluded": 1.2071620552456017,
+      "individuals_n6_values": [
+        1192.129298845927,
+        1192.1817838350933,
+        1203.9744923909504,
+        1192.1106499036152,
+        1203.2534755071003,
+        1207.0529710451763
+      ],
+      "individuals_n6_sd": 7.028992237202212,
+      "ratio_to_point_seed0": 0.13376236683639992,
+      "ratio_to_point_seed3_703_included": 0.8414713219094943,
+      "ratio_to_point_seed3_703_excluded": 0.3292712596306229,
+      "clears_0.5x_seed0": true,
+      "clears_0.5x_seed3_703_included": false,
+      "clears_0.5x_seed3_703_excluded": true
+    },
+    "A_wide_18012_32412": {
+      "seed0_pair_values": [
+        1191.636166191101,
+        1192.1392483711243
+      ],
+      "seed0_pair_sd": 0.3557328209885758,
+      "seed3_trio_values_703_included": [
+        1190.9610054016114,
+        1189.7096963882445,
+        1198.2183853785198
+      ],
+      "seed3_trio_sd_703_included": 4.594074566028777,
+      "seed3_pair_values_703_excluded": [
+        1190.9610054016114,
+        1189.7096963882445
+      ],
+      "seed3_pair_sd_703_excluded": 0.8848090887115377,
+      "individuals_n6_values": [
+        1191.636166191101,
+        1190.8346088409423,
+        1203.558271598816,
+        1190.9610054016114,
+        1203.3126575469971,
+        1204.2487565040587
+      ],
+      "individuals_n6_sd": 6.893072798519398,
+      "ratio_to_point_seed0": 1.495201787939053,
+      "ratio_to_point_seed3_703_included": 1.5961593809556225,
+      "ratio_to_point_seed3_703_excluded": 0.2413447323883925,
+      "clears_0.5x_seed0": false,
+      "clears_0.5x_seed3_703_included": false,
+      "clears_0.5x_seed3_703_excluded": true
+    },
+    "W1_18012_25212": {
+      "seed0_pair_values": [
+        1199.3537979125977,
+        1199.5832414627075
+      ],
+      "seed0_pair_sd": 0.16224109018219976,
+      "seed3_trio_values_703_included": [
+        1198.6656416257222,
+        1197.7077061335247,
+        1198.2183853785198
+      ],
+      "seed3_trio_sd_703_included": 0.47931754421296174,
+      "seed3_pair_values_703_excluded": [
+        1198.6656416257222,
+        1197.7077061335247
+      ],
+      "seed3_pair_sd_703_excluded": 0.6773626824721402,
+      "individuals_n6_values": [
+        1199.3537979125977,
+        1199.748531659444,
+        1205.8219804763794,
+        1198.6656416257222,
+        1205.5280243555706,
+        1208.818257490794
+      ],
+      "individuals_n6_sd": 4.262849329617611,
+      "ratio_to_point_seed0": 0.6819251803740557,
+      "ratio_to_point_seed3_703_included": 0.16653347342454475,
+      "ratio_to_point_seed3_703_excluded": 0.18476066466403446,
+      "clears_0.5x_seed0": false,
+      "clears_0.5x_seed3_703_included": true,
+      "clears_0.5x_seed3_703_excluded": true
+    },
+    "W2_21612_28812": {
+      "seed0_pair_values": [
+        1192.129298845927,
+        1192.174305121104
+      ],
+      "seed0_pair_sd": 0.031824242373605864,
+      "seed3_trio_values_703_included": [
+        1192.1106499036152,
+        1190.4034649531047,
+        1195.182784795761
+      ],
+      "seed3_trio_sd_703_included": 2.421927311364466,
+      "seed3_pair_values_703_excluded": [
+        1192.1106499036152,
+        1190.4034649531047
+      ],
+      "seed3_pair_sd_703_excluded": 1.2071620552456017,
+      "individuals_n6_values": [
+        1192.129298845927,
+        1192.1817838350933,
+        1203.9744923909504,
+        1192.1106499036152,
+        1203.2534755071003,
+        1207.0529710451763
+      ],
+      "individuals_n6_sd": 7.028992237202212,
+      "ratio_to_point_seed0": 0.13376236683639992,
+      "ratio_to_point_seed3_703_included": 0.8414713219094943,
+      "ratio_to_point_seed3_703_excluded": 0.3292712596306229,
+      "clears_0.5x_seed0": true,
+      "clears_0.5x_seed3_703_included": false,
+      "clears_0.5x_seed3_703_excluded": true
+    },
+    "W3_25212_32412": {
+      "seed0_pair_values": [
+        1184.2895943323772,
+        1184.9238053957622
+      ],
+      "seed0_pair_sd": 0.4484549436230717,
+      "seed3_trio_values_703_included": [
+        1182.9532651901245,
+        1180.8537990252178,
+        1187.9686732292175
+      ],
+      "seed3_trio_sd_703_included": 3.655669362212807,
+      "seed3_pair_values_703_excluded": [
+        1182.9532651901245,
+        1180.8537990252178
+      ],
+      "seed3_pair_sd_703_excluded": 1.484546762077273,
+      "individuals_n6_values": [
+        1184.2895943323772,
+        1182.4459257125854,
+        1202.1012002627056,
+        1182.9532651901245,
+        1201.088049252828,
+        1202.771516640981
+      ],
+      "individuals_n6_sd": 10.305403316626412,
+      "ratio_to_point_seed0": 1.8849276590558333,
+      "ratio_to_point_seed3_703_included": 1.2701210792954027,
+      "ratio_to_point_seed3_703_excluded": 0.40493203062971883,
+      "clears_0.5x_seed0": false,
+      "clears_0.5x_seed3_703_included": false,
+      "clears_0.5x_seed3_703_excluded": true
+    }
+  },
+  "rank_stability_shifted_windows": {
+    "individuals_seed_order": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "values": {
+      "W1_18012_25212": [
+        1199.3537979125977,
+        1199.748531659444,
+        1205.8219804763794,
+        1198.6656416257222,
+        1205.5280243555706,
+        1208.818257490794
+      ],
+      "W2_21612_28812": [
+        1192.129298845927,
+        1192.1817838350933,
+        1203.9744923909504,
+        1192.1106499036152,
+        1203.2534755071003,
+        1207.0529710451763
+      ],
+      "W3_25212_32412": [
+        1184.2895943323772,
+        1182.4459257125854,
+        1202.1012002627056,
+        1182.9532651901245,
+        1201.088049252828,
+        1202.771516640981
+      ]
+    },
+    "midranks": {
+      "W1_18012_25212": [
+        2.0,
+        3.0,
+        5.0,
+        1.0,
+        4.0,
+        6.0
+      ],
+      "W2_21612_28812": [
+        2.0,
+        3.0,
+        5.0,
+        1.0,
+        4.0,
+        6.0
+      ],
+      "W3_25212_32412": [
+        3.0,
+        1.0,
+        5.0,
+        2.0,
+        4.0,
+        6.0
+      ]
+    },
+    "pairwise_spearman_rho": {
+      "W1_18012_25212__vs__W2_21612_28812": 1.0,
+      "W1_18012_25212__vs__W3_25212_32412": 0.8285714285714286,
+      "W2_21612_28812__vs__W3_25212_32412": 0.8285714285714286
+    },
+    "n": 6,
+    "critical_rho_n6_prereg_table": 0.829
+  },
+  "rho_with_250000_hook": {
+    "n": 6,
+    "target_250000_hook_values": [
+      1146.1958270072937,
+      1145.3572120666504,
+      1148.8000235557556,
+      1152.5065627098083,
+      1153.1134448051453,
+      1159.1157937049866
+    ],
+    "critical_rho_n6_prereg_table": 0.829,
+    "rho_by_statistic": {
+      "point_25000_hook": 0.8857142857142857,
+      "A_narrow_20k_30k": 0.4857142857142857,
+      "A_wide_18012_32412": 0.7142857142857143,
+      "W1_18012_25212": 0.4857142857142857,
+      "W2_21612_28812": 0.4857142857142857,
+      "W3_25212_32412": 0.7142857142857143
+    }
+  },
+  "promotion_criterion": {
+    "A_narrow_20k_30k": {
+      "condition_i_both_seed_sets_0.5x_703_included": false,
+      "condition_i_both_seed_sets_0.5x_703_excluded_pair": true,
+      "condition_ii_rho_not_lower_than_point": false,
+      "rho_window": 0.4857142857142857,
+      "rho_point": 0.8857142857142857
+    },
+    "A_wide_18012_32412": {
+      "condition_i_both_seed_sets_0.5x_703_included": false,
+      "condition_i_both_seed_sets_0.5x_703_excluded_pair": false,
+      "condition_ii_rho_not_lower_than_point": false,
+      "rho_window": 0.7142857142857143,
+      "rho_point": 0.8857142857142857
+    },
+    "W1_18012_25212": {
+      "condition_i_both_seed_sets_0.5x_703_included": false,
+      "condition_i_both_seed_sets_0.5x_703_excluded_pair": false,
+      "condition_ii_rho_not_lower_than_point": false,
+      "rho_window": 0.4857142857142857,
+      "rho_point": 0.8857142857142857
+    },
+    "W2_21612_28812": {
+      "condition_i_both_seed_sets_0.5x_703_included": false,
+      "condition_i_both_seed_sets_0.5x_703_excluded_pair": true,
+      "condition_ii_rho_not_lower_than_point": false,
+      "rho_window": 0.4857142857142857,
+      "rho_point": 0.8857142857142857
+    },
+    "W3_25212_32412": {
+      "condition_i_both_seed_sets_0.5x_703_included": false,
+      "condition_i_both_seed_sets_0.5x_703_excluded_pair": false,
+      "condition_ii_rho_not_lower_than_point": false,
+      "rho_window": 0.7142857142857143,
+      "rho_point": 0.8857142857142857
+    }
+  },
+  "option_B_train_loss_window_mean_703_only": {
+    "available_for": [
+      "703"
+    ],
+    "not_available_for": [
+      "seed0",
+      "seed1",
+      "seed2",
+      "seed3",
+      "seed4",
+      "seed5",
+      "0prime",
+      "3prime"
+    ],
+    "not_available_reason": "train_loss_per_iter is absent from the 7 full-run *.slim.json files; they carry only the final 1000 iterations (train_loss_last1000_*.csv), which does not cover the 18012-32412 window",
+    "by_window": {
+      "A_narrow_20k_30k": {
+        "mean": 1285.9654049597846,
+        "sd": 655.5056916775145,
+        "n_iterations_used": 3600,
+        "requested_range": [
+          21612,
+          28812
+        ],
+        "available_range_of_train_loss_per_iter": [
+          0,
+          25211
+        ],
+        "note": "hi clipped to available range"
+      },
+      "A_wide_18012_32412": {
+        "mean": 1298.6441501257154,
+        "sd": 651.7874758519729,
+        "n_iterations_used": 7200,
+        "requested_range": [
+          18012,
+          32412
+        ],
+        "available_range_of_train_loss_per_iter": [
+          0,
+          25211
+        ],
+        "note": "hi clipped to available range"
+      },
+      "W1_18012_25212": {
+        "mean": 1298.6441501257154,
+        "sd": 651.7874758519729,
+        "n_iterations_used": 7200,
+        "requested_range": [
+          18012,
+          25212
+        ],
+        "available_range_of_train_loss_per_iter": [
+          0,
+          25211
+        ],
+        "note": "hi clipped to available range"
+      },
+      "W2_21612_28812": {
+        "mean": 1285.9654049597846,
+        "sd": 655.5056916775145,
+        "n_iterations_used": 3600,
+        "requested_range": [
+          21612,
+          28812
+        ],
+        "available_range_of_train_loss_per_iter": [
+          0,
+          25211
+        ],
+        "note": "hi clipped to available range"
+      },
+      "W3_25212_32412": {
+        "mean": null,
+        "note": "window entirely outside available range"
+      }
+    }
+  },
+  "deviations_from_brief": [
+    "Section 2 names the full-run files 'night1_9991-000.json' etc.; on disk in this repository they exist only as '*.slim.json' with the same base name (e.g. 'night1_9991-000.slim.json'). Read as the same run record; no bare '.json' file with this content exists.",
+    "Section 2 states train_loss_per_iter 'exists for all 8'. On disk it exists only for 703; the 7 full runs have only train_loss_last1000_*.csv (final 1000 iterations). Option (B) is therefore computed for 703 only (see option_B_train_loss_window_mean_703_only); reported here rather than silently matching the brief's wording."
+  ]
+}
