@@ -140,3 +140,47 @@ Time: our 16-item eval at dt=0.02 takes 0.18-0.49 s (`night2/.../ablation/README
   gated by a code diff, numeric reproducibility is recorded with stops only on documented
   ceilings derived from ≥ 2 processes, and no control compares one realisation with an extremum
   of another. No other change.
+- **Pre-launch gate audit, 2026-09-17 UTC (2026-09-18 local), CC — recorded, nothing in the
+  readings changed by it.** Run on Mike's word to do the plan's item D
+  (`docs/plans/2026-09-17-endpoint-before-n.md` §3 item 6), because checklist rule 17 requires the
+  gates to be checked before a launch word is sought, not after it. Four findings, in the order
+  that matters:
+  1. **§6's controls pass rule 17.** P0 reports `max |delta|` with no threshold (`:76`), P0-bis
+     states "No gate pre-set" (`:77`), and the v2 addendum routes code identity to a diff and any
+     ceiling to ≥ 2 processes (`:80-83`). This is the lesson of step 1's three false stops,
+     applied. Nothing to fix here.
+  2. **Reading (b)'s bins carry no derivation.** The outcomes `≤ 3 / ≥ 30 / between` (`:87`) come
+     from `docs/plans/2026-09-16-functional-readout-plan.md:71` — "as in Ark's design" — and
+     neither file states what the two numbers prove, over how many realisations they were set,
+     what margin they carry, or the probability that a correct implementation lands in the wrong
+     bin. Rule 17(a)/(b)/(d) asks for exactly those. The gap is sharper than usual here because
+     this brief itself records that the underlying quantity's own reproducibility is unmeasured:
+     "*What the literature-comparison functions return for an untrained vs a trained net: TO BE
+     MEASURED. The flyvis source states no range and nothing has been run*" (`:79`). A rank-bin
+     boundary set before the instrument's noise on that quantity is known is a number without a
+     floor under it. **This is the reading's author's call, not the auditor's** — either a stated
+     derivation or an explicit deferral (bins reported descriptively, decided after P0/P0-bis
+     measure the tuning quantity's own spread). No bin is changed here.
+  3. **Reading (b)'s premise for seed 2 has been overtaken by step 1.** The dominant type is
+     selected by ablation-delta magnitude, and seed 2's entry is `R2 +21157.5` (`:87`). Step 1
+     concluded that this delta measures "the dynamics' fragility to a zero clamp specifically, an
+     instrument artefact, not a vision dependence"
+     (`results/diagnostics/gray/README.md:204-208`, commit `32759e2`; summarised in
+     `ROADMAP.md`). So for seed 2 the selector is known to be contaminated: the type was chosen by
+     a number that is now attributed to the apparatus. Recorded as an override above the reading,
+     per checklist rule 16's convention, and not edited into `:87`.
+  4. **Reading (b) is not independent of the Mi4/CT1 control, and that is an ordering fact.**
+     The same reading names `Mi4` (seed 3, +4827.5) and `CT1(Lo1)` (seed 4, +10460.9) as dominant
+     types by the same selector. Whether that dominance is a property of the flies or of the
+     forced-zero clamp is precisely what the control owed for those two types asks
+     (`docs/plans/2026-09-17-endpoint-before-n.md` §3 item 6; brief drafted 2026-09-17). If that
+     control finds the same artefact, reading (b) is measuring the tuning of types selected by an
+     instrument effect for all three seeds, not one. That makes reading (b) **downstream of the
+     control**, where the plan currently lists the two as independent. Stated here as a
+     consequence for the order of work; the plan's own wording is the plan's to change.
+
+  Also noted: this addendum's own v2 entry (2026-09-17, CC) carries no dated reviewer pass from
+  Ark or Zcode, unlike every earlier revision in this file and unlike the sibling diagnostics
+  (`results/diagnostics/c3/README.md:6`, `results/diagnostics/gray/README.md:9`). The standing
+  rule is that every brief is reviewed before launch; that pass is owed on the addendum and on
+  this note.
