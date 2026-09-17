@@ -131,7 +131,15 @@ used by ablation/rowB; `per_item_eval` → `solver.test` path used by diag1/spli
 within-process and between-process repeats. Known so far: `per_item_eval` within process at
 250,008 = 8.6e-05 on the 16-item mean (0.0 at iteration 0); state-hook path between three fresh
 processes at 250,008 = 8e-08 (`rowB_controls.json`); the state-hook path was never repeated
-within one process. Answers both "does the floor grow with training" and "is the floor a
+within one process. **Correction 2026-09-17 (C3 brief `b752059`, §1):** the 8e-08 figure is
+`floor_max_abs_deltaB` — a per-type *activity-profile* difference (night 2 seed 0 8.25e-08, night 3
+seed 3 1.35e-08), not a loss floor; the 16-item loss in those same three processes spreads 2.29e-05
+(seed 3) and 3.29e-05 (seed 0). And the "two paths" are not two loss evaluators: the ablation
+`eval_items(solver, None)` is `D.per_item_eval`, and rowB's evaluator is `per_item_eval` plus a
+read-only recorder; the separate loss path is the rung hook `D.hook_eval`. The same-state difference
+between hook and `per_item_eval` on record is at most 1.01e-05 at 25,212 and 6.2e-05 at 250,008.
+The "thousandfold path difference" read in chat on 2026-09-16 (Ark 20:09Z, accepted by CC) compared
+an activity quantity with a loss quantity and is withdrawn. Answers both "does the floor grow with training" and "is the floor a
 property of the checkpoint, the path, or the process". Rule to carry into the next registration
 (Ark 20:11Z): the two paths differ in the nature of their repeat, and a floor measured on one
 path must not be substituted into a rule for the other.
