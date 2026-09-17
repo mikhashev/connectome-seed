@@ -67,6 +67,27 @@ the readings are untouched):
 - --task repeat gates per cell on |delta loss_16| between the two processes <= 1e-4; per-item
   deltas and the in-process floor of each checkpoint (from gray_controls.json) are recorded next
   to the gate, not gating.
+
+v5.1 CHANGES TO THIS SCRIPT (after the v4 run stopped at the 1e-4 mean ceiling; brief v5.1, commit
+fc7239d; conditions, transforms, per_item_eval_transformed, the evaluator reuse, the code gate and
+the readings logic are untouched).  Launched on Mike's explicit word in the DPC Research chat,
+2026-09-17 08:37:30Z: «@CC_windows «запускай шаг 1» (v5)»; v5.1 differs from v5 (b14f69f) only by
+turning two single-call gates into records.
+- Numeric copy/original comparison (brief v5 Sec 6): five copy calls A_1..A_5 (identity transform)
+  and five original calls B_1..B_5 on the same checkpoint in the same process; the ONLY gating
+  quantity is |mean(A_1..A_5) - mean(B_1..B_5)| on the 16-item mean, ceiling 1e-2 (a sanity bound,
+  not a precision bound; derivation printed next to every number).  All per-item and pairwise
+  numbers (B pairs, each A_i vs each B_k) are recorded, not gating.
+- P0 (brief v5 Sec 6): mean of five calls of condition (c) minus the stored val_loss, ceiling 1e-3,
+  applied in the control (A_1..A_5) and to the real cell (mean of five) of every one of the 12
+  checkpoints in the sweep.  `per_item_mean - hook_eval()` is RECORDED, not gating (v5.1).
+- Iteration 0: bitwise equality RECORDED, not required (v5.1); the same ceilings apply.
+- Sweep (both processes): each of the 48 cells is the mean of five copy calls; per-call 16-item
+  means and per-item vectors are recorded in the json; the csv's `loss_16` is the mean of the five
+  calls' 16-item means and its per-item columns are the per-item means over the five calls.
+- --task repeat gates per cell on |delta| of that five-call mean between the two processes <= 1e-2.
+- Stops: crash; NaN/inf in any call; code-gate failure; any of the three ceilings; (run-dir file
+  change is checked outside this script by listing diff).
 """
 
 import os
@@ -118,12 +139,25 @@ CONDITIONS = ["real", "gray", "zero", "shuffled"]
 GRAY_VALUE = 0.5                                 # brief Sec 4
 ZERO_VALUE = 0.0
 SHUFFLE_SEED = 20260916                          # brief Sec 1/3: fixed, recorded here
-P0_TOL = 1e-4                                    # brief Sec 6
-FRESH_PROCESS_TOL = 1e-4                         # brief Sec 6 v4: gate on the 16-item mean
-N_FLOOR_CALLS = 5                                # brief Sec 6 v3.1/v4: five calls, all 10 pairs
-CEILING_PER_ITEM = 1.5 * 0.0009765625            # brief Sec 6 v4: documented ceiling, per item
-CEILING_MEAN = 1e-4                              # brief Sec 6 v4: documented ceiling, 16-item mean
-BRIEF_CHKPT_00071_SPREAD = 8.6e-05               # brief Sec 6 v4: stated next to the repeat gate
+P0_TOL = 1e-3                                    # brief Sec 6 v5: mean of five calls vs stored
+FRESH_PROCESS_TOL = 1e-2                         # brief Sec 6 v5: per cell, mean of five calls
+N_FLOOR_CALLS = 5                                # brief Sec 6 v5: five original calls B_1..B_5
+N_COPY_CALLS = 5                                 # brief Sec 6 v5: five copy calls per quantity
+COPY_MEAN_CEILING = 1e-2                         # brief Sec 6 v5: |mean(A1..A5) - mean(B1..B5)|
+BRIEF_CHKPT_00071_SPREAD = 8.6e-05               # brief Sec 6 v4/v5: stated next to the repeat gate
+COPY_CEILING_TEXT = (
+    "ceiling 1e-2 on |mean(A_1..A_5) - mean(B_1..B_5)| (16-item mean) -- a SANITY bound, not a "
+    "precision bound (Ark): ~50x above all measured noise on this comparison to date (<= 2.0e-4 "
+    "between processes, C3 Part B, results/diagnostics/c3/README.md) and ~500x below the narrowest "
+    "pre-registered reading band (0.1 * gain_s ~ 5-6, brief Sec 7); catches a wrong copy "
+    "(checkpoint, data, index), an error in units")
+P0_CEILING_TEXT = (
+    "ceiling 1e-3 on |mean of five condition-(c) calls - stored val_loss| -- the largest value on "
+    "record on this path is 7e-05 (brief Sec 6 v5)")
+FRESH_CEILING_TEXT = (
+    "ceiling 1e-2 per cell on |delta| between the two processes of the five-call mean (16-item "
+    "mean) -- same derivation as the copy/original ceiling: ~50x above measured noise (<= 2.0e-4 "
+    "between processes, C3 Part B), ~500x below 0.1 * gain_s ~ 5-6 (brief Sec 6 v5)")
 # brief Sec 6 v4 / Sec 3 / Sec 9.10: the two declared differences of the copy, by original line
 DECLARED_SUBSTITUTIONS = {
     188: ("for _, data in enumerate(dataloader):",
@@ -140,7 +174,7 @@ PREREG_SEED2_R2_DELTA = 21157.5
 PREREG_SEED2_R1R8_CLAMP_EXCESS = 30626.0
 
 STATUS = ("PREVIEW DIAGNOSTIC -- NOT A TEST (gray-stimulus control, brief "
-          "docs/briefs/2026-09-16-step1-gray-stimulus.md v4; n=6 individuals)")
+          "docs/briefs/2026-09-16-step1-gray-stimulus.md v5.1; n=6 individuals)")
 
 
 def sha256_file(p):
@@ -365,7 +399,37 @@ def eval_condition(solver, condition):
     if not all(inv.values()):
         print("INVARIANT FAILURE", condition, json.dumps(inv), flush=True)
         raise SystemExit("eval_rung invariant False -- stopping (brief Sec 10.9)")
-    return np.array(losses["flow"], dtype=np.float64), inv, wall
+    arr = np.array(losses["flow"], dtype=np.float64)
+    require_finite(arr, f"copy call, condition={condition}")
+    return arr, inv, wall
+
+
+def require_finite(arr, what):
+    """Brief Sec 6 v5 Stops: NaN/inf -> stop."""
+    if not bool(np.all(np.isfinite(arr))):
+        print("NAN/INF STOP", what, [repr(float(x)) for x in arr], flush=True)
+        raise SystemExit(f"NaN/inf in {what} -- stopping (brief Sec 6 v5 Stops)")
+
+
+def eval_cell(solver, condition):
+    """Brief Sec 6 v5: one cell = the mean of N_COPY_CALLS calls of the copy under one
+    condition; every call's per-item vector, invariants and wall are kept."""
+    calls, invs, walls = [], [], []
+    for _c in range(N_COPY_CALLS):
+        items, inv, wall = eval_condition(solver, condition)
+        calls.append(items)
+        invs.append(inv)
+        walls.append(wall)
+    C = np.stack(calls)                                  # (5, 16)
+    call_means = C.mean(axis=1)                          # 16-item mean of each call
+    return {
+        "calls": C,
+        "call_means": call_means,
+        "loss_16": float(call_means.mean()),             # mean of the five 16-item means
+        "per_item": C.mean(axis=0),                      # per-item mean over the five calls
+        "max_minus_min_loss_16": float(call_means.max() - call_means.min()),
+        "invariants": invs, "walls": walls,
+    }
 
 
 def load_named(solver, run, chkpt_index):
@@ -383,95 +447,123 @@ def load_named(solver, run, chkpt_index):
 
 
 def copy_fidelity_control(solver, run, ci):
-    """Brief Sec 6 v4: copy-vs-original numbers RECORDED, stop only on documented ceilings; P0.
+    """Brief Sec 6 v5.1: copy-vs-original, mean of five vs mean of five; P0 on the mean of five.
 
-    A = the copy with the identity transform; B_1..B_5 = five calls of the ORIGINAL
-    D.per_item_eval on the same loaded checkpoint, in the same process.  Recorded: per-item max
-    and 16-item-mean |diff| for all 10 B pairs (floor = max over pairs) and for A vs each B_k,
-    bitwise equality of A with each B_k, and the raw per-item vectors.  Ceilings (stop): per-item
-    |A - B_k| > CEILING_PER_ITEM or |mean(A) - mean(B_k)| > CEILING_MEAN for any k -- at every
-    checkpoint, iteration 0 included (bitwise recorded, not required; C3 Part B).  P0 (stop):
-    mean(A) - stored val_loss and mean(A) - hook_eval() both <= 1e-4.
+    A_1..A_5 = five calls of the copy with the identity transform; B_1..B_5 = five calls of the
+    ORIGINAL D.per_item_eval; same loaded checkpoint, same process.  GATING: |mean(A_1..A_5) -
+    mean(B_1..B_5)| on the 16-item mean <= COPY_MEAN_CEILING (1e-2), and P0 |mean(A_1..A_5) -
+    stored val_loss| <= P0_TOL (1e-3).  RECORDED, not gating: all 10 B pairs and all 10 A pairs
+    (per-item max, 16-item mean), each A_i vs each B_k (per-item max, mean diff, bitwise),
+    iteration-0 bitwise equality, `per_item_mean - hook_eval()`, and the raw per-item vectors.
     """
     solver_it, path, info = load_named(solver, run, ci)
     net = solver.network
     assert net._state_hooks == (), net._state_hooks
-    a_items = np.array(
-        per_item_eval_transformed(solver, make_transform("real"))["flow"],
-        dtype=np.float64)                                 # the copy, identity transform
-    assert net._state_hooks == (), net._state_hooks
+    A = []
+    for _k in range(N_COPY_CALLS):
+        a = np.array(per_item_eval_transformed(solver, make_transform("real"))["flow"],
+                     dtype=np.float64)                    # the copy, identity transform
+        assert net._state_hooks == (), net._state_hooks
+        require_finite(a, f"control copy call A{_k + 1} {run}@{solver_it}")
+        A.append(a)
+    A = np.stack(A)
     B = []
     for _k in range(N_FLOOR_CALLS):
-        B.append(np.array(D.per_item_eval(solver)["flow"], dtype=np.float64))   # the original
+        b = np.array(D.per_item_eval(solver)["flow"], dtype=np.float64)   # the original
         assert net._state_hooks == (), net._state_hooks
+        require_finite(b, f"control original call B{_k + 1} {run}@{solver_it}")
+        B.append(b)
     B = np.stack(B)
     hook = D.hook_eval(solver)
     assert net._state_hooks == (), net._state_hooks
+    require_finite(np.array([hook]), f"hook_eval {run}@{solver_it}")
+
     pairs = [(j, k) for j in range(N_FLOOR_CALLS) for k in range(j + 1, N_FLOOR_CALLS)]
     assert len(pairs) == 10, len(pairs)
-    pair_item = {f"B{j + 1}-B{k + 1}": float(np.max(np.abs(B[j] - B[k]))) for j, k in pairs}
-    pair_mean = {f"B{j + 1}-B{k + 1}": float(abs(float(B[j].mean()) - float(B[k].mean())))
-                 for j, k in pairs}
-    floor_item = max(pair_item.values())
-    floor_mean = max(pair_mean.values())
-    a_vs_item = {f"A-B{k + 1}": float(np.max(np.abs(a_items - B[k])))
-                 for k in range(N_FLOOR_CALLS)}
-    a_vs_mean = {f"A-B{k + 1}": float(a_items.mean()) - float(B[k].mean())
-                 for k in range(N_FLOOR_CALLS)}
-    worst_key = max(a_vs_item, key=lambda k: a_vs_item[k])
-    worst = a_vs_item[worst_key]
-    worst_mean_key = max(a_vs_mean, key=lambda k: abs(a_vs_mean[k]))
-    worst_mean = abs(a_vs_mean[worst_mean_key])
-    bitwise = {f"A==B{k + 1}": bool(np.array_equal(a_items, B[k])) for k in range(N_FLOOR_CALLS)}
+    a_means = A.mean(axis=1)
+    b_means = B.mean(axis=1)
+    mean_A = float(a_means.mean())                        # mean of the five 16-item means
+    mean_B = float(b_means.mean())
+    gate_diff = mean_A - mean_B
+    gate_ok = bool(abs(gate_diff) <= COPY_MEAN_CEILING)
+
+    b_pair_item = {f"B{j + 1}-B{k + 1}": float(np.max(np.abs(B[j] - B[k]))) for j, k in pairs}
+    b_pair_mean = {f"B{j + 1}-B{k + 1}": float(abs(float(b_means[j]) - float(b_means[k])))
+                   for j, k in pairs}
+    a_pair_item = {f"A{j + 1}-A{k + 1}": float(np.max(np.abs(A[j] - A[k]))) for j, k in pairs}
+    a_pair_mean = {f"A{j + 1}-A{k + 1}": float(abs(float(a_means[j]) - float(a_means[k])))
+                   for j, k in pairs}
+    ab_item = {f"A{i + 1}-B{k + 1}": float(np.max(np.abs(A[i] - B[k])))
+               for i in range(N_COPY_CALLS) for k in range(N_FLOOR_CALLS)}
+    ab_mean = {f"A{i + 1}-B{k + 1}": float(a_means[i]) - float(b_means[k])
+               for i in range(N_COPY_CALLS) for k in range(N_FLOOR_CALLS)}
+    ab_bitwise = {f"A{i + 1}==B{k + 1}": bool(np.array_equal(A[i], B[k]))
+                  for i in range(N_COPY_CALLS) for k in range(N_FLOOR_CALLS)}
     b_pair_bitwise = {f"B{j + 1}==B{k + 1}": bool(np.array_equal(B[j], B[k])) for j, k in pairs}
-    ceiling_item_ok = bool(worst <= CEILING_PER_ITEM)
-    ceiling_mean_ok = bool(worst_mean <= CEILING_MEAN)
-    cf_pass = bool(ceiling_item_ok and ceiling_mean_ok)
-    cf_rule = ("brief v4 Sec 6: numbers recorded, not gating; stop only on a documented ceiling: "
-               "per-item |A - B_k| > 1.5 x 0.0009765625 = 0.00146484375, or 16-item-mean "
-               "|mean(A) - mean(B_k)| > 1e-4, for any k; iteration 0: bitwise recorded, same "
-               "ceilings (deviation from 'at iteration 0 equality stays bitwise', per C3 Part B)")
-    p0 = float(a_items.mean()) - info["stored_val_loss"]
-    p0h = float(a_items.mean()) - hook
-    p0_pass = bool(abs(p0) <= P0_TOL and abs(p0h) <= P0_TOL)
+    a_pair_bitwise = {f"A{j + 1}==A{k + 1}": bool(np.array_equal(A[j], A[k])) for j, k in pairs}
+
+    p0 = mean_A - info["stored_val_loss"]
+    p0_ok = bool(abs(p0) <= P0_TOL)
+    p0h = mean_A - hook
     rec = {
         "run": run, "chkpt": path.name, "solver_iteration": solver_it,
-        "n_original_calls": N_FLOOR_CALLS, "n_pairs": len(pairs),
-        "floor_max_abs_per_item_diff_over_10_pairs": repr(floor_item),
-        "floor_max_abs_mean_diff_over_10_pairs": repr(floor_mean),
-        "floor_per_pair_max_abs_per_item_diff": {k: repr(v) for k, v in pair_item.items()},
-        "floor_per_pair_abs_mean_diff": {k: repr(v) for k, v in pair_mean.items()},
-        "original_means_B1_to_B5": [repr(float(x)) for x in B.mean(axis=1)],
-        "n_distinct_original_means": len(set(B.mean(axis=1).tolist())),
-        "copy_A_mean": repr(float(a_items.mean())),
-        "copy_vs_each_original_max_abs_per_item": {k: repr(v) for k, v in a_vs_item.items()},
-        "copy_vs_each_original_mean_diff": {k: repr(v) for k, v in a_vs_mean.items()},
-        "copy_vs_each_original_bitwise_equal": bitwise,
-        "copy_bitwise_equal_to_all_originals": bool(all(bitwise.values())),
-        "original_pairs_bitwise_equal": b_pair_bitwise,
-        "copy_worst_pair": worst_key,
-        "copy_worst_max_abs_per_item": repr(worst),
-        "copy_worst_mean_pair": worst_mean_key,
-        "copy_worst_abs_mean_diff": repr(worst_mean),
-        "ceiling_per_item": repr(CEILING_PER_ITEM),
-        "ceiling_mean": repr(CEILING_MEAN),
-        "ceiling_per_item_respected": ceiling_item_ok,
-        "ceiling_mean_respected": ceiling_mean_ok,
-        "originals_floor_exceeds_ceiling_per_item_recorded_only": bool(
-            floor_item > CEILING_PER_ITEM),
-        "originals_floor_exceeds_ceiling_mean_recorded_only": bool(floor_mean > CEILING_MEAN),
-        "copy_A_per_item": [repr(float(x)) for x in a_items],
+        "n_copy_calls": N_COPY_CALLS, "n_original_calls": N_FLOOR_CALLS,
+        # ---- GATE 1: copy vs original, mean of five vs mean of five
+        "gate_copy_vs_original_rule": COPY_CEILING_TEXT,
+        "copy_means_A1_to_A5": [repr(float(x)) for x in a_means],
+        "original_means_B1_to_B5": [repr(float(x)) for x in b_means],
+        "mean_of_five_copy_A": repr(mean_A),
+        "mean_of_five_original_B": repr(mean_B),
+        "gate_mean_A_minus_mean_B": repr(gate_diff),
+        "gate_abs_mean_A_minus_mean_B": repr(abs(gate_diff)),
+        "gate_ceiling": repr(COPY_MEAN_CEILING),
+        "gate_copy_vs_original_pass": gate_ok,
+        # ---- recorded, not gating
+        "recorded_B_pairs_max_abs_per_item": {k: repr(v) for k, v in b_pair_item.items()},
+        "recorded_B_pairs_abs_mean_diff": {k: repr(v) for k, v in b_pair_mean.items()},
+        "recorded_B_floor_max_abs_per_item_over_10_pairs": repr(max(b_pair_item.values())),
+        "recorded_B_floor_max_abs_mean_over_10_pairs": repr(max(b_pair_mean.values())),
+        "recorded_A_pairs_max_abs_per_item": {k: repr(v) for k, v in a_pair_item.items()},
+        "recorded_A_pairs_abs_mean_diff": {k: repr(v) for k, v in a_pair_mean.items()},
+        "recorded_A_spread_max_abs_per_item_over_10_pairs": repr(max(a_pair_item.values())),
+        "recorded_A_spread_max_abs_mean_over_10_pairs": repr(max(a_pair_mean.values())),
+        "recorded_Ai_vs_Bk_max_abs_per_item": {k: repr(v) for k, v in ab_item.items()},
+        "recorded_Ai_vs_Bk_mean_diff": {k: repr(v) for k, v in ab_mean.items()},
+        "recorded_Ai_vs_Bk_max_abs_per_item_overall": repr(max(ab_item.values())),
+        "recorded_Ai_vs_Bk_max_abs_mean_diff_overall": repr(max(abs(v) for v in ab_mean.values())),
+        "recorded_Ai_vs_Bk_bitwise_equal": ab_bitwise,
+        "recorded_A_pairs_bitwise_equal": a_pair_bitwise,
+        "recorded_B_pairs_bitwise_equal": b_pair_bitwise,
+        "recorded_all_A_and_B_bitwise_equal": bool(
+            all(ab_bitwise.values()) and all(a_pair_bitwise.values())
+            and all(b_pair_bitwise.values())),
+        "recorded_iteration0_bitwise_note": (
+            "brief v5.1 Sec 6: at iteration 0 bitwise equality is recorded, not required; the "
+            "ceilings apply there too"),
+        "copy_A_per_item": [[repr(float(x)) for x in A[i]] for i in range(N_COPY_CALLS)],
         "original_B_per_item": [[repr(float(x)) for x in B[k]] for k in range(N_FLOOR_CALLS)],
-        "copy_fidelity_rule": cf_rule,
-        "copy_fidelity_ceilings_pass": cf_pass,
+        # ---- GATE 2: P0
+        "gate_P0_rule": P0_CEILING_TEXT,
         "stored_checkpoint_val_loss": repr(info["stored_val_loss"]),
-        "P0_per_item_mean": repr(float(a_items.mean())),
-        "P0_mean_minus_stored": repr(p0),
-        "P0_hook_path_value": repr(hook),
-        "P0_per_item_mean_minus_hook": repr(p0h),
-        "P0_pass_1e-4": p0_pass,
+        "P0_mean_of_five_copy_calls": repr(mean_A),
+        "gate_P0_mean_minus_stored": repr(p0),
+        "gate_P0_ceiling": repr(P0_TOL),
+        "gate_P0_pass": p0_ok,
+        "recorded_P0_hook_path_value_single_call": repr(hook),
+        "recorded_P0_mean_of_five_minus_hook": repr(p0h),
+        "recorded_P0_mean_of_five_minus_hook_within_sanity_bound_1e-3": bool(abs(p0h) <= P0_TOL),
+        "recorded_P0_hook_note": (
+            "brief v5.1 Sec 6: per_item_mean - hook_eval() is recorded, not gating (C3 Part B "
+            "measured up to 1.435e-4 on the same weights); its sanity bound is the P0 ceiling 1e-3"),
     }
-    return rec, bool(cf_pass and p0_pass)
+    print(f"CONTROL GATE {run}@{solver_it} |mean(A1..A5) - mean(B1..B5)| = {abs(gate_diff)!r} "
+          f"[{COPY_CEILING_TEXT}] -> {'PASS' if gate_ok else 'FAIL'}", flush=True)
+    print(f"CONTROL P0 {run}@{solver_it} mean(A1..A5) - stored = {p0!r} "
+          f"[{P0_CEILING_TEXT}] -> {'PASS' if p0_ok else 'FAIL'}", flush=True)
+    print(f"CONTROL RECORDED {run}@{solver_it} mean(A1..A5) - hook_eval() = {p0h!r} "
+          f"(recorded, not gating; sanity bound 1e-3); all A/B bitwise equal = "
+          f"{rec['recorded_all_A_and_B_bitwise_equal']}", flush=True)
+    return rec, bool(gate_ok and p0_ok)
 
 
 def item_short(n):
@@ -555,31 +647,46 @@ def read_losses_csv(path):
 
 # ---------------------------------------------------------------- the sweep
 def sweep(solver, item_names, print_tag):
-    """All 48 cells: 6 runs x 2 checkpoints x 4 conditions."""
+    """All 48 cells: 6 runs x 2 checkpoints x 4 conditions; each cell the mean of five copy
+    calls (brief Sec 6 v5), every call recorded."""
     rows, per_cell = [], {}
     first_real_wall = None
     for run, label in RUNS6.items():
         for ci in sorted(CHKPTS):
             solver_it, path, info = load_named(solver, run, ci)
             for cond in CONDITIONS:
-                items, inv, wall = eval_condition(solver, cond)
+                cell = eval_cell(solver, cond)
                 if cond == "real" and first_real_wall is None:
-                    first_real_wall = wall
-                mean = float(items.mean())
+                    first_real_wall = cell["walls"][0]
+                mean = cell["loss_16"]
                 rows.append({"run": run, "label": label, "checkpoint_iter": solver_it,
-                             "condition": cond, "loss_16": mean, "per_item": items})
+                             "condition": cond, "loss_16": mean, "per_item": cell["per_item"]})
                 per_cell[(label, solver_it, cond)] = {
                     "run": run, "chkpt": path.name,
                     "stored_checkpoint_val_loss": repr(info["stored_val_loss"]),
-                    "loss_16": repr(mean),
-                    "wall_s": repr(wall),
-                    "eval_rung_invariants": inv,
+                    "n_calls": N_COPY_CALLS,
+                    "loss_16_mean_of_five_calls": repr(mean),
+                    "loss_16_per_call": [repr(float(x)) for x in cell["call_means"]],
+                    "loss_16_max_minus_min_over_calls": repr(cell["max_minus_min_loss_16"]),
+                    "per_item_mean_over_calls": [repr(float(x)) for x in cell["per_item"]],
+                    "per_item_per_call": [[repr(float(x)) for x in cell["calls"][c]]
+                                          for c in range(N_COPY_CALLS)],
+                    "wall_s_per_call": [repr(w) for w in cell["walls"]],
+                    "eval_rung_invariants_per_call": cell["invariants"],
                 }
                 if cond == "real":
-                    per_cell[(label, solver_it, cond)]["P0_mean_minus_stored"] = repr(
-                        mean - info["stored_val_loss"])
-                print(print_tag, label, solver_it, cond, repr(mean),
-                      "wall", repr(round(wall, 3)), flush=True)
+                    p0 = mean - info["stored_val_loss"]
+                    per_cell[(label, solver_it, cond)]["P0_mean_of_five_minus_stored"] = repr(p0)
+                    per_cell[(label, solver_it, cond)]["P0_pass_le_1e-3"] = bool(
+                        abs(p0) <= P0_TOL)
+                print(print_tag, label, solver_it, cond, "mean_of_5", repr(mean),
+                      "max-min", repr(cell["max_minus_min_loss_16"]),
+                      "calls", [repr(float(x)) for x in cell["call_means"]],
+                      "wall_5", repr(sum(cell["walls"])), flush=True)
+                if cond == "real":
+                    print(print_tag, "P0", label, solver_it, "mean_of_5 - stored", repr(p0),
+                          f"[{P0_CEILING_TEXT}]", "PASS" if abs(p0) <= P0_TOL else "FAIL",
+                          flush=True)
     return rows, per_cell, first_real_wall
 
 
@@ -590,8 +697,8 @@ def task_codegate(a):
 
 
 def task_control(a):
-    """Brief Sec 6 v4, step 1: code gate, then recorded copy/original numbers with documented
-    ceilings + P0 reproduction.  Writes nothing."""
+    """Brief Sec 6 v5.1, step 1: code gate, then copy/original mean-of-five vs mean-of-five
+    (ceiling 1e-2) + P0 on the mean of five (ceiling 1e-3).  Writes nothing."""
     if not run_code_gate()["code_gate_pass"]:
         return 3
     solver = D.build_solver(Path(a.netdir_root))
@@ -691,9 +798,17 @@ def task_main(a):
 
     meta = {
         "status": STATUS,
-        "brief": "docs/briefs/2026-09-16-step1-gray-stimulus.md (v4, commit f915d59)",
+        "brief": ("docs/briefs/2026-09-16-step1-gray-stimulus.md (v5.1, commit fc7239d; v5.1 "
+                  "differs from v5, b14f69f, only by turning two single-call gates into records: "
+                  "per_item_mean - hook_eval() and iteration-0 bitwise equality)"),
         "launch": ("Mike's explicit word in the DPC Research chat, "
-                   "2026-09-17T08:14:48Z: «@CC_windows «запускай шаг 1»"),
+                   "2026-09-17T08:37:30Z: «@CC_windows «запускай шаг 1» (v5)»; reviewer pass on "
+                   "v5: Ark 08:27:19Z and 08:36:24Z, Zcode 08:28:59Z"),
+        "ceilings": {"copy_vs_original": COPY_CEILING_TEXT, "P0": P0_CEILING_TEXT,
+                     "fresh_process": FRESH_CEILING_TEXT},
+        "n_copy_calls_per_cell": N_COPY_CALLS,
+        "cell_definition": ("loss_16 = mean over the five copy calls of each call's 16-item "
+                            "mean; per-item columns = per-item mean over the five calls"),
         "script_sha256": SCRIPT_HASHES,
         "flyvis": flyvis.__version__, "torch": torch.__version__,
         "python": sys.version.split()[0],
@@ -731,8 +846,9 @@ def task_main(a):
             print("CONTROL", json.dumps(rec), flush=True)
             ctrl_ok = ctrl_ok and passed
     if not ctrl_ok:
-        print("CONTROL VERDICT FAIL (in --task main: documented ceiling breached or P0 > 1e-4) "
-              "-- stopping before the sweep; nothing written", flush=True)
+        print("CONTROL VERDICT FAIL (in --task main: |mean(A1..A5) - mean(B1..B5)| > 1e-2 or "
+              "|P0 mean of five - stored| > 1e-3) -- stopping before the sweep; nothing written",
+              flush=True)
         return 3
 
     null = constant_output_null(solver)
@@ -757,30 +873,40 @@ def task_main(a):
                     "permutation": [int(x) for x in p],
                     "is_identity": bool(np.array_equal(p, np.arange(nf)))}
 
-    p0_all = {k: v["P0_mean_minus_stored"] for k, v in per_cell.items()
-              if v.get("P0_mean_minus_stored") is not None}
+    p0_all = {k: v["P0_mean_of_five_minus_stored"] for k, v in per_cell.items()
+              if v.get("P0_mean_of_five_minus_stored") is not None}
+    assert len(p0_all) == 12, len(p0_all)
+    p0_all_ok = bool(all(abs(float(v)) <= P0_TOL for v in p0_all.values()))
     ctrl = {
         "meta": meta,
         "code_gate": cg,
         "copy_fidelity_and_P0": controls,
         "constant_output_null": null,
-        "P0_mean_minus_stored_all_12_checkpoints": {
+        "P0_rule": P0_CEILING_TEXT,
+        "P0_mean_of_five_minus_stored_all_12_checkpoints": {
             f"{k[0]}@{k[1]}": v for k, v in p0_all.items()},
-        "P0_max_abs_mean_minus_stored": repr(
+        "P0_max_abs_mean_of_five_minus_stored": repr(
             max(abs(float(v)) for v in p0_all.values())),
-        "P0_all_within_1e-4": bool(
-            all(abs(float(v)) <= P0_TOL for v in p0_all.values())),
+        "P0_all_12_within_1e-3": p0_all_ok,
+        "cell_max_minus_min_loss_16_over_five_calls_max": repr(max(
+            float(v["loss_16_max_minus_min_over_calls"]) for v in per_cell.values())),
         "frame_permutations": perms,
         "cells": {f"{k[0]}|{k[1]}|{k[2]}": v for k, v in per_cell.items()},
-        "n_evaluations": len(rows),
+        "n_cells": len(rows),
+        "n_evaluations": len(rows) * N_COPY_CALLS,
         "first_evaluation_real_wall_s": repr(first_real_wall),
         "wall_s_total": repr(time.perf_counter() - t_start),
     }
     (out / "gray_controls.json").write_text(json.dumps(ctrl, indent=1))
-    print("P0 MAX ABS", ctrl["P0_max_abs_mean_minus_stored"],
-          "all_within_1e-4", ctrl["P0_all_within_1e-4"], flush=True)
+    print("P0 MAX ABS (12 checkpoints, mean of five - stored)",
+          ctrl["P0_max_abs_mean_of_five_minus_stored"], f"[{P0_CEILING_TEXT}]",
+          "all_12_within_1e-3", p0_all_ok, flush=True)
     print("FIRST REAL EVAL WALL S", ctrl["first_evaluation_real_wall_s"], flush=True)
     print("TOTAL WALL S", ctrl["wall_s_total"], flush=True)
+    if not p0_all_ok:
+        print("P0 CEILING BREACHED in the sweep -- STOP (outputs written for the record)",
+              flush=True)
+        return 3
     return 0
 
 
@@ -805,18 +931,22 @@ def task_repeat(a):
                     float(np.max(np.abs(second[k]["per_item"] - first[k]["per_item"])))
                     for k in first}
     worst = max(deltas, key=lambda k: abs(deltas[k]))
-    # brief Sec 6 v4: gate per cell on |delta loss_16| <= 1e-4; the in-process floor of each
-    # checkpoint (copy_fidelity_control in the --task main process, run 000) is stated next to
-    # the gate, recorded, not gating; per-item deltas recorded, not gating
+    # brief Sec 6 v5: gate per cell on |delta| of the five-call mean <= 1e-2; the in-process
+    # spread of each checkpoint (copy_fidelity_control in the --task main process, run 000, and
+    # the max-min over the five calls of every cell in both processes) is stated next to the
+    # gate, recorded, not gating; per-item deltas recorded, not gating
     first_ctrl = json.loads((out / "gray_controls.json").read_text(encoding="utf-8"))
     floors = {}
     for rec in first_ctrl["copy_fidelity_and_P0"].values():
         floors[int(rec["solver_iteration"])] = {
             "run": rec["run"], "chkpt": rec["chkpt"],
-            "floor_max_abs_mean_diff_over_10_pairs": float(
-                rec["floor_max_abs_mean_diff_over_10_pairs"]),
-            "floor_max_abs_per_item_diff_over_10_pairs": float(
-                rec["floor_max_abs_per_item_diff_over_10_pairs"])}
+            "B_floor_max_abs_mean_over_10_pairs": float(
+                rec["recorded_B_floor_max_abs_mean_over_10_pairs"]),
+            "B_floor_max_abs_per_item_over_10_pairs": float(
+                rec["recorded_B_floor_max_abs_per_item_over_10_pairs"]),
+            "A_spread_max_abs_mean_over_10_pairs": float(
+                rec["recorded_A_spread_max_abs_mean_over_10_pairs"])}
+    first_cells = first_ctrl["cells"]
     per_ckpt = {}
     for it in sorted(floors):
         keys = [k for k in first if k[1] == it]
@@ -824,8 +954,13 @@ def task_repeat(a):
         wk = max(keys, key=lambda k: abs(second[k]["loss_16"] - first[k]["loss_16"]))
         mx = abs(second[wk]["loss_16"] - first[wk]["loss_16"])
         wki = max(keys, key=lambda k: per_item_max[f"{k[0]}|{k[1]}|{k[2]}"])
+        spread1 = max(float(first_cells[f"{k[0]}|{k[1]}|{k[2]}"][
+            "loss_16_max_minus_min_over_calls"]) for k in keys)
+        spread2 = max(float(per_cell[k]["loss_16_max_minus_min_over_calls"]) for k in keys)
         per_ckpt[str(it)] = {
-            "gate": "per cell |delta loss_16| <= 1e-4 (brief Sec 6 v4)",
+            "gate": FRESH_CEILING_TEXT,
+            "in_process_max_minus_min_over_five_calls_max_over_24_cells_process1": repr(spread1),
+            "in_process_max_minus_min_over_five_calls_max_over_24_cells_process2": repr(spread2),
             "in_process_spread_this_run_recorded_not_gating": {
                 k: (repr(v) if isinstance(v, float) else v) for k, v in floors[it].items()},
             "in_process_spread_stated_in_brief_chkpt_00071": repr(BRIEF_CHKPT_00071_SPREAD),
@@ -837,14 +972,14 @@ def task_repeat(a):
             "n_cells": len(keys),
             "n_cells_bitwise_identical_loss_16": int(sum(
                 1 for k in keys if second[k]["loss_16"] == first[k]["loss_16"])),
-            "all_cells_pass_le_1e-4": bool(mx <= FRESH_PROCESS_TOL),
+            "all_cells_pass_le_1e-2": bool(mx <= FRESH_PROCESS_TOL),
         }
     cell_gate = {}
     for k in first:
         d = abs(second[k]["loss_16"] - first[k]["loss_16"])
         cell_gate[f"{k[0]}|{k[1]}|{k[2]}"] = {
             "abs_delta_loss_16": repr(d), "threshold": repr(FRESH_PROCESS_TOL),
-            "pass_le_1e-4": bool(d <= FRESH_PROCESS_TOL),
+            "pass_le_1e-2": bool(d <= FRESH_PROCESS_TOL),
             "max_abs_per_item_delta_recorded_not_gating": repr(
                 per_item_max[f"{k[0]}|{k[1]}|{k[2]}"])}
     rep = {
@@ -855,19 +990,19 @@ def task_repeat(a):
         "python": sys.version.split()[0],
         "gpu": torch.cuda.get_device_name(0) if torch.cuda.is_available() else None,
         "utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-        "gate": ("brief Sec 6 v4: per cell, |delta| of the 16-item mean between the two "
-                 "processes <= 1e-4; per-item repeat differences recorded, not gating; the "
-                 "in-process spread of each checkpoint (five D.per_item_eval calls on run 000, "
-                 "gray_controls.json; brief states 8.6e-05 at chkpt_00071) stated next to the "
-                 "gate, not gating"),
+        "gate": ("brief Sec 6 v5: " + FRESH_CEILING_TEXT + "; per-item repeat differences "
+                 "recorded, not gating; the in-process spread of each checkpoint (five "
+                 "D.per_item_eval calls on run 000, gray_controls.json; brief states 8.6e-05 at "
+                 "chkpt_00071) stated next to the gate, not gating"),
         "per_checkpoint": per_ckpt,
         "per_cell_gate": cell_gate,
         "max_abs_delta_loss_16": repr(max(abs(v) for v in deltas.values())),
         "max_abs_delta_cell": worst,
         "n_cells_bitwise_identical_loss_16": int(sum(1 for v in deltas.values() if v == 0.0)),
         "max_abs_per_item_delta": repr(max(per_item_max.values())),
-        "gate_pass": bool(all(v["pass_le_1e-4"] for v in cell_gate.values())),
-        "n_cells_pass_le_1e-4": int(sum(1 for v in cell_gate.values() if v["pass_le_1e-4"])),
+        "gate_pass": bool(all(v["pass_le_1e-2"] for v in cell_gate.values())),
+        "n_cells_pass_le_1e-2": int(sum(1 for v in cell_gate.values() if v["pass_le_1e-2"])),
+        "cells_this_process": {f"{k[0]}|{k[1]}|{k[2]}": v for k, v in per_cell.items()},
         "delta_loss_16_per_cell": {k: repr(v) for k, v in deltas.items()},
         "max_abs_per_item_delta_per_cell": {k: repr(v) for k, v in per_item_max.items()},
         "first_evaluation_real_wall_s": repr(first_real_wall),
@@ -875,11 +1010,11 @@ def task_repeat(a):
     }
     (out / "gray_repeat_controls.json").write_text(json.dumps(rep, indent=1))
     print("REPEAT MAX ABS DELTA", rep["max_abs_delta_loss_16"], rep["max_abs_delta_cell"],
-          "gate_pass_all_cells_le_1e-4", rep["gate_pass"], "n_cells_pass",
-          rep["n_cells_pass_le_1e-4"], flush=True)
+          f"[{FRESH_CEILING_TEXT}]", "gate_pass_all_cells_le_1e-2", rep["gate_pass"],
+          "n_cells_pass", rep["n_cells_pass_le_1e-2"], flush=True)
     print("REPEAT PER CHECKPOINT", json.dumps(per_ckpt), flush=True)
     print("TOTAL WALL S", rep["wall_s_total"], flush=True)
-    return 0
+    return 0 if rep["gate_pass"] else 3
 
 
 # ---------------------------------------------------------------- the pre-registered readings

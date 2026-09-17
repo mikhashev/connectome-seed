@@ -1,0 +1,879 @@
+CODE GATE BODY DIFF
+--- diag1_eval_paths.py:per_item_eval body (lines 180-201)
++++ gray_stimulus.py:per_item_eval_transformed body (lines 252-273)
+@@ -6,10 +6,10 @@
+     losses = {t: [] for t in task.dataset.tasks}
+     with torch.no_grad():
+         with task.dataset.augmentation(False):
+-            for _, data in enumerate(dataloader):
++            for _i, data in enumerate(dataloader):
+                 n_samples, n_frames, _, _ = data["lum"].shape
+                 solver.network.stimulus.zero(n_samples, n_frames)
+-                solver.network.stimulus.add_input(data["lum"])
++                solver.network.stimulus.add_input(transform(data["lum"], _i))
+                 activity = solver.network(solver.network.stimulus(), task.dataset.dt,
+                                           state=initial_state)
+                 for t in task.dataset.tasks:
+
+CODE GATE FULL DIFF
+--- diag1_eval_paths.py:per_item_eval (lines 176-201)
++++ gray_stimulus.py:per_item_eval_transformed (lines 248-273)
+@@ -1,7 +1,7 @@
+-def per_item_eval(solver, t_pre=0.25):
+-    """A copy of flyvis/solver.py:474-556 `MultiTaskSolver.test` with track_loss removed
+-    and the per-item losses returned instead of only their mean.  NOT the hook path --
+-    used only for the per-item breakdown (c); its mean is checked against hook_eval()."""
++def per_item_eval_transformed(solver, transform, t_pre=0.25):
++    """diag1_eval_paths.py:176-201 `per_item_eval`, copied line for line; the ONLY changes are
++    the argument of :191 (`data["lum"]` -> `transform(data["lum"], _i)`) and the loop variable
++    `_` -> `_i` on :188."""
+     task, dataloader = solver.task, solver.task.val_data
+     solver._eval()
+     solver.scheduler(solver.iteration)  # solver.py:504
+@@ -10,10 +10,10 @@
+     losses = {t: [] for t in task.dataset.tasks}
+     with torch.no_grad():
+         with task.dataset.augmentation(False):
+-            for _, data in enumerate(dataloader):
++            for _i, data in enumerate(dataloader):
+                 n_samples, n_frames, _, _ = data["lum"].shape
+                 solver.network.stimulus.zero(n_samples, n_frames)
+-                solver.network.stimulus.add_input(data["lum"])
++                solver.network.stimulus.add_input(transform(data["lum"], _i))
+                 activity = solver.network(solver.network.stimulus(), task.dataset.dt,
+                                           state=initial_state)
+                 for t in task.dataset.tasks:
+
+CODE GATE {"rule": "brief v4 Sec 6: the copied per_item_eval must differ from diag1_eval_paths.py's per_item_eval only in the declared lines -- the transform on the add_input argument (line 191) and the loop-variable rename `_` -> `_i` (line 188); any other difference -> stop", "operationalisation": "pass iff (1) the executable body (statements after the docstring, located via ast) of the copy equals the original body with exactly the two declared substitutions applied at original lines 188 and 191, byte for byte, and exactly 2 body lines differ; and (2) inspect.signature differs only by the function name and the inserted `transform` parameter.  The def line and the docstring necessarily differ as text; they are shown in full_unified_diff and not gated", "original_file": "C:\\Users/mikha/Documents/dpc-research/connectome-seed\\results/night2/diagnostics\\diag1_eval_paths.py", "copy_file": "C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed\\results\\diagnostics\\gray\\gray_stimulus.py", "original_lines": [176, 201], "copy_lines": [248, 273], "original_signature": "per_item_eval(solver, t_pre=0.25)", "copy_signature": "per_item_eval_transformed(solver, transform, t_pre=0.25)", "declared_substitutions": {"188": {"original_line_text": "            for _, data in enumerate(dataloader):", "declared_old": "for _, data in enumerate(dataloader):", "declared_new": "for _i, data in enumerate(dataloader):", "original_line_matches_declared_old": true}, "191": {"original_line_text": "                solver.network.stimulus.add_input(data[\"lum\"])", "declared_old": "solver.network.stimulus.add_input(data[\"lum\"])", "declared_new": "solver.network.stimulus.add_input(transform(data[\"lum\"], _i))", "original_line_matches_declared_old": true}}, "n_body_lines_original": 22, "n_body_lines_copy": 22, "n_body_lines_differing": 2, "body_equals_original_with_declared_substitutions": true, "signature_differs_only_by_name_and_transform_param": true, "code_gate_pass": true}
+CODE GATE VERDICT PASS
+C:\Users\mikha\AppData\Local\Temp\claude\c--Users-mikha-Documents-dpc-research-autoresearch-win-rtx\63f3961a-96ce-4048-8338-72c162ea66f8\scratchpad\flyvis-probe\.venv\lib\site-packages\flyvis_cli\training\train_single.py:56: Hydra14MigrationWarning: 
+version_base="1.1" selects Hydra 1.1 compatibility behavior.
+Hydra 1.4 will remove this compatibility behavior.
+Before upgrading to Hydra 1.4, set version_base="1.3" and test your application.
+See https://hydra.cc/docs/upgrades/1.3_to_1.4/prepare_for_1_4/ for preparation instructions.
+  @hydra.main(
+C:\Users/mikha/Documents/dpc-research/connectome-seed\results/night2/diagnostics\diag1_eval_paths.py:110: Hydra14MigrationWarning: 
+version_base="1.1" selects Hydra 1.1 compatibility behavior.
+Hydra 1.4 will remove this compatibility behavior.
+Before upgrading to Hydra 1.4, set version_base="1.3" and test your application.
+See https://hydra.cc/docs/upgrades/1.3_to_1.4/prepare_for_1_4/ for preparation instructions.
+  with initialize_config_dir(config_dir=ts.CONFIG_PATH, version_base="1.1"):
+[2026-09-17 10:55:59] network:222 Initialized network with NumberOfParams(free=734, fixed=2959) parameters.
+[2026-09-17 10:55:59] sintel_utils:331 Found Sintel at C:\Users\mikha\Documents\dpc-research\connectome-seed-data\SintelDataSet
+Rendering:   0%|          | 0/23 [00:00<?, ?it/s]Rendering:   4%|▍         | 1/23 [00:00<00:17,  1.29it/s]Rendering:   9%|▊         | 2/23 [00:01<00:16,  1.30it/s]Rendering:  13%|█▎        | 3/23 [00:01<00:11,  1.78it/s]Rendering:  17%|█▋        | 4/23 [00:02<00:09,  1.91it/s]Rendering:  22%|██▏       | 5/23 [00:03<00:10,  1.68it/s]Rendering:  26%|██▌       | 6/23 [00:03<00:08,  2.03it/s]Rendering:  30%|███       | 7/23 [00:04<00:09,  1.76it/s]Rendering:  35%|███▍      | 8/23 [00:04<00:09,  1.57it/s]Rendering:  39%|███▉      | 9/23 [00:05<00:09,  1.50it/s]Rendering:  43%|████▎     | 10/23 [00:06<00:08,  1.46it/s]Rendering:  48%|████▊     | 11/23 [00:06<00:08,  1.46it/s]Rendering:  52%|█████▏    | 12/23 [00:07<00:07,  1.46it/s]Rendering:  57%|█████▋    | 13/23 [00:08<00:06,  1.50it/s]Rendering:  61%|██████    | 14/23 [00:09<00:06,  1.48it/s]Rendering:  65%|██████▌   | 15/23 [00:09<00:05,  1.48it/s]Rendering:  70%|██████▉   | 16/23 [00:10<00:04,  1.58it/s]Rendering:  74%|███████▍  | 17/23 [00:10<00:03,  1.58it/s]Rendering:  78%|███████▊  | 18/23 [00:11<00:03,  1.53it/s]Rendering:  83%|████████▎ | 19/23 [00:12<00:02,  1.54it/s]Rendering:  87%|████████▋ | 20/23 [00:12<00:01,  1.51it/s]Rendering:  91%|█████████▏| 21/23 [00:13<00:01,  1.45it/s]Rendering:  96%|█████████▌| 22/23 [00:14<00:00,  1.46it/s]Rendering: 100%|██████████| 23/23 [00:14<00:00,  1.50it/s]Rendering: 100%|██████████| 23/23 [00:14<00:00,  1.54it/s]
+[2026-09-17 10:56:15] tasks:100 Initialized dataloader with training sequence indices 
+[0, 1, 2, 3, 4, 5, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 24, 25, 26, 30, 31, 32, 33, 34, 35, 42, 43, 44, 45, 46, 47, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68]
+[2026-09-17 10:56:15] tasks:115 Initialized dataloader with validation sequence indices 
+[6, 7, 8, 21, 22, 23, 27, 28, 29, 36, 39, 40, 41, 48, 49, 50]
+[2026-09-17 10:56:17] decoder:282 Initialized decoder with NumberOfParams(free=7427, fixed=0) parameters.
+[2026-09-17 10:56:17] decoder:283 DecoderGAVP(
+  (base): Sequential(
+    (0): Conv2dHexSpace(34, 8, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+    (1): BatchNorm2d(8, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): Softplus(beta=1.0, threshold=20.0)
+    (3): Dropout(p=0.5, inplace=False)
+  )
+  (decoder): Sequential(
+    (0): Conv2dHexSpace(8, 3, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+  )
+  (head): Sequential()
+)
+[2026-09-17 10:56:17] solver:227 Initializing Adam for network and decoder.
+[2026-09-17 10:56:17] solver:1002 Init schedule for lr_net
+[2026-09-17 10:56:17] solver:1002 Init schedule for lr_dec
+[2026-09-17 10:56:17] solver:1002 Init schedule for lr_pen
+[2026-09-17 10:56:17] solver:1002 Init schedule for dt
+[2026-09-17 10:56:17] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:17] solver:134 Initialized solver.
+[2026-09-17 10:56:17] solver:135 Namespace(
+  type = 'NetworkDir',
+  network_name = 'flow/9991/000',
+  description = 'diag1',
+  network = Namespace(
+    connectome = Namespace(
+      type = 'ConnectomeFromAvgFilters',
+      file = 'fib25-fib19_v2.2.json',
+      extent = 15,
+      n_syn_fill = 1
+    ),
+    dynamics = Namespace(
+      type = 'PPNeuronIGRSynapses',
+      activation = Namespace(type='relu')
+    ),
+    edge_config = Namespace(
+      sign = Namespace(
+        type = 'SynapseSign',
+        form = 'value',
+        requires_grad = False,
+        initial_dist = 'Value',
+        groupby = ['source_type', 'target_type']
+      ),
+      syn_count = Namespace(
+        type = 'SynapseCount',
+        initial_dist = 'Lognormal',
+        mode = 'mean',
+        requires_grad = False,
+        std = 1.0,
+        groupby = ['source_type', 'target_type', 'dv', 'du'],
+        penalize = Namespace(
+          function = 'weight_decay',
+          kwargs = Namespace(lambda=0)
+        )
+      ),
+      syn_strength = Namespace(
+        type = 'SynapseCountScaling',
+        initial_dist = 'Value',
+        requires_grad = True,
+        scale = 0.01,
+        clamp = 'non_negative',
+        groupby = ['source_type', 'target_type'],
+        penalize = Namespace(
+          function = 'weight_decay',
+          kwargs = Namespace(lambda=0)
+        )
+      )
+    ),
+    node_config = Namespace(
+      bias = Namespace(
+        type = 'RestingPotential',
+        groupby = ['type'],
+        initial_dist = 'Normal',
+        mode = 'sample',
+        requires_grad = True,
+        seed = 0,
+        mean = 0.5,
+        std = 0.05,
+        symmetric = [],
+        penalize = Namespace(activity=True)
+      ),
+      time_const = Namespace(
+        type = 'TimeConstant',
+        groupby = ['type'],
+        initial_dist = 'Value',
+        value = 0.05,
+        requires_grad = True
+      )
+    ),
+    stimulus_config = Namespace(type='Stimulus', init_buffer=False)
+  ),
+  task = Namespace(
+    dataset = Namespace(
+      type = 'MultiTaskSintel',
+      tasks = ['flow'],
+      boxfilter = Namespace(extent=15, kernel_size=13),
+      vertical_splits = 3,
+      n_frames = 19,
+      center_crop_fraction = 0.7,
+      dt = 0.02,
+      augment = True,
+      random_temporal_crop = True,
+      all_frames = False,
+      resampling = True,
+      interpolate = True,
+      p_flip = 0.5,
+      p_rot = 0.5,
+      contrast_std = 0.2,
+      brightness_std = 0.1,
+      gaussian_white_noise = 0.08,
+      gamma_std = None,
+      _init_cache = True,
+      unittest = False,
+      flip_axes = [0, 1, 2, 3]
+    ),
+    decoder = Namespace(
+      flow = Namespace(
+        type = 'DecoderGAVP',
+        shape = [8, 2],
+        kernel_size = 5,
+        const_weight = 0.001,
+        n_out_features = None,
+        p_dropout = 0.5
+      )
+    ),
+    loss = Namespace(flow='l2norm'),
+    task_weights = None,
+    batch_size = 4,
+    n_iters = 250000,
+    n_folds = 4,
+    fold = 1,
+    seed = 0,
+    original_split = True
+  ),
+  optim = Namespace(
+    type = 'Adam',
+    optim_dec = Namespace(lr=5e-05),
+    optim_net = Namespace(lr=5e-05)
+  ),
+  penalizer = Namespace(
+    activity_penalty = Namespace(
+      activity_baseline = 5.0,
+      activity_penalty = 0.1,
+      stop_iter = 150000,
+      below_baseline_penalty_weight = 1.0,
+      above_baseline_penalty_weight = 0.1
+    ),
+    optim = 'SGD'
+  ),
+  scheduler = Namespace(
+    lr_net = Namespace(function='stepwise', start=5e-05, stop=5e-06, steps=10),
+    lr_dec = Namespace(function='stepwise', start=5e-05, stop=5e-06, steps=10),
+    lr_pen = Namespace(function='stepwise', start=5e-05, stop=5e-06, steps=10),
+    dt = Namespace(function='stepwise', start=0.02, stop=0.02, steps=10),
+    chkpt_every_epoch = 300
+  ),
+  delete_if_exists = False
+)
+META {"status": "PREVIEW DIAGNOSTIC -- NOT A TEST (gray-stimulus control, brief docs/briefs/2026-09-16-step1-gray-stimulus.md v5.1; n=6 individuals)", "brief": "docs/briefs/2026-09-16-step1-gray-stimulus.md (v5.1, commit fc7239d; v5.1 differs from v5, b14f69f, only by turning two single-call gates into records: per_item_mean - hook_eval() and iteration-0 bitwise equality)", "launch": "Mike's explicit word in the DPC Research chat, 2026-09-17T08:37:30Z: \u00ab@CC_windows \u00ab\u0437\u0430\u043f\u0443\u0441\u043a\u0430\u0439 \u0448\u0430\u0433 1\u00bb (v5)\u00bb; reviewer pass on v5: Ark 08:27:19Z and 08:36:24Z, Zcode 08:28:59Z", "ceilings": {"copy_vs_original": "ceiling 1e-2 on |mean(A_1..A_5) - mean(B_1..B_5)| (16-item mean) -- a SANITY bound, not a precision bound (Ark): ~50x above all measured noise on this comparison to date (<= 2.0e-4 between processes, C3 Part B, results/diagnostics/c3/README.md) and ~500x below the narrowest pre-registered reading band (0.1 * gain_s ~ 5-6, brief Sec 7); catches a wrong copy (checkpoint, data, index), an error in units", "P0": "ceiling 1e-3 on |mean of five condition-(c) calls - stored val_loss| -- the largest value on record on this path is 7e-05 (brief Sec 6 v5)", "fresh_process": "ceiling 1e-2 per cell on |delta| between the two processes of the five-call mean (16-item mean) -- same derivation as the copy/original ceiling: ~50x above measured noise (<= 2.0e-4 between processes, C3 Part B), ~500x below 0.1 * gain_s ~ 5-6 (brief Sec 6 v5)"}, "n_copy_calls_per_cell": 5, "cell_definition": "loss_16 = mean over the five copy calls of each call's 16-item mean; per-item columns = per-item mean over the five calls", "script_sha256": {"results/diagnostics/gray/gray_stimulus.py": "61eb8bf3068b0bc4a89568c144ab1a931c68a0c4a54659a24cd5b631fc067624", "results/night2/diagnostics/diag1_eval_paths.py": "bfb3ca5eb1d20b3084d09cac57e333efae2a34b7ec4b503d60602275d13bd9f1", "results/night2/diagnostics/ablation/ablation.py": "1545b53b14b64758f0cc5630a8be8a635ff1e3cf0a1083aec375d251b0eff328", "results/night2/diagnostics/rowB/rowB.py": "195a89b555bedf3a0ff00a4c4e0542eafa6370243fbf9ed954f5fe8fbf7f4082", "results/night3/diagnostics/rowB/rowB.py": "195a89b555bedf3a0ff00a4c4e0542eafa6370243fbf9ed954f5fe8fbf7f4082", "results/night3/diagnostics/ablation/ablation_night3.py": "c20013b4ab0826af6d89cccd653d1cfa601915017fbbd04156fe1628ffac156a"}, "flyvis": "1.2.0", "torch": "2.9.1+cu128", "python": "3.10.20", "gpu": "NVIDIA RTX PRO 4500 Blackwell", "netdir": "C:\\Users\\mikha\\AppData\\Local\\Temp\\claude\\c--Users-mikha-Documents-dpc-research-autoresearch-win-rtx\\03852100-01fd-45ef-82c3-e22ac607b0f7\\scratchpad\\gray_v51\\netdir_v51_main\\flow\\9991\\000", "device": "cuda", "utc": "2026-09-17T08:56:17Z", "pid": 40352, "runs": {"000": "seed0", "900": "seed0prime", "001": "seed1", "002": "seed2", "003": "seed3", "004": "seed4"}, "labels": ["seed0", "seed0prime", "seed1", "seed2", "seed3", "seed4"], "checkpoints": {"chkpt_00000": 0, "chkpt_00071": 250008}, "checkpoint_index_to_solver_iteration": {"0": 0, "71": 250008}, "conditions": {"real": "condition (c): the unmodified data['lum'] -- the identity transform; diag1_eval_paths.py:191 unchanged", "gray": "condition (a): torch.full_like(data['lum'], 0.5) -- every input element 0.5, flyvis's own resting/background value (network.py:548-586, moving_bar.py:194)", "zero": "condition (b): torch.zeros_like(data['lum']) -- every input element 0.0, full-field black; NOT the resting state", "shuffled": "condition (d): data['lum'] with its frame axis (dim 1) permuted by numpy.random.default_rng([SHUFFLE_SEED, item_index]).permutation(n_frames), SHUFFLE_SEED=20260916; content and per-frame image statistics preserved, temporal ordering destroyed; the target is NOT permuted"}, "shuffle_seed": 20260916, "shuffle_derivation": "numpy.random.default_rng([SHUFFLE_SEED, item_index]).permutation(n_frames), item_index = the dataloader enumeration index 0..15; identical in every process", "batch_size": 1, "dt": 0.02, "t_pre": 0.25, "steady_state_value": 0.5, "augmentation": false, "ablation_hook_registered": false, "copy_note": "per_item_eval_transformed is a line-for-line copy of diag1_eval_paths.py:176-201; only the argument of :191 and the loop variable `_`->`_i` on :188 differ -- verified by code_gate (brief v4 Sec 6), see code_gate in this json"}
+[2026-09-17 10:56:17] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:17] chkpt_utils:36 Recovered network state.
+[2026-09-17 10:56:17] chkpt_utils:65 Recovered flow decoder state.
+[2026-09-17 10:56:17] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+C:\Users\mikha\AppData\Local\Temp\claude\c--Users-mikha-Documents-dpc-research-autoresearch-win-rtx\63f3961a-96ce-4048-8338-72c162ea66f8\scratchpad\flyvis-probe\.venv\lib\site-packages\torch\utils\_device.py:103: UserWarning: Using a non-tuple sequence for multidimensional indexing is deprecated and will be changed in pytorch 2.9; use x[tuple(seq)] instead of x[seq]. In pytorch 2.9 this will be interpreted as tensor index, x[torch.tensor(seq)], which will result either in an error or a different result (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\pytorch\torch\csrc\autograd\python_variable_indexing.cpp:351.)
+  return func(*args, **kwargs)
+[2026-09-17 10:56:17] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:18] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:18] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:18] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:18] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:18] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:19] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:19] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:19] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:20] solver:501 Test
+CONTROL GATE 000@0 |mean(A1..A5) - mean(B1..B5)| = 0.0 [ceiling 1e-2 on |mean(A_1..A_5) - mean(B_1..B_5)| (16-item mean) -- a SANITY bound, not a precision bound (Ark): ~50x above all measured noise on this comparison to date (<= 2.0e-4 between processes, C3 Part B, results/diagnostics/c3/README.md) and ~500x below the narrowest pre-registered reading band (0.1 * gain_s ~ 5-6, brief Sec 7); catches a wrong copy (checkpoint, data, index), an error in units] -> PASS
+CONTROL P0 000@0 mean(A1..A5) - stored = 0.0 [ceiling 1e-3 on |mean of five condition-(c) calls - stored val_loss| -- the largest value on record on this path is 7e-05 (brief Sec 6 v5)] -> PASS
+CONTROL RECORDED 000@0 mean(A1..A5) - hook_eval() = 0.0 (recorded, not gating; sanity bound 1e-3); all A/B bitwise equal = True
+CONTROL {"run": "000", "chkpt": "chkpt_00000", "solver_iteration": 0, "n_copy_calls": 5, "n_original_calls": 5, "gate_copy_vs_original_rule": "ceiling 1e-2 on |mean(A_1..A_5) - mean(B_1..B_5)| (16-item mean) -- a SANITY bound, not a precision bound (Ark): ~50x above all measured noise on this comparison to date (<= 2.0e-4 between processes, C3 Part B, results/diagnostics/c3/README.md) and ~500x below the narrowest pre-registered reading band (0.1 * gain_s ~ 5-6, brief Sec 7); catches a wrong copy (checkpoint, data, index), an error in units", "copy_means_A1_to_A5": ["1212.5555891990662", "1212.5555891990662", "1212.5555891990662", "1212.5555891990662", "1212.5555891990662"], "original_means_B1_to_B5": ["1212.5555891990662", "1212.5555891990662", "1212.5555891990662", "1212.5555891990662", "1212.5555891990662"], "mean_of_five_copy_A": "1212.5555891990662", "mean_of_five_original_B": "1212.5555891990662", "gate_mean_A_minus_mean_B": "0.0", "gate_abs_mean_A_minus_mean_B": "0.0", "gate_ceiling": "0.01", "gate_copy_vs_original_pass": true, "recorded_B_pairs_max_abs_per_item": {"B1-B2": "0.0", "B1-B3": "0.0", "B1-B4": "0.0", "B1-B5": "0.0", "B2-B3": "0.0", "B2-B4": "0.0", "B2-B5": "0.0", "B3-B4": "0.0", "B3-B5": "0.0", "B4-B5": "0.0"}, "recorded_B_pairs_abs_mean_diff": {"B1-B2": "0.0", "B1-B3": "0.0", "B1-B4": "0.0", "B1-B5": "0.0", "B2-B3": "0.0", "B2-B4": "0.0", "B2-B5": "0.0", "B3-B4": "0.0", "B3-B5": "0.0", "B4-B5": "0.0"}, "recorded_B_floor_max_abs_per_item_over_10_pairs": "0.0", "recorded_B_floor_max_abs_mean_over_10_pairs": "0.0", "recorded_A_pairs_max_abs_per_item": {"A1-A2": "0.0", "A1-A3": "0.0", "A1-A4": "0.0", "A1-A5": "0.0", "A2-A3": "0.0", "A2-A4": "0.0", "A2-A5": "0.0", "A3-A4": "0.0", "A3-A5": "0.0", "A4-A5": "0.0"}, "recorded_A_pairs_abs_mean_diff": {"A1-A2": "0.0", "A1-A3": "0.0", "A1-A4": "0.0", "A1-A5": "0.0", "A2-A3": "0.0", "A2-A4": "0.0", "A2-A5": "0.0", "A3-A4": "0.0", "A3-A5": "0.0", "A4-A5": "0.0"}, "recorded_A_spread_max_abs_per_item_over_10_pairs": "0.0", "recorded_A_spread_max_abs_mean_over_10_pairs": "0.0", "recorded_Ai_vs_Bk_max_abs_per_item": {"A1-B1": "0.0", "A1-B2": "0.0", "A1-B3": "0.0", "A1-B4": "0.0", "A1-B5": "0.0", "A2-B1": "0.0", "A2-B2": "0.0", "A2-B3": "0.0", "A2-B4": "0.0", "A2-B5": "0.0", "A3-B1": "0.0", "A3-B2": "0.0", "A3-B3": "0.0", "A3-B4": "0.0", "A3-B5": "0.0", "A4-B1": "0.0", "A4-B2": "0.0", "A4-B3": "0.0", "A4-B4": "0.0", "A4-B5": "0.0", "A5-B1": "0.0", "A5-B2": "0.0", "A5-B3": "0.0", "A5-B4": "0.0", "A5-B5": "0.0"}, "recorded_Ai_vs_Bk_mean_diff": {"A1-B1": "0.0", "A1-B2": "0.0", "A1-B3": "0.0", "A1-B4": "0.0", "A1-B5": "0.0", "A2-B1": "0.0", "A2-B2": "0.0", "A2-B3": "0.0", "A2-B4": "0.0", "A2-B5": "0.0", "A3-B1": "0.0", "A3-B2": "0.0", "A3-B3": "0.0", "A3-B4": "0.0", "A3-B5": "0.0", "A4-B1": "0.0", "A4-B2": "0.0", "A4-B3": "0.0", "A4-B4": "0.0", "A4-B5": "0.0", "A5-B1": "0.0", "A5-B2": "0.0", "A5-B3": "0.0", "A5-B4": "0.0", "A5-B5": "0.0"}, "recorded_Ai_vs_Bk_max_abs_per_item_overall": "0.0", "recorded_Ai_vs_Bk_max_abs_mean_diff_overall": "0.0", "recorded_Ai_vs_Bk_bitwise_equal": {"A1==B1": true, "A1==B2": true, "A1==B3": true, "A1==B4": true, "A1==B5": true, "A2==B1": true, "A2==B2": true, "A2==B3": true, "A2==B4": true, "A2==B5": true, "A3==B1": true, "A3==B2": true, "A3==B3": true, "A3==B4": true, "A3==B5": true, "A4==B1": true, "A4==B2": true, "A4==B3": true, "A4==B4": true, "A4==B5": true, "A5==B1": true, "A5==B2": true, "A5==B3": true, "A5==B4": true, "A5==B5": true}, "recorded_A_pairs_bitwise_equal": {"A1==A2": true, "A1==A3": true, "A1==A4": true, "A1==A5": true, "A2==A3": true, "A2==A4": true, "A2==A5": true, "A3==A4": true, "A3==A5": true, "A4==A5": true}, "recorded_B_pairs_bitwise_equal": {"B1==B2": true, "B1==B3": true, "B1==B4": true, "B1==B5": true, "B2==B3": true, "B2==B4": true, "B2==B5": true, "B3==B4": true, "B3==B5": true, "B4==B5": true}, "recorded_all_A_and_B_bitwise_equal": true, "recorded_iteration0_bitwise_note": "brief v5.1 Sec 6: at iteration 0 bitwise equality is recorded, not required; the ceilings apply there too", "copy_A_per_item": [["4222.93798828125", "4526.18994140625", "4928.9189453125", "123.35961151123047", "106.6323471069336", "130.35470581054688", "774.1333618164062", "780.2822875976562", "633.8546142578125", "1196.8843994140625", "769.3876953125", "495.92431640625", "227.32440185546875", "186.8564910888672", "89.11231231689453", "208.7360076904297"], ["4222.93798828125", "4526.18994140625", "4928.9189453125", "123.35961151123047", "106.6323471069336", "130.35470581054688", "774.1333618164062", "780.2822875976562", "633.8546142578125", "1196.8843994140625", "769.3876953125", "495.92431640625", "227.32440185546875", "186.8564910888672", "89.11231231689453", "208.7360076904297"], ["4222.93798828125", "4526.18994140625", "4928.9189453125", "123.35961151123047", "106.6323471069336", "130.35470581054688", "774.1333618164062", "780.2822875976562", "633.8546142578125", "1196.8843994140625", "769.3876953125", "495.92431640625", "227.32440185546875", "186.8564910888672", "89.11231231689453", "208.7360076904297"], ["4222.93798828125", "4526.18994140625", "4928.9189453125", "123.35961151123047", "106.6323471069336", "130.35470581054688", "774.1333618164062", "780.2822875976562", "633.8546142578125", "1196.8843994140625", "769.3876953125", "495.92431640625", "227.32440185546875", "186.8564910888672", "89.11231231689453", "208.7360076904297"], ["4222.93798828125", "4526.18994140625", "4928.9189453125", "123.35961151123047", "106.6323471069336", "130.35470581054688", "774.1333618164062", "780.2822875976562", "633.8546142578125", "1196.8843994140625", "769.3876953125", "495.92431640625", "227.32440185546875", "186.8564910888672", "89.11231231689453", "208.7360076904297"]], "original_B_per_item": [["4222.93798828125", "4526.18994140625", "4928.9189453125", "123.35961151123047", "106.6323471069336", "130.35470581054688", "774.1333618164062", "780.2822875976562", "633.8546142578125", "1196.8843994140625", "769.3876953125", "495.92431640625", "227.32440185546875", "186.8564910888672", "89.11231231689453", "208.7360076904297"], ["4222.93798828125", "4526.18994140625", "4928.9189453125", "123.35961151123047", "106.6323471069336", "130.35470581054688", "774.1333618164062", "780.2822875976562", "633.8546142578125", "1196.8843994140625", "769.3876953125", "495.92431640625", "227.32440185546875", "186.8564910888672", "89.11231231689453", "208.7360076904297"], ["4222.93798828125", "4526.18994140625", "4928.9189453125", "123.35961151123047", "106.6323471069336", "130.35470581054688", "774.1333618164062", "780.2822875976562", "633.8546142578125", "1196.8843994140625", "769.3876953125", "495.92431640625", "227.32440185546875", "186.8564910888672", "89.11231231689453", "208.7360076904297"], ["4222.93798828125", "4526.18994140625", "4928.9189453125", "123.35961151123047", "106.6323471069336", "130.35470581054688", "774.1333618164062", "780.2822875976562", "633.8546142578125", "1196.8843994140625", "769.3876953125", "495.92431640625", "227.32440185546875", "186.8564910888672", "89.11231231689453", "208.7360076904297"], ["4222.93798828125", "4526.18994140625", "4928.9189453125", "123.35961151123047", "106.6323471069336", "130.35470581054688", "774.1333618164062", "780.2822875976562", "633.8546142578125", "1196.8843994140625", "769.3876953125", "495.92431640625", "227.32440185546875", "186.8564910888672", "89.11231231689453", "208.7360076904297"]], "gate_P0_rule": "ceiling 1e-3 on |mean of five condition-(c) calls - stored val_loss| -- the largest value on record on this path is 7e-05 (brief Sec 6 v5)", "stored_checkpoint_val_loss": "1212.5555891990662", "P0_mean_of_five_copy_calls": "1212.5555891990662", "gate_P0_mean_minus_stored": "0.0", "gate_P0_ceiling": "0.001", "gate_P0_pass": true, "recorded_P0_hook_path_value_single_call": "1212.5555891990662", "recorded_P0_mean_of_five_minus_hook": "0.0", "recorded_P0_mean_of_five_minus_hook_within_sanity_bound_1e-3": true, "recorded_P0_hook_note": "brief v5.1 Sec 6: per_item_mean - hook_eval() is recorded, not gating (C3 Part B measured up to 1.435e-4 on the same weights); its sanity bound is the P0 ceiling 1e-3"}
+[2026-09-17 10:56:20] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:20] chkpt_utils:36 Recovered network state.
+[2026-09-17 10:56:20] chkpt_utils:65 Recovered flow decoder state.
+[2026-09-17 10:56:20] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:21] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:21] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:21] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:22] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:22] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:23] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:23] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:23] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:23] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:24] solver:501 Test
+CONTROL GATE 000@250008 |mean(A1..A5) - mean(B1..B5)| = 1.4877319472361705e-05 [ceiling 1e-2 on |mean(A_1..A_5) - mean(B_1..B_5)| (16-item mean) -- a SANITY bound, not a precision bound (Ark): ~50x above all measured noise on this comparison to date (<= 2.0e-4 between processes, C3 Part B, results/diagnostics/c3/README.md) and ~500x below the narrowest pre-registered reading band (0.1 * gain_s ~ 5-6, brief Sec 7); catches a wrong copy (checkpoint, data, index), an error in units] -> PASS
+CONTROL P0 000@250008 mean(A1..A5) - stored = -2.2697448684994015e-05 [ceiling 1e-3 on |mean of five condition-(c) calls - stored val_loss| -- the largest value on record on this path is 7e-05 (brief Sec 6 v5)] -> PASS
+CONTROL RECORDED 000@250008 mean(A1..A5) - hook_eval() = 2.641677860992786e-05 (recorded, not gating; sanity bound 1e-3); all A/B bitwise equal = False
+CONTROL {"run": "000", "chkpt": "chkpt_00071", "solver_iteration": 250008, "n_copy_calls": 5, "n_original_calls": 5, "gate_copy_vs_original_rule": "ceiling 1e-2 on |mean(A_1..A_5) - mean(B_1..B_5)| (16-item mean) -- a SANITY bound, not a precision bound (Ark): ~50x above all measured noise on this comparison to date (<= 2.0e-4 between processes, C3 Part B, results/diagnostics/c3/README.md) and ~500x below the narrowest pre-registered reading band (0.1 * gain_s ~ 5-6, brief Sec 7); catches a wrong copy (checkpoint, data, index), an error in units", "copy_means_A1_to_A5": ["1148.8074145317078", "1148.8074932098389", "1148.8074622154236", "1148.8074579238892", "1148.8074841499329"], "original_means_B1_to_B5": ["1148.8074674606323", "1148.8074278831482", "1148.8074793815613", "1148.807403087616", "1148.8074598312378"], "mean_of_five_copy_A": "1148.8074624061585", "mean_of_five_original_B": "1148.807447528839", "gate_mean_A_minus_mean_B": "1.4877319472361705e-05", "gate_abs_mean_A_minus_mean_B": "1.4877319472361705e-05", "gate_ceiling": "0.01", "gate_copy_vs_original_pass": true, "recorded_B_pairs_max_abs_per_item": {"B1-B2": "0.00048828125", "B1-B3": "0.00048828125", "B1-B4": "0.00048828125", "B1-B5": "0.00048828125", "B2-B3": "0.000732421875", "B2-B4": "0.00048828125", "B2-B5": "0.00048828125", "B3-B4": "0.00048828125", "B3-B5": "0.000244140625", "B4-B5": "0.00048828125"}, "recorded_B_pairs_abs_mean_diff": {"B1-B2": "3.9577484130859375e-05", "B1-B3": "1.1920928955078125e-05", "B1-B4": "6.437301635742188e-05", "B1-B5": "7.62939453125e-06", "B2-B3": "5.14984130859375e-05", "B2-B4": "2.47955322265625e-05", "B2-B5": "3.1948089599609375e-05", "B3-B4": "7.62939453125e-05", "B3-B5": "1.9550323486328125e-05", "B4-B5": "5.6743621826171875e-05"}, "recorded_B_floor_max_abs_per_item_over_10_pairs": "0.000732421875", "recorded_B_floor_max_abs_mean_over_10_pairs": "7.62939453125e-05", "recorded_A_pairs_max_abs_per_item": {"A1-A2": "0.00048828125", "A1-A3": "0.0009765625", "A1-A4": "0.00048828125", "A1-A5": "0.00048828125", "A2-A3": "0.00048828125", "A2-A4": "0.00048828125", "A2-A5": "0.00018310546875", "A3-A4": "0.00048828125", "A3-A5": "0.00048828125", "A4-A5": "0.00048828125"}, "recorded_A_pairs_abs_mean_diff": {"A1-A2": "7.867813110351562e-05", "A1-A3": "4.76837158203125e-05", "A1-A4": "4.3392181396484375e-05", "A1-A5": "6.961822509765625e-05", "A2-A3": "3.0994415283203125e-05", "A2-A4": "3.528594970703125e-05", "A2-A5": "9.059906005859375e-06", "A3-A4": "4.291534423828125e-06", "A3-A5": "2.193450927734375e-05", "A4-A5": "2.6226043701171875e-05"}, "recorded_A_spread_max_abs_per_item_over_10_pairs": "0.0009765625", "recorded_A_spread_max_abs_mean_over_10_pairs": "7.867813110351562e-05", "recorded_Ai_vs_Bk_max_abs_per_item": {"A1-B1": "0.00048828125", "A1-B2": "0.00048828125", "A1-B3": "0.0009765625", "A1-B4": "0.00048828125", "A1-B5": "0.0009765625", "A2-B1": "0.000244140625", "A2-B2": "0.000732421875", "A2-B3": "0.00048828125", "A2-B4": "0.00048828125", "A2-B5": "0.00048828125", "A3-B1": "0.00048828125", "A3-B2": "0.00048828125", "A3-B3": "0.00048828125", "A3-B4": "0.00048828125", "A3-B5": "0.00048828125", "A4-B1": "0.00048828125", "A4-B2": "0.000732421875", "A4-B3": "0.00048828125", "A4-B4": "0.00048828125", "A4-B5": "0.00048828125", "A5-B1": "0.000274658203125", "A5-B2": "0.000732421875", "A5-B3": "0.00048828125", "A5-B4": "0.00048828125", "A5-B5": "0.00048828125"}, "recorded_Ai_vs_Bk_mean_diff": {"A1-B1": "-5.2928924560546875e-05", "A1-B2": "-1.33514404296875e-05", "A1-B3": "-6.4849853515625e-05", "A1-B4": "1.1444091796875e-05", "A1-B5": "-4.5299530029296875e-05", "A2-B1": "2.574920654296875e-05", "A2-B2": "6.532669067382812e-05", "A2-B3": "1.3828277587890625e-05", "A2-B4": "9.012222290039062e-05", "A2-B5": "3.337860107421875e-05", "A3-B1": "-5.245208740234375e-06", "A3-B2": "3.4332275390625e-05", "A3-B3": "-1.71661376953125e-05", "A3-B4": "5.91278076171875e-05", "A3-B5": "2.384185791015625e-06", "A4-B1": "-9.5367431640625e-06", "A4-B2": "3.0040740966796875e-05", "A4-B3": "-2.1457672119140625e-05", "A4-B4": "5.4836273193359375e-05", "A4-B5": "-1.9073486328125e-06", "A5-B1": "1.6689300537109375e-05", "A5-B2": "5.626678466796875e-05", "A5-B3": "4.76837158203125e-06", "A5-B4": "8.106231689453125e-05", "A5-B5": "2.4318695068359375e-05"}, "recorded_Ai_vs_Bk_max_abs_per_item_overall": "0.0009765625", "recorded_Ai_vs_Bk_max_abs_mean_diff_overall": "9.012222290039062e-05", "recorded_Ai_vs_Bk_bitwise_equal": {"A1==B1": false, "A1==B2": false, "A1==B3": false, "A1==B4": false, "A1==B5": false, "A2==B1": false, "A2==B2": false, "A2==B3": false, "A2==B4": false, "A2==B5": false, "A3==B1": false, "A3==B2": false, "A3==B3": false, "A3==B4": false, "A3==B5": false, "A4==B1": false, "A4==B2": false, "A4==B3": false, "A4==B4": false, "A4==B5": false, "A5==B1": false, "A5==B2": false, "A5==B3": false, "A5==B4": false, "A5==B5": false}, "recorded_A_pairs_bitwise_equal": {"A1==A2": false, "A1==A3": false, "A1==A4": false, "A1==A5": false, "A2==A3": false, "A2==A4": false, "A2==A5": false, "A3==A4": false, "A3==A5": false, "A4==A5": false}, "recorded_B_pairs_bitwise_equal": {"B1==B2": false, "B1==B3": false, "B1==B4": false, "B1==B5": false, "B2==B3": false, "B2==B4": false, "B2==B5": false, "B3==B4": false, "B3==B5": false, "B4==B5": false}, "recorded_all_A_and_B_bitwise_equal": false, "recorded_iteration0_bitwise_note": "brief v5.1 Sec 6: at iteration 0 bitwise equality is recorded, not required; the ceilings apply there too", "copy_A_per_item": [["4048.844970703125", "4363.81494140625", "4764.62060546875", "93.36492156982422", "79.38642120361328", "104.89816284179688", "687.7188110351562", "690.90625", "546.343994140625", "1181.2325439453125", "679.7901611328125", "445.06927490234375", "208.05984497070312", "183.49949645996094", "101.54236602783203", "201.82586669921875"], ["4048.84521484375", "4363.81494140625", "4764.62109375", "93.36495208740234", "79.38643646240234", "104.89816284179688", "687.7188110351562", "690.906494140625", "546.343994140625", "1181.2325439453125", "679.790283203125", "445.0693359375", "208.0598602294922", "183.49952697753906", "101.54237365722656", "201.82586669921875"], ["4048.844970703125", "4363.81494140625", "4764.62158203125", "93.36499786376953", "79.3864517211914", "104.89822387695312", "687.7186889648438", "690.9061279296875", "546.3439331054688", "1181.2325439453125", "679.7901611328125", "445.0692138671875", "208.05990600585938", "183.49948120117188", "101.54235076904297", "201.82582092285156"], ["4048.84521484375", "4363.814453125", "4764.62109375", "93.3649673461914", "79.38644409179688", "104.89816284179688", "687.7188720703125", "690.9063720703125", "546.3440551757812", "1181.232666015625", "679.7902221679688", "445.0691833496094", "208.05987548828125", "183.49951171875", "101.54235076904297", "201.8258819580078"], ["4048.84521484375", "4363.81494140625", "4764.62109375", "93.36497497558594", "79.38643646240234", "104.89820861816406", "687.7186889648438", "690.9063110351562", "546.343994140625", "1181.232666015625", "679.7902221679688", "445.06939697265625", "208.05990600585938", "183.49948120117188", "101.54240417480469", "201.8258056640625"]], "original_B_per_item": [["4048.844970703125", "4363.81494140625", "4764.62109375", "93.36495208740234", "79.38643646240234", "104.89820098876953", "687.7186889648438", "690.9064331054688", "546.3441162109375", "1181.232666015625", "679.7902221679688", "445.0691223144531", "208.05990600585938", "183.49949645996094", "101.5423812866211", "201.8258514404297"], ["4048.844482421875", "4363.81494140625", "4764.62109375", "93.36493682861328", "79.38644409179688", "104.89820098876953", "687.7188110351562", "690.9063720703125", "546.343994140625", "1181.232666015625", "679.7901611328125", "445.0692138671875", "208.05987548828125", "183.49951171875", "101.54232025146484", "201.82582092285156"], ["4048.84521484375", "4363.814453125", "4764.62158203125", "93.36495971679688", "79.38646697998047", "104.89818572998047", "687.7188110351562", "690.9063110351562", "546.343994140625", "1181.232666015625", "679.7902221679688", "445.06927490234375", "208.05979919433594", "183.49951171875", "101.54236602783203", "201.8258514404297"], ["4048.8447265625", "4363.814453125", "4764.62109375", "93.36495971679688", "79.38645935058594", "104.8981704711914", "687.7186889648438", "690.9063110351562", "546.3440551757812", "1181.2325439453125", "679.7902221679688", "445.0692443847656", "208.05984497070312", "183.49949645996094", "101.54237365722656", "201.8258056640625"], ["4048.844970703125", "4363.814453125", "4764.62158203125", "93.36495971679688", "79.38644409179688", "104.8981704711914", "687.71875", "690.9063720703125", "546.343994140625", "1181.232666015625", "679.790283203125", "445.0692138671875", "208.05987548828125", "183.4994659423828", "101.54235076904297", "201.8258056640625"]], "gate_P0_rule": "ceiling 1e-3 on |mean of five condition-(c) calls - stored val_loss| -- the largest value on record on this path is 7e-05 (brief Sec 6 v5)", "stored_checkpoint_val_loss": "1148.8074851036072", "P0_mean_of_five_copy_calls": "1148.8074624061585", "gate_P0_mean_minus_stored": "-2.2697448684994015e-05", "gate_P0_ceiling": "0.001", "gate_P0_pass": true, "recorded_P0_hook_path_value_single_call": "1148.8074359893799", "recorded_P0_mean_of_five_minus_hook": "2.641677860992786e-05", "recorded_P0_mean_of_five_minus_hook_within_sanity_bound_1e-3": true, "recorded_P0_hook_note": "brief v5.1 Sec 6: per_item_mean - hook_eval() is recorded, not gating (C3 Part B measured up to 1.435e-4 on the same weights); its sanity bound is the P0 ceiling 1e-3"}
+NULL constant_output_null 1039.84645986557 zero_prediction_null 1209.561125278473
+[2026-09-17 10:56:24] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:24] chkpt_utils:36 Recovered network state.
+[2026-09-17 10:56:24] chkpt_utils:65 Recovered flow decoder state.
+[2026-09-17 10:56:24] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:24] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:24] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:24] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:25] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+CELL seed0 0 real mean_of_5 1212.5555891990662 max-min 0.0 calls ['1212.5555891990662', '1212.5555891990662', '1212.5555891990662', '1212.5555891990662', '1212.5555891990662'] wall_5 0.9166474999801721
+CELL P0 seed0 0 mean_of_5 - stored 0.0 [ceiling 1e-3 on |mean of five condition-(c) calls - stored val_loss| -- the largest value on record on this path is 7e-05 (brief Sec 6 v5)] PASS
+[2026-09-17 10:56:25] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:25] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:25] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:25] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:26] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+CELL seed0 0 gray mean_of_5 1212.5542159080505 max-min 0.0 calls ['1212.5542159080505', '1212.5542159080505', '1212.5542159080505', '1212.5542159080505', '1212.5542159080505'] wall_5 0.9265228000294883
+[2026-09-17 10:56:26] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:26] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:26] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:26] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:26] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+CELL seed0 0 zero mean_of_5 1212.556869983673 max-min 0.0 calls ['1212.556869983673', '1212.556869983673', '1212.556869983673', '1212.556869983673', '1212.556869983673'] wall_5 1.0068279999832157
+[2026-09-17 10:56:27] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:27] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:27] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:27] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:28] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+CELL seed0 0 shuffled mean_of_5 1212.5552258491516 max-min 0.0 calls ['1212.5552258491516', '1212.5552258491516', '1212.5552258491516', '1212.5552258491516', '1212.5552258491516'] wall_5 1.2562334999674931
+[2026-09-17 10:56:28] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:28] chkpt_utils:36 Recovered network state.
+[2026-09-17 10:56:28] chkpt_utils:65 Recovered flow decoder state.
+[2026-09-17 10:56:28] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:28] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:29] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:29] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:29] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+CELL seed0 250008 real mean_of_5 1148.8074301719666 max-min 8.296966552734375e-05 calls ['1148.807460784912', '1148.8074231147766', '1148.8074388504028', '1148.8073778152466', '1148.8074502944946'] wall_5 1.4472105999884661
+CELL P0 seed0 250008 mean_of_5 - stored -5.493164053405053e-05 [ceiling 1e-3 on |mean of five condition-(c) calls - stored val_loss| -- the largest value on record on this path is 7e-05 (brief Sec 6 v5)] PASS
+[2026-09-17 10:56:29] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:30] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:30] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:31] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:31] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+CELL seed0 250008 gray mean_of_5 1211.1668436050415 max-min 2.956390380859375e-05 calls ['1211.1668300628662', '1211.1668486595154', '1211.16685962677', '1211.1668400764465', '1211.1668395996094'] wall_5 1.875565800059121
+[2026-09-17 10:56:31] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:32] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:32] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:32] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:32] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+CELL seed0 250008 zero mean_of_5 1206.2047726631165 max-min 1.049041748046875e-05 calls ['1206.204770565033', '1206.2047743797302', '1206.204770565033', '1206.2047791481018', '1206.2047686576843'] wall_5 1.2739179000200238
+[2026-09-17 10:56:33] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:33] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:33] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:33] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:34] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+CELL seed0 250008 shuffled mean_of_5 1334.6297996520996 max-min 0.00016689300537109375 calls ['1334.6298251152039', '1334.629717350006', '1334.6297817230225', '1334.6297898292542', '1334.6298842430115'] wall_5 1.287506199994823
+[2026-09-17 10:56:34] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:34] chkpt_utils:36 Recovered network state.
+[2026-09-17 10:56:34] chkpt_utils:65 Recovered flow decoder state.
+[2026-09-17 10:56:34] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:34] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:34] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:35] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:35] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+CELL seed0prime 0 real mean_of_5 1212.5555891990662 max-min 0.0 calls ['1212.5555891990662', '1212.5555891990662', '1212.5555891990662', '1212.5555891990662', '1212.5555891990662'] wall_5 1.2604307000292465
+CELL P0 seed0prime 0 mean_of_5 - stored 0.0 [ceiling 1e-3 on |mean of five condition-(c) calls - stored val_loss| -- the largest value on record on this path is 7e-05 (brief Sec 6 v5)] PASS
+[2026-09-17 10:56:35] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:35] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:36] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:36] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:36] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+CELL seed0prime 0 gray mean_of_5 1212.5542159080505 max-min 0.0 calls ['1212.5542159080505', '1212.5542159080505', '1212.5542159080505', '1212.5542159080505', '1212.5542159080505'] wall_5 1.2753554000228178
+[2026-09-17 10:56:36] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:37] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:37] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:37] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:37] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+CELL seed0prime 0 zero mean_of_5 1212.556869983673 max-min 0.0 calls ['1212.556869983673', '1212.556869983673', '1212.556869983673', '1212.556869983673', '1212.556869983673'] wall_5 1.2765011000446975
+[2026-09-17 10:56:38] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:38] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:38] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:38] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:39] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+CELL seed0prime 0 shuffled mean_of_5 1212.5552260398865 max-min 9.5367431640625e-07 calls ['1212.5552258491516', '1212.5552258491516', '1212.5552258491516', '1212.5552258491516', '1212.555226802826'] wall_5 1.2720811000617687
+[2026-09-17 10:56:39] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:39] chkpt_utils:36 Recovered network state.
+[2026-09-17 10:56:39] chkpt_utils:65 Recovered flow decoder state.
+[2026-09-17 10:56:39] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:39] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:39] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:40] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:40] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+CELL seed0prime 250008 real mean_of_5 1160.9823588371278 max-min 2.765655517578125e-05 calls ['1160.982373714447', '1160.982364654541', '1160.982361316681', '1160.9823460578918', '1160.9823484420776'] wall_5 1.2455535000190139
+CELL P0 seed0prime 250008 mean_of_5 - stored 1.468658456360572e-05 [ceiling 1e-3 on |mean of five condition-(c) calls - stored val_loss| -- the largest value on record on this path is 7e-05 (brief Sec 6 v5)] PASS
+[2026-09-17 10:56:40] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:40] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:41] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:41] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:41] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+CELL seed0prime 250008 gray mean_of_5 1212.0450295448304 max-min 3.6716461181640625e-05 calls ['1212.0450558662415', '1212.0450191497803', '1212.0450248718262', '1212.0450234413147', '1212.045024394989'] wall_5 1.2577967000252102
+[2026-09-17 10:56:41] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:42] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:42] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:42] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:42] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+CELL seed0prime 250008 zero mean_of_5 1213.713426208496 max-min 1.3828277587890625e-05 calls ['1213.7134246826172', '1213.7134342193604', '1213.713429927826', '1213.7134203910828', '1213.7134218215942'] wall_5 1.2503812999348156
+[2026-09-17 10:56:43] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:43] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:43] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:43] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:44] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+CELL seed0prime 250008 shuffled mean_of_5 1305.5371885299683 max-min 9.393692016601562e-05 calls ['1305.537197113037', '1305.5371446609497', '1305.5372214317322', '1305.537142753601', '1305.5372366905212'] wall_5 1.2685134999919683
+[2026-09-17 10:56:44] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:44] chkpt_utils:36 Recovered network state.
+[2026-09-17 10:56:44] chkpt_utils:65 Recovered flow decoder state.
+[2026-09-17 10:56:44] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:44] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:44] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:45] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:45] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+CELL seed1 0 real mean_of_5 1212.5529980659485 max-min 0.0 calls ['1212.5529980659485', '1212.5529980659485', '1212.5529980659485', '1212.5529980659485', '1212.5529980659485'] wall_5 1.2411579999898095
+CELL P0 seed1 0 mean_of_5 - stored 0.0 [ceiling 1e-3 on |mean of five condition-(c) calls - stored val_loss| -- the largest value on record on this path is 7e-05 (brief Sec 6 v5)] PASS
+[2026-09-17 10:56:45] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:45] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:46] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:46] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:46] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+CELL seed1 0 gray mean_of_5 1212.5516066551208 max-min 0.0 calls ['1212.5516066551208', '1212.5516066551208', '1212.5516066551208', '1212.5516066551208', '1212.5516066551208'] wall_5 1.2437379999901168
+[2026-09-17 10:56:46] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:47] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:47] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:47] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:47] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+CELL seed1 0 zero mean_of_5 1212.55433177948 max-min 0.0 calls ['1212.55433177948', '1212.55433177948', '1212.55433177948', '1212.55433177948', '1212.55433177948'] wall_5 1.247344500006875
+[2026-09-17 10:56:48] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:48] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:48] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:48] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:49] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+CELL seed1 0 shuffled mean_of_5 1212.5525994300842 max-min 0.0 calls ['1212.5525994300842', '1212.5525994300842', '1212.5525994300842', '1212.5525994300842', '1212.5525994300842'] wall_5 1.257188000017777
+[2026-09-17 10:56:49] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:49] chkpt_utils:36 Recovered network state.
+[2026-09-17 10:56:49] chkpt_utils:65 Recovered flow decoder state.
+[2026-09-17 10:56:49] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:49] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:49] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:50] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:50] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+CELL seed1 250008 real mean_of_5 1144.6362342834473 max-min 7.82012939453125e-05 calls ['1144.636236667633', '1144.6362175941467', '1144.6361923217773', '1144.6362705230713', '1144.636254310608'] wall_5 1.2464864999928977
+CELL P0 seed1 250008 mean_of_5 - stored 9.5367431640625e-07 [ceiling 1e-3 on |mean of five condition-(c) calls - stored val_loss| -- the largest value on record on this path is 7e-05 (brief Sec 6 v5)] PASS
+[2026-09-17 10:56:50] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:50] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:51] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:51] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:51] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+CELL seed1 250008 gray mean_of_5 1210.090726661682 max-min 1.049041748046875e-05 calls ['1210.090721130371', '1210.0907273292542', '1210.0907230377197', '1210.090730190277', '1210.0907316207886'] wall_5 1.249451899988344
+[2026-09-17 10:56:51] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:52] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:52] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:52] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:52] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+CELL seed1 250008 zero mean_of_5 1237.468939590454 max-min 3.0517578125e-05 calls ['1237.4689264297485', '1237.4689292907715', '1237.4689569473267', '1237.4689531326294', '1237.4689321517944'] wall_5 1.2553437000024132
+[2026-09-17 10:56:53] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:53] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:53] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:54] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:54] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+CELL seed1 250008 shuffled mean_of_5 1314.9330160140992 max-min 0.0001201629638671875 calls ['1314.9330892562866', '1314.933017730713', '1314.9330129623413', '1314.932991027832', '1314.9329690933228'] wall_5 1.2476282000425272
+[2026-09-17 10:56:54] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:54] chkpt_utils:36 Recovered network state.
+[2026-09-17 10:56:54] chkpt_utils:65 Recovered flow decoder state.
+[2026-09-17 10:56:54] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:54] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:54] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:55] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:55] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+CELL seed2 0 real mean_of_5 1212.5592331886292 max-min 0.0 calls ['1212.5592331886292', '1212.5592331886292', '1212.5592331886292', '1212.5592331886292', '1212.5592331886292'] wall_5 1.2515310000162572
+CELL P0 seed2 0 mean_of_5 - stored 0.0 [ceiling 1e-3 on |mean of five condition-(c) calls - stored val_loss| -- the largest value on record on this path is 7e-05 (brief Sec 6 v5)] PASS
+[2026-09-17 10:56:55] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:56] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:56] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:56] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:56] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+CELL seed2 0 gray mean_of_5 1212.5578484535217 max-min 0.0 calls ['1212.5578484535217', '1212.5578484535217', '1212.5578484535217', '1212.5578484535217', '1212.5578484535217'] wall_5 1.2451092999835964
+[2026-09-17 10:56:56] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:57] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:57] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:57] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:58] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+CELL seed2 0 zero mean_of_5 1212.560553073883 max-min 0.0 calls ['1212.560553073883', '1212.560553073883', '1212.560553073883', '1212.560553073883', '1212.560553073883'] wall_5 1.250438699964434
+[2026-09-17 10:56:58] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:58] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:58] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:59] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:59] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+CELL seed2 0 shuffled mean_of_5 1212.558837890625 max-min 0.0 calls ['1212.558837890625', '1212.558837890625', '1212.558837890625', '1212.558837890625', '1212.558837890625'] wall_5 1.2495900999638252
+[2026-09-17 10:56:59] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:59] chkpt_utils:36 Recovered network state.
+[2026-09-17 10:56:59] chkpt_utils:65 Recovered flow decoder state.
+[2026-09-17 10:56:59] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:56:59] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:00] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:00] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:00] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+CELL seed2 250008 real mean_of_5 1147.7179069519043 max-min 5.817413330078125e-05 calls ['1147.7178778648376', '1147.717936038971', '1147.7178974151611', '1147.7179265022278', '1147.717896938324'] wall_5 1.2514291999978013
+CELL P0 seed2 250008 mean_of_5 - stored 3.3855438232421875e-05 [ceiling 1e-3 on |mean of five condition-(c) calls - stored val_loss| -- the largest value on record on this path is 7e-05 (brief Sec 6 v5)] PASS
+[2026-09-17 10:57:00] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:01] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:01] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:01] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:01] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+CELL seed2 250008 gray mean_of_5 1209.2973438262939 max-min 3.8623809814453125e-05 calls ['1209.2973594665527', '1209.297320842743', '1209.2973566055298', '1209.2973504066467', '1209.2973318099976'] wall_5 1.2544022999936715
+[2026-09-17 10:57:02] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:02] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:02] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:02] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:03] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+CELL seed2 250008 zero mean_of_5 1211.8692244529725 max-min 7.152557373046875e-06 calls ['1211.8692264556885', '1211.8692259788513', '1211.8692212104797', '1211.8692278862', '1211.8692207336426'] wall_5 1.2511133999796584
+[2026-09-17 10:57:03] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:03] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:03] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:04] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:04] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+CELL seed2 250008 shuffled mean_of_5 1293.171664237976 max-min 8.106231689453125e-05 calls ['1293.171615600586', '1293.1716799736023', '1293.171694278717', '1293.1716966629028', '1293.1716346740723'] wall_5 1.2552562000055332
+[2026-09-17 10:57:04] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:04] chkpt_utils:36 Recovered network state.
+[2026-09-17 10:57:04] chkpt_utils:65 Recovered flow decoder state.
+[2026-09-17 10:57:04] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:04] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:05] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:05] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:05] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+CELL seed3 0 real mean_of_5 1212.549735546112 max-min 0.0 calls ['1212.549735546112', '1212.549735546112', '1212.549735546112', '1212.549735546112', '1212.549735546112'] wall_5 1.2434358000464272
+CELL P0 seed3 0 mean_of_5 - stored 0.0 [ceiling 1e-3 on |mean of five condition-(c) calls - stored val_loss| -- the largest value on record on this path is 7e-05 (brief Sec 6 v5)] PASS
+[2026-09-17 10:57:05] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:06] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:06] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:06] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:06] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+CELL seed3 0 gray mean_of_5 1212.548363685608 max-min 0.0 calls ['1212.548363685608', '1212.548363685608', '1212.548363685608', '1212.548363685608', '1212.548363685608'] wall_5 1.248561200016411
+[2026-09-17 10:57:07] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:07] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:07] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:07] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:08] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+CELL seed3 0 zero mean_of_5 1212.5510201454163 max-min 0.0 calls ['1212.5510201454163', '1212.5510201454163', '1212.5510201454163', '1212.5510201454163', '1212.5510201454163'] wall_5 1.2528086999664083
+[2026-09-17 10:57:08] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:08] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:08] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:09] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:09] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+CELL seed3 0 shuffled mean_of_5 1212.549370765686 max-min 0.0 calls ['1212.549370765686', '1212.549370765686', '1212.549370765686', '1212.549370765686', '1212.549370765686'] wall_5 1.2614320000284351
+[2026-09-17 10:57:09] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:09] chkpt_utils:36 Recovered network state.
+[2026-09-17 10:57:09] chkpt_utils:65 Recovered flow decoder state.
+[2026-09-17 10:57:09] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:09] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:10] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:10] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:10] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+CELL seed3 250008 real mean_of_5 1155.7706619262694 max-min 3.337860107421875e-05 calls ['1155.770652294159', '1155.7706480026245', '1155.770649433136', '1155.7706813812256', '1155.7706785202026'] wall_5 1.251808200031519
+CELL P0 seed3 250008 mean_of_5 - stored 1.296997061217553e-05 [ceiling 1e-3 on |mean of five condition-(c) calls - stored val_loss| -- the largest value on record on this path is 7e-05 (brief Sec 6 v5)] PASS
+[2026-09-17 10:57:10] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:11] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:11] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:11] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:11] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+CELL seed3 250008 gray mean_of_5 1207.1018383026124 max-min 9.059906005859375e-06 calls ['1207.101836681366', '1207.1018357276917', '1207.101842880249', '1207.101833820343', '1207.1018424034119'] wall_5 1.2511577999975998
+[2026-09-17 10:57:12] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:12] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:12] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:12] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:13] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+CELL seed3 250008 zero mean_of_5 1208.8911716461182 max-min 6.67572021484375e-06 calls ['1208.8911719322205', '1208.8911757469177', '1208.8911690711975', '1208.891170501709', '1208.8911709785461'] wall_5 1.2568886000080965
+[2026-09-17 10:57:13] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:13] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:13] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:14] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:14] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+CELL seed3 250008 shuffled mean_of_5 1305.3612551689148 max-min 0.00010347366333007812 calls ['1305.361279964447', '1305.3613095283508', '1305.3612422943115', '1305.3612060546875', '1305.361238002777'] wall_5 1.2215808000182733
+[2026-09-17 10:57:14] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:14] chkpt_utils:36 Recovered network state.
+[2026-09-17 10:57:14] chkpt_utils:65 Recovered flow decoder state.
+[2026-09-17 10:57:14] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:14] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:15] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:15] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:15] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+CELL seed4 0 real mean_of_5 1212.5379438400269 max-min 0.0 calls ['1212.5379438400269', '1212.5379438400269', '1212.5379438400269', '1212.5379438400269', '1212.5379438400269'] wall_5 1.3539274000213481
+CELL P0 seed4 0 mean_of_5 - stored 0.0 [ceiling 1e-3 on |mean of five condition-(c) calls - stored val_loss| -- the largest value on record on this path is 7e-05 (brief Sec 6 v5)] PASS
+[2026-09-17 10:57:15] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:16] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:16] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:16] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:16] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+CELL seed4 0 gray mean_of_5 1212.5366048812866 max-min 0.0 calls ['1212.5366048812866', '1212.5366048812866', '1212.5366048812866', '1212.5366048812866', '1212.5366048812866'] wall_5 1.335352199996123
+[2026-09-17 10:57:17] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:17] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:17] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:18] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:18] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+CELL seed4 0 zero mean_of_5 1212.5392270088196 max-min 0.0 calls ['1212.5392270088196', '1212.5392270088196', '1212.5392270088196', '1212.5392270088196', '1212.5392270088196'] wall_5 1.4277141000784468
+[2026-09-17 10:57:18] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:18] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:19] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:19] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:19] solver:1032 Scheduler. Iteration: 0/250000.
+Current values: {'lr_net': np.float64(5e-05), 'lr_dec': [np.float64(5e-05)], 'lr_pen': [np.float64(5e-05)], 'dt': np.float64(0.02)}.
+CELL seed4 0 shuffled mean_of_5 1212.5375485420227 max-min 0.0 calls ['1212.5375485420227', '1212.5375485420227', '1212.5375485420227', '1212.5375485420227', '1212.5375485420227'] wall_5 1.381219400005648
+[2026-09-17 10:57:20] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:20] chkpt_utils:36 Recovered network state.
+[2026-09-17 10:57:20] chkpt_utils:65 Recovered flow decoder state.
+[2026-09-17 10:57:20] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:20] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:20] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:20] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:21] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+CELL seed4 250008 real mean_of_5 1156.8284293174743 max-min 7.486343383789062e-05 calls ['1156.8284378051758', '1156.8284120559692', '1156.8284606933594', '1156.8283858299255', '1156.828450202942'] wall_5 1.3112434999784455
+CELL P0 seed4 250008 mean_of_5 - stored -3.5190582366340095e-05 [ceiling 1e-3 on |mean of five condition-(c) calls - stored val_loss| -- the largest value on record on this path is 7e-05 (brief Sec 6 v5)] PASS
+[2026-09-17 10:57:21] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:21] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:21] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:22] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:22] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+CELL seed4 250008 gray mean_of_5 1210.6953570365906 max-min 3.24249267578125e-05 calls ['1210.6953320503235', '1210.6953630447388', '1210.6953644752502', '1210.695363521576', '1210.6953620910645'] wall_5 1.196585400000913
+[2026-09-17 10:57:22] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:22] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:23] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:23] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:23] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+CELL seed4 250008 zero mean_of_5 1217.0418340682984 max-min 1.0013580322265625e-05 calls ['1217.0418343544006', '1217.0418338775635', '1217.041829586029', '1217.0418329238892', '1217.0418395996094'] wall_5 1.1997527000203263
+[2026-09-17 10:57:23] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:23] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:24] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:24] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+[2026-09-17 10:57:24] solver:1032 Scheduler. Iteration: 250008/250000.
+Current values: {'lr_net': np.float64(5e-06), 'lr_dec': [np.float64(5e-06)], 'lr_pen': [np.float64(5e-06)], 'dt': np.float64(0.02)}.
+CELL seed4 250008 shuffled mean_of_5 1284.5165537834168 max-min 6.198883056640625e-05 calls ['1284.516550064087', '1284.5165238380432', '1284.5165858268738', '1284.516526222229', '1284.5165829658508'] wall_5 1.155357500014361
+P0 MAX ABS (12 checkpoints, mean of five - stored) 5.493164053405053e-05 [ceiling 1e-3 on |mean of five condition-(c) calls - stored val_loss| -- the largest value on record on this path is 7e-05 (brief Sec 6 v5)] all_12_within_1e-3 True
+FIRST REAL EVAL WALL S 0.1845086999819614
+TOTAL WALL S 101.41197570000077
