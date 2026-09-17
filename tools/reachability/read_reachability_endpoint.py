@@ -204,8 +204,16 @@ CANONICAL_PAIRS = list(itertools.combinations(CANONICAL_SIX, 2))   # 15 pairs
 
 KINK_ITERATION = 150000        # iteration boundary of the schedule signature (printed only)
 SLOPE_MIN_ITERATION = 1000     # the "before" slope fit uses checkpoints from the first rung >= this
-SESSION_A = ("9991/000", "9991/900", "9991/001", "9991/002")   # §10 OS boot session A
-SESSION_B = ("9991/003", "9991/903", "9991/004", "9991/005")   # §10 OS boot session B
+# OS boot sessions (§10, printed statistic (2) only — never a criterion).
+# The boot is the kernel's own id-12 line: 2026-09-14T23:31:21.5Z (the last of three
+# starts inside two minutes, an update restart cycle). A run belongs to the session it
+# STARTED in. The canonical seed-2 run is the night2b RESTART, started
+# 2026-09-15T01:13:49Z — one hour forty-two AFTER the boot — so it is session B, not A.
+# v2 had it in A; the first attempt (killed by that very restart at iteration 12,700) is
+# not in the substrate at all. Found by Zcode, 2026-09-17, verified by CC against
+# night2b_9991-002.slim.json:started_utc.
+SESSION_A = ("9991/000", "9991/900", "9991/001")               # 3 runs, before the boot
+SESSION_B = ("9991/002", "9991/003", "9991/903", "9991/004", "9991/005")  # 5 runs, after
 
 
 class LayoutMismatch(Exception):
@@ -1295,16 +1303,34 @@ def run_reading(repo, started):
                    "dropped": dropped},
         "whole_test_rule": {"dropped": dropped, "grid_size": grid_size,
                             "more_than_half": whole_test_triggered},
-        "control": {"prong1_finiteness": {"outcome": prong1_outcome,
-                                          "bands_checked": bands_checked,
-                                          "failures": prong1_failures},
+        # §6 v3: prong 1 is a completeness check, not a control, and the machine-readable
+        # path must not keep asserting what the human output stopped asserting — so it sits
+        # under "completeness", not beside the control's own outcome. The "control" key is
+        # kept (consumers read control.outcome) but now holds only what can be called one.
+        "control": {"completeness": {
+                        "prong1_finiteness": {"outcome": prong1_outcome,
+                                              "bands_checked": bands_checked,
+                                              "failures": prong1_failures},
+                        "note": ("prong 1 cannot fail: a crossing is the first checkpoint "
+                                 "at or below L, so a run's own final checkpoint satisfies "
+                                 "any level above its final value; a missing checkpoint is "
+                                 "caught earlier by the layout guard")},
                     "prong2_untrained_below_accepted": {
                         "outcome": prong2_outcome,
                         "min_untrained_side_value": min_side,
                         "binding": ["{} @ iteration {}".format(rid, it)
                                     for rid, it in min_binding],
-                        "failures": [rec["level"] for rec in prong2_failures]},
-                    "outcome": control_outcome},
+                        "failures": [rec["level"] for rec in prong2_failures],
+                        "note": ("empty by construction under the v3 anchors: L0 IS the "
+                                 "minimum untrained reading and the grid lies strictly "
+                                 "below it, so this prong cannot fail on any data "
+                                 "(§6 v3) — the control is executed by the grid rule, not "
+                                 "verified by this check")},
+                    "outcome": control_outcome,
+                    "outcome_reachability": ("pass is the only reachable value with the "
+                                             "v3 coupled anchors; the fail branch (exit 4) "
+                                             "is retained for a substrate whose anchors are "
+                                             "not coupled")},
         "review_statistics": {
             "declared_by": "Ark, external review, 2026-09-17 21:47 UTC",
             "printed_only": True,
