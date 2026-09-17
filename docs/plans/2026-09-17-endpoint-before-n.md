@@ -35,10 +35,18 @@ It does **not** licence our condition; it warns against its shape.
 **Established without any model** — this is the statement to quote:
 
 > The two replicate gaps at the 250,000 hook, **12.7279**
-> (`docs/experiments/001-run0-and-replicate.md:68`) and **10.4309**
-> (`docs/experiments/004-night4-replicate-3prime-and-seed-5.md:91`), are larger than the sd across
-> all six individuals at the same rung, **5.1425** (`004:81`), and together they consume most of
-> the population's own spread — 1145.3572 to 1162.9375, a range of **17.5803** (`004:81`).
+> (`docs/experiments/001-run0-and-replicate.md:68`, table "run 0 against run 0′") and
+> **10.4309** (`004:91`, table "the second replicate pair"), are larger than the sd across all
+> six individuals at the same rung, **5.1425**, and each of them takes up most of the spread of
+> the six individuals themselves — 1145.3572 (seed 1) to 1159.1158 (seed 5), a range of
+> **13.7586**: 92.5 % and 75.8 % of it (`004:81`, the eight-run table at iteration 250,000).
+
+**The spread in that sentence counts individuals only, on purpose.** Taking the maximum over all
+eight stored runs gives 1145.3572 to 1162.9375 = 17.5803, but 1162.9375 is replicate 3′, not an
+individual — putting a replicate inside the population a replicate gap is compared against
+inflates that population, and always in the one direction that makes the gap look like it fits.
+An earlier revision of this file quoted 17.5803; the correction is Ark's, 2026-09-17, recomputed
+by CC from the same table.
 
 No ratio and no model are needed for it.
 
@@ -75,12 +83,17 @@ waits on Mike's word.
    difference across the whole registered grid, the ranking-class endpoint is dead on this
    substrate and road **A** is the honest reading. If it is smaller, the endpoint is readable at
    N = 8 and road **C** is not needed to rescue it.
-4. **Only then N** (8 or 10).
+4. **Only then the N floor** (8 or 10). §2's "N is not currently estimable" is about a different
+   quantity than this one: what is unestimable is the **replicate budget** r — how many repeats
+   per individual a ranking endpoint would need — because the variance model it comes from is
+   contradicted by the data. The **number of individuals** for reading (b) is a registered choice
+   between 8 and 10 and remains Mike's, once the class of the endpoint is settled.
 5. **If nights are bought, the first night is a third replicate pair, not a seventh individual.**
    Every statement about reliability — σ_rep, the ρ ceiling, and the question of whether the
    signal/noise model applies at all — is unestimable on two pairs; §(c)1a's negative variance
-   estimate is itself a consequence of σ_rep resting on two observations. One night buys the third
-   pair: the measured throughput is **2 runs per night** — night 1 = seed 0 and replicate 0′,
+   estimate is itself a consequence of σ_rep resting on two observations. A third pair yields a
+   **first** estimate, not a good one — at three pairs the sd of σ_rep is still of order ±50 %
+   (Ark, 2026-09-17). One night buys that third pair: the measured throughput is **2 runs per night** — night 1 = seed 0 and replicate 0′,
    night 2 = seeds 1 and 2, night 3 = seeds 3 and 4 in one wave, night 4 = replicate 3′ and seed 5
    (`docs/experiments/001`–`004`). A seventh individual buys nothing until the class of the
    endpoint is settled.
@@ -119,14 +132,51 @@ waits on Mike's word.
   could not pass its own positive control.
 - **(f) The field, named.** The test runs on the **checkpoint curve**, a different field from the
   250,000 hook, and its twin gaps are its own: at iteration 250,008 the curve gives
-  `0′ − 0 = 12.1749` and `3′ − 3 = 7.6059`, against the hook's 12.7279 and 10.4309, with a trained
-  spread of 18.7403 (same file, recomputed by CC 2026-09-17 UTC). Every comparison in the criterion
-  must be computed in the field the test uses; carrying the hook's numbers into a curve-based
-  criterion is the same population error as §1, one level down.
+  `0′ − 0 = 12.1749` and `3′ − 3 = 7.6059`, against the hook's 12.7279 and 10.4309 (same file,
+  recomputed by CC 2026-09-17 UTC). Every comparison in the criterion must be computed in the
+  field the test uses; carrying the hook's numbers into a curve-based criterion is the same
+  population error as §1, one level down.
+  **And the spread it is compared against must count individuals only.** In this field at
+  iteration 250,008 the eight stored runs spread 18.7403, but the **six individuals** spread
+  **12.1922** — 1144.6362 (seed 1) to 1156.8285 (seed 4), and the maximum is seed 4, not the last
+  column. The criterion compares against 12.1922. Read that way the twin gap is not comfortably
+  inside the population: `0′ − 0` = 12.1749 is **99.86 %** of it, a difference of 0.017 against a
+  read noise larger than that, and `3′ − 3` is 62.4 %. This is a stronger statement than §2's,
+  and it sits in exactly the field the gate will read. Correction and recomputation: Ark,
+  2026-09-17, re-verified by CC from `results/night4/night_report_checkpoints.csv`.
 - **(g) The inherited fragility, stated.** The aggregate is the same 16 items over 6 scenes, two of
   which flip the order (§2), and crossing time inherits it. Not a blocker. If the test fails there
   is a second free branch: recompute the aggregate under alternative item weightings from the
   per-item tables already on disk — again no GPU, again with its own registration.
+
+**(h)–(k) were raised in review by Ark on 2026-09-17, after this file was first committed.**
+CC recommends all four and has re-verified the measurements behind (h) and (j); none of them is
+accepted by Mike yet, and they are written here so that whoever drafts the registration reads
+them in the place where they belong.
+
+- **(h) "Iterations to cross" is undefined on a non-monotone curve, and the data already hold a
+  counterexample.** Seed 5 reads 1188.8464 at iteration 86,412 and **1306.4735** at 90,012 — a
+  spike 117 loss units above the whole field — and at 25,212 it reads 1213.5255, which is above
+  its own untrained start of 1212.5467 (`results/night4/night_report_checkpoints.csv`; recomputed
+  by CC 2026-09-17 UTC). Any level above roughly 1188 therefore needs a stated rule: first
+  downward crossing, last crossing, or first level below which the curve stays. Without it the
+  statistic depends on a convention chosen after the curves have been seen — which is the very
+  failure (a) and (b) exist to prevent.
+- **(i) The comparator in the gate is not size-matched, and the mismatch biases it towards
+  passing.** Two (or with a third night, three) replicate pairs against **15** between-individual
+  differences among six individuals: comparing maxima lets the larger family win by chance alone.
+  A gate that can only pass is the same class of instrument as the retired L3 probe. The
+  registration needs a named null — a permutation or sign test, or a comparison of distributions
+  — not max against max.
+- **(j) The positive control in (e) tests gross functioning, not resolution.** 63.7481 loss units
+  is about five times the effect being measured (≈12), so the endpoint can pass (e) and still be
+  blind at the scale that matters. The cheap addition: state the resolution **in loss units** —
+  how much loss one 3,600-iteration grid step spans near the threshold — computed from the same
+  file.
+- **(k) Process, not statistics.** The registration is drafted by Zcode and would likely be read
+  by Zcode. Given that this session's error class is "choice made after the look", the reading
+  should be a script **committed before it is run**, run once, with its output recorded verbatim,
+  and preferably executed by someone other than the author of the criterion.
 
 ## 5. What ADR-002 needs afterwards — not decided here
 
