@@ -979,9 +979,10 @@ def run_reading(repo, started):
     grid_size = len(grid)
     whole_test_triggered = dropped * 2 > grid_size
     print("  dropped = {} excluded + {} unreadable = {} of {} grid levels "
-          "(half = {}): {}".format(
+          "; the rule fires at {} of that many (the absolute threshold, not only the "
+          "proportion: the same proportion on a smaller grid is a different number): {}".format(
               excluded_count, unreadable_count, dropped, grid_size,
-              fmt(grid_size / 2.0, 1),
+              grid_size // 2 + 1,
               "MORE THAN HALF — whole test unreadable" if whole_test_triggered
               else "not more than half"))
 
@@ -1034,7 +1035,7 @@ def run_reading(repo, started):
     if control_outcome == "fail":
         detail = []
         if prong1_outcome == "fail":
-            detail.append("prong 1 (finiteness)")
+            detail.append("prong 1 (layout completeness — not a control)")
         if prong2_outcome == "fail":
             detail.append("prong 2 (untrained below accepted levels)")
         verdict = ("CONTROL FAIL — TEST VOID (§6: {}). The §4 criterion is not "
@@ -1191,6 +1192,10 @@ def run_reading(repo, started):
             fmt_sci(kink_by_session[label]["median_slope_before"]),
             fmt_sci(kink_by_session[label]["median_slope_after"])))
 
+    # The v2 anchors moved the whole band (v1: 1146.0-1212.0; v2: 1162.0-1210.0, less the
+    # two levels withdrawn by the §11 caveat), and a level higher in loss is crossed
+    # earlier. So WHICH levels straddle the boundary is a property of the v2 grid and is
+    # not comparable with any figure computed for v1 (Ark, 2026-09-17; §3 v2).
     straddle_per_level = []
     print("\n(3) straddle report — for every accepted level, min/max crossing iteration "
           "over the eight runs and whether the {} boundary lies strictly between them "
@@ -1255,6 +1260,10 @@ def run_reading(repo, started):
         "constants": {"L0_computed": l0, "Lmin_computed": lmin,
                       "L0_v1_published_not_used": L0_V1_PUBLISHED,
                       "withdrawn_levels": list(WITHDRAWN_LEVELS),
+                      "withdrawn_reason": ("reviewer exposure before the reading "
+                                           "(§11 disclosure, Ark 2026-09-17): a "
+                                           "provenance exclusion, NOT a data outcome; "
+                                           "never to be recorded as a level that failed"),
                       "step": STEP, "one_step_iterations": ONE_STEP,
                       "final_iteration": FINAL_ITERATION,
                       "control_iterations": list(CONTROL_ITERATIONS),
