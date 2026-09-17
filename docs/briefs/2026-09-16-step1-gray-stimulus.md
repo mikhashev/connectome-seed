@@ -141,8 +141,9 @@ several nights (Ark; Zcode agrees).
 - **P0 reproduction (v5, revised at the third gate stop).** Condition (c) must reproduce each
   checkpoint's stored `val_loss` (`diag1_eval_paths.py:147`): the gating quantity is the mean of
   five calls of condition (c) against the stored `val_loss`, ceiling **1e-3** (the largest value
-  on record on this path is 7e-05). `per_item_mean - hook_eval()` stays gated at <= 1e-4 as
-  before. Prior observed values: -1.29e-05 and -5.91e-05 (`night3/.../ablation/README.md:117-120`).
+  on record on this path is 7e-05). `per_item_mean - hook_eval()` is **recorded, not gating** (v5.1, CC): C3 Part B measured the
+  same-weights hook − `per_item_eval` difference at up to 1.435e-4 (903@250008), so a 1e-4 gate on it
+  would be a fourth false stop; its sanity bound is the P0 ceiling, 1e-3, on the mean of five calls. Prior observed values: -1.29e-05 and -5.91e-05 (`night3/.../ablation/README.md:117-120`).
 - **Copy fidelity — code gate (v4, unchanged in v5).** (Ark: the diff replaces the numeric gate in
   that role.) The copied `per_item_eval` must differ from `diag1_eval_paths.py`'s `per_item_eval`
   only in the declared lines: the transform on the `add_input` argument (diag1 line 191, §3) and
@@ -160,8 +161,8 @@ several nights (Ark; Zcode agrees).
   catches a wrong copy — wrong checkpoint, data, or index — whose error is in units, not a subtle
   numeric drift. Per-item deviations for all pairs among B_1..B_5 and for each A_i against each
   B_k, and the pairwise floor among B_1..B_5 itself (max over all 10 pairs, per-item and on the
-  16-item mean), are recorded per checkpoint in `gray_controls.json` but do not gate. At iteration
-  0 equality stays bitwise (measured bitwise in both processes).
+  16-item mean), are recorded per checkpoint in `gray_controls.json` but do not gate. At iteration 0 bitwise equality is **recorded, not required** (v5.1, CC): C3 Part B saw single
+  calls at iteration 0 one float64 step off (1212.5497364997864); the ceilings above apply there too.
   **Note (Zcode) — the quantisation step.** Per-item losses are float32; the unit in the last place
   (ulp) of a float32 value in [2048, 4096) is 2⁻¹² = 2.44140625e-4, and in [4096, 8192) it is
   2⁻¹¹ = 4.8828125e-4; the largest per-item losses (ambush_2 splits ≈ 4049–4765) set the lattice,
@@ -352,3 +353,8 @@ exists under `CSD/renderings/RenderedSintel_0000`.
   note: 48 cells x 5 calls + repeat ~= 1-2 min of evaluation plus solver builds (estimate). Header
   gains the v5 note and a fresh launch-word requirement; the 08:14:48Z word was used by the v4
   run.
+- **v5 -> v5.1** (2026-09-17, CC, before any launch): two remaining single-call gates removed —
+  `per_item_mean − hook_eval()` becomes recorded (measured up to 1.435e-4 on the same weights, C3
+  Part B) with the 1e-3 P0 ceiling as its sanity bound; iteration-0 bitwise equality becomes recorded
+  (one-float64-step deviations measured in C3 Part B). No other change. Launch still requires Mike's
+  new «запускай шаг 1».
