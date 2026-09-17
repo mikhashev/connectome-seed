@@ -284,7 +284,7 @@ one that can be trusted to be current.
 
 | axis | decisions | board entries | awaiting observation |
 |---|---|---|---|
-| **collective** | — | 2 | 0 |
+| **collective** | — | 3 | 0 |
 | **knowledge** | — | 5 | 0 |
 | **network** | — | 0 | 0 |
 | **honesty** | ADR-002 accepted | 9 | 0 |

@@ -282,6 +282,15 @@ language_cutoff: 2026-09-13
 - **First step.** Zcode drafts the registration in the repository's style — threshold grid stated as a rule, acceptance criterion in one sentence, the measured resolution, a disqualification clause for the case where the replicate difference is ≲ one grid step, the positive control above, the field named, and the inherited item-weighting fragility — per `docs/plans/2026-09-17-endpoint-before-n.md` §4; Ark and CC review it **before any data is touched**.
 - **axis:** knowledge
 
+### THE-ONLY-RUNNABLE-ENVIRONMENT-LIVES-IN-A-SCRATCHPAD-OF-A-SESSION-THAT-HAS-ENDED: every night since 2026-09-13 ran from a venv under a temporary per-session directory whose owning session is gone, and the repository's own copy of the launcher cannot start a night at all (HIGH, open, 2026-09-17 — Mike «Переезд — надо сделать обязательно, заведи таску HIGH в новой сесси с него начнем потом»; raised by Ark, confirmed by CC)
+
+- **Observed.** All nine job records across the five wave files name one interpreter and one script copy, under `%LOCALAPPDATA%\Temp\claude\c--Users-mikha-Documents-dpc-research-autoresearch-win-rtx\63f3961a-96ce-4048-8338-72c162ea66f8\scratchpadlyvis-probe\` (Ark, 2026-09-17, from `results/night{1,2,3,4}/wave_*.json`). That session id is **not** the session running today, so the directory has no owner: nothing refreshes it, and any cleanup of stale per-session scratchpads takes the project's only venv with it (CC, 2026-09-17).
+- **Observed.** The copy has not drifted: `run_individual.py`, `launch_wave.py` and `start_night.ps1` are byte-identical between `tools/night/` and that scratchpad (sha256 `be007c74…`, `ad206bd8…`, `117379c8…`; CC, 2026-09-17). The risk is disappearance, not divergence.
+- **Observed.** The repository copy cannot launch a night as it stands. `start_night.ps1:46` derives the interpreter as `Split-Path -Parent $PSScriptRoot` + `.venv\Scripts\python.exe` — from `tools/night/` that is `tools/.venv`, which does not exist — and `:56` throws `venv python not found: $py`. `launch_wave.py:35` has the same broken default but `:77` accepts `--python`, so that one file is usable when the interpreter is passed explicitly: the default is broken, not the capability (CC, 2026-09-17).
+- **Inferred.** A migration that moves only the venv and leaves the launcher deriving its interpreter from the script's parent directory exchanges one orphaned directory for another. The move and a launcher that runs from the repository are one task, not two (Ark, 2026-09-17).
+- **First step.** Give the environment a home outside `Temp` and outside any session-scoped path; make `start_night.ps1` accept an explicit interpreter path (or resolve one that exists in the repository layout); then re-verify with `-DryRun` from the repository copy, and accept the move only if a full run's `json_iter_wall_median_all_s` stays inside **[0.0598, 0.0622]** — the band of all eight runs on record, spread 4.10 % across four days and one restart (Ark, 2026-09-17). Mike's word: start the next session with this.
+- **axis:** collective
+
 
 
 ## IN PROGRESS
