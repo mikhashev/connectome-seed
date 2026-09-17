@@ -37,11 +37,19 @@ It does **not** licence our condition; it warns against its shape.
 > The two replicate gaps at the 250,000 hook, **12.7279**
 > (`docs/experiments/001-run0-and-replicate.md:68`, table "run 0 against run 0′") and
 > **10.4309** (`004:91`, table "the second replicate pair"), are larger than the sd across all
-> six individuals at the same rung, **5.1425**, and each of them takes up most of the spread of
+> six individuals at the same rung, **SD(n=6) = 5.1425**, and each of them takes up most of the
+> **range** of
 > the six individuals themselves — 1145.3572 (seed 1) to 1159.1158 (seed 5), a range of
 > **13.7586**: 92.5 % and 75.8 % of it (`004:81`, the eight-run table at iteration 250,000).
 
-**The spread in that sentence counts individuals only, on purpose.** Taking the maximum over all
+**Two different quantities are called "spread" in this project, and they differ by a factor of
+2.7 — so this file names both.** `results/night4/README.md:130` uses "spread of the six
+individuals" for the **standard deviation**, `SD(n=6) = 5.1425`. The sentence above uses the
+**range**, `range(6) = 13.7586` at the hook and `12.1922` on the checkpoint curve. Only one of them
+belongs in any given comparison, and under one word the wrong one reaches the gate. Named apart on
+Ark's point, 2026-09-17.
+
+**The range in that sentence counts individuals only, on purpose.** Taking the maximum over all
 eight stored runs gives 1145.3572 to 1162.9375 = 17.5803, but 1162.9375 is replicate 3′, not an
 individual — putting a replicate inside the population a replicate gap is compared against
 inflates that population, and always in the one direction that makes the gap look like it fits.
@@ -136,8 +144,8 @@ waits on Mike's word.
   recomputed by CC 2026-09-17 UTC). Every comparison in the criterion must be computed in the
   field the test uses; carrying the hook's numbers into a curve-based criterion is the same
   population error as §1, one level down.
-  **And the spread it is compared against must count individuals only.** In this field at
-  iteration 250,008 the eight stored runs spread 18.7403, but the **six individuals** spread
+  **And the range it is compared against must count individuals only.** In this field at
+  iteration 250,008 `range(8) = 18.7403`, but `range(6)` — the six individuals — is
   **12.1922** — 1144.6362 (seed 1) to 1156.8285 (seed 4), and the maximum is seed 4, not the last
   column. The criterion compares against 12.1922. Read that way the twin gap is not comfortably
   inside the population: `0′ − 0` = 12.1749 is **99.86 %** of it, a difference of 0.017 against a
@@ -224,7 +232,16 @@ never holds two inconsistent statements:
   reading and is deliberately **not** used in this plan's reasoning: with a negative variance
   estimate no version of that model yields a number, and the qualitative form — the observation
   exceeds the instrument — is what §2 states instead.
-- The version of the superseded local manual (USPEX 9.4.4, 2017 rather than a damaged 10.6) is
-  Zcode's recovery from the file's raw objects and has **not** been independently reproduced; CC's
-  byte-level check could neither confirm nor refute it, the file's trailer being gone. It is
-  recorded in the review document with that attribution.
+- The version of the superseded local manual — USPEX **9.4.4 (25 June 2017)** rather than a
+  damaged copy of 10.6 — was Zcode's recovery from the file's raw objects and has since been
+  **independently reproduced** (Zcode, 2026-09-17, by a blind second pass with its own script and
+  no answer supplied in its prompt): the title page carries `Version 9.4.4, June 25, 2017.`
+  (object 356) and the running header `USPEX 9.4.4` appears in all 35 recoverable header objects,
+  while that manual's own contents put §4.12 at printed page 54 — past the truncation. The script,
+  its extracted fragments and a result file live at
+  `sources/local/uspex/uspex-manual-truncated-recovery/`, which is **outside git history** under
+  the same `.gitignore` rule as the PDFs, so the check is re-runnable on this machine and not from
+  a fresh clone — moving the script itself into the tree would fix that and is worth one line of
+  decision. CC's byte-level check, which found no `trailer`, no `/Info` and no readable XMP, is
+  consistent with the recovery and independently confirms only that ordinary metadata does not
+  survive in that file.

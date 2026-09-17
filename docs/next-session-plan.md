@@ -151,6 +151,18 @@ from n=3: at 250,000 the CI upper bound (10.18) is further below the replicate (
 n=3 upper bound was (11.29); at 25,000 the CI lower bound (5.02) stays well above the replicate
 (0.34). These are distances only — no ρ, no ranks, no verdict on (b)/(b2) yet.
 
+**Override, 2026-09-17 UTC (CC, on Mike's word; defect found by Ark the same day).** The sentence
+immediately above compares a 95 % interval for **σ** with the replicate **difference** |0′−0|.
+Those are two kinds of quantity, and the conclusion does not survive putting them in common units.
+Under the normal-difference convention σ = |Δ|/1.128379 — an **assumption introduced 2026-09-17,
+not a measurement** — the replicate difference is σ_rep = 11.28, and then the n=5 interval
+[2.1225, 10.1801] does **not** contain it while the n=6 interval [3.2100, 12.6126] **does**: the
+direction reverses between n=5 and n=6 instead of being "unchanged from n=3". The table and the
+sentence are left standing as written, because this repository records an override above a finding
+rather than editing the finding — but the comparison must not be cited. An interval for a standard
+deviation cannot be reported as lying below a difference of two runs, whatever the divisor; the
+units mismatch is the defect, independent of the convention used to remove it.
+
 The second same-wave pair (seed 4 − seed 3, mean −3.51, min −23.43, max +11.59) is positive at
 only 6 of 29 late checkpoints, against (seed 0′ − seed 0)'s 29/29 — the two same-wave pairs do
 not repeat each other's sign, so a within-wave position effect predicting a positive

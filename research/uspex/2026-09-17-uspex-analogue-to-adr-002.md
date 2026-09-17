@@ -260,15 +260,20 @@ reachability endpoint instead of a ranking endpoint.
   copy. Since then the official PDF of the 10.6 release has been downloaded and the six
   quotations — `repeatForStatistics`, the 20-run table, σ = 670, `stopFitness`, the GULP
   sentence, `fixRndSeed` — checked word for word against it (CC, 2026-09-17). The earlier local
-  file is **not** a damaged copy of 10.6: **Zcode's reading, recovered from the file's raw
-  objects and not independently reproduced**, is that it is a different release, USPEX **9.4.4
-  (25 June 2017)**, whose own §4.12 sits at printed page 54 of *that* manual's table of
-  contents — past the point where the file's bytes stop (196 of 724 objects missing) — so even
-  fully repaired it could not have confirmed a single 10.6 quote. CC's own byte-level check of
-  this file cannot confirm or refute the 9.4.4 identification either way: it has no `trailer`
-  keyword, no `/Info` dictionary and no readable XMP metadata (checked directly against the file's
-  raw bytes), so the version number above is Zcode's reading, stated as such, not a fact CC
-  verified. Kept as `uspex-manual.pdf.truncated-2026-09-18` as evidence regardless of which
+  file is **not** a damaged copy of 10.6: it is a different release, USPEX **9.4.4 (25 June
+  2017)**, whose own §4.12 sits at printed page 54 of *that* manual's table of contents — past
+  the point where the file's bytes stop (196 of 724 objects missing) — so even fully repaired it
+  could not have confirmed a single 10.6 quote. **This was Zcode's recovery from the file's raw
+  objects, and it has since been independently reproduced** (Zcode, 2026-09-17, a blind second
+  pass with its own script and no answer supplied in its prompt): the title page carries
+  `Version 9.4.4, June 25, 2017.` in object 356, and the running header `USPEX 9.4.4` appears in
+  all 35 recoverable header objects. The script, its extracted fragments and a result file are at
+  `sources/local/uspex/uspex-manual-truncated-recovery/` — outside git history, under the same
+  `.gitignore` rule as the PDFs, so the check is re-runnable on this machine but not from a fresh
+  clone. CC's own byte-level check of this file neither confirms nor refutes the version by itself:
+  it found no `trailer` keyword, no `/Info` dictionary and no readable XMP metadata (checked
+  directly against the raw bytes), which is consistent with the recovery and establishes only that
+  ordinary metadata does not survive there. Kept as `uspex-manual.pdf.truncated-2026-09-18` as evidence regardless of which
   release it turns out to be. One provenance trap, from the fresh PDF's own verification (CC,
   direct `pdftotext` read of `uspex-manual.pdf`): its title page says "Version 10.6, June 4,
   2026" while the running header on every content page still says "USPEX 10.5" — cite the version

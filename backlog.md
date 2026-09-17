@@ -387,9 +387,20 @@ language_cutoff: 2026-09-13
   - **The variance comparison.** Within-individual variance ≈ 105–127 (σ_rep 10.27² = 105.5 to
     11.28² = 127.2) sits above the between-seed variance at n=6, 5.1425² = 26.4 — the observed
     between-seed spread is smaller than the twin noise. The record's own 95 % χ² CI for σ(n=6) at
-    250,000, [3.2100, 12.6126] (`docs/experiments/004-night4-replicate-3prime-and-seed-5.md:105`),
-    has an upper bound (12.6126) that sits just below the twin gap (12.7279) — close to it, not
-    containing it; the source record itself says the same
+    250,000 is [3.2100, 12.6126]
+    (`docs/experiments/004-night4-replicate-3prime-and-seed-5.md:105`).
+  - **A units defect in the line above, found in review and corrected here** (Ark, 2026-09-17 UTC;
+    verified by CC at source the same day). An earlier version of this note put that interval next
+    to the twin gap 12.7279 and reported its upper bound as sitting "just below" it. Those are two
+    kinds of quantity: on the left an interval for a **standard deviation**, on the right the
+    **difference of two runs**. Brought to common units under the normal-difference convention
+    σ = |Δ|/1.128379 — which is an **assumption, not a measurement** — the twin difference is
+    σ_rep = 11.28, and then the n=6 interval [3.2100, 12.6126] **contains** it while the n=5
+    interval [2.1225, 10.1801] does not. So the direction does not survive the change of units:
+    with five individuals the spread is distinguishable from the replicate, with six it is not.
+    The same comparison stands in `docs/next-session-plan.md` §2a and carries the same defect;
+    an override is recorded there rather than a rewrite of the record.
+  - **The source record's own wording**, kept for the trail
     (`docs/experiments/004-night4-replicate-3prime-and-seed-5.md:113-114`: "the CI upper bound
     (12.61) now sits just below the run-0/0′ replicate offset (12.73)").
   - **CC's reading, 2026-09-17 UTC (2026-09-18 local), not reviewed:** if the top rung's test-retest reliability is
