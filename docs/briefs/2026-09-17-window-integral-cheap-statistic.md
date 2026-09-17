@@ -1,10 +1,13 @@
 # Window-integral cheap statistic — pre-launch brief
 
-**Launch confirmed by Mike in the chat, 2026-09-17 08:19:01Z («#247 да», answering CC's 08:18:06Z question); launch after the reviewer pass by Ark and Zcode on this brief.**
+**v1.1.** **Launch confirmed by Mike in the chat, 2026-09-17 08:19:01Z («#247 да», answering
+CC's 08:18:06Z question); reviewer pass by Ark 08:27:19Z and Zcode 08:28:59Z on this brief,
+both green with additions (folded in below, §8); launch after that pass.**
 
-**Status:** DRAFT, text only. No analysis script has been run, no number below is computed,
-no GPU used. Question: Ark 07:36Z / Zcode 07:43Z, DPC Research chat. Written from the run
-jsons and repository records only (§1 lists exactly what was read).
+**Status:** v1.0 was DRAFT, text only — no analysis script run, no number computed, no GPU
+used. v1.1 folds in the reviewers' additions, still before any number is computed. Question:
+Ark 07:36Z / Zcode 07:43Z, DPC Research chat. Written from the run jsons and repository
+records only (§1 lists exactly what was read).
 
 ## 1. Why C3 (hook at 25,000) is in question
 
@@ -66,6 +69,10 @@ checkpoints at 0, 12, 3612, …, 21612, 25212 — **stops at iteration 26,000, s
 that reach 28,812 this is a genuine, if coarse, multi-point mean; 703 is either excluded
 from this statistic or included using only its own available checkpoints (a narrower,
 non-matching window) — report both ways if 703 is included at all, never silently pick one.
+**(v1.1, Ark 08:27:19Z): (A) is not interpretable without (C) — for every run, report where
+the window (20k–30k or 18012–32412) lies relative to that run's own descent-onset estimate
+(§4(C)). A and C are read together: a window mean is a different number depending on whether
+it sits before, straddling, or after the run's own onset, and (C) is what says which.**
 
 **(B) Train-loss window mean.** `train_loss_per_iter` averaged over the same window, for
 all 8 runs including 703 (dense per-iteration, no gap). This is **train loss on augmented
@@ -100,22 +107,53 @@ launch**, out of scope for this brief and not proposed here.
   (checklist rule 17b: no single-run threshold; rule 17d: state whether "a correct surrogate
   fails this comparison" is even answerable at these n — if it is not, say so instead of
   computing a verdict).
+- **(v1.1, Ark 08:27:19Z) Shifted-window rank stability — a direct test of the mechanism.**
+  Three checkpoint-grid windows, each 3 points, each shifted by one checkpoint interval
+  (3,600 iterations) from the last: **W1 = {18,012, 21,612, 25,212}**,
+  **W2 = {21,612, 25,212, 28,812}** (identical to §4(A)'s narrow 20k–30k window),
+  **W3 = {25,212, 28,812, 32,412}**. Computed for the n = 6 individuals (seeds 0–5); 703 has
+  all three points of W1, only {21,612, 25,212} of W2 (2-point mean, reported as such), and
+  only {25,212} of W3 (a single point, not a mean — reported, not silently dropped, never
+  averaged as if it were three). For each pair of the three windows, report the rank order of
+  the six individuals under each window and the Spearman ρ between the two rankings
+  (descriptive, n = 6, no critical value — same rule as §5's ρ below). Stability is read from
+  the three pairwise ρ values and from eyeballing whether the same individuals swap ranks,
+  not from a single number.
+- **(v1.1, Ark 08:27:19Z) Run 703 calibrates the coarse grid.** Estimate 703's descent-onset
+  (§4(C), level 1,200 crossing, linear interpolation) twice: once from its dense hook reads
+  (`rung_metrics`, 139 points, 1,000–26,000) and once from the checkpoint-grid-like subsample
+  of its reads — 703's own `checkpoint_metrics` (0, 12, 3,612, 7,212, 10,812, 14,412, 18,012,
+  21,612, 25,212), the same grid the seven full runs are read on. Report the difference
+  between the two onset estimates. **If they disagree by more than one checkpoint interval
+  (3,600 iterations), mark §4(C)'s onset estimate on the seven full runs as unreliable** — it
+  is read from the same coarse grid 703's subsample uses, with no dense reads to check it.
 - **Ranking agreement with the top rung:** Spearman ρ between the window statistic and the
   hook at 250,000, over seeds 0–5 (n = 6), reported as a descriptive number with no critical
   value applied — **this is not the registered (b) test** (§4 of the pre-registration; that
   test is defined at C3, with its own N rule, critical values and Holm correction, and is
   not re-run here at a different N or a different statistic). Do not present this ρ with a
   p-value, a "reject/fail to reject" label, or any language implying a test was performed.
+  **(v1.1, Zcode 08:28:59Z): at n = 6 neither this ρ nor the difference between two such ρ
+  values (e.g. window ρ vs point ρ, or the pairwise ρ of §5's shifted-window comparison) has
+  resolution — the pre-registration's own table (§4) gives the critical ρ at n = 6 as 0.829,
+  and no correlation coefficient below that is distinguishable from chance at this N. Wherever
+  this brief or its outputs say a ρ is "not lower" than another, that sentence means "did not
+  visibly fail" — a description of the number seen, not a claim of statistical resolution.
+  Say this plainly next to every ρ comparison, not once and then dropped.**
 - **Promotion criterion, fixed now:** the window statistic becomes a *candidate for the next
   registration* only if, on this same recorded data, (i) its within-seed spread (both the
-  n=2 and n=3 sets) is visibly smaller than the point-value's within-seed spread at the same
+  n=2 and n=3 sets) is reduced relative to the point-value's within-seed spread at the same
   seeds, **and** (ii) its ρ with the 250,000 hook (n=6, descriptive) is not lower than the
   point value's ρ with the same target. Either condition failing, or condition (i) holding
   only for one of the two within-seed sets, means **not a candidate as proposed** — report
   which condition failed and by how much, not a single verdict word. No threshold here is a
   single-run number: both comparisons pool the existing n=2/n=3/n=6 sets, and the margin
   between window and point statistic is reported alongside the spread itself, not as a bare
-  pass/fail.
+  pass/fail. **(v1.1, Ark 08:27:19Z): "reduced" is fixed as a named factor before any number
+  is seen — condition (i) counts as satisfied only if sd(window) ≤ 0.5 × sd(point at 25,000),
+  and this must hold for BOTH the seed-0 pair ({000, 900}, n = 2) and the seed-3 trio
+  ({003, 903, 703}, n = 3) independently. "Visibly smaller" is retired; report the ratio for
+  each of the two sets and whether each clears 0.5, not an impression.**
 
 ## 6. Cost and do-not
 
@@ -127,3 +165,27 @@ new training, no new checkpoint.
 reject/accept decision; no numeric gate built from a single run (checklist rule 17); no
 promotion of the window statistic to a registered rung without a separate pre-registration
 step, written before any of its numbers are seen twice.
+
+## 7. Next step, named but not run here
+
+**(v1.1, Zcode 08:28:59Z):** the onset-aligned window — a window shifted to sit relative to
+each run's own descent-onset estimate (§4(C)), rather than at the same fixed iterations for
+every run — is named here as the next step after this brief's computation, not computed in
+it. It is conditional: it is only worth building **if §4(C)'s onset estimate is marked
+reliable** by the 703 calibration in §5 (the dense-vs-checkpoint-subsample onset difference
+at or under one checkpoint interval). If §5 marks C unreliable on the seven full runs, the
+onset-aligned window has no reliable onset to align to and stays unbuilt pending a denser
+read.
+
+## 8. Revision history
+
+- **v1.0, 2026-09-17, CC.** Initial draft, written from run jsons and repository records
+  only; no analysis script run, no number computed. Reviewed by Ark (07:36Z question,
+  08:27:19Z pass with additions) and Zcode (07:43Z question, 08:28:59Z pass with additions).
+- **v1.1, 2026-09-17, CC.** Folds in the reviewers' additions before any number is computed:
+  Ark (08:27:19Z) — §4(A) read together with §4(C); the shifted-window rank-stability test
+  (§5, exact windows W1/W2/W3) as a direct test of the mechanism; run 703's dense-vs-subsample
+  onset calibration and its unreliable-mark rule (§5); the "visibly smaller" criterion
+  replaced by the named factor sd(window) ≤ 0.5 × sd(point) on both within-seed sets (§5).
+  Zcode (08:28:59Z) — the onset-aligned window named as the conditional next step (§7); the
+  n = 6 resolution statement for ρ and for differences between two ρ values (§5).
