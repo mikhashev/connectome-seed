@@ -41,12 +41,14 @@ itertools, json, re, sys, datetime, pathlib); no numpy; no GPU; no interpolation
 anywhere (§2, §11).
 
 The registered numbers (the only loss-domain constants in this file):
-  L0       = 1212.5556  [PUBLISHED] the untrained level (plan §4(e))
+  L0       COMPUTED at read time (§3 v2) = min over runs and control iterations;
+           v1 used the published 1212.5556 and the top grid level then violated §6 prong 2
   step     = 2.0        (registered choice, §3) grid step in loss units
   one_step = 3600        (registered choice, §5) one checkpoint step, in iterations
 The printed-only review statistics below add two iteration-domain constants (the
 150000 kink boundary and the 1000 head cut), declared by that review before reading.
-No hook-field number (§7) enters any computation; no loss value beyond L0 is hardcoded.
+No hook-field number (§7) enters any computation; in v2 no loss value is hardcoded as an
+anchor at all — both Lmin and L0 are computed from the substrate (§3).
 
 The eight runs, their seeds/roles/nights are registered facts (§4, §10); which CSV
 *column* carries each run is NOT hardcoded.  It is resolved at runtime from the wave
@@ -129,7 +131,13 @@ from pathlib import Path
 
 # ---------------------------------------------------------------- registered constants
 
-L0 = 1212.5556      # [PUBLISHED] the untrained level (plan §4(e))
+# L0 is COMPUTED in v2, not published: the registration's §3 anchors it to the minimum
+# over the eight runs AND over CONTROL_ITERATIONS, so that §6's second prong is empty by
+# construction. v1 used seed 0's iteration-0 value (1212.5556) and the top grid level then
+# passed §3 while violating prong 2 (Ark, 2026-09-17). The expected value on the registered
+# substrate is 1211.5978 (seed 4 at iteration 12); it is recomputed at read time, not trusted.
+L0_V1_PUBLISHED = 1212.5556   # kept only to report what v1 would have used
+WITHDRAWN_LEVELS = (1210.0, 1208.0)  # §11 caveat: knowledge about these is not structural
 STEP = 2.0          # (registered choice, §3) loss units
 ONE_STEP = 3600     # (registered choice, §5) iterations — one checkpoint step
 
@@ -269,16 +277,22 @@ def lsq_slope(points):
     return sum((p[0] - xbar) * (p[1] - ybar) for p in points) / sxx
 
 
-def build_grid(lmin):
-    """All L = m*STEP, integer m, strictly inside the open interval (lmin, L0) (§3)."""
+def build_grid(lmin, l0):
+    """All L = m*STEP, integer m, strictly inside the open interval (lmin, l0) (§3, v2).
+
+    Both anchors are computed at read time in v2: lmin from the curve minima, l0 from the
+    control iterations. The two levels of WITHDRAWN_LEVELS are removed here, by the §11
+    caveat written before the reading -- not on any result.
+    """
     levels = []
     m = int(lmin // STEP) + 1
     while m * STEP <= lmin:
         m += 1
-    while m * STEP < L0:
+    while m * STEP < l0:
         levels.append(m * STEP)
         m += 1
-    return levels
+    kept = [L for L in levels if L not in WITHDRAWN_LEVELS]
+    return kept, [L for L in levels if L in WITHDRAWN_LEVELS]
 
 
 def first_index_at_or_below(values, level):
@@ -736,8 +750,9 @@ def print_banner(repo, started, script_sha256, validated_files):
           "the single file the phrase names):")
     for fi in sorted(validated_files, key=lambda f: rel(f["path"], repo)):
         print("  {} : {}".format(rel(fi["path"], repo), fi["sha256"]))
-    print("Constants   : L0 = {} [published anchor], step = {} [registered, §3], "
-          "one_step = {} iterations [registered, §5]".format(L0, STEP, ONE_STEP))
+    print("Constants   : step = {} [registered, §3], one_step = {} iterations "
+          "[registered, §5]; Lmin and L0 are COMPUTED at read time in v2 (§3) and are "
+          "printed in §3 step 2 below, not here".format(STEP, ONE_STEP))
     print("No interpolation is used anywhere; no hook-field number enters any "
           "computation (§7, §11).")
     print("=" * 78)
@@ -828,26 +843,47 @@ def run_reading(repo, started):
     for rid in RUN_IDS:
         print("  {} : {:.4f}".format(rid, end_values[rid]))
 
-    # ---- §3 step 2: Lmin ----------------------------------------------------------
-    section("§3 step 2 — Lmin")
-    lmin = min(end_values.values())
-    lmin_runs = [rid for rid in RUN_IDS if end_values[rid] == lmin]
-    print("Lmin = min over the eight iteration-{} values = {:.4f} (attained by {})".format(
-        FINAL_ITERATION, lmin, ", ".join(lmin_runs)))
+    # ---- §3 step 2: the two anchors (v2) -------------------------------------------
+    section("§3 step 2 — Lmin and L0, both computed")
+    # Lmin governs §4's exclusion rule, which fires when a run NEVER crosses a level --
+    # decided by each run's CURVE MINIMUM, not by its final value. v1 used the minimum of
+    # the finals and lost 8 of 34 levels by construction (Ark, 2026-09-17; §3 v2).
+    curve_min = {rid: min(curves[rid]) for rid in RUN_IDS}
+    print("curve minimum per run (the quantity §4's exclusion rule actually depends on):")
+    for rid in RUN_IDS:
+        print("  {} : {:.4f}".format(rid, curve_min[rid]))
+    lmin = max(curve_min.values())
+    lmin_runs = [rid for rid in RUN_IDS if curve_min[rid] == lmin]
+    print("Lmin = MAX over the eight curve minima = {:.4f} (attained by {})".format(
+        lmin, ", ".join(lmin_runs)))
+    print("  (v1 would have used min over the finals = {:.4f} -- the wrong quantity)".format(
+        min(end_values.values())))
+    # L0 must clear §6 prong 2, which tests against CONTROL_ITERATIONS of ALL runs.
+    side_vals = {(rid, it): curves[rid][pos[it]] for rid in RUN_IDS for it in CONTROL_ITERATIONS}
+    l0 = min(side_vals.values())
+    l0_at = [k for k, v in side_vals.items() if v == l0]
+    print("L0 = MIN over runs and control iterations {} = {:.4f} (attained by {})".format(
+        list(CONTROL_ITERATIONS), l0,
+        ", ".join("{}@{}".format(rid, it) for rid, it in l0_at)))
+    print("  (v1 would have used seed 0's iteration-0 value = {} -- above prong 2's own "
+          "minimum, so the top level passed §3 and violated the control)".format(L0_V1_PUBLISHED))
 
     # ---- §3 step 3: the frozen grid ------------------------------------------------
     section("§3 step 3 — the frozen grid")
-    grid = build_grid(lmin)
-    print("all levels L = m * {} strictly inside (Lmin, L0) = ({:.4f}, {}):".format(
-        STEP, lmin, L0))
+    grid, withdrawn = build_grid(lmin, l0)
+    if withdrawn:
+        print("withdrawn by the §11 caveat, written before the reading: {}".format(
+            ", ".join(fmt(L) for L in withdrawn)))
+    print("all levels L = m * {} strictly inside (Lmin, L0) = ({:.4f}, {:.4f}):".format(
+        STEP, lmin, l0))
     print("  {} level(s): {}".format(
         len(grid), ", ".join(fmt(L) for L in grid) if grid else "(none)"))
     if not grid:
         raise ConstantsUnresolved(
             "the frozen grid (§3 step 3) is empty — no multiple of step={} lies "
-            "strictly inside the open interval (Lmin={:.4f}, L0={}); the grid "
+            "strictly inside the open interval (Lmin={:.4f}, L0={:.4f}); the grid "
             "constants cannot be resolved from the registration's stated order (§3) "
-            "on this input".format(STEP, lmin, L0))
+            "on this input".format(STEP, lmin, l0))
     print("this list is frozen here; nothing below recomputes or adjusts it (§3, §11)")
 
     # ---- §3 step 4: crossing times (only now) --------------------------------------
@@ -954,12 +990,14 @@ def run_reading(repo, started):
     bands_checked = 0
     for rid in RUN_IDS:
         for L in grid:
-            if end_values[rid] < L < L0:
+            if end_values[rid] < L < l0:
                 bands_checked += 1
                 if cross_idx[(rid, L)] is None:
                     prong1_failures.append({"run": rid, "level": L})
     prong1_outcome = "fail" if prong1_failures else "pass"
-    print("  prong 1 (finiteness): every grid level strictly between a run's "
+    print("  prong 1 (finiteness -- a completeness check, NOT a control: it cannot fail, "
+          "since a run's own final checkpoint is at or below any level above its final "
+          "value (§6 v2)): every grid level strictly between a run's "
           "iteration-{} value and L0 must be crossed finitely — {} (run, level) band(s) "
           "checked: {}".format(FINAL_ITERATION, bands_checked,
                                "PASS" if prong1_outcome == "pass" else "FAIL"))
@@ -1214,7 +1252,10 @@ def run_reading(repo, started):
         "utc_started": started,
         "utc_finished": finished,
         "repo_root": str(repo),
-        "constants": {"L0": L0, "step": STEP, "one_step_iterations": ONE_STEP,
+        "constants": {"L0_computed": l0, "Lmin_computed": lmin,
+                      "L0_v1_published_not_used": L0_V1_PUBLISHED,
+                      "withdrawn_levels": list(WITHDRAWN_LEVELS),
+                      "step": STEP, "one_step_iterations": ONE_STEP,
                       "final_iteration": FINAL_ITERATION,
                       "control_iterations": list(CONTROL_ITERATIONS),
                       "expected_checkpoint_rows": EXPECTED_ROWS},
