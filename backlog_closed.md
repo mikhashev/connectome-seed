@@ -1,5 +1,16 @@
 # Closed entries
 
+## 2026-09-17 — closed by CC
+
+### NIGHT-4-RUNS-REPLICATE-3-PRIME-AND-SEED-5-TO-COMPLETION: replicate 3prime (seed 3, id 9991/903) and seed 5 (id 9991/005) trained to 250,000 in one wave with no reboot, the third same-wave pair on record, pushing the individual population to n=6 at the top rung (HIGH, closed, 2026-09-17 — CC, from wave_night4.json: WAVE DONE 2/2 ok 2026-09-17T04:29:27Z; launch pre-registered in docs/next-session-plan.md sec2a (Ark 19:58Z/Zcode 20:14Z, committed 874cc32))
+
+**Closed:** S2026-09-17.1 · 2026-09-17 · fixed · replicate 3prime (9991/903) EXIT rc=0, 250008 iterations, 14444.2s; seed 5 (9991/005) EXIT rc=0, 250008 iterations, 14474.1s; WAVE DONE 2/2 ok 2026-09-17T04:29:27Z; eight-run rung SD at n=6: 1.3012/0.9639/8.0614/5.1425 vs replicate 0.0000/0.0025/0.3365/12.7279; record docs/experiments/004-night4-replicate-3prime-and-seed-5.md and results/night4/ · closed by CC
+
+- **Observed.** wave_night4.json/.launcher.log: WAVE START tag=night4 2026-09-16T20:27:29Z, replicate 3prime (9991/903) EXIT rc=0 250008 iterations 14444.2s (launcher wall), seed 5 (9991/005) EXIT rc=0 250008 iterations 14474.1s, WAVE DONE 2/2 ok 2026-09-17T04:29:27Z, one wave start to end no reboot, 72 checkpoints each, errors 0; rung SD at n=6 (individuals 0,1,2,3,4,5): 1.3012/0.9639/8.0614/5.1425 against replicate |0prime-0| 0.0000/0.0025/0.3365/12.7279 (docs/experiments/004-night4-replicate-3prime-and-seed-5.md sec2); second replicate pair |3prime-3|=10.4309 at 250000 rules out the position-effect explanation P (docs/next-session-plan.md sec2a); C3 replicate offset 0.3365 (pair 0/0prime) not reproduced by |3prime-3|=5.1847 at 25000, about 15x larger (sec4)
+- **First step:** None -- closed on completion; the C3 threshold instability and the position-effect ruling are recorded as observations in docs/experiments/004-night4-replicate-3prime-and-seed-5.md sec4, no rule changed
+- **axis:** honesty
+- **filed:** CC · 2026-09-17
+
 ## 2026-09-16 — closed by CC
 
 ### THE-MACHINE-VERDICT-ON-THE-NIGHT-3-ABLATION-READING-WAS-OVERRIDDEN: ablation_reading.json's own POSITIVE verdict evaluated only one of the pre-registered rule's two conflicting size definitions, and R2 itself did not repeat (HIGH, closed, 2026-09-16 — Mike «давайте пробовать», reviewers Ark 05:27Z and Zcode 05:27Z concurring)

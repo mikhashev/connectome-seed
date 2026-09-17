@@ -183,6 +183,10 @@ record.
 
 Nothing here changes a rule; the reading is descriptive for n = 2 replicate pairs.
 
+**Reading outcome 2026-09-17 (night 4):** applied as written — |3′ − 3| = +10.4309 at 250,000
+rules out P (position held constant, offset not ≈ 0); U predicted ≈ +12.7, observed +10.4; S not
+excluded. Full record: `docs/experiments/004-night4-replicate-3prime-and-seed-5.md` §4.
+
 ## 3. Branches after night 2
 
 **2026-09-15:** the branch below is now decidable with the numbers in the Result paragraph
