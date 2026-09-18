@@ -195,10 +195,30 @@ foreach ($k in @("HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\
                  "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Component Based Servicing\RebootPending")) {
     if (Test-Path $k) { $pending = $true }
 }
+# The two checks are not redundant and they guarantee different things (Ark, 2026-09-18):
+# "pending" catches a restart ALREADY scheduled, while active hours are the only thing that
+# constrains one scheduled later -- an update that matures during the night is in neither
+# key at launch time.
 if ($pending) {
     Say-Refuse "reboot pending" "Windows has a restart queued; it will land inside the night"
 } else {
-    Say-Pass "reboot pending" "no restart queued"
+    Say-Pass "reboot pending" "none queued now (this says nothing about one scheduled later; only active hours do)"
+}
+
+# Which boot session the night will belong to. This is not bookkeeping: the substrate's two
+# replicate pairs already sit on opposite sides of the 2026-09-14T23:31:21Z boot, and gate 10
+# shows that under a within-session definition of replicate noise a restart before the night
+# ends takes the pooled figure from 3 df to 2 -- the night would buy nothing on that side.
+# Both runs are sequential over about eight hours, so a restart BETWEEN them splits them too.
+$boot = (Get-CimInstance Win32_OperatingSystem).LastBootUpTime.ToUniversalTime()
+$uptime = (Get-Date).ToUniversalTime() - $boot
+Say-Pass "boot session the night joins" ($boot.ToString("yyyy-MM-ddTHH:mm:ssZ") +
+    " (uptime " + [math]::Floor($uptime.TotalDays) + "d " + $uptime.Hours + "h)")
+if ($boot -lt (Get-Date "2026-09-14T23:31:21Z").ToUniversalTime().AddSeconds(1) -and
+    $boot -gt (Get-Date "2026-09-14T23:31:00Z").ToUniversalTime()) {
+    Say-Pass "session identity" "still session B of the substrate -- 3-triple-prime lands in B with 3 and 3-prime"
+} else {
+    Say-Warn "session identity" "this is NOT the substrate's session B; the night's runs form a new session, which changes gate 10's arithmetic"
 }
 
 # ----------------------------------------------------------------- 7. the command itself
