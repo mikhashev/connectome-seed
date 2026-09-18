@@ -1030,14 +1030,25 @@ def run_reading(repo, started):
         for rec in prong2_failures:
             print("    FAIL: accepted level L={} is not strictly below it".format(
                 fmt(rec["level"])))
-        print("  prong 2: {}".format("PASS" if prong2_outcome == "pass"
-                                     else "FAIL — test void"))
+        print("  prong 2: {}".format(
+            "SATISFIED BY CONSTRUCTION — not a pass: L0 IS this binding minimum, "
+            "so the grid lies below it at any data and this prong cannot fail (§6 v4)"
+            if prong2_outcome == "pass" else "FAIL — test void"))
     else:
         print("  prong 2: no accepted levels — vacuous pass")
     control_outcome = ("fail" if (prong1_outcome == "fail" or prong2_outcome == "fail")
                        else "pass")
     print("  positive control outcome: {}".format(
-        "PASS" if control_outcome == "pass" else "FAIL"))
+        "SATISFIED BY CONSTRUCTION — NOT A PASS"
+        if control_outcome == "pass" else "FAIL"))
+    if control_outcome == "pass":
+        print("    Neither prong can fail on this substrate: prong 1 is a "
+              "completeness check, and prong 2 is empty because L0 and its "
+              "binding minimum are the same quantity.")
+        print("    This reading therefore has NO positive control that could "
+              "have failed, and the criterion below is read without one "
+              "(§6 v4).")
+        print("    Do not quote the line above as a passed gate.")
 
     verdict = None
     if control_outcome == "fail":
