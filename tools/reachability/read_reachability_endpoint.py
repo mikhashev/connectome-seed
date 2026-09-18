@@ -19,10 +19,10 @@ other claim about the world.
 
 What was taken from tools/night/read_reachability.py (1108 lines, its author's
 prefix "9991/xxx" run-id convention kept for continuity with its wave-json records):
-  * the run -> column resolver built from the wave-json job records (scan_nights,
-    build_candidates, assign_runs, and the id/token-matching helpers below) — it
-    refuses (exit 2) and lists everything unmapped rather than hard-coding which CSV
-    column carries which run;
+  * the run -> column resolver built from the wave-json job records — it refused
+    (exit 2) and listed everything unmapped rather than hard-coding which CSV
+    column carries which run (SUPERSEDED and deleted in v7, 2026-09-18: see the
+    supersession note below and "Runtime column resolution");
   * the three review statistics (kink at iteration 150,000, cost regimes by OS boot
     session, straddle report) — printed statistics, never gating the verdict (§10);
   * the §10 JSON record and its "printed §10 quantities" table.
@@ -36,6 +36,12 @@ Newly implemented here, present in neither source, per the registration text as
 reviewed (§4, §5): symmetric disqualification (see disqualify_level below) and the
 exact rank statistic (see exact_rank_statistic below) — both cite the registration
 section that requires them at the point they are implemented.
+
+Supersession (2026-09-18, v7): the run -> column resolver taken from the night
+script — the wave-json binding, cross-night candidates, pairwise files and
+cross-report corroboration — is REMOVED by this change. The notes above stand as
+history, not as a description of the present code; see "Runtime column
+resolution" below for what replaced it and why.
 
 What this script is
 --------------------
@@ -57,34 +63,45 @@ No hook-field number (§7) enters any computation; in v2 no loss value is hardco
 anchor at all — both Lmin and L0 are computed from the substrate (§3).
 
 The eight runs, their seeds/roles/nights are registered facts (§4, §10); which CSV
-*column* carries each run is NOT hardcoded.  It is resolved at runtime from the wave
-jsons (results/night{N}/wave_night{N}*.json — metadata records only) plus the
-checkpoint-CSV headers, and the script REFUSES (exit 2) unless all eight runs map to
-exactly one column each.  The refusal path is a feature: a wrong mapping silently
-misreads the test.  A second, independent guard (§10, from the prior single-file
-version of this script) pins the exact published column order of the one file the
-registration names explicitly — results/night4/night_report_checkpoints.csv — and
-refuses (exit 3) if that file's header does not match it verbatim, even though the
-resolver above would already have derived the same mapping structurally.
+*column* carries each run is NOT hardcoded.  It is mapped BY NAME from the header of
+the one registered file: val_loss_seed<N> is the canonical run of seed <N> and
+val_loss_seed<N>prime the replicate of seed <N>, accepted only as a bijection onto
+exactly the eight RUN_SPECS runs in the pinned column order of EXPECTED_NIGHT4_HEADER
+(§10, v7).  The refusal path is a feature: a wrong mapping silently misreads the
+test.  The same file's sha256, with bytes normalized to LF line endings, is pinned
+as INPUT_SHA256_REGISTERED and checked before anything else is read (§10, v7); a
+header mismatch, a mapping mismatch and a pin mismatch are all layout mismatches
+(exit 3).
 
-Runtime column resolution
-  * combined file night_report_checkpoints.csv — val_loss_seed<S> maps to the
-    registered canonical run of seed <S>, val_loss_seed<S>prime to the registered
-    replicate of seed <S>, provided a wave job of that night binds to that run (the
-    column name must match a job seed; unmatched columns are recorded, not used);
-  * pairwise file night_report_checkpoints_<X>v<Y>.csv — val_loss_A / val_loss_B map
-    to the runs resolved from the filename tokens X and Y (id segment, canonical seed
-    number, or 9<seed> / <seed>prime for replicates) among that night's bound jobs;
-  * multiple candidates for one run must carry identical 72-point curves
-    (corroboration is recorded); any disagreement, any run mappable only outside its
-    registered night, any unresolvable metadata, or any unmapped run is a refusal.
+Runtime column resolution (v7)
+  * the registered substrate is ONE file — results/night4/night_report_checkpoints.csv
+    (SUBSTRATE_REL_PATH below); nothing else is read;
+  * its pinned header IS the mapping: val_loss_seed<N> maps to the registered
+    canonical run of seed <N>, val_loss_seed<N>prime to the registered replicate
+    of seed <N>; the eight mapped columns must form a bijection onto exactly the
+    eight RUN_SPECS runs and their order must agree with EXPECTED_NIGHT4_HEADER;
+    any other column name, collision, missing run or order disagreement is a
+    layout mismatch (exit 3) naming the offending column;
+  * its normalized sha256 IS the identity: the sha256 of the file's bytes with
+    CRLF pairs normalized to LF — checkout-independent under core.autocrlf and
+    equal to the git blob's content hash — pinned as INPUT_SHA256_REGISTERED;
+    a mismatch is a layout mismatch (exit 3), expected vs found printed;
+  * the prior general multi-night resolver (wave-json binding, cross-night
+    candidates, pairwise files, cross-report corroboration) was removed after a
+    synthetic harness proved it cannot map the registered substrate: it demanded
+    each run's column in "the night where the run is bound", but the reports
+    accumulate columns across nights — it answered a corpus question the
+    registration never asked.  Its cross-report byte comparison was impossible by
+    construction anyway: the older night reports print 4-decimal values while
+    night 4 prints full floats, so two reports of the same run can never agree
+    byte-for-byte on the curve columns.
 
 Exit codes
   0  completed reading (verdict ACCEPT, FAIL, or TEST UNREADABLE)
-  2  mapping refusal (the reading did not happen; nothing written)
-  3  layout mismatch vs the published schema, including the night4 literal-header
-     guard (the reading did not happen)
-  4  §6 positive-control failure — the test is void (the report is still written)
+  3  layout mismatch vs the published schema, INCLUDING the input sha pin (§10, v7)
+     and the night4 literal-header guard (the reading did not happen)
+  4  §6 positive-control failure — the test is void (the report is still written);
+     unreachable on this substrate, kept as declared insurance (§6)
   5  constants unresolved — the frozen grid (§3 step 3) is empty, so no multiple of
      the registered step lies strictly inside (Lmin, L0) (the reading did not happen)
 
@@ -162,27 +179,26 @@ UNREACHABLE_FAIL = (" [UNREACHABLE BRANCH \u00a76 v6 \u2014 this check cannot fa
                     "line printed, it is a code defect and not a finding]")
 
 EXPECTED_ROWS = 72                  # [PUBLISHED §2/§5] data rows per checkpoints CSV
-NIGHT_NUMBERS = (1, 2, 3, 4)        # [PUBLISHED §10]
 ITERATION_COLUMN = "iteration"
-COMBINED_CSV_NAME = "night_report_checkpoints.csv"
-CSV_GLOB = "night_report_checkpoints*.csv"
-WAVE_GLOB_TEMPLATE = "wave_night{n}*.json"
 JSON_NAME = "reachability_reading.json"
 REGISTRATION_DOC = "docs/preregistration-reachability-endpoint.md"
 SCRIPT_REL_PATH = "tools/reachability/read_reachability_endpoint.py"
+# The registered substrate (§10, v7): ONE file, by path. The prior multi-night
+# resolver — wave jsons, cross-night candidates, pairwise files — was removed after
+# the synthetic-harness refusal; nothing but this path is read.
+SUBSTRATE_REL_PATH = "results/night4/night_report_checkpoints.csv"
 
 RE_SEED_COL = re.compile(r"^val_loss_seed(\d+)$")
 RE_SEED_PRIME_COL = re.compile(r"^val_loss_seed(\d+)prime$")
-RE_PAIRWISE_NAME = re.compile(r"^night_report_checkpoints_(.+)v(.+)\.csv$")
 
-# Second line of defense (§10, from the prior single-file version of this script):
-# the literal published header of the one file the registration names by path in its
-# "four operational choices" bullet — results/night4/night_report_checkpoints.csv —
-# which the registration records as carrying two leading comment lines before this
-# exact header row. The resolver's structural checks (load_checkpoint_file, below)
-# already guard every file it reads (one 'iteration' column, val_loss* columns, no
-# duplicates, the published anchors present); this check additionally pins the exact
-# column order of this specific named file and refuses loudly on any deviation.
+# Primary identity guard (§10): the literal published header of the one file the
+# registration names by path in its "four operational choices" bullet —
+# results/night4/night_report_checkpoints.csv — which the registration records as
+# carrying two leading comment lines before this exact header row. The header IS
+# the mapping: val_loss_seed<N> is the canonical run of seed N,
+# val_loss_seed<N>prime the replicate. load_checkpoint_file (below) refuses loudly
+# on any deviation from this exact column order, and map_columns_by_name
+# re-derives the mapping from the names as an independent check.
 EXPECTED_NIGHT4_HEADER = (
     "iteration",
     "val_loss_seed0",
@@ -195,9 +211,15 @@ EXPECTED_NIGHT4_HEADER = (
     "val_loss_seed5",
 )
 
+# Registered in the registration's §10 (v7); sha256 of the substrate file's bytes
+# normalized to LF line endings (equals the git blob's content hash;
+# checkout-independent under core.autocrlf).
+INPUT_SHA256_REGISTERED = "f61c5aaf3c477b06d4d21c3abf9ff24bce691de017979bf3971cb0c00b5b2c36"
+
 # The eight runs: (run_id, id_segment, seed, role, night).
 # Registered facts (§4 replicate pairs; §10 "the eight runs, by night"); the CSV
-# column for each run is resolved at runtime, never hardcoded.
+# column for each run is mapped BY NAME from the registered file's header
+# (map_columns_by_name below), never hardcoded.
 RUN_SPECS = [
     ("9991/000", "000", 0, "canonical", 1),   # seed 0
     ("9991/900", "900", 0, "replicate", 1),   # replicate 0-prime
@@ -210,7 +232,6 @@ RUN_SPECS = [
 ]
 RUN_IDS = [s[0] for s in RUN_SPECS]
 RUN_BY_ID = {s[0]: s for s in RUN_SPECS}
-SEGMENT_TO_RUN = {s[1]: s[0] for s in RUN_SPECS}
 TWIN_PAIRS = (("9991/000", "9991/900"), ("9991/003", "9991/903"))
 CANONICAL_SIX = ("9991/000", "9991/001", "9991/002", "9991/003", "9991/004", "9991/005")
 CANONICAL_PAIRS = list(itertools.combinations(CANONICAL_SIX, 2))   # 15 pairs
@@ -233,11 +254,17 @@ SESSION_B = ("9991/002", "9991/003", "9991/903", "9991/004", "9991/005")  # 5 ru
 
 
 class LayoutMismatch(Exception):
-    """The files on disk do not match the published layout (exit 3)."""
+    """The files on disk do not match the published layout (exit 3).
 
+    `kind` names which of the three exit-3 conditions fired, so that the banner --
+    the first line an operator reads and the line they will quote -- distinguishes
+    "the file is not the registered one" from "the layout is broken" (Ark,
+    2026-09-18; the same argument that retired the bare PASS).
+    """
 
-class MappingRefusal(Exception):
-    """The resolver could not map all eight runs to exactly one column each (exit 2)."""
+    def __init__(self, message, kind="LAYOUT MISMATCH"):
+        super().__init__(message)
+        self.kind = kind
 
 
 class ConstantsUnresolved(Exception):
@@ -249,6 +276,11 @@ class ConstantsUnresolved(Exception):
 
 def utc_now():
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
+
+
+def sha256_normalized(data: bytes) -> str:
+    """Normalized to LF so the printed identity is checkout-independent and equals the blob hash; applied to the script's own bytes and to every hashed input alike."""
+    return hashlib.sha256(data.replace(b"\r\n", b"\n")).hexdigest()
 
 
 def fmt(x, nd=2):
@@ -379,17 +411,18 @@ def exact_rank_statistic(twin_diffs, between_diffs):
 def read_table(path):
     """CSV with '#' comment lines, then a header row, then data rows.
 
-    Reads the raw bytes once and returns their sha256 alongside the parsed table
-    (§10, "its own sha256 and the input file's sha256 are printed at the head of its
-    output" -- generalised here to every substrate checkpoint CSV the resolver
-    validates, since the resolver, unlike the prior single-file script, reads more
-    than one file).
+    Reads the raw bytes once and returns both their raw sha256 and the
+    LF-normalized sha256 alongside the parsed table (§10 v7: the input's identity
+    is the normalized digest -- checkout-independent and equal to the git blob's
+    content hash; the raw digest is printed beside it for plain byte-level
+    provenance).
     """
     try:
         raw_bytes = path.read_bytes()
     except OSError as exc:
         raise LayoutMismatch("cannot read {}: {}".format(path, exc)) from exc
     digest = hashlib.sha256(raw_bytes).hexdigest()
+    digest_normalized = sha256_normalized(raw_bytes)
     try:
         text = raw_bytes.decode("utf-8-sig")
     except UnicodeDecodeError as exc:
@@ -404,23 +437,34 @@ def read_table(path):
         table.append([str(cell) for cell in row])
     if not table:
         raise LayoutMismatch("{}: no header row found below the '#' comments".format(path))
-    return table[0], table[1:], digest
+    return table[0], table[1:], digest, digest_normalized
 
 
 def load_checkpoint_file(path):
-    """Validate one checkpoints CSV against the published layout and index its columns."""
-    header_raw, rows, digest = read_table(path)
+    """Load the registered substrate CSV: pin its identity, then validate its layout."""
+    header_raw, rows, digest, digest_normalized = read_table(path)
     header = [h.strip() for h in header_raw]
 
-    # Second line of defense (§10): the one file the registration names explicitly by
-    # path gets its exact published column order pinned and checked, on top of the
-    # structural checks below that apply to every file the resolver reads.
-    if path.name == COMBINED_CSV_NAME and path.parent.name == "night4":
-        if tuple(header) != EXPECTED_NIGHT4_HEADER:
-            raise LayoutMismatch(
-                "{}: header does not match the registration's §10 published layout "
-                "for this specific file exactly.\n  expected: {}\n  found:    {}".format(
-                    path, EXPECTED_NIGHT4_HEADER, tuple(header)))
+    # Input pin (§10, v7): the registered substrate's identity is its sha256 with
+    # bytes normalized to LF -- checkout-independent, equal to the git blob's
+    # content hash. Any mismatch is a layout mismatch (exit 3), expected vs found.
+    if digest_normalized != INPUT_SHA256_REGISTERED:
+        raise LayoutMismatch(
+            "{}: input sha256 pin MISMATCH -- the file's bytes normalized to LF do "
+            "not hash to the value registered in §10 (v7)\n"
+            "  expected: {}\n"
+            "  found:    {}".format(path, INPUT_SHA256_REGISTERED, digest_normalized),
+            kind="INPUT PIN MISMATCH")
+
+    # Primary identity guard (§10): the registered file's exact published column
+    # order, pinned verbatim. This loader reads only the one file §10 names by
+    # path (SUBSTRATE_REL_PATH), so the guard applies to it unconditionally.
+    if tuple(header) != EXPECTED_NIGHT4_HEADER:
+        raise LayoutMismatch(
+            "{}: header does not match the registration's §10 published layout "
+            "for this specific file exactly.\n  expected: {}\n  found:    {}".format(
+                path, EXPECTED_NIGHT4_HEADER, tuple(header)),
+            kind="HEADER MISMATCH")
 
     if header.count(ITERATION_COLUMN) != 1:
         raise LayoutMismatch(
@@ -464,7 +508,8 @@ def load_checkpoint_file(path):
     if not loss_cols:
         raise LayoutMismatch("{}: no val_loss* columns in header {}".format(path, header))
     return {"path": path, "name": path.name, "iterations": iterations,
-            "loss_cols": loss_cols, "rows": rows, "sha256": digest}
+            "loss_cols": loss_cols, "rows": rows, "sha256": digest,
+            "sha256_normalized": digest_normalized}
 
 
 def column_values(fileinfo, column, repo):
@@ -483,297 +528,81 @@ def column_values(fileinfo, column, repo):
     return values
 
 
-# ------------------------------------------------------------------- wave json layer
+# ---------------------------------------------------------------- run->column mapping
 
-def extract_job_records(node):
-    """Tolerant walk: every dict carrying both 'id' and 'seed' is a job record."""
-    records = []
-    if isinstance(node, dict):
-        if "id" in node and "seed" in node:
-            records.append(node)
-        for value in node.values():
-            records.extend(extract_job_records(value))
-    elif isinstance(node, list):
-        for value in node:
-            records.extend(extract_job_records(value))
-    return records
+def map_columns_by_name(fileinfo):
+    """Map the registered file's val_loss columns to runs BY NAME (v7, §10).
 
-
-def load_wave_jobs(path):
-    try:
-        with open(path, "r", encoding="utf-8") as fh:
-            data = json.load(fh)
-    except (OSError, json.JSONDecodeError) as exc:
-        raise LayoutMismatch("cannot parse wave json {}: {}".format(path, exc)) from exc
-    jobs, seen = [], set()
-    for rec in extract_job_records(data):
-        jid = str(rec.get("id", "")).strip()
-        try:
-            seed = int(rec.get("seed"))
-        except (TypeError, ValueError):
-            seed = None
-        tag = str(rec.get("tag") or "").strip()
-        key = (jid, seed, tag)
-        if jid == "" or key in seen:
-            continue
-        seen.add(key)
-        jobs.append({"id": jid, "seed": seed, "tag": tag, "wave": path.name})
-    if not jobs:
-        raise LayoutMismatch("{}: no job records carrying id and seed found".format(path))
-    return jobs
-
-
-def id_segments(jid):
-    return [seg for seg in re.split(r"[\\/]+", jid) if seg]
-
-
-def bind_job_to_run(job):
-    """Bind a wave job to a registered run by id segments, rightmost first."""
-    for seg in reversed(id_segments(job["id"])):
-        rid = SEGMENT_TO_RUN.get(seg)
-        if rid is not None:
-            return rid
-    return None
-
-
-# ----------------------------------------------------------------------- the resolver
-
-def scan_nights(repo):
-    """Inventory nights: wave jsons, bound jobs, validated checkpoint CSVs."""
-    problems = []
-    nights = {}
-    validated = []
-    unrecognized = []
-    for n in NIGHT_NUMBERS:
-        ndir = repo / "results" / ("night{}".format(n))
-        if not ndir.is_dir():
-            raise LayoutMismatch("missing directory {}".format(ndir))
-        wave_paths = sorted(ndir.glob(WAVE_GLOB_TEMPLATE.format(n=n)))
-        if not wave_paths:
-            raise LayoutMismatch("{}: no wave jsons matching '{}'".format(
-                ndir, WAVE_GLOB_TEMPLATE.format(n=n)))
-        jobs = []
-        for wp in wave_paths:
-            jobs.extend(load_wave_jobs(wp))
-        bound = {}
-        unbound = []
-        for job in jobs:
-            rid = bind_job_to_run(job)
-            if rid is None:
-                unbound.append(job)
-                continue
-            _, _, seed, role, _ = RUN_BY_ID[rid]
-            if job["seed"] is not None and job["seed"] != seed:
-                problems.append(
-                    "night {}, wave {}: job id {!r} declares seed {} but registered run "
-                    "{} has seed {}".format(n, job["wave"], job["id"], job["seed"], rid, seed))
-            is_rep_tag = "rep" in job["tag"].lower()
-            if job["tag"] and is_rep_tag != (role == "replicate"):
-                problems.append(
-                    "night {}, wave {}: job id {!r} tag {!r} disagrees with the registered "
-                    "role of {} ({})".format(n, job["wave"], job["id"], job["tag"], rid, role))
-            bound.setdefault(rid, []).append(job)
-        csv_paths = sorted(ndir.glob(CSV_GLOB))
-        if not csv_paths:
-            raise LayoutMismatch("{}: no checkpoint CSVs matching '{}'".format(ndir, CSV_GLOB))
-        combined, pairwise = [], []
-        for cp in csv_paths:
-            if cp.name == COMBINED_CSV_NAME:
-                fi = load_checkpoint_file(cp)
-                combined.append(fi)
-                validated.append(fi)
-                continue
-            m = RE_PAIRWISE_NAME.match(cp.name)
+    The header IS the mapping: val_loss_seed<N> is the canonical run of seed N,
+    val_loss_seed<N>prime the replicate of seed N. The mapped columns must form a
+    bijection onto exactly the eight RUN_SPECS runs and their order must agree
+    with EXPECTED_NIGHT4_HEADER; anything else is a layout mismatch (exit 3)
+    naming the offending column.
+    """
+    by_seed_role = {(s[2], s[3]): s[0] for s in RUN_SPECS}
+    ordered_cols = sorted(fileinfo["loss_cols"], key=lambda c: fileinfo["loss_cols"][c])
+    column_of_run = {}
+    for col in ordered_cols:
+        m = RE_SEED_PRIME_COL.match(col)
+        if m:
+            seed, role = int(m.group(1)), "replicate"
+        else:
+            m = RE_SEED_COL.match(col)
             if m:
-                fi = load_checkpoint_file(cp)
-                pairwise.append((fi, m.group(1), m.group(2)))
-                validated.append(fi)
+                seed, role = int(m.group(1)), "canonical"
             else:
-                unrecognized.append(rel(cp, repo))
-        nights[n] = {"dir": ndir, "wave_paths": wave_paths, "jobs": jobs,
-                     "bound": bound, "unbound": unbound,
-                     "combined": combined, "pairwise": pairwise}
-    grids = {tuple(fi["iterations"]) for fi in validated}
-    if len(grids) != 1:
-        names = sorted({rel(fi["path"], repo) for fi in validated})
-        raise LayoutMismatch(
-            "checkpoint files do not share one iteration grid: " + "; ".join(names))
-    return nights, validated, list(next(iter(grids))), unrecognized, problems
-
-
-def spec_for(seed, role):
-    for s in RUN_SPECS:
-        if s[2] == seed and s[3] == role:
-            return s
-    return None
-
-
-def resolve_token(token, info):
-    """Resolve a pairwise filename token to a registered run via this night's bound jobs."""
-    hits = set()
-    for rid, joblist in info["bound"].items():
-        for job in joblist:
-            if token in id_segments(job["id"]):
-                hits.add(rid)
-    if len(hits) == 1:
-        return hits.pop()
-    seeds = {rid for rid in info["bound"]
-             if RUN_BY_ID[rid][3] == "canonical" and str(RUN_BY_ID[rid][2]) == token}
-    if len(seeds) == 1:
-        return seeds.pop()
-    reps = {rid for rid in info["bound"]
-            if RUN_BY_ID[rid][3] == "replicate"
-            and token in ("9{}".format(RUN_BY_ID[rid][2]), "{}prime".format(RUN_BY_ID[rid][2]))}
-    if len(reps) == 1:
-        return reps.pop()
-    return None
-
-
-def build_candidates(repo, nights):
-    candidates = {rid: [] for rid in RUN_IDS}
-    unmapped_columns = []
-    pairwise_notes = []
-
-    def add_unmapped(fi, col, reason):
-        unmapped_columns.append(
-            {"file": rel(fi["path"], repo), "column": col, "reason": reason})
-
-    for n in sorted(nights):
-        info = nights[n]
-        for fi in info["combined"]:
-            for col in sorted(fi["loss_cols"], key=lambda c: fi["loss_cols"][c]):
-                m = RE_SEED_PRIME_COL.match(col)
-                if m:
-                    seed = int(m.group(1))
-                    spec = spec_for(seed, "replicate")
-                    if spec is not None and spec[0] in info["bound"]:
-                        candidates[spec[0]].append({
-                            "night": n, "file": fi, "column": col,
-                            "col_idx": fi["loss_cols"][col], "kind": "combined",
-                            "how": "val_loss_seed{}prime <-> bound replicate job of seed {} "
-                                   "in night {}".format(seed, seed, n)})
-                    else:
-                        add_unmapped(fi, col, "no bound replicate job of seed {} in night "
-                                              "{}'s waves".format(seed, n))
-                    continue
-                m = RE_SEED_COL.match(col)
-                if m:
-                    seed = int(m.group(1))
-                    spec = spec_for(seed, "canonical")
-                    if spec is not None and spec[0] in info["bound"]:
-                        candidates[spec[0]].append({
-                            "night": n, "file": fi, "column": col,
-                            "col_idx": fi["loss_cols"][col], "kind": "combined",
-                            "how": "val_loss_seed{} <-> bound canonical job of seed {} in "
-                                   "night {}".format(seed, seed, n)})
-                    else:
-                        add_unmapped(fi, col, "no bound canonical job of seed {} in night "
-                                              "{}'s waves".format(seed, n))
-                    continue
-                add_unmapped(fi, col, "column name matches no registered grammar")
-        for fi, xtok, ytok in info["pairwise"]:
-            if not ("val_loss_A" in fi["loss_cols"] and "val_loss_B" in fi["loss_cols"]):
                 raise LayoutMismatch(
-                    "{}: pairwise file lacks val_loss_A/val_loss_B (val_loss columns: {})".format(
-                        rel(fi["path"], repo), sorted(fi["loss_cols"])))
-            xrun = resolve_token(xtok, info)
-            yrun = resolve_token(ytok, info)
-            label = "{}v{}".format(xtok, ytok)
-            if xrun is None or yrun is None:
-                bad = xtok if xrun is None else ytok
-                pairwise_notes.append(
-                    "{}: token {!r} matches no bound job of night {}; file unused".format(
-                        rel(fi["path"], repo), bad, n))
-                continue
-            candidates[xrun].append({
-                "night": n, "file": fi, "column": "val_loss_A",
-                "col_idx": fi["loss_cols"]["val_loss_A"], "kind": "pairwise",
-                "how": "pairwise {}: side A token {!r}".format(label, xtok)})
-            candidates[yrun].append({
-                "night": n, "file": fi, "column": "val_loss_B",
-                "col_idx": fi["loss_cols"]["val_loss_B"], "kind": "pairwise",
-                "how": "pairwise {}: side B token {!r}".format(label, ytok)})
-            for col in sorted(fi["loss_cols"], key=lambda c: fi["loss_cols"][c]):
-                if col not in ("val_loss_A", "val_loss_B"):
-                    add_unmapped(fi, col, "extra val_loss column in a pairwise file")
-    return candidates, unmapped_columns, pairwise_notes
-
-
-def describe_candidate(c, repo):
-    return "{}:{} (night {}, {}; {})".format(
-        rel(c["file"]["path"], repo), c["column"], c["night"], c["kind"], c["how"])
-
-
-def assign_runs(repo, candidates, problems):
-    """All eight runs must map to exactly one column each, or refuse (batched message)."""
-    assignment = {}
-    corroboration = {rid: [] for rid in RUN_IDS}
-    failures = list(problems)
-    for rid in RUN_IDS:
-        reg_night = RUN_BY_ID[rid][4]
-        on_night = [c for c in candidates[rid] if c["night"] == reg_night]
-        off_night = [c for c in candidates[rid] if c["night"] != reg_night]
-        if not on_night:
-            if off_night:
-                failures.append(
-                    "{}: no candidate column in its registered night {}; only off-night "
-                    "candidates seen: {}".format(
-                        rid, reg_night,
-                        "; ".join(describe_candidate(c, repo) for c in off_night)))
-            else:
-                failures.append("{}: no candidate column found in any night".format(rid))
-            continue
-        on_night.sort(key=lambda c: (0 if c["kind"] == "combined" else 1,
-                                     c["file"]["name"], c["col_idx"]))
-        off_night.sort(key=lambda c: (c["night"], c["file"]["name"], c["col_idx"]))
-        loaded = [(c, column_values(c["file"], c["column"], repo))
-                  for c in on_night + off_night]
-        base_c, base_vals = loaded[0]
-        agree = True
-        for c, vals in loaded[1:]:
-            if vals != base_vals:
-                failures.append(
-                    "{}: candidate columns disagree on the curve — {} differs from {}".format(
-                        rid, describe_candidate(c, repo), describe_candidate(base_c, repo)))
-                agree = False
-        if not agree:
-            continue
-        assignment[rid] = {"candidate": on_night[0], "values": base_vals}
-        corroboration[rid] = [c for c, _ in loaded[1:]]
-    if failures:
-        raise MappingRefusal(
-            "mapping refusal — the resolver will not guess (a wrong mapping silently "
-            "misreads the test). Not all eight runs map to exactly one column each:\n  - "
-            + "\n  - ".join(failures))
-    seen = {}
-    for rid, a in assignment.items():
-        c = a["candidate"]
-        key = (str(c["file"]["path"]), c["column"])
-        if key in seen:
-            raise MappingRefusal("column {}:{} was assigned to both {} and {}".format(
-                c["file"]["path"], c["column"], seen[key], rid))
-        seen[key] = rid
-    if len(assignment) != len(RUN_IDS):
-        raise MappingRefusal("internal error: assignment incomplete after all checks")
-    return assignment, corroboration
+                    "substrate column {!r} matches no registered run (expected "
+                    "val_loss_seed<N> for a canonical run or "
+                    "val_loss_seed<N>prime for a replicate)".format(col))
+        rid = by_seed_role.get((seed, role))
+        if rid is None:
+            raise LayoutMismatch(
+                "substrate column {!r} names seed {} as {}, but no registered run "
+                "has that seed and role".format(col, seed, role))
+        if rid in column_of_run:
+            raise LayoutMismatch(
+                "substrate columns {!r} and {!r} both map to run {} -- the mapping "
+                "must be a bijection".format(column_of_run[rid], col, rid))
+        column_of_run[rid] = col
+    for run_id, _seg, seed, role, _night in RUN_SPECS:
+        if run_id not in column_of_run:
+            expected = ("val_loss_seed{}prime".format(seed) if role == "replicate"
+                        else "val_loss_seed{}".format(seed))
+            raise LayoutMismatch(
+                "registered run {} (seed {}, {}) has no column in the substrate "
+                "(expected {})".format(run_id, seed, role, expected))
+    expected_order = [c for c in EXPECTED_NIGHT4_HEADER if c != ITERATION_COLUMN]
+    if ordered_cols != expected_order:
+        for position, (got, want) in enumerate(zip(ordered_cols, expected_order), start=1):
+            if got != want:
+                raise LayoutMismatch(
+                    "substrate column order disagrees with the pinned header at "
+                    "val_loss position {}: expected {!r}, found {!r}".format(
+                        position, want, got))
+        raise LayoutMismatch(
+            "substrate column order disagrees with the pinned header ({} val_loss "
+            "columns vs {} pinned)".format(len(ordered_cols), len(expected_order)))
+    return column_of_run
 
 
 # --------------------------------------------------------------------- the reading
 
-def print_banner(repo, started, script_sha256, validated_files):
+def print_banner(repo, started, script_sha256, substrate):
     print("=" * 78)
     print("Reachability endpoint reading — " + REGISTRATION_DOC)
     print("Executed by this script, run once; this output is the reading (§10).")
     print("UTC started : " + started)
     print("Repo root   : " + str(repo))
     print("Script path : " + str(Path(__file__).resolve()))
-    print("Script sha256: " + script_sha256)
-    print("Input file(s) sha256 (§10: 'its own sha256 and the input file's sha256 are "
-          "printed at the head of its output' — generalised here to every substrate "
-          "checkpoint CSV the resolver validated, since this reading covers more than "
-          "the single file the phrase names):")
-    for fi in sorted(validated_files, key=lambda f: rel(f["path"], repo)):
-        print("  {} : {}".format(rel(fi["path"], repo), fi["sha256"]))
+    print("Script sha256: " + script_sha256 + " — normalized to LF "
+          "(checkout-independent; equals the blob hash)")
+    print("Input file sha256 (§10: 'its own sha256 and the input file's sha256 are "
+          "printed at the head of its output' — the input is the one registered "
+          "substrate file, pinned in §10 v7):")
+    print("  {} : {}".format(rel(substrate["path"], repo), substrate["sha256"]))
+    print("  normalized to LF : {} (checkout-independent; equals the blob hash)".format(
+        substrate["sha256_normalized"]))
     print("Constants   : step = {} [registered, §3], one_step = {} iterations "
           "[registered, §5]; Lmin and L0 are COMPUTED at read time in v2 (§3) and are "
           "printed in §3 step 2 below, not here".format(STEP, ONE_STEP))
@@ -789,73 +618,46 @@ def section(title):
 
 
 def run_reading(repo, started):
-    script_sha256 = hashlib.sha256(Path(__file__).resolve().read_bytes()).hexdigest()
+    script_sha256 = sha256_normalized(Path(__file__).resolve().read_bytes())
 
-    # Resolve the run->column mapping and validate every substrate file first, so
-    # that provenance (script + every input file's sha256, §10) can be printed at the
-    # very head of the output, before any §3 grid constant or crossing time exists.
-    nights, validated_files, iterations, unrecognized, problems = scan_nights(repo)
+    # Load, pin and validate the registered substrate first, so that provenance
+    # (the script's own sha256 and the input file's sha256, §10) can be printed at
+    # the very head of the output, before any §3 grid constant or crossing time
+    # exists.
+    substrate_path = repo / SUBSTRATE_REL_PATH
+    substrate = load_checkpoint_file(substrate_path)
 
-    print_banner(repo, started, script_sha256, validated_files)
+    print_banner(repo, started, script_sha256, substrate)
 
     # ---- §3 step 1: mapping + the eight iteration-250008 values ------------------
-    section("§3 step 1 — resolved run->column mapping; the eight "
-            "iteration-{} values".format(FINAL_ITERATION))
-    candidates, unmapped_columns, pairwise_notes = build_candidates(repo, nights)
-    assignment, corroboration = assign_runs(repo, candidates, problems)
+    section("§3 step 1 — the registered substrate; run->column mapping by name; "
+            "the eight iteration-{} values".format(FINAL_ITERATION))
+    column_of_run = map_columns_by_name(substrate)
 
-    curves = {rid: assignment[rid]["values"] for rid in RUN_IDS}
+    curves = {rid: column_values(substrate, column_of_run[rid], repo)
+              for rid in RUN_IDS}
+    iterations = substrate["iterations"]
     pos = {it: i for i, it in enumerate(iterations)}
     end_pos = pos[FINAL_ITERATION]
 
-    print("wave metadata (json records only; no curve values are read from them):")
-    for n in NIGHT_NUMBERS:
-        info = nights[n]
-        print("  night {}: {}".format(
-            n, ", ".join(rel(wp, repo) for wp in info["wave_paths"])))
-        pieces = []
-        for rid in RUN_IDS:
-            if rid in info["bound"]:
-                job = info["bound"][rid][0]
-                pieces.append("{} (seed {}, tag {})".format(rid, job["seed"],
-                                                            job["tag"] or "-"))
-        print("    bound jobs: " + ("; ".join(pieces) if pieces else "(none of the eight)"))
+    print("substrate (the one registered file, §10 v7): " + rel(substrate_path, repo))
+    pin_match = substrate["sha256_normalized"] == INPUT_SHA256_REGISTERED
+    print("substrate sha256 (raw bytes)        : " + substrate["sha256"])
+    print("substrate sha256 (normalized to LF) : " + substrate["sha256_normalized"])
+    print("input pin (§10, v7): {} — the LF-normalized sha256 {} "
+          "INPUT_SHA256_REGISTERED = {} (a mismatch refuses with exit 3 before any "
+          "of this prints)".format(
+              "match" if pin_match else "MISMATCH",
+              "equals" if pin_match else "differs from",
+              INPUT_SHA256_REGISTERED))
 
-    print("\ncheckpoint CSVs scanned and validated against the published layout "
-          "({} data rows, one '{}' column):".format(EXPECTED_ROWS, ITERATION_COLUMN))
-    for fi in validated_files:
-        print("  {}  (val_loss columns: {})".format(
-            rel(fi["path"], repo), ", ".join(sorted(fi["loss_cols"]))))
-
-    print("\nrun -> column assignment (all eight runs, exactly one column each):")
+    print("\nrun -> column (the mapping IS the registered file's header): "
+          "val_loss_seed<N> = the canonical run of seed N, "
+          "val_loss_seed<N>prime = the replicate of seed N")
     for rid in RUN_IDS:
-        c = assignment[rid]["candidate"]
         spec = RUN_BY_ID[rid]
-        print("  {}  seed {}  {:<10}  night {}  {}:{}  [{}]".format(
-            rid, spec[2], spec[3], spec[4], rel(c["file"]["path"], repo),
-            c["column"], c["kind"]))
-        for extra in corroboration[rid]:
-            print("    corroborated by {}:{} (identical 72-point curve)".format(
-                rel(extra["file"]["path"], repo), extra["column"]))
-    if unmapped_columns:
-        print("\ncolumns seen but NOT mapped (recorded, unused):")
-        for u in unmapped_columns:
-            print("  {}:{} — {}".format(u["file"], u["column"], u["reason"]))
-    if pairwise_notes:
-        print("\npairwise files not used:")
-        for note in pairwise_notes:
-            print("  " + note)
-    if unrecognized:
-        print("\nfiles matching the checkpoint glob but no registered name pattern "
-              "(recorded, not parsed):")
-        for u in unrecognized:
-            print("  " + u)
-    unbound_all = [(n, j) for n in NIGHT_NUMBERS for j in nights[n]["unbound"]]
-    if unbound_all:
-        print("\nwave jobs not bound to any of the eight registered runs (recorded, unused):")
-        for n, j in unbound_all:
-            print("  night {} {}: id {!r} seed {} tag {!r}".format(
-                n, j["wave"], j["id"], j["seed"], j["tag"]))
+        print("  {}  seed {}  {:<10}  {}".format(
+            rid, spec[2], spec[3], column_of_run[rid]))
 
     print("\niteration grid as read (recorded, not assumed) — {} points, first {}, "
           "second {}, last {}:".format(len(iterations), iterations[0], iterations[1],
@@ -1262,37 +1064,17 @@ def run_reading(repo, started):
     print("\nreading finished (UTC): " + finished)
 
     mapping_json = {
-        "runs": [
-            {"run_id": rid,
-             "seed": RUN_BY_ID[rid][2],
-             "role": RUN_BY_ID[rid][3],
-             "registered_night": RUN_BY_ID[rid][4],
-             "file": rel(assignment[rid]["candidate"]["file"]["path"], repo),
-             "column": assignment[rid]["candidate"]["column"],
-             "assigned_via": assignment[rid]["candidate"]["how"],
-             "corroborated_by": [{"file": rel(c["file"]["path"], repo),
-                                  "column": c["column"]}
-                                 for c in corroboration[rid]]}
-            for rid in RUN_IDS],
-        "wave_jsons": {str(n): [rel(wp, repo) for wp in nights[n]["wave_paths"]]
-                       for n in NIGHT_NUMBERS},
-        "bound_jobs": {str(n): {rid: [{"id": j["id"], "seed": j["seed"],
-                                       "tag": j["tag"], "wave": j["wave"]}
-                                      for j in nights[n]["bound"][rid]]
-                                for rid in RUN_IDS if rid in nights[n]["bound"]}
-                       for n in NIGHT_NUMBERS},
-        "unbound_jobs": [{"night": n, "id": j["id"], "seed": j["seed"], "tag": j["tag"]}
-                         for n in NIGHT_NUMBERS for j in nights[n]["unbound"]],
-        "unmapped_columns": unmapped_columns,
-        "unused_pairwise_files": pairwise_notes,
-        "unrecognized_files": unrecognized,
+        "file": rel(substrate_path, repo),
+        "sha256_raw": substrate["sha256"],
+        "sha256_normalized": substrate["sha256_normalized"],
+        "pin": "match" if pin_match else "mismatch",
+        "columns": {rid: column_of_run[rid] for rid in RUN_IDS},
     }
     return {
         "registration": REGISTRATION_DOC,
         "script": SCRIPT_REL_PATH,
         "script_sha256": script_sha256,
-        "input_files_sha256": {rel(fi["path"], repo): fi["sha256"]
-                               for fi in validated_files},
+        "input_files_sha256": {rel(substrate_path, repo): substrate["sha256"]},
         "utc_started": started,
         "utc_finished": finished,
         "repo_root": str(repo),
@@ -1404,13 +1186,9 @@ def main(argv=None):
     started = utc_now()
     try:
         report = run_reading(repo, started)
-    except MappingRefusal as exc:
-        print("\nMAPPING REFUSAL (exit 2) — the reading did not happen:\n{}".format(exc),
-              file=sys.stderr)
-        return 2
     except LayoutMismatch as exc:
-        print("\nLAYOUT MISMATCH (exit 3) — the reading did not happen:\n{}".format(exc),
-              file=sys.stderr)
+        print("\n{} (exit 3) — the reading did not happen:\n{}".format(
+            getattr(exc, "kind", "LAYOUT MISMATCH"), exc), file=sys.stderr)
         return 3
     except ConstantsUnresolved as exc:
         print("\nCONSTANTS UNRESOLVED (exit 5) — the reading did not happen:\n{}".format(exc),

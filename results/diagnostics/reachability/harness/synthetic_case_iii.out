@@ -1,0 +1,218 @@
+SYNTHETIC | substrate: synthetic (fabricated curves; NOT the registered substrate). This file is a control, not a reading.
+SYNTHETIC | case iii: twin offset 11 checkpoints; expected verdict by construction: FAIL
+SYNTHETIC | why: twins 11 checkpoints out, wider than the individuals: levels are accepted and the §4 criterion then fails
+SYNTHETIC | script: retargeted copy -- INPUT_SHA256_REGISTERED replaced with the fabricated file's hash, so this copy's own sha256 differs from the canonical script's on purpose.
+SYNTHETIC | exit code: 0 ; verdict read back: FAIL
+SYNTHETIC |
+SYNTHETIC | ==============================================================================
+SYNTHETIC | Reachability endpoint reading � docs/preregistration-reachability-endpoint.md
+SYNTHETIC | Executed by this script, run once; this output is the reading (�10).
+SYNTHETIC | UTC started : 2026-09-18T08:56:47+00:00
+SYNTHETIC | Repo root   : C:\Users\mikha\AppData\Local\Temp\claude\c--Users-mikha-Documents-dpc-research-autoresearch-win-rtx\714f7fbc-56f0-4d3e-9b3f-7ebc2492a568\scratchpad\keep\case_iii
+SYNTHETIC | Script path : C:\Users\mikha\AppData\Local\Temp\claude\c--Users-mikha-Documents-dpc-research-autoresearch-win-rtx\714f7fbc-56f0-4d3e-9b3f-7ebc2492a568\scratchpad\keep\case_iii\read_reachability_endpoint__RETARGETED.py
+SYNTHETIC | Script sha256: 59358cc05e4b865c208f57c66b99294163fa269359ffd9954bc1909d0e9dcfb4 � normalized to LF (checkout-independent; equals the blob hash)
+SYNTHETIC | Input file sha256 (�10: 'its own sha256 and the input file's sha256 are printed at the head of its output' � the input is the one registered substrate file, pinned in �10 v7):
+SYNTHETIC |   results/night4/night_report_checkpoints.csv : 65f268310bc70684a8f22d383ad3d52462f39a895af42f98a5e3931dc2cad905
+SYNTHETIC |   normalized to LF : 65f268310bc70684a8f22d383ad3d52462f39a895af42f98a5e3931dc2cad905 (checkout-independent; equals the blob hash)
+SYNTHETIC | Constants   : step = 2.0 [registered, �3], one_step = 3600 iterations [registered, �5]; Lmin and L0 are COMPUTED at read time in v2 (�3) and are printed in �3 step 2 below, not here
+SYNTHETIC | No interpolation is used anywhere; no hook-field number enters any computation (�7, �11).
+SYNTHETIC | ==============================================================================
+SYNTHETIC | 
+SYNTHETIC | ------------------------------------------------------------------------------
+SYNTHETIC | �3 step 1 � the registered substrate; run->column mapping by name; the eight iteration-250008 values
+SYNTHETIC | ------------------------------------------------------------------------------
+SYNTHETIC | substrate (the one registered file, �10 v7): results/night4/night_report_checkpoints.csv
+SYNTHETIC | substrate sha256 (raw bytes)        : 65f268310bc70684a8f22d383ad3d52462f39a895af42f98a5e3931dc2cad905
+SYNTHETIC | substrate sha256 (normalized to LF) : 65f268310bc70684a8f22d383ad3d52462f39a895af42f98a5e3931dc2cad905
+SYNTHETIC | input pin (�10, v7): match � the LF-normalized sha256 equals INPUT_SHA256_REGISTERED = 65f268310bc70684a8f22d383ad3d52462f39a895af42f98a5e3931dc2cad905 (a mismatch refuses with exit 3 before any of this prints)
+SYNTHETIC | 
+SYNTHETIC | run -> column (the mapping IS the registered file's header): val_loss_seed<N> = the canonical run of seed N, val_loss_seed<N>prime = the replicate of seed N
+SYNTHETIC |   9991/000  seed 0  canonical   val_loss_seed0
+SYNTHETIC |   9991/900  seed 0  replicate   val_loss_seed0prime
+SYNTHETIC |   9991/001  seed 1  canonical   val_loss_seed1
+SYNTHETIC |   9991/002  seed 2  canonical   val_loss_seed2
+SYNTHETIC |   9991/003  seed 3  canonical   val_loss_seed3
+SYNTHETIC |   9991/903  seed 3  replicate   val_loss_seed3prime
+SYNTHETIC |   9991/004  seed 4  canonical   val_loss_seed4
+SYNTHETIC |   9991/005  seed 5  canonical   val_loss_seed5
+SYNTHETIC | 
+SYNTHETIC | iteration grid as read (recorded, not assumed) � 72 points, first 0, second 12, last 250008:
+SYNTHETIC |   0, 12, 3612, 7212, 10812, 14412, 18012, 21612, 25212, 28812, 32412, 36012, 39612, 43212, 46812, 50412, 54012, 57612, 61212, 64812, 68412, 72012, 75612, 79212, 82812, 86412, 90012, 93612, 97212, 100812, 104412, 108012, 111612, 115212, 118812, 122412, 126012, 129612, 133212, 136812, 140412, 144012, 147612, 151212, 154812, 158412, 162012, 165612, 169212, 172812, 176412, 180012, 183612, 187212, 190812, 194412, 198012, 201612, 205212, 208812, 212412, 216012, 219612, 223212, 226812, 230412, 234012, 237612, 241212, 244812, 248412, 250008
+SYNTHETIC | 
+SYNTHETIC | the eight iteration-250008 curve values:
+SYNTHETIC |   9991/000 : 1152.0000
+SYNTHETIC |   9991/900 : 1161.2958
+SYNTHETIC |   9991/001 : 1155.3803
+SYNTHETIC |   9991/002 : 1158.7606
+SYNTHETIC |   9991/003 : 1162.1408
+SYNTHETIC |   9991/903 : 1171.4366
+SYNTHETIC |   9991/004 : 1165.5211
+SYNTHETIC |   9991/005 : 1168.9014
+SYNTHETIC | 
+SYNTHETIC | ------------------------------------------------------------------------------
+SYNTHETIC | �3 step 2 � Lmin and L0, both computed
+SYNTHETIC | ------------------------------------------------------------------------------
+SYNTHETIC | curve minimum per run (the quantity �4's exclusion rule actually depends on):
+SYNTHETIC |   9991/000 : 1152.0000
+SYNTHETIC |   9991/900 : 1161.2958
+SYNTHETIC |   9991/001 : 1155.3803
+SYNTHETIC |   9991/002 : 1158.7606
+SYNTHETIC |   9991/003 : 1162.1408
+SYNTHETIC |   9991/903 : 1171.4366
+SYNTHETIC |   9991/004 : 1165.5211
+SYNTHETIC |   9991/005 : 1168.9014
+SYNTHETIC | Lmin = MAX over the eight curve minima = 1171.4366 (attained by 9991/903)
+SYNTHETIC |   (v1 would have used min over the finals = 1152.0000 -- the wrong quantity)
+SYNTHETIC | L0 = MIN over runs and control iterations [0, 12] = 1211.1549 (attained by 9991/000@12)
+SYNTHETIC |   (v1 would have used seed 0's iteration-0 value = 1212.5556 -- above prong 2's own minimum, so the top level passed �3 and violated the control)
+SYNTHETIC | 
+SYNTHETIC | ------------------------------------------------------------------------------
+SYNTHETIC | �3 step 3 � the frozen grid
+SYNTHETIC | ------------------------------------------------------------------------------
+SYNTHETIC | withdrawn by the �11 caveat, written before the reading: 1208, 1210
+SYNTHETIC | all levels L = m * 2.0 strictly inside (Lmin, L0) = (1171.4366, 1211.1549):
+SYNTHETIC |   18 level(s): 1172, 1174, 1176, 1178, 1180, 1182, 1184, 1186, 1188, 1190, 1192, 1194, 1196, 1198, 1200, 1202, 1204, 1206
+SYNTHETIC | this list is frozen here; nothing below recomputes or adjusts it (�3, �11)
+SYNTHETIC | 
+SYNTHETIC | ------------------------------------------------------------------------------
+SYNTHETIC | �3 step 4 � crossing times (computed only now)
+SYNTHETIC | ------------------------------------------------------------------------------
+SYNTHETIC | cross(r, L) := the FIRST checkpoint iteration whose curve value is <= L; no interpolation anywhere (�2, �11)
+SYNTHETIC | computed for 8 runs x 18 levels = 144 crossing times; they enter the record only through the �10 quantities
+SYNTHETIC | 
+SYNTHETIC | ------------------------------------------------------------------------------
+SYNTHETIC | �3 step 5 � exclusion (�4), disqualification (�5), whole-test rule (�5), positive control (�6), criterion (�4)
+SYNTHETIC | ------------------------------------------------------------------------------
+SYNTHETIC | (5a) exclusion rule (�4): a level where any of the eight runs never crosses is excluded; the exclusion count is reported
+SYNTHETIC |   excluded levels: 0 of 18
+SYNTHETIC | 
+SYNTHETIC | (5b) disqualification rule (�5, SYMMETRIC � CC's review, 2026-09-17, adopted; registration �5 'Disqualification rule � symmetric, fixed after review'): a level is UNREADABLE if EITHER twin-gap(L) OR between-gap(L) is <= one checkpoint step (3600 iterations) � dropped, not scored as weak or as failing, and the drop is reported together with which side (twin, between, or both) triggered it
+SYNTHETIC |   twin-gap = mean |cross(a) - cross(b)| over the replicate pairs (9991/000,9991/900), (9991/003,9991/903)
+SYNTHETIC |   between-gap = mean |cross(i) - cross(j)| over the 15 unordered pairs of the canonical six 9991/000, 9991/001, 9991/002, 9991/003, 9991/004, 9991/005 (first runs of seeds 0-5; primes excluded)
+SYNTHETIC |   unreadable levels: 0; accepted levels remaining: 18
+SYNTHETIC | 
+SYNTHETIC | (5c) whole-test rule (�5): if more than half of the grid as constructed at step 3 leaves the test, the whole test is unreadable (not a fail, not a pass)
+SYNTHETIC |   dropped = 0 excluded + 0 unreadable = 0 of 18 grid levels ; the rule fires at 10 of that many (the absolute threshold, not only the proportion: the same proportion on a smaller grid is a different number): not more than half
+SYNTHETIC | 
+SYNTHETIC | (5d) positive control (�6), applied before the criterion
+SYNTHETIC |   prong 1 (finiteness -- a completeness check, NOT a control: it cannot fail, since a run's own final checkpoint is at or below any level above its final value (�6 v2)): every grid level strictly between a run's iteration-250008 value and L0 must be crossed finitely � 144 of 144 (run, level) band(s) crossed finitely: COMPLETE � a declaration, not a pass (�6 v4)
+SYNTHETIC |   prong 2 (untrained below every accepted level): every accepted level must be strictly below ALL iteration-0/12 values of all eight runs; the binding minimum = 1211.1549 (9991/000 @ iteration 12)
+SYNTHETIC |   prong 2: SATISFIED BY CONSTRUCTION � not a pass: L0 IS this binding minimum, so the grid lies below it at any data and this prong cannot fail (�6 v4)
+SYNTHETIC |   positive control outcome: SATISFIED BY CONSTRUCTION � NOT A PASS
+SYNTHETIC |     Neither prong can fail on this substrate: prong 1 is a completeness check, and prong 2 is empty because L0 and its binding minimum are the same quantity.
+SYNTHETIC |     This reading therefore has NO positive control that could have failed, and the criterion below is read without one (�6 v4).
+SYNTHETIC |     Do not quote the line above as a passed gate.
+SYNTHETIC | 
+SYNTHETIC | (5e) criterion (�4): ACCEPT only if between-gap > twin-gap for EVERY accepted level; any other outcome is a fail
+SYNTHETIC | 
+SYNTHETIC |   recorded �10 quantities for the accepted levels (twin-gap and between-gap were computed once, in step 5b, under the symmetric disqualification rule):
+SYNTHETIC |   level          twin-gap(it)  between-gap(it)     margin(it)
+SYNTHETIC |   1172                  38598            33600          -4998
+SYNTHETIC |   1174                  39600            33600          -6000
+SYNTHETIC |   1176                  39600            33600          -6000
+SYNTHETIC |   1178                  39600            33600          -6000
+SYNTHETIC |   1180                  39600            33600          -6000
+SYNTHETIC |   1182                  39600            33600          -6000
+SYNTHETIC |   1184                  39600            33600          -6000
+SYNTHETIC |   1186                  39600            33600          -6000
+SYNTHETIC |   1188                  39600            33600          -6000
+SYNTHETIC |   1190                  39600            33600          -6000
+SYNTHETIC |   1192                  39600            33600          -6000
+SYNTHETIC |   1194                  39600            33600          -6000
+SYNTHETIC |   1196                  39600            33600          -6000
+SYNTHETIC |   1198                  39600            33600          -6000
+SYNTHETIC |   1200                  39600            33600          -6000
+SYNTHETIC |   1202                  39600            33600          -6000
+SYNTHETIC |   1204                  39600            33600          -6000
+SYNTHETIC |   1206                  39600            33600          -6000
+SYNTHETIC | 
+SYNTHETIC |   exact rank statistic (�4, printed only � never a criterion): positions of the 2 twin differences among the 15 between-individual differences (1 = smallest of the pooled 17), and the exact one-sided p from the hypergeometric/rank enumeration (smallest attainable one-sided p = 1/C(17,2) = 1/136 ~= 0.0074):
+SYNTHETIC |     L=1172: twin ranks = [10, 11] of 17, rank-sum(twin) = 21, one-sided p = 94/136 = 0.6912
+SYNTHETIC |     L=1174: twin ranks = [10, 11] of 17, rank-sum(twin) = 21, one-sided p = 94/136 = 0.6912
+SYNTHETIC |     L=1176: twin ranks = [10, 11] of 17, rank-sum(twin) = 21, one-sided p = 94/136 = 0.6912
+SYNTHETIC |     L=1178: twin ranks = [10, 11] of 17, rank-sum(twin) = 21, one-sided p = 94/136 = 0.6912
+SYNTHETIC |     L=1180: twin ranks = [10, 11] of 17, rank-sum(twin) = 21, one-sided p = 94/136 = 0.6912
+SYNTHETIC |     L=1182: twin ranks = [10, 11] of 17, rank-sum(twin) = 21, one-sided p = 94/136 = 0.6912
+SYNTHETIC |     L=1184: twin ranks = [10, 11] of 17, rank-sum(twin) = 21, one-sided p = 94/136 = 0.6912
+SYNTHETIC |     L=1186: twin ranks = [10, 11] of 17, rank-sum(twin) = 21, one-sided p = 94/136 = 0.6912
+SYNTHETIC |     L=1188: twin ranks = [10, 11] of 17, rank-sum(twin) = 21, one-sided p = 94/136 = 0.6912
+SYNTHETIC |     L=1190: twin ranks = [10, 11] of 17, rank-sum(twin) = 21, one-sided p = 94/136 = 0.6912
+SYNTHETIC |     L=1192: twin ranks = [10, 11] of 17, rank-sum(twin) = 21, one-sided p = 94/136 = 0.6912
+SYNTHETIC |     L=1194: twin ranks = [10, 11] of 17, rank-sum(twin) = 21, one-sided p = 94/136 = 0.6912
+SYNTHETIC |     L=1196: twin ranks = [10, 11] of 17, rank-sum(twin) = 21, one-sided p = 94/136 = 0.6912
+SYNTHETIC |     L=1198: twin ranks = [10, 11] of 17, rank-sum(twin) = 21, one-sided p = 94/136 = 0.6912
+SYNTHETIC |     L=1200: twin ranks = [10, 11] of 17, rank-sum(twin) = 21, one-sided p = 94/136 = 0.6912
+SYNTHETIC |     L=1202: twin ranks = [10, 11] of 17, rank-sum(twin) = 21, one-sided p = 94/136 = 0.6912
+SYNTHETIC |     L=1204: twin ranks = [10, 11] of 17, rank-sum(twin) = 21, one-sided p = 94/136 = 0.6912
+SYNTHETIC |     L=1206: twin ranks = [10, 11] of 17, rank-sum(twin) = 21, one-sided p = 94/136 = 0.6912
+SYNTHETIC | 
+SYNTHETIC |   loss-resolution near each accepted level (�10 recorded statistic, not a criterion input): mean over the eight runs of the median per-checkpoint-step |d val_loss| within �2 checkpoints of the crossing
+SYNTHETIC |     L=1172: 0.845100 loss units per checkpoint step
+SYNTHETIC |     L=1174: 0.845100 loss units per checkpoint step
+SYNTHETIC |     L=1176: 0.845100 loss units per checkpoint step
+SYNTHETIC |     L=1178: 0.845100 loss units per checkpoint step
+SYNTHETIC |     L=1180: 0.845100 loss units per checkpoint step
+SYNTHETIC |     L=1182: 0.845100 loss units per checkpoint step
+SYNTHETIC |     L=1184: 0.845050 loss units per checkpoint step
+SYNTHETIC |     L=1186: 0.845100 loss units per checkpoint step
+SYNTHETIC |     L=1188: 0.845100 loss units per checkpoint step
+SYNTHETIC |     L=1190: 0.845050 loss units per checkpoint step
+SYNTHETIC |     L=1192: 0.845100 loss units per checkpoint step
+SYNTHETIC |     L=1194: 0.845100 loss units per checkpoint step
+SYNTHETIC |     L=1196: 0.845100 loss units per checkpoint step
+SYNTHETIC |     L=1198: 0.845050 loss units per checkpoint step
+SYNTHETIC |     L=1200: 0.845100 loss units per checkpoint step
+SYNTHETIC |     L=1202: 0.845100 loss units per checkpoint step
+SYNTHETIC |     L=1204: 0.845050 loss units per checkpoint step
+SYNTHETIC |     L=1206: 0.845100 loss units per checkpoint step
+SYNTHETIC | 
+SYNTHETIC |   -> FAIL (�4: between-gap <= twin-gap at 18 of 18 accepted levels: 1172, 1174, 1176, 1178, 1180, 1182, 1184, 1186, 1188, 1190, 1192, 1194, 1196, 1198, 1200, 1202, 1204, 1206)
+SYNTHETIC | 
+SYNTHETIC | ------------------------------------------------------------------------------
+SYNTHETIC | review statistics (Ark, 2026-09-17 21:47 UTC) � printed only; never criteria, never gating the verdict
+SYNTHETIC | ------------------------------------------------------------------------------
+SYNTHETIC | (1) kink at iteration 150000 � rationale: s/iter halves at iteration 150000 in 8/8 runs (schedule signature); whether the loss trajectory itself changes slope there decides whether grid levels on either side are the same task; this is printed, not judged
+SYNTHETIC |     least-squares slope of val_loss per iteration; 'before' over checkpoints with 1000 <= iteration <= 150000 (the (0,12) head excluded), 'after' over checkpoints with iteration > 150000
+SYNTHETIC |     9991/000: slope_before = -2.347418e-04, slope_after = -2.356149e-04, ratio after/before = 1.004
+SYNTHETIC |     9991/900: slope_before = -2.028430e-04, slope_after = -2.356149e-04, ratio after/before = 1.162
+SYNTHETIC |     9991/001: slope_before = -2.323289e-04, slope_after = -2.356149e-04, ratio after/before = 1.014
+SYNTHETIC |     9991/002: slope_before = -2.189969e-04, slope_after = -2.356150e-04, ratio after/before = 1.076
+SYNTHETIC |     9991/003: slope_before = -1.965042e-04, slope_after = -2.356150e-04, ratio after/before = 1.199
+SYNTHETIC |     9991/903: slope_before = -1.087828e-04, slope_after = -2.356150e-04, ratio after/before = 2.166
+SYNTHETIC |     9991/004: slope_before = -1.674682e-04, slope_after = -2.356150e-04, ratio after/before = 1.407
+SYNTHETIC |     9991/005: slope_before = -1.345062e-04, slope_after = -2.356150e-04, ratio after/before = 1.752
+SYNTHETIC |     pooled medians: slope_before = -1.996736e-04, slope_after = -2.356150e-04, ratio after/before = 1.180
+SYNTHETIC | 
+SYNTHETIC | (2) slopes by session mode � the same two slopes pooled separately for the two OS boot sessions of �10 (printed only)
+SYNTHETIC |     session_A (9991/000, 9991/900, 9991/001): median slope_before = -2.323289e-04, median slope_after = -2.356149e-04
+SYNTHETIC |     session_B (9991/002, 9991/003, 9991/903, 9991/004, 9991/005): median slope_before = -1.674682e-04, median slope_after = -2.356150e-04
+SYNTHETIC | 
+SYNTHETIC | (3) straddle report � for every accepted level, min/max crossing iteration over the eight runs and whether the 150000 boundary lies strictly between them (some runs cross before the step, some after)
+SYNTHETIC |     L=1172: cross min = 169212, max = 250008, 150000 strictly between: no
+SYNTHETIC |     L=1174: cross min = 158412, max = 241212, 150000 strictly between: no
+SYNTHETIC |     L=1176: cross min = 151212, max = 234012, 150000 strictly between: no
+SYNTHETIC |     L=1178: cross min = 144012, max = 226812, 150000 strictly between: yes
+SYNTHETIC |     L=1180: cross min = 133212, max = 216012, 150000 strictly between: yes
+SYNTHETIC |     L=1182: cross min = 126012, max = 208812, 150000 strictly between: yes
+SYNTHETIC |     L=1184: cross min = 118812, max = 201612, 150000 strictly between: yes
+SYNTHETIC |     L=1186: cross min = 108012, max = 190812, 150000 strictly between: yes
+SYNTHETIC |     L=1188: cross min = 100812, max = 183612, 150000 strictly between: yes
+SYNTHETIC |     L=1190: cross min = 93612, max = 176412, 150000 strictly between: yes
+SYNTHETIC |     L=1192: cross min = 82812, max = 165612, 150000 strictly between: yes
+SYNTHETIC |     L=1194: cross min = 75612, max = 158412, 150000 strictly between: yes
+SYNTHETIC |     L=1196: cross min = 64812, max = 147612, 150000 strictly between: no
+SYNTHETIC |     L=1198: cross min = 57612, max = 140412, 150000 strictly between: no
+SYNTHETIC |     L=1200: cross min = 50412, max = 133212, 150000 strictly between: no
+SYNTHETIC |     L=1202: cross min = 39612, max = 122412, 150000 strictly between: no
+SYNTHETIC |     L=1204: cross min = 32412, max = 115212, 150000 strictly between: no
+SYNTHETIC |     L=1206: cross min = 25212, max = 108012, 150000 strictly between: no
+SYNTHETIC |     accepted levels straddling the 150000 boundary: 9 of 18
+SYNTHETIC | 
+SYNTHETIC | ------------------------------------------------------------------------------
+SYNTHETIC | verdict
+SYNTHETIC | ------------------------------------------------------------------------------
+SYNTHETIC | FAIL (�4: between-gap <= twin-gap at 18 of 18 accepted levels: 1172, 1174, 1176, 1178, 1180, 1182, 1184, 1186, 1188, 1190, 1192, 1194, 1196, 1198, 1200, 1202, 1204, 1206)
+SYNTHETIC | 
+SYNTHETIC | reading finished (UTC): 2026-09-18T08:56:47+00:00
+SYNTHETIC | 
+SYNTHETIC | JSON report written to: C:\Users\mikha\AppData\Local\Temp\claude\c--Users-mikha-Documents-dpc-research-autoresearch-win-rtx\714f7fbc-56f0-4d3e-9b3f-7ebc2492a568\scratchpad\keep\case_iii\reading_out\reachability_reading.json
