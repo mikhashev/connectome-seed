@@ -151,6 +151,16 @@ ONE_STEP = 3600     # (registered choice, §5) iterations — one checkpoint ste
 
 FINAL_ITERATION = 250008            # [PUBLISHED §5] last checkpoint iteration
 CONTROL_ITERATIONS = (0, 12)        # [PUBLISHED §5/§6] the two pre-step checkpoints
+# Appended to every FAIL the control side can print. All six are unreachable: prong 1
+# cannot fail (a run's own final checkpoint is at or below any level above its final
+# value) and prong 2 is empty because L0 and its binding minimum are computed from the
+# same set. The pass direction of each was marked in v4 and the failure direction was
+# not, which left a citable FAIL under a rule written to stop citable verdicts (Ark's
+# point (c), 2026-09-18). If any of these ever prints, it reports a defect in this
+# script, not a property of the curves.
+UNREACHABLE_FAIL = (" [UNREACHABLE BRANCH \u00a76 v6 \u2014 this check cannot fail; if this "
+                    "line printed, it is a code defect and not a finding]")
+
 EXPECTED_ROWS = 72                  # [PUBLISHED §2/§5] data rows per checkpoints CSV
 NIGHT_NUMBERS = (1, 2, 3, 4)        # [PUBLISHED §10]
 ITERATION_COLUMN = "iteration"
@@ -1018,9 +1028,10 @@ def run_reading(repo, started):
           "band(s) crossed finitely: {}".format(
               FINAL_ITERATION, bands_finite, bands_checked,
               "COMPLETE — a declaration, not a pass (§6 v4)"
-              if prong1_outcome == "pass" else "FAIL"))
+              if prong1_outcome == "pass" else "FAIL" + UNREACHABLE_FAIL))
     for f in prong1_failures:
-        print("    FAIL: {} never crosses L={}".format(f["run"], fmt(f["level"])))
+        print("    FAIL{}: {} never crosses L={}".format(
+            UNREACHABLE_FAIL, f["run"], fmt(f["level"])))
 
     untrained_side = {rid: {it: curves[rid][pos[it]] for it in CONTROL_ITERATIONS}
                       for rid in RUN_IDS}
@@ -1037,19 +1048,19 @@ def run_reading(repo, started):
                   "; ".join("{} @ iteration {}".format(rid, it)
                             for rid, it in min_binding)))
         for rec in prong2_failures:
-            print("    FAIL: accepted level L={} is not strictly below it".format(
-                fmt(rec["level"])))
+            print("    FAIL{}: accepted level L={} is not strictly below it".format(
+                UNREACHABLE_FAIL, fmt(rec["level"])))
         print("  prong 2: {}".format(
             "SATISFIED BY CONSTRUCTION — not a pass: L0 IS this binding minimum, "
             "so the grid lies below it at any data and this prong cannot fail (§6 v4)"
-            if prong2_outcome == "pass" else "FAIL — test void"))
+            if prong2_outcome == "pass" else "FAIL — test void" + UNREACHABLE_FAIL))
     else:
         print("  prong 2: no accepted levels — vacuous pass")
     control_outcome = ("fail" if (prong1_outcome == "fail" or prong2_outcome == "fail")
                        else "pass")
     print("  positive control outcome: {}".format(
         "SATISFIED BY CONSTRUCTION — NOT A PASS"
-        if control_outcome == "pass" else "FAIL"))
+        if control_outcome == "pass" else "FAIL" + UNREACHABLE_FAIL))
     if control_outcome == "pass":
         print("    Neither prong can fail on this substrate: prong 1 is a "
               "completeness check, and prong 2 is empty because L0 and its "
@@ -1066,8 +1077,8 @@ def run_reading(repo, started):
             detail.append("prong 1 (layout completeness — not a control)")
         if prong2_outcome == "fail":
             detail.append("prong 2 (untrained below accepted levels)")
-        verdict = ("CONTROL FAIL — TEST VOID (§6: {}). The §4 criterion is not "
-                   "read.".format(" and ".join(detail)))
+        verdict = ("CONTROL FAIL — TEST VOID (§6: {}){}. The §4 criterion is not "
+                   "read.".format(" and ".join(detail), UNREACHABLE_FAIL))
         print("\n(5e) criterion (§4): NOT READ — the control failure voids the test (§6)")
     else:
         print("\n(5e) criterion (§4): ACCEPT only if between-gap > twin-gap for EVERY "
