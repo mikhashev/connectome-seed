@@ -8,8 +8,14 @@ written, untracked scripts, per the registration's own §10 requirement that "th
 reading is executed by a script" (singular) — two scripts on disk would each make any
 result "one of two readings", which is worse than none. The registration names this
 path (§10: "The script is tools/reachability/read_reachability_endpoint.py"), so the
-merge lands here. The other author's script, tools/night/read_reachability.py, is left
-on disk untouched and is not committed; nothing below removes or edits it.
+merge lands here. The other author's script, tools/night/read_reachability.py, was
+DELETED rather than kept, which is what §10 requires and says: a draft left under a
+working name is what the next operator finds, and two reading scripts on disk would
+each make any result "one of two readings". Verified absent on 2026-09-18 before the
+reading. An earlier version of this paragraph said the file was "left on disk untouched
+and is not committed" -- that was true when the merge was written and false by the time
+it mattered, and a header that describes the repository has to be checked like any
+other claim about the world.
 
 What was taken from tools/night/read_reachability.py (1108 lines, its author's
 prefix "9991/xxx" run-id convention kept for continuity with its wave-json records):
