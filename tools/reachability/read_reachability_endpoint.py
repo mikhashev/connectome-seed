@@ -1004,12 +1004,15 @@ def run_reading(repo, started):
                 if cross_idx[(rid, L)] is None:
                     prong1_failures.append({"run": rid, "level": L})
     prong1_outcome = "fail" if prong1_failures else "pass"
+    bands_finite = bands_checked - len(prong1_failures)
     print("  prong 1 (finiteness -- a completeness check, NOT a control: it cannot fail, "
           "since a run's own final checkpoint is at or below any level above its final "
           "value (§6 v2)): every grid level strictly between a run's "
-          "iteration-{} value and L0 must be crossed finitely — {} (run, level) band(s) "
-          "checked: {}".format(FINAL_ITERATION, bands_checked,
-                               "PASS" if prong1_outcome == "pass" else "FAIL"))
+          "iteration-{} value and L0 must be crossed finitely — {} of {} (run, level) "
+          "band(s) crossed finitely: {}".format(
+              FINAL_ITERATION, bands_finite, bands_checked,
+              "COMPLETE — a declaration, not a pass (§6 v4)"
+              if prong1_outcome == "pass" else "FAIL"))
     for f in prong1_failures:
         print("    FAIL: {} never crosses L={}".format(f["run"], fmt(f["level"])))
 
