@@ -1,0 +1,696 @@
+{
+  "registration": "docs/preregistration-reachability-endpoint.md",
+  "script": "tools/reachability/read_reachability_endpoint.py",
+  "script_sha256": "8e0f8e3c316c2b275623fd610b108cbb7d24c3bbfadbbe4d6558b1b4ccc9d837",
+  "input_files_sha256": {
+    "results/night4/night_report_checkpoints.csv": "52020971da270cf972ac460370970066eedf31e450dfc0b3d55f014b436021fd"
+  },
+  "utc_started": "2026-09-18T09:30:53+00:00",
+  "utc_finished": "2026-09-18T09:30:53+00:00",
+  "repo_root": "C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed",
+  "constants": {
+    "L0_computed": 1211.5977621078491,
+    "Lmin_computed": 1161.6191716194153,
+    "L0_v1_published_not_used": 1212.5556,
+    "withdrawn_levels": [
+      1210.0,
+      1208.0
+    ],
+    "withdrawn_reason": "reviewer exposure before the reading (\u00a711 disclosure, Ark 2026-09-17): a provenance exclusion, NOT a data outcome; never to be recorded as a level that failed",
+    "step": 2.0,
+    "one_step_iterations": 3600,
+    "final_iteration": 250008,
+    "control_iterations": [
+      0,
+      12
+    ],
+    "expected_checkpoint_rows": 72
+  },
+  "mapping": {
+    "file": "results/night4/night_report_checkpoints.csv",
+    "sha256_raw": "52020971da270cf972ac460370970066eedf31e450dfc0b3d55f014b436021fd",
+    "sha256_normalized": "f61c5aaf3c477b06d4d21c3abf9ff24bce691de017979bf3971cb0c00b5b2c36",
+    "pin": "match",
+    "columns": {
+      "9991/000": "val_loss_seed0",
+      "9991/900": "val_loss_seed0prime",
+      "9991/001": "val_loss_seed1",
+      "9991/002": "val_loss_seed2",
+      "9991/003": "val_loss_seed3",
+      "9991/903": "val_loss_seed3prime",
+      "9991/004": "val_loss_seed4",
+      "9991/005": "val_loss_seed5"
+    }
+  },
+  "iteration_grid": [
+    0,
+    12,
+    3612,
+    7212,
+    10812,
+    14412,
+    18012,
+    21612,
+    25212,
+    28812,
+    32412,
+    36012,
+    39612,
+    43212,
+    46812,
+    50412,
+    54012,
+    57612,
+    61212,
+    64812,
+    68412,
+    72012,
+    75612,
+    79212,
+    82812,
+    86412,
+    90012,
+    93612,
+    97212,
+    100812,
+    104412,
+    108012,
+    111612,
+    115212,
+    118812,
+    122412,
+    126012,
+    129612,
+    133212,
+    136812,
+    140412,
+    144012,
+    147612,
+    151212,
+    154812,
+    158412,
+    162012,
+    165612,
+    169212,
+    172812,
+    176412,
+    180012,
+    183612,
+    187212,
+    190812,
+    194412,
+    198012,
+    201612,
+    205212,
+    208812,
+    212412,
+    216012,
+    219612,
+    223212,
+    226812,
+    230412,
+    234012,
+    237612,
+    241212,
+    244812,
+    248412,
+    250008
+  ],
+  "end_values": {
+    "9991/000": 1148.8074851036072,
+    "9991/900": 1160.9823441505432,
+    "9991/001": 1144.636233329773,
+    "9991/002": 1147.717873096466,
+    "9991/003": 1155.7706489562988,
+    "9991/903": 1163.376554965973,
+    "9991/004": 1156.8284645080566,
+    "9991/005": 1156.3865871429443
+  },
+  "Lmin": 1161.6191716194153,
+  "Lmin_attained_by": [
+    "9991/903"
+  ],
+  "grid_levels": [
+    1162.0,
+    1164.0,
+    1166.0,
+    1168.0,
+    1170.0,
+    1172.0,
+    1174.0,
+    1176.0,
+    1178.0,
+    1180.0,
+    1182.0,
+    1184.0,
+    1186.0,
+    1188.0,
+    1190.0,
+    1192.0,
+    1194.0,
+    1196.0,
+    1198.0,
+    1200.0,
+    1202.0,
+    1204.0,
+    1206.0
+  ],
+  "untrained_side_values": {
+    "9991/000": {
+      "0": 1212.5555891990662,
+      "12": 1212.2575192451477
+    },
+    "9991/900": {
+      "0": 1212.5555891990662,
+      "12": 1212.257432460785
+    },
+    "9991/001": {
+      "0": 1212.5529980659485,
+      "12": 1211.7470698356628
+    },
+    "9991/002": {
+      "0": 1212.5592331886292,
+      "12": 1211.874619960785
+    },
+    "9991/003": {
+      "0": 1212.549735546112,
+      "12": 1211.7933373451233
+    },
+    "9991/903": {
+      "0": 1212.549735546112,
+      "12": 1211.7931632995605
+    },
+    "9991/004": {
+      "0": 1212.5379438400269,
+      "12": 1211.5977621078491
+    },
+    "9991/005": {
+      "0": 1212.5467114448547,
+      "12": 1212.0451250076294
+    }
+  },
+  "levels": [
+    {
+      "level": 1162.0,
+      "status": "accepted",
+      "never_crossed": [],
+      "twin_gap": 75600.0,
+      "between_gap": 38160.0,
+      "margin": -37440.0,
+      "disqualified_side": null,
+      "rank_statistic": {
+        "twin_ranks": [
+          6,
+          17
+        ],
+        "rank_sum_twin": 23,
+        "n_total": 17,
+        "n_twin": 2,
+        "total_combinations": 136,
+        "at_least_as_extreme": 106,
+        "one_sided_p": 0.7794117647058824
+      },
+      "loss_resolution": 6.709487944841385
+    },
+    {
+      "level": 1164.0,
+      "status": "accepted",
+      "never_crossed": [],
+      "twin_gap": 61200.0,
+      "between_gap": 39360.0,
+      "margin": -21840.0,
+      "disqualified_side": null,
+      "rank_statistic": {
+        "twin_ranks": [
+          5,
+          17
+        ],
+        "rank_sum_twin": 22,
+        "n_total": 17,
+        "n_twin": 2,
+        "total_combinations": 136,
+        "at_least_as_extreme": 100,
+        "one_sided_p": 0.7352941176470589
+      },
+      "loss_resolution": 5.672049343585968
+    },
+    {
+      "level": 1166.0,
+      "status": "accepted",
+      "never_crossed": [],
+      "twin_gap": 59400.0,
+      "between_gap": 25920.0,
+      "margin": -33480.0,
+      "disqualified_side": null,
+      "rank_statistic": {
+        "twin_ranks": [
+          1,
+          17
+        ],
+        "rank_sum_twin": 18,
+        "n_total": 17,
+        "n_twin": 2,
+        "total_combinations": 136,
+        "at_least_as_extreme": 72,
+        "one_sided_p": 0.5294117647058824
+      },
+      "loss_resolution": 5.717601418495178
+    },
+    {
+      "level": 1168.0,
+      "status": "accepted",
+      "never_crossed": [],
+      "twin_gap": 14400.0,
+      "between_gap": 25920.0,
+      "margin": 11520.0,
+      "disqualified_side": null,
+      "rank_statistic": {
+        "twin_ranks": [
+          1,
+          12
+        ],
+        "rank_sum_twin": 13,
+        "n_total": 17,
+        "n_twin": 2,
+        "total_combinations": 136,
+        "at_least_as_extreme": 36,
+        "one_sided_p": 0.2647058823529412
+      },
+      "loss_resolution": 6.245756387710571
+    },
+    {
+      "level": 1170.0,
+      "status": "accepted",
+      "never_crossed": [],
+      "twin_gap": 19800.0,
+      "between_gap": 20400.0,
+      "margin": 600.0,
+      "disqualified_side": null,
+      "rank_statistic": {
+        "twin_ranks": [
+          1,
+          12
+        ],
+        "rank_sum_twin": 13,
+        "n_total": 17,
+        "n_twin": 2,
+        "total_combinations": 136,
+        "at_least_as_extreme": 36,
+        "one_sided_p": 0.2647058823529412
+      },
+      "loss_resolution": 5.168166786432266
+    },
+    {
+      "level": 1172.0,
+      "status": "accepted",
+      "never_crossed": [],
+      "twin_gap": 5400.0,
+      "between_gap": 19440.0,
+      "margin": 14040.0,
+      "disqualified_side": null,
+      "rank_statistic": {
+        "twin_ranks": [
+          1,
+          6
+        ],
+        "rank_sum_twin": 7,
+        "n_total": 17,
+        "n_twin": 2,
+        "total_combinations": 136,
+        "at_least_as_extreme": 9,
+        "one_sided_p": 0.0661764705882353
+      },
+      "loss_resolution": 4.865584880113602
+    },
+    {
+      "level": 1174.0,
+      "status": "accepted",
+      "never_crossed": [],
+      "twin_gap": 7200.0,
+      "between_gap": 20160.0,
+      "margin": 12960.0,
+      "disqualified_side": null,
+      "rank_statistic": {
+        "twin_ranks": [
+          1,
+          7
+        ],
+        "rank_sum_twin": 8,
+        "n_total": 17,
+        "n_twin": 2,
+        "total_combinations": 136,
+        "at_least_as_extreme": 12,
+        "one_sided_p": 0.08823529411764706
+      },
+      "loss_resolution": 6.009340763092041
+    },
+    {
+      "level": 1176.0,
+      "status": "unreadable",
+      "never_crossed": [],
+      "twin_gap": 1800.0,
+      "between_gap": 20400.0,
+      "margin": null,
+      "disqualified_side": "twin",
+      "rank_statistic": null,
+      "loss_resolution": null
+    },
+    {
+      "level": 1178.0,
+      "status": "unreadable",
+      "never_crossed": [],
+      "twin_gap": 1800.0,
+      "between_gap": 20160.0,
+      "margin": null,
+      "disqualified_side": "twin",
+      "rank_statistic": null,
+      "loss_resolution": null
+    },
+    {
+      "level": 1180.0,
+      "status": "unreadable",
+      "never_crossed": [],
+      "twin_gap": 0.0,
+      "between_gap": 19920.0,
+      "margin": null,
+      "disqualified_side": "twin",
+      "rank_statistic": null,
+      "loss_resolution": null
+    },
+    {
+      "level": 1182.0,
+      "status": "unreadable",
+      "never_crossed": [],
+      "twin_gap": 0.0,
+      "between_gap": 16080.0,
+      "margin": null,
+      "disqualified_side": "twin",
+      "rank_statistic": null,
+      "loss_resolution": null
+    },
+    {
+      "level": 1184.0,
+      "status": "unreadable",
+      "never_crossed": [],
+      "twin_gap": 3600.0,
+      "between_gap": 16560.0,
+      "margin": null,
+      "disqualified_side": "twin",
+      "rank_statistic": null,
+      "loss_resolution": null
+    },
+    {
+      "level": 1186.0,
+      "status": "unreadable",
+      "never_crossed": [],
+      "twin_gap": 0.0,
+      "between_gap": 17520.0,
+      "margin": null,
+      "disqualified_side": "twin",
+      "rank_statistic": null,
+      "loss_resolution": null
+    },
+    {
+      "level": 1188.0,
+      "status": "unreadable",
+      "never_crossed": [],
+      "twin_gap": 1800.0,
+      "between_gap": 16320.0,
+      "margin": null,
+      "disqualified_side": "twin",
+      "rank_statistic": null,
+      "loss_resolution": null
+    },
+    {
+      "level": 1190.0,
+      "status": "unreadable",
+      "never_crossed": [],
+      "twin_gap": 1800.0,
+      "between_gap": 11280.0,
+      "margin": null,
+      "disqualified_side": "twin",
+      "rank_statistic": null,
+      "loss_resolution": null
+    },
+    {
+      "level": 1192.0,
+      "status": "unreadable",
+      "never_crossed": [],
+      "twin_gap": 0.0,
+      "between_gap": 10560.0,
+      "margin": null,
+      "disqualified_side": "twin",
+      "rank_statistic": null,
+      "loss_resolution": null
+    },
+    {
+      "level": 1194.0,
+      "status": "unreadable",
+      "never_crossed": [],
+      "twin_gap": 0.0,
+      "between_gap": 8640.0,
+      "margin": null,
+      "disqualified_side": "twin",
+      "rank_statistic": null,
+      "loss_resolution": null
+    },
+    {
+      "level": 1196.0,
+      "status": "unreadable",
+      "never_crossed": [],
+      "twin_gap": 0.0,
+      "between_gap": 8640.0,
+      "margin": null,
+      "disqualified_side": "twin",
+      "rank_statistic": null,
+      "loss_resolution": null
+    },
+    {
+      "level": 1198.0,
+      "status": "unreadable",
+      "never_crossed": [],
+      "twin_gap": 0.0,
+      "between_gap": 6240.0,
+      "margin": null,
+      "disqualified_side": "twin",
+      "rank_statistic": null,
+      "loss_resolution": null
+    },
+    {
+      "level": 1200.0,
+      "status": "unreadable",
+      "never_crossed": [],
+      "twin_gap": 1800.0,
+      "between_gap": 5520.0,
+      "margin": null,
+      "disqualified_side": "twin",
+      "rank_statistic": null,
+      "loss_resolution": null
+    },
+    {
+      "level": 1202.0,
+      "status": "unreadable",
+      "never_crossed": [],
+      "twin_gap": 0.0,
+      "between_gap": 4080.0,
+      "margin": null,
+      "disqualified_side": "twin",
+      "rank_statistic": null,
+      "loss_resolution": null
+    },
+    {
+      "level": 1204.0,
+      "status": "unreadable",
+      "never_crossed": [],
+      "twin_gap": 0.0,
+      "between_gap": 4080.0,
+      "margin": null,
+      "disqualified_side": "twin",
+      "rank_statistic": null,
+      "loss_resolution": null
+    },
+    {
+      "level": 1206.0,
+      "status": "unreadable",
+      "never_crossed": [],
+      "twin_gap": 0.0,
+      "between_gap": 8400.0,
+      "margin": null,
+      "disqualified_side": "twin",
+      "rank_statistic": null,
+      "loss_resolution": null
+    }
+  ],
+  "counts": {
+    "grid_size": 23,
+    "excluded": 0,
+    "unreadable": 16,
+    "accepted": 7,
+    "dropped": 16
+  },
+  "whole_test_rule": {
+    "dropped": 16,
+    "grid_size": 23,
+    "more_than_half": true
+  },
+  "control": {
+    "completeness": {
+      "prong1_finiteness": {
+        "outcome": "pass",
+        "bands_checked": 183,
+        "failures": []
+      },
+      "note": "prong 1 cannot fail: a crossing is the first checkpoint at or below L, so a run's own final checkpoint satisfies any level above its final value; a missing checkpoint is caught earlier by the layout guard"
+    },
+    "prong2_untrained_below_accepted": {
+      "outcome": "pass",
+      "min_untrained_side_value": 1211.5977621078491,
+      "binding": [
+        "9991/004 @ iteration 12"
+      ],
+      "failures": [],
+      "note": "empty by construction under the v3 anchors: L0 IS the minimum untrained reading and the grid lies strictly below it, so this prong cannot fail on any data (\u00a76 v3) \u2014 the control is executed by the grid rule, not verified by this check"
+    },
+    "outcome": "pass",
+    "outcome_reachability": "pass is the only reachable value with the v3 coupled anchors; the fail branch (exit 4) is retained for a substrate whose anchors are not coupled"
+  },
+  "review_statistics": {
+    "declared_by": "Ark, external review, 2026-09-17 21:47 UTC",
+    "printed_only": true,
+    "kink_per_run": {
+      "9991/000": {
+        "slope_before": -0.0003427943330700897,
+        "slope_after": -7.484303057984083e-05,
+        "ratio_after_before": 0.21833216993274504,
+        "n_points_before": 41,
+        "n_points_after": 29
+      },
+      "9991/900": {
+        "slope_before": -0.00027091809536106495,
+        "slope_after": -3.0258834899749393e-05,
+        "ratio_after_before": 0.11168997353027327,
+        "n_points_before": 41,
+        "n_points_after": 29
+      },
+      "9991/001": {
+        "slope_before": -0.000321817733823353,
+        "slope_after": -0.00013521826514386606,
+        "ratio_after_before": 0.4201703353553782,
+        "n_points_before": 41,
+        "n_points_after": 29
+      },
+      "9991/002": {
+        "slope_before": -0.0005163588311798664,
+        "slope_after": -2.1686489312463874e-05,
+        "ratio_after_before": 0.04199887365712486,
+        "n_points_before": 41,
+        "n_points_after": 29
+      },
+      "9991/003": {
+        "slope_before": -0.00024110494965367944,
+        "slope_after": -0.00018600008137184724,
+        "ratio_after_before": 0.7714486228466723,
+        "n_points_before": 41,
+        "n_points_after": 29
+      },
+      "9991/903": {
+        "slope_before": -0.00020098012198877573,
+        "slope_after": -0.00012231958259200366,
+        "ratio_after_before": 0.6086153266382976,
+        "n_points_before": 41,
+        "n_points_after": 29
+      },
+      "9991/004": {
+        "slope_before": -0.0003659032908604674,
+        "slope_after": -7.224546175192897e-05,
+        "ratio_after_before": 0.1974441431833934,
+        "n_points_before": 41,
+        "n_points_after": 29
+      },
+      "9991/005": {
+        "slope_before": 2.7023620237179896e-05,
+        "slope_after": -0.00017122051420459503,
+        "ratio_after_before": -6.335957680793071,
+        "n_points_before": 41,
+        "n_points_after": 29
+      }
+    },
+    "kink_pooled": {
+      "median_slope_before": -0.000296367914592209,
+      "median_slope_after": -9.858130658592224e-05,
+      "median_ratio_after_before": 0.20788815655806922
+    },
+    "kink_by_session": {
+      "session_A": {
+        "runs": [
+          "9991/000",
+          "9991/900",
+          "9991/001"
+        ],
+        "median_slope_before": -0.000321817733823353,
+        "median_slope_after": -7.484303057984083e-05
+      },
+      "session_B": {
+        "runs": [
+          "9991/002",
+          "9991/003",
+          "9991/903",
+          "9991/004",
+          "9991/005"
+        ],
+        "median_slope_before": -0.00024110494965367944,
+        "median_slope_after": -0.00012231958259200366
+      }
+    },
+    "straddle": {
+      "boundary_iteration": 150000,
+      "straddling_accepted_levels": 3,
+      "accepted_levels": 7,
+      "per_accepted_level": [
+        {
+          "level": 1162.0,
+          "cross_min": 43212,
+          "cross_max": 248412,
+          "straddles_150000": true
+        },
+        {
+          "level": 1164.0,
+          "cross_min": 43212,
+          "cross_max": 216012,
+          "straddles_150000": true
+        },
+        {
+          "level": 1166.0,
+          "cross_min": 43212,
+          "cross_max": 176412,
+          "straddles_150000": true
+        },
+        {
+          "level": 1168.0,
+          "cross_min": 43212,
+          "cross_max": 111612,
+          "straddles_150000": false
+        },
+        {
+          "level": 1170.0,
+          "cross_min": 43212,
+          "cross_max": 97212,
+          "straddles_150000": false
+        },
+        {
+          "level": 1172.0,
+          "cross_min": 36012,
+          "cross_max": 82812,
+          "straddles_150000": false
+        },
+        {
+          "level": 1174.0,
+          "cross_min": 32412,
+          "cross_max": 79212,
+          "straddles_150000": false
+        }
+      ]
+    }
+  },
+  "verdict": "TEST UNREADABLE (\u00a75 whole-test rule: 16 of 23 grid levels left the test \u2014 more than half). Not a fail, not a pass; the criterion is not read as a verdict."
+}

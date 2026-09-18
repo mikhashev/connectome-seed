@@ -1,0 +1,184 @@
+==============================================================================
+Reachability endpoint reading — docs/preregistration-reachability-endpoint.md
+Executed by this script, run once; this output is the reading (§10).
+UTC started : 2026-09-18T09:30:53+00:00
+Repo root   : C:\Users\mikha\Documents\dpc-research\connectome-seed
+Script path : C:\Users\mikha\Documents\dpc-research\connectome-seed\tools\reachability\read_reachability_endpoint.py
+Script sha256: 8e0f8e3c316c2b275623fd610b108cbb7d24c3bbfadbbe4d6558b1b4ccc9d837 — normalized to LF (checkout-independent; equals the blob hash)
+Input file sha256 (§10: 'its own sha256 and the input file's sha256 are printed at the head of its output' — the input is the one registered substrate file, pinned in §10 v7):
+  results/night4/night_report_checkpoints.csv : 52020971da270cf972ac460370970066eedf31e450dfc0b3d55f014b436021fd
+  normalized to LF : f61c5aaf3c477b06d4d21c3abf9ff24bce691de017979bf3971cb0c00b5b2c36 (checkout-independent; equals the blob hash)
+Constants   : step = 2.0 [registered, §3], one_step = 3600 iterations [registered, §5]; Lmin and L0 are COMPUTED at read time in v2 (§3) and are printed in §3 step 2 below, not here
+No interpolation is used anywhere; no hook-field number enters any computation (§7, §11).
+==============================================================================
+
+------------------------------------------------------------------------------
+§3 step 1 — the registered substrate; run->column mapping by name; the eight iteration-250008 values
+------------------------------------------------------------------------------
+substrate (the one registered file, §10 v7): results/night4/night_report_checkpoints.csv
+substrate sha256 (raw bytes)        : 52020971da270cf972ac460370970066eedf31e450dfc0b3d55f014b436021fd
+substrate sha256 (normalized to LF) : f61c5aaf3c477b06d4d21c3abf9ff24bce691de017979bf3971cb0c00b5b2c36
+input pin (§10, v7): match — the LF-normalized sha256 equals INPUT_SHA256_REGISTERED = f61c5aaf3c477b06d4d21c3abf9ff24bce691de017979bf3971cb0c00b5b2c36 (a mismatch refuses with exit 3 before any of this prints)
+
+run -> column (the mapping IS the registered file's header): val_loss_seed<N> = the canonical run of seed N, val_loss_seed<N>prime = the replicate of seed N
+  9991/000  seed 0  canonical   val_loss_seed0
+  9991/900  seed 0  replicate   val_loss_seed0prime
+  9991/001  seed 1  canonical   val_loss_seed1
+  9991/002  seed 2  canonical   val_loss_seed2
+  9991/003  seed 3  canonical   val_loss_seed3
+  9991/903  seed 3  replicate   val_loss_seed3prime
+  9991/004  seed 4  canonical   val_loss_seed4
+  9991/005  seed 5  canonical   val_loss_seed5
+
+iteration grid as read (recorded, not assumed) — 72 points, first 0, second 12, last 250008:
+  0, 12, 3612, 7212, 10812, 14412, 18012, 21612, 25212, 28812, 32412, 36012, 39612, 43212, 46812, 50412, 54012, 57612, 61212, 64812, 68412, 72012, 75612, 79212, 82812, 86412, 90012, 93612, 97212, 100812, 104412, 108012, 111612, 115212, 118812, 122412, 126012, 129612, 133212, 136812, 140412, 144012, 147612, 151212, 154812, 158412, 162012, 165612, 169212, 172812, 176412, 180012, 183612, 187212, 190812, 194412, 198012, 201612, 205212, 208812, 212412, 216012, 219612, 223212, 226812, 230412, 234012, 237612, 241212, 244812, 248412, 250008
+
+the eight iteration-250008 curve values:
+  9991/000 : 1148.8075
+  9991/900 : 1160.9823
+  9991/001 : 1144.6362
+  9991/002 : 1147.7179
+  9991/003 : 1155.7706
+  9991/903 : 1163.3766
+  9991/004 : 1156.8285
+  9991/005 : 1156.3866
+
+------------------------------------------------------------------------------
+§3 step 2 — Lmin and L0, both computed
+------------------------------------------------------------------------------
+curve minimum per run (the quantity §4's exclusion rule actually depends on):
+  9991/000 : 1141.0463
+  9991/900 : 1156.0002
+  9991/001 : 1139.7140
+  9991/002 : 1137.8219
+  9991/003 : 1150.9345
+  9991/903 : 1161.6192
+  9991/004 : 1150.0934
+  9991/005 : 1143.1055
+Lmin = MAX over the eight curve minima = 1161.6192 (attained by 9991/903)
+  (v1 would have used min over the finals = 1144.6362 -- the wrong quantity)
+L0 = MIN over runs and control iterations [0, 12] = 1211.5978 (attained by 9991/004@12)
+  (v1 would have used seed 0's iteration-0 value = 1212.5556 -- above prong 2's own minimum, so the top level passed §3 and violated the control)
+
+------------------------------------------------------------------------------
+§3 step 3 — the frozen grid
+------------------------------------------------------------------------------
+withdrawn by the §11 caveat, written before the reading: 1208, 1210
+all levels L = m * 2.0 strictly inside (Lmin, L0) = (1161.6192, 1211.5978):
+  23 level(s): 1162, 1164, 1166, 1168, 1170, 1172, 1174, 1176, 1178, 1180, 1182, 1184, 1186, 1188, 1190, 1192, 1194, 1196, 1198, 1200, 1202, 1204, 1206
+this list is frozen here; nothing below recomputes or adjusts it (§3, §11)
+
+------------------------------------------------------------------------------
+§3 step 4 — crossing times (computed only now)
+------------------------------------------------------------------------------
+cross(r, L) := the FIRST checkpoint iteration whose curve value is <= L; no interpolation anywhere (§2, §11)
+computed for 8 runs x 23 levels = 184 crossing times; they enter the record only through the §10 quantities
+
+------------------------------------------------------------------------------
+§3 step 5 — exclusion (§4), disqualification (§5), whole-test rule (§5), positive control (§6), criterion (§4)
+------------------------------------------------------------------------------
+(5a) exclusion rule (§4): a level where any of the eight runs never crosses is excluded; the exclusion count is reported
+  excluded levels: 0 of 23
+
+(5b) disqualification rule (§5, SYMMETRIC — CC's review, 2026-09-17, adopted; registration §5 'Disqualification rule — symmetric, fixed after review'): a level is UNREADABLE if EITHER twin-gap(L) OR between-gap(L) is <= one checkpoint step (3600 iterations) — dropped, not scored as weak or as failing, and the drop is reported together with which side (twin, between, or both) triggered it
+  twin-gap = mean |cross(a) - cross(b)| over the replicate pairs (9991/000,9991/900), (9991/003,9991/903)
+  between-gap = mean |cross(i) - cross(j)| over the 15 unordered pairs of the canonical six 9991/000, 9991/001, 9991/002, 9991/003, 9991/004, 9991/005 (first runs of seeds 0-5; primes excluded)
+  L=1176: UNREADABLE — twin-gap=1800, between-gap=20400 (triggered by twin); dropped
+  L=1178: UNREADABLE — twin-gap=1800, between-gap=20160 (triggered by twin); dropped
+  L=1180: UNREADABLE — twin-gap=0, between-gap=19920 (triggered by twin); dropped
+  L=1182: UNREADABLE — twin-gap=0, between-gap=16080 (triggered by twin); dropped
+  L=1184: UNREADABLE — twin-gap=3600, between-gap=16560 (triggered by twin); dropped
+  L=1186: UNREADABLE — twin-gap=0, between-gap=17520 (triggered by twin); dropped
+  L=1188: UNREADABLE — twin-gap=1800, between-gap=16320 (triggered by twin); dropped
+  L=1190: UNREADABLE — twin-gap=1800, between-gap=11280 (triggered by twin); dropped
+  L=1192: UNREADABLE — twin-gap=0, between-gap=10560 (triggered by twin); dropped
+  L=1194: UNREADABLE — twin-gap=0, between-gap=8640 (triggered by twin); dropped
+  L=1196: UNREADABLE — twin-gap=0, between-gap=8640 (triggered by twin); dropped
+  L=1198: UNREADABLE — twin-gap=0, between-gap=6240 (triggered by twin); dropped
+  L=1200: UNREADABLE — twin-gap=1800, between-gap=5520 (triggered by twin); dropped
+  L=1202: UNREADABLE — twin-gap=0, between-gap=4080 (triggered by twin); dropped
+  L=1204: UNREADABLE — twin-gap=0, between-gap=4080 (triggered by twin); dropped
+  L=1206: UNREADABLE — twin-gap=0, between-gap=8400 (triggered by twin); dropped
+  unreadable levels: 16; accepted levels remaining: 7
+
+(5c) whole-test rule (§5): if more than half of the grid as constructed at step 3 leaves the test, the whole test is unreadable (not a fail, not a pass)
+  dropped = 0 excluded + 16 unreadable = 16 of 23 grid levels ; the rule fires at 12 of that many (the absolute threshold, not only the proportion: the same proportion on a smaller grid is a different number): MORE THAN HALF — whole test unreadable
+
+(5d) positive control (§6), applied before the criterion
+  prong 1 (finiteness -- a completeness check, NOT a control: it cannot fail, since a run's own final checkpoint is at or below any level above its final value (§6 v2)): every grid level strictly between a run's iteration-250008 value and L0 must be crossed finitely — 183 of 183 (run, level) band(s) crossed finitely: COMPLETE — a declaration, not a pass (§6 v4)
+  prong 2 (untrained below every accepted level): every accepted level must be strictly below ALL iteration-0/12 values of all eight runs; the binding minimum = 1211.5978 (9991/004 @ iteration 12)
+  prong 2: SATISFIED BY CONSTRUCTION — not a pass: L0 IS this binding minimum, so the grid lies below it at any data and this prong cannot fail (§6 v4)
+  positive control outcome: SATISFIED BY CONSTRUCTION — NOT A PASS
+    Neither prong can fail on this substrate: prong 1 is a completeness check, and prong 2 is empty because L0 and its binding minimum are the same quantity.
+    This reading therefore has NO positive control that could have failed, and the criterion below is read without one (§6 v4).
+    Do not quote the line above as a passed gate.
+
+(5e) criterion (§4): ACCEPT only if between-gap > twin-gap for EVERY accepted level; any other outcome is a fail
+
+  recorded §10 quantities for the accepted levels (twin-gap and between-gap were computed once, in step 5b, under the symmetric disqualification rule):
+  level          twin-gap(it)  between-gap(it)     margin(it)
+  1162                  75600            38160         -37440
+  1164                  61200            39360         -21840
+  1166                  59400            25920         -33480
+  1168                  14400            25920          11520
+  1170                  19800            20400            600
+  1172                   5400            19440          14040
+  1174                   7200            20160          12960
+
+  exact rank statistic (§4, printed only — never a criterion): positions of the 2 twin differences among the 15 between-individual differences (1 = smallest of the pooled 17), and the exact one-sided p from the hypergeometric/rank enumeration (smallest attainable one-sided p = 1/C(17,2) = 1/136 ~= 0.0074):
+    L=1162: twin ranks = [6, 17] of 17, rank-sum(twin) = 23, one-sided p = 106/136 = 0.7794
+    L=1164: twin ranks = [5, 17] of 17, rank-sum(twin) = 22, one-sided p = 100/136 = 0.7353
+    L=1166: twin ranks = [1, 17] of 17, rank-sum(twin) = 18, one-sided p = 72/136 = 0.5294
+    L=1168: twin ranks = [1, 12] of 17, rank-sum(twin) = 13, one-sided p = 36/136 = 0.2647
+    L=1170: twin ranks = [1, 12] of 17, rank-sum(twin) = 13, one-sided p = 36/136 = 0.2647
+    L=1172: twin ranks = [1, 6] of 17, rank-sum(twin) = 7, one-sided p = 9/136 = 0.0662
+    L=1174: twin ranks = [1, 7] of 17, rank-sum(twin) = 8, one-sided p = 12/136 = 0.0882
+
+  loss-resolution near each accepted level (§10 recorded statistic, not a criterion input): mean over the eight runs of the median per-checkpoint-step |d val_loss| within ±2 checkpoints of the crossing
+    L=1162: 6.709488 loss units per checkpoint step
+    L=1164: 5.672049 loss units per checkpoint step
+    L=1166: 5.717601 loss units per checkpoint step
+    L=1168: 6.245756 loss units per checkpoint step
+    L=1170: 5.168167 loss units per checkpoint step
+    L=1172: 4.865585 loss units per checkpoint step
+    L=1174: 6.009341 loss units per checkpoint step
+
+  -> TEST UNREADABLE (§5 whole-test rule: 16 of 23 grid levels left the test — more than half). Not a fail, not a pass; the criterion is not read as a verdict.
+
+------------------------------------------------------------------------------
+review statistics (Ark, 2026-09-17 21:47 UTC) — printed only; never criteria, never gating the verdict
+------------------------------------------------------------------------------
+(1) kink at iteration 150000 — rationale: s/iter halves at iteration 150000 in 8/8 runs (schedule signature); whether the loss trajectory itself changes slope there decides whether grid levels on either side are the same task; this is printed, not judged
+    least-squares slope of val_loss per iteration; 'before' over checkpoints with 1000 <= iteration <= 150000 (the (0,12) head excluded), 'after' over checkpoints with iteration > 150000
+    9991/000: slope_before = -3.427943e-04, slope_after = -7.484303e-05, ratio after/before = 0.218
+    9991/900: slope_before = -2.709181e-04, slope_after = -3.025883e-05, ratio after/before = 0.112
+    9991/001: slope_before = -3.218177e-04, slope_after = -1.352183e-04, ratio after/before = 0.420
+    9991/002: slope_before = -5.163588e-04, slope_after = -2.168649e-05, ratio after/before = 0.042
+    9991/003: slope_before = -2.411049e-04, slope_after = -1.860001e-04, ratio after/before = 0.771
+    9991/903: slope_before = -2.009801e-04, slope_after = -1.223196e-04, ratio after/before = 0.609
+    9991/004: slope_before = -3.659033e-04, slope_after = -7.224546e-05, ratio after/before = 0.197
+    9991/005: slope_before = 2.702362e-05, slope_after = -1.712205e-04, ratio after/before = -6.336
+    pooled medians: slope_before = -2.963679e-04, slope_after = -9.858131e-05, ratio after/before = 0.208
+
+(2) slopes by session mode — the same two slopes pooled separately for the two OS boot sessions of §10 (printed only)
+    session_A (9991/000, 9991/900, 9991/001): median slope_before = -3.218177e-04, median slope_after = -7.484303e-05
+    session_B (9991/002, 9991/003, 9991/903, 9991/004, 9991/005): median slope_before = -2.411049e-04, median slope_after = -1.223196e-04
+
+(3) straddle report — for every accepted level, min/max crossing iteration over the eight runs and whether the 150000 boundary lies strictly between them (some runs cross before the step, some after)
+    L=1162: cross min = 43212, max = 248412, 150000 strictly between: yes
+    L=1164: cross min = 43212, max = 216012, 150000 strictly between: yes
+    L=1166: cross min = 43212, max = 176412, 150000 strictly between: yes
+    L=1168: cross min = 43212, max = 111612, 150000 strictly between: no
+    L=1170: cross min = 43212, max = 97212, 150000 strictly between: no
+    L=1172: cross min = 36012, max = 82812, 150000 strictly between: no
+    L=1174: cross min = 32412, max = 79212, 150000 strictly between: no
+    accepted levels straddling the 150000 boundary: 3 of 7
+
+------------------------------------------------------------------------------
+verdict
+------------------------------------------------------------------------------
+TEST UNREADABLE (§5 whole-test rule: 16 of 23 grid levels left the test — more than half). Not a fail, not a pass; the criterion is not read as a verdict.
+
+reading finished (UTC): 2026-09-18T09:30:53+00:00
+
+JSON report written to: C:\Users\mikha\Documents\dpc-research\connectome-seed\results\diagnostics\reachability\reachability_reading.json
