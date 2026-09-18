@@ -1,9 +1,5 @@
-SYNTHETIC | substrate: synthetic (fabricated curves; NOT the registered substrate). This file is a control, not a reading.
-SYNTHETIC | case ii: twin offset 2 checkpoints; non-monotone twin: False
-SYNTHETIC | expected verdict by construction (§2, first crossing): ACCEPT
-SYNTHETIC | why: twins 2 checkpoints out, individuals 9.33 on average: both gaps clear one step and between-gap > twin-gap everywhere
-SYNTHETIC | script: retargeted copy -- INPUT_SHA256_REGISTERED replaced with the fabricated file's hash, so this copy's own sha256 differs from the canonical script's on purpose.
-SYNTHETIC | exit code: 0 ; verdict read back: ACCEPT
+SYNTHETIC | substrate: synthetic. CONVENTION CONTROL run -- the crossing call was swapped to the STABLE crossing, which §2 refuses. This output exists to be DIFFERENT from the case's own.
+SYNTHETIC | case iv, swapped convention: exit 0 ; verdict FAIL
 SYNTHETIC | LIMIT 1: this shows the ACCEPT branch is REACHABLE and that the registered rules produce the verdict they force on constructed data. It does NOT show that the endpoint works: the answer was chosen when the file was written.
 SYNTHETIC | LIMIT 2: the grid size below is this case's own -- the anchors are computed from the fabricated curves. It is NOT the registered grid of 23 tested levels.
 SYNTHETIC | LIMIT 3: the harness reads only the substrate's header and iteration column (structural, §11); it reads no loss value and computes no crossing time of the substrate.
@@ -12,12 +8,12 @@ SYNTHETIC | ====================================================================
 SYNTHETIC | Reachability endpoint reading � docs/preregistration-reachability-endpoint.md
 SYNTHETIC | Executed by this script, run once; this output is the reading (�10).
 SYNTHETIC | UTC started : 2026-09-18T09:12:22+00:00
-SYNTHETIC | Repo root   : C:\Users\mikha\AppData\Local\Temp\reach_harness_i5z0xvfo\case_ii
-SYNTHETIC | Script path : C:\Users\mikha\AppData\Local\Temp\reach_harness_i5z0xvfo\case_ii\read_reachability_endpoint__RETARGETED.py
-SYNTHETIC | Script sha256: 44cd08526eab2e67038dc16271dd5f1eb92131cc35d686a90228c59b15e0be0f � normalized to LF (checkout-independent; equals the blob hash)
+SYNTHETIC | Repo root   : C:\Users\mikha\AppData\Local\Temp\reach_harness_i5z0xvfo\case_iv
+SYNTHETIC | Script path : C:\Users\mikha\AppData\Local\Temp\reach_harness_i5z0xvfo\case_iv\read_reachability_endpoint__RETARGETED_STABLE_CONVENTION.py
+SYNTHETIC | Script sha256: 96cd66f819bb900242949af4ccbeb08b2abb8209e0bd4b4be6b82b82a042c4b8 � normalized to LF (checkout-independent; equals the blob hash)
 SYNTHETIC | Input file sha256 (�10: 'its own sha256 and the input file's sha256 are printed at the head of its output' � the input is the one registered substrate file, pinned in �10 v7):
-SYNTHETIC |   results/night4/night_report_checkpoints.csv : 31fe0d1826f004fb80f37ee6112fe841c77edcf8484c65cc737d5deab34b201b
-SYNTHETIC |   normalized to LF : 31fe0d1826f004fb80f37ee6112fe841c77edcf8484c65cc737d5deab34b201b (checkout-independent; equals the blob hash)
+SYNTHETIC |   results/night4/night_report_checkpoints.csv : da16d5357120d26afce2ae1a2de190e144f271684b050bbe3cea9cbf46332d59
+SYNTHETIC |   normalized to LF : da16d5357120d26afce2ae1a2de190e144f271684b050bbe3cea9cbf46332d59 (checkout-independent; equals the blob hash)
 SYNTHETIC | Constants   : step = 2.0 [registered, �3], one_step = 3600 iterations [registered, �5]; Lmin and L0 are COMPUTED at read time in v2 (�3) and are printed in �3 step 2 below, not here
 SYNTHETIC | No interpolation is used anywhere; no hook-field number enters any computation (�7, �11).
 SYNTHETIC | ==============================================================================
@@ -26,9 +22,9 @@ SYNTHETIC | --------------------------------------------------------------------
 SYNTHETIC | �3 step 1 � the registered substrate; run->column mapping by name; the eight iteration-250008 values
 SYNTHETIC | ------------------------------------------------------------------------------
 SYNTHETIC | substrate (the one registered file, �10 v7): results/night4/night_report_checkpoints.csv
-SYNTHETIC | substrate sha256 (raw bytes)        : 31fe0d1826f004fb80f37ee6112fe841c77edcf8484c65cc737d5deab34b201b
-SYNTHETIC | substrate sha256 (normalized to LF) : 31fe0d1826f004fb80f37ee6112fe841c77edcf8484c65cc737d5deab34b201b
-SYNTHETIC | input pin (�10, v7): match � the LF-normalized sha256 equals INPUT_SHA256_REGISTERED = 31fe0d1826f004fb80f37ee6112fe841c77edcf8484c65cc737d5deab34b201b (a mismatch refuses with exit 3 before any of this prints)
+SYNTHETIC | substrate sha256 (raw bytes)        : da16d5357120d26afce2ae1a2de190e144f271684b050bbe3cea9cbf46332d59
+SYNTHETIC | substrate sha256 (normalized to LF) : da16d5357120d26afce2ae1a2de190e144f271684b050bbe3cea9cbf46332d59
+SYNTHETIC | input pin (�10, v7): match � the LF-normalized sha256 equals INPUT_SHA256_REGISTERED = da16d5357120d26afce2ae1a2de190e144f271684b050bbe3cea9cbf46332d59 (a mismatch refuses with exit 3 before any of this prints)
 SYNTHETIC | 
 SYNTHETIC | run -> column (the mapping IS the registered file's header): val_loss_seed<N> = the canonical run of seed N, val_loss_seed<N>prime = the replicate of seed N
 SYNTHETIC |   9991/000  seed 0  canonical   val_loss_seed0
@@ -111,69 +107,69 @@ SYNTHETIC | (5e) criterion (�4): ACCEPT only if between-gap > twin-gap for EVE
 SYNTHETIC | 
 SYNTHETIC |   recorded �10 quantities for the accepted levels (twin-gap and between-gap were computed once, in step 5b, under the symmetric disqualification rule):
 SYNTHETIC |   level          twin-gap(it)  between-gap(it)     margin(it)
-SYNTHETIC |   1170                   7200            33600          26400
-SYNTHETIC |   1172                   7200            33600          26400
-SYNTHETIC |   1174                   7200            33600          26400
-SYNTHETIC |   1176                   7200            33600          26400
-SYNTHETIC |   1178                   7200            33600          26400
-SYNTHETIC |   1180                   7200            33600          26400
-SYNTHETIC |   1182                   7200            33600          26400
-SYNTHETIC |   1184                   7200            33600          26400
-SYNTHETIC |   1186                   7200            33600          26400
-SYNTHETIC |   1188                   7200            33600          26400
-SYNTHETIC |   1190                   7200            33600          26400
-SYNTHETIC |   1192                   7200            33600          26400
-SYNTHETIC |   1194                   7200            33600          26400
-SYNTHETIC |   1196                   7200            33600          26400
-SYNTHETIC |   1198                   7200            33600          26400
-SYNTHETIC |   1200                   7200            33600          26400
-SYNTHETIC |   1202                   7200            33600          26400
-SYNTHETIC |   1204                   7200            33600          26400
-SYNTHETIC |   1206                   7200            33600          26400
+SYNTHETIC |   1170                  37800            33600          -4200
+SYNTHETIC |   1172                  41400            33600          -7800
+SYNTHETIC |   1174                  45000            33600         -11400
+SYNTHETIC |   1176                  48600            33600         -15000
+SYNTHETIC |   1178                  52200            33600         -18600
+SYNTHETIC |   1180                  55800            33600         -22200
+SYNTHETIC |   1182                  59400            33600         -25800
+SYNTHETIC |   1184                  63000            33600         -29400
+SYNTHETIC |   1186                  68400            33600         -34800
+SYNTHETIC |   1188                  70200            33600         -36600
+SYNTHETIC |   1190                  73800            33600         -40200
+SYNTHETIC |   1192                  79200            33600         -45600
+SYNTHETIC |   1194                  81000            33600         -47400
+SYNTHETIC |   1196                  86400            33600         -52800
+SYNTHETIC |   1198                  90000            33600         -56400
+SYNTHETIC |   1200                  91800            33600         -58200
+SYNTHETIC |   1202                  97200            33600         -63600
+SYNTHETIC |   1204                 100800            33600         -67200
+SYNTHETIC |   1206                 102600            33600         -69000
 SYNTHETIC | 
 SYNTHETIC |   exact rank statistic (�4, printed only � never a criterion): positions of the 2 twin differences among the 15 between-individual differences (1 = smallest of the pooled 17), and the exact one-sided p from the hypergeometric/rank enumeration (smallest attainable one-sided p = 1/C(17,2) = 1/136 ~= 0.0074):
-SYNTHETIC |     L=1170: twin ranks = [1, 2] of 17, rank-sum(twin) = 3, one-sided p = 1/136 = 0.0074
-SYNTHETIC |     L=1172: twin ranks = [1, 2] of 17, rank-sum(twin) = 3, one-sided p = 1/136 = 0.0074
-SYNTHETIC |     L=1174: twin ranks = [1, 2] of 17, rank-sum(twin) = 3, one-sided p = 1/136 = 0.0074
-SYNTHETIC |     L=1176: twin ranks = [1, 2] of 17, rank-sum(twin) = 3, one-sided p = 1/136 = 0.0074
-SYNTHETIC |     L=1178: twin ranks = [1, 2] of 17, rank-sum(twin) = 3, one-sided p = 1/136 = 0.0074
-SYNTHETIC |     L=1180: twin ranks = [1, 2] of 17, rank-sum(twin) = 3, one-sided p = 1/136 = 0.0074
-SYNTHETIC |     L=1182: twin ranks = [1, 2] of 17, rank-sum(twin) = 3, one-sided p = 1/136 = 0.0074
-SYNTHETIC |     L=1184: twin ranks = [1, 2] of 17, rank-sum(twin) = 3, one-sided p = 1/136 = 0.0074
-SYNTHETIC |     L=1186: twin ranks = [1, 2] of 17, rank-sum(twin) = 3, one-sided p = 1/136 = 0.0074
-SYNTHETIC |     L=1188: twin ranks = [1, 2] of 17, rank-sum(twin) = 3, one-sided p = 1/136 = 0.0074
-SYNTHETIC |     L=1190: twin ranks = [1, 2] of 17, rank-sum(twin) = 3, one-sided p = 1/136 = 0.0074
-SYNTHETIC |     L=1192: twin ranks = [1, 2] of 17, rank-sum(twin) = 3, one-sided p = 1/136 = 0.0074
-SYNTHETIC |     L=1194: twin ranks = [1, 2] of 17, rank-sum(twin) = 3, one-sided p = 1/136 = 0.0074
-SYNTHETIC |     L=1196: twin ranks = [1, 2] of 17, rank-sum(twin) = 3, one-sided p = 1/136 = 0.0074
-SYNTHETIC |     L=1198: twin ranks = [1, 2] of 17, rank-sum(twin) = 3, one-sided p = 1/136 = 0.0074
-SYNTHETIC |     L=1200: twin ranks = [1, 2] of 17, rank-sum(twin) = 3, one-sided p = 1/136 = 0.0074
-SYNTHETIC |     L=1202: twin ranks = [1, 2] of 17, rank-sum(twin) = 3, one-sided p = 1/136 = 0.0074
-SYNTHETIC |     L=1204: twin ranks = [1, 2] of 17, rank-sum(twin) = 3, one-sided p = 1/136 = 0.0074
-SYNTHETIC |     L=1206: twin ranks = [1, 2] of 17, rank-sum(twin) = 3, one-sided p = 1/136 = 0.0074
+SYNTHETIC |     L=1170: twin ranks = [1, 16] of 17, rank-sum(twin) = 17, one-sided p = 64/136 = 0.4706
+SYNTHETIC |     L=1172: twin ranks = [1, 17] of 17, rank-sum(twin) = 18, one-sided p = 72/136 = 0.5294
+SYNTHETIC |     L=1174: twin ranks = [1, 17] of 17, rank-sum(twin) = 18, one-sided p = 72/136 = 0.5294
+SYNTHETIC |     L=1176: twin ranks = [1, 17] of 17, rank-sum(twin) = 18, one-sided p = 72/136 = 0.5294
+SYNTHETIC |     L=1178: twin ranks = [1, 17] of 17, rank-sum(twin) = 18, one-sided p = 72/136 = 0.5294
+SYNTHETIC |     L=1180: twin ranks = [1, 17] of 17, rank-sum(twin) = 18, one-sided p = 72/136 = 0.5294
+SYNTHETIC |     L=1182: twin ranks = [1, 17] of 17, rank-sum(twin) = 18, one-sided p = 72/136 = 0.5294
+SYNTHETIC |     L=1184: twin ranks = [1, 17] of 17, rank-sum(twin) = 18, one-sided p = 72/136 = 0.5294
+SYNTHETIC |     L=1186: twin ranks = [1, 17] of 17, rank-sum(twin) = 18, one-sided p = 72/136 = 0.5294
+SYNTHETIC |     L=1188: twin ranks = [1, 17] of 17, rank-sum(twin) = 18, one-sided p = 72/136 = 0.5294
+SYNTHETIC |     L=1190: twin ranks = [1, 17] of 17, rank-sum(twin) = 18, one-sided p = 72/136 = 0.5294
+SYNTHETIC |     L=1192: twin ranks = [1, 17] of 17, rank-sum(twin) = 18, one-sided p = 72/136 = 0.5294
+SYNTHETIC |     L=1194: twin ranks = [1, 17] of 17, rank-sum(twin) = 18, one-sided p = 72/136 = 0.5294
+SYNTHETIC |     L=1196: twin ranks = [1, 17] of 17, rank-sum(twin) = 18, one-sided p = 72/136 = 0.5294
+SYNTHETIC |     L=1198: twin ranks = [1, 17] of 17, rank-sum(twin) = 18, one-sided p = 72/136 = 0.5294
+SYNTHETIC |     L=1200: twin ranks = [1, 17] of 17, rank-sum(twin) = 18, one-sided p = 72/136 = 0.5294
+SYNTHETIC |     L=1202: twin ranks = [1, 17] of 17, rank-sum(twin) = 18, one-sided p = 72/136 = 0.5294
+SYNTHETIC |     L=1204: twin ranks = [1, 17] of 17, rank-sum(twin) = 18, one-sided p = 72/136 = 0.5294
+SYNTHETIC |     L=1206: twin ranks = [1, 17] of 17, rank-sum(twin) = 18, one-sided p = 72/136 = 0.5294
 SYNTHETIC | 
 SYNTHETIC |   loss-resolution near each accepted level (�10 recorded statistic, not a criterion input): mean over the eight runs of the median per-checkpoint-step |d val_loss| within �2 checkpoints of the crossing
-SYNTHETIC |     L=1170: 0.845100 loss units per checkpoint step
-SYNTHETIC |     L=1172: 0.845100 loss units per checkpoint step
-SYNTHETIC |     L=1174: 0.845100 loss units per checkpoint step
-SYNTHETIC |     L=1176: 0.845100 loss units per checkpoint step
-SYNTHETIC |     L=1178: 0.845100 loss units per checkpoint step
-SYNTHETIC |     L=1180: 0.845100 loss units per checkpoint step
-SYNTHETIC |     L=1182: 0.845100 loss units per checkpoint step
-SYNTHETIC |     L=1184: 0.845050 loss units per checkpoint step
-SYNTHETIC |     L=1186: 0.845100 loss units per checkpoint step
-SYNTHETIC |     L=1188: 0.845100 loss units per checkpoint step
-SYNTHETIC |     L=1190: 0.845050 loss units per checkpoint step
-SYNTHETIC |     L=1192: 0.845100 loss units per checkpoint step
-SYNTHETIC |     L=1194: 0.845100 loss units per checkpoint step
-SYNTHETIC |     L=1196: 0.845100 loss units per checkpoint step
-SYNTHETIC |     L=1198: 0.845050 loss units per checkpoint step
-SYNTHETIC |     L=1200: 0.845100 loss units per checkpoint step
-SYNTHETIC |     L=1202: 0.845100 loss units per checkpoint step
-SYNTHETIC |     L=1204: 0.845050 loss units per checkpoint step
-SYNTHETIC |     L=1206: 0.845100 loss units per checkpoint step
+SYNTHETIC |     L=1170: 1.549325 loss units per checkpoint step
+SYNTHETIC |     L=1172: 1.549325 loss units per checkpoint step
+SYNTHETIC |     L=1174: 1.549325 loss units per checkpoint step
+SYNTHETIC |     L=1176: 1.549325 loss units per checkpoint step
+SYNTHETIC |     L=1178: 1.549325 loss units per checkpoint step
+SYNTHETIC |     L=1180: 1.549325 loss units per checkpoint step
+SYNTHETIC |     L=1182: 1.549325 loss units per checkpoint step
+SYNTHETIC |     L=1184: 1.549281 loss units per checkpoint step
+SYNTHETIC |     L=1186: 1.549325 loss units per checkpoint step
+SYNTHETIC |     L=1188: 1.549325 loss units per checkpoint step
+SYNTHETIC |     L=1190: 1.549281 loss units per checkpoint step
+SYNTHETIC |     L=1192: 1.549325 loss units per checkpoint step
+SYNTHETIC |     L=1194: 1.549325 loss units per checkpoint step
+SYNTHETIC |     L=1196: 1.549325 loss units per checkpoint step
+SYNTHETIC |     L=1198: 1.549281 loss units per checkpoint step
+SYNTHETIC |     L=1200: 1.549325 loss units per checkpoint step
+SYNTHETIC |     L=1202: 1.549325 loss units per checkpoint step
+SYNTHETIC |     L=1204: 1.549281 loss units per checkpoint step
+SYNTHETIC |     L=1206: 1.549319 loss units per checkpoint step
 SYNTHETIC | 
-SYNTHETIC |   -> ACCEPT (�4: between-gap > twin-gap at every accepted level � 19 of 19)
+SYNTHETIC |   -> FAIL (�4: between-gap <= twin-gap at 19 of 19 accepted levels: 1170, 1172, 1174, 1176, 1178, 1180, 1182, 1184, 1186, 1188, 1190, 1192, 1194, 1196, 1198, 1200, 1202, 1204, 1206)
 SYNTHETIC | 
 SYNTHETIC | ------------------------------------------------------------------------------
 SYNTHETIC | review statistics (Ark, 2026-09-17 21:47 UTC) � printed only; never criteria, never gating the verdict
@@ -181,7 +177,7 @@ SYNTHETIC | --------------------------------------------------------------------
 SYNTHETIC | (1) kink at iteration 150000 � rationale: s/iter halves at iteration 150000 in 8/8 runs (schedule signature); whether the loss trajectory itself changes slope there decides whether grid levels on either side are the same task; this is printed, not judged
 SYNTHETIC |     least-squares slope of val_loss per iteration; 'before' over checkpoints with 1000 <= iteration <= 150000 (the (0,12) head excluded), 'after' over checkpoints with iteration > 150000
 SYNTHETIC |     9991/000: slope_before = -2.347418e-04, slope_after = -2.356149e-04, ratio after/before = 1.004
-SYNTHETIC |     9991/900: slope_before = -2.347417e-04, slope_after = -2.356149e-04, ratio after/before = 1.004
+SYNTHETIC |     9991/900: slope_before = -2.347417e-04, slope_after = 8.017982e-05, ratio after/before = -0.342
 SYNTHETIC |     9991/001: slope_before = -2.323289e-04, slope_after = -2.356149e-04, ratio after/before = 1.014
 SYNTHETIC |     9991/002: slope_before = -2.189969e-04, slope_after = -2.356150e-04, ratio after/before = 1.076
 SYNTHETIC |     9991/003: slope_before = -1.965042e-04, slope_after = -2.356150e-04, ratio after/before = 1.199
@@ -196,31 +192,31 @@ SYNTHETIC |     session_B (9991/002, 9991/003, 9991/903, 9991/004, 9991/005): me
 SYNTHETIC | 
 SYNTHETIC | (3) straddle report � for every accepted level, min/max crossing iteration over the eight runs and whether the 150000 boundary lies strictly between them (some runs cross before the step, some after)
 SYNTHETIC |     L=1170: cross min = 176412, max = 248412, 150000 strictly between: no
-SYNTHETIC |     L=1172: cross min = 169212, max = 241212, 150000 strictly between: no
-SYNTHETIC |     L=1174: cross min = 158412, max = 230412, 150000 strictly between: no
-SYNTHETIC |     L=1176: cross min = 151212, max = 223212, 150000 strictly between: no
-SYNTHETIC |     L=1178: cross min = 144012, max = 216012, 150000 strictly between: yes
-SYNTHETIC |     L=1180: cross min = 133212, max = 205212, 150000 strictly between: yes
-SYNTHETIC |     L=1182: cross min = 126012, max = 198012, 150000 strictly between: yes
-SYNTHETIC |     L=1184: cross min = 118812, max = 190812, 150000 strictly between: yes
-SYNTHETIC |     L=1186: cross min = 108012, max = 180012, 150000 strictly between: yes
-SYNTHETIC |     L=1188: cross min = 100812, max = 172812, 150000 strictly between: yes
-SYNTHETIC |     L=1190: cross min = 93612, max = 165612, 150000 strictly between: yes
-SYNTHETIC |     L=1192: cross min = 82812, max = 154812, 150000 strictly between: yes
-SYNTHETIC |     L=1194: cross min = 75612, max = 147612, 150000 strictly between: no
-SYNTHETIC |     L=1196: cross min = 64812, max = 136812, 150000 strictly between: no
-SYNTHETIC |     L=1198: cross min = 57612, max = 129612, 150000 strictly between: no
-SYNTHETIC |     L=1200: cross min = 50412, max = 122412, 150000 strictly between: no
-SYNTHETIC |     L=1202: cross min = 39612, max = 111612, 150000 strictly between: no
-SYNTHETIC |     L=1204: cross min = 32412, max = 104412, 150000 strictly between: no
-SYNTHETIC |     L=1206: cross min = 25212, max = 97212, 150000 strictly between: no
-SYNTHETIC |     accepted levels straddling the 150000 boundary: 8 of 19
+SYNTHETIC |     L=1172: cross min = 169212, max = 244812, 150000 strictly between: no
+SYNTHETIC |     L=1174: cross min = 158412, max = 241212, 150000 strictly between: no
+SYNTHETIC |     L=1176: cross min = 151212, max = 241212, 150000 strictly between: no
+SYNTHETIC |     L=1178: cross min = 144012, max = 241212, 150000 strictly between: yes
+SYNTHETIC |     L=1180: cross min = 133212, max = 237612, 150000 strictly between: yes
+SYNTHETIC |     L=1182: cross min = 126012, max = 237612, 150000 strictly between: yes
+SYNTHETIC |     L=1184: cross min = 118812, max = 237612, 150000 strictly between: yes
+SYNTHETIC |     L=1186: cross min = 108012, max = 237612, 150000 strictly between: yes
+SYNTHETIC |     L=1188: cross min = 100812, max = 234012, 150000 strictly between: yes
+SYNTHETIC |     L=1190: cross min = 93612, max = 234012, 150000 strictly between: yes
+SYNTHETIC |     L=1192: cross min = 82812, max = 234012, 150000 strictly between: yes
+SYNTHETIC |     L=1194: cross min = 75612, max = 230412, 150000 strictly between: yes
+SYNTHETIC |     L=1196: cross min = 64812, max = 230412, 150000 strictly between: yes
+SYNTHETIC |     L=1198: cross min = 57612, max = 230412, 150000 strictly between: yes
+SYNTHETIC |     L=1200: cross min = 50412, max = 226812, 150000 strictly between: yes
+SYNTHETIC |     L=1202: cross min = 39612, max = 226812, 150000 strictly between: yes
+SYNTHETIC |     L=1204: cross min = 32412, max = 226812, 150000 strictly between: yes
+SYNTHETIC |     L=1206: cross min = 25212, max = 223212, 150000 strictly between: yes
+SYNTHETIC |     accepted levels straddling the 150000 boundary: 15 of 19
 SYNTHETIC | 
 SYNTHETIC | ------------------------------------------------------------------------------
 SYNTHETIC | verdict
 SYNTHETIC | ------------------------------------------------------------------------------
-SYNTHETIC | ACCEPT (�4: between-gap > twin-gap at every accepted level � 19 of 19)
+SYNTHETIC | FAIL (�4: between-gap <= twin-gap at 19 of 19 accepted levels: 1170, 1172, 1174, 1176, 1178, 1180, 1182, 1184, 1186, 1188, 1190, 1192, 1194, 1196, 1198, 1200, 1202, 1204, 1206)
 SYNTHETIC | 
 SYNTHETIC | reading finished (UTC): 2026-09-18T09:12:22+00:00
 SYNTHETIC | 
-SYNTHETIC | JSON report written to: C:\Users\mikha\AppData\Local\Temp\reach_harness_i5z0xvfo\case_ii\reading_out_as_registered\reachability_reading.json
+SYNTHETIC | JSON report written to: C:\Users\mikha\AppData\Local\Temp\reach_harness_i5z0xvfo\case_iv\reading_out_stable_convention\reachability_reading.json

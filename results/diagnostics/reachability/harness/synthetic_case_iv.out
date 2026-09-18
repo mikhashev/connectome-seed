@@ -1,23 +1,24 @@
 SYNTHETIC | substrate: synthetic (fabricated curves; NOT the registered substrate). This file is a control, not a reading.
-SYNTHETIC | case ii: twin offset 2 checkpoints; non-monotone twin: False
+SYNTHETIC | case iv: twin offset 2 checkpoints; non-monotone twin: True
 SYNTHETIC | expected verdict by construction (§2, first crossing): ACCEPT
-SYNTHETIC | why: twins 2 checkpoints out, individuals 9.33 on average: both gaps clear one step and between-gap > twin-gap everywhere
+SYNTHETIC | why: as (ii), but one twin rises back above the grid after crossing it and settles below again: §2 takes the early crossing, so the verdict is (ii)'s -- and the swapped convention must give a different verdict
 SYNTHETIC | script: retargeted copy -- INPUT_SHA256_REGISTERED replaced with the fabricated file's hash, so this copy's own sha256 differs from the canonical script's on purpose.
 SYNTHETIC | exit code: 0 ; verdict read back: ACCEPT
 SYNTHETIC | LIMIT 1: this shows the ACCEPT branch is REACHABLE and that the registered rules produce the verdict they force on constructed data. It does NOT show that the endpoint works: the answer was chosen when the file was written.
 SYNTHETIC | LIMIT 2: the grid size below is this case's own -- the anchors are computed from the fabricated curves. It is NOT the registered grid of 23 tested levels.
 SYNTHETIC | LIMIT 3: the harness reads only the substrate's header and iteration column (structural, §11); it reads no loss value and computes no crossing time of the substrate.
+SYNTHETIC | CONVENTION CONTROL: the same substrate was read a second time by a copy whose crossing call was replaced with the STABLE crossing (the first checkpoint after which the curve stays <= L), the convention §2 refuses by name. It returned FAIL against ACCEPT here. The two must differ, or case (iv) would not be testing the convention at all.
 SYNTHETIC |
 SYNTHETIC | ==============================================================================
 SYNTHETIC | Reachability endpoint reading � docs/preregistration-reachability-endpoint.md
 SYNTHETIC | Executed by this script, run once; this output is the reading (�10).
 SYNTHETIC | UTC started : 2026-09-18T09:12:22+00:00
-SYNTHETIC | Repo root   : C:\Users\mikha\AppData\Local\Temp\reach_harness_i5z0xvfo\case_ii
-SYNTHETIC | Script path : C:\Users\mikha\AppData\Local\Temp\reach_harness_i5z0xvfo\case_ii\read_reachability_endpoint__RETARGETED.py
-SYNTHETIC | Script sha256: 44cd08526eab2e67038dc16271dd5f1eb92131cc35d686a90228c59b15e0be0f � normalized to LF (checkout-independent; equals the blob hash)
+SYNTHETIC | Repo root   : C:\Users\mikha\AppData\Local\Temp\reach_harness_i5z0xvfo\case_iv
+SYNTHETIC | Script path : C:\Users\mikha\AppData\Local\Temp\reach_harness_i5z0xvfo\case_iv\read_reachability_endpoint__RETARGETED.py
+SYNTHETIC | Script sha256: 990ce6d13b02efba423eb12bacc18ffad402c0b74c06daf35d0205519194227b � normalized to LF (checkout-independent; equals the blob hash)
 SYNTHETIC | Input file sha256 (�10: 'its own sha256 and the input file's sha256 are printed at the head of its output' � the input is the one registered substrate file, pinned in �10 v7):
-SYNTHETIC |   results/night4/night_report_checkpoints.csv : 31fe0d1826f004fb80f37ee6112fe841c77edcf8484c65cc737d5deab34b201b
-SYNTHETIC |   normalized to LF : 31fe0d1826f004fb80f37ee6112fe841c77edcf8484c65cc737d5deab34b201b (checkout-independent; equals the blob hash)
+SYNTHETIC |   results/night4/night_report_checkpoints.csv : da16d5357120d26afce2ae1a2de190e144f271684b050bbe3cea9cbf46332d59
+SYNTHETIC |   normalized to LF : da16d5357120d26afce2ae1a2de190e144f271684b050bbe3cea9cbf46332d59 (checkout-independent; equals the blob hash)
 SYNTHETIC | Constants   : step = 2.0 [registered, �3], one_step = 3600 iterations [registered, �5]; Lmin and L0 are COMPUTED at read time in v2 (�3) and are printed in �3 step 2 below, not here
 SYNTHETIC | No interpolation is used anywhere; no hook-field number enters any computation (�7, �11).
 SYNTHETIC | ==============================================================================
@@ -26,9 +27,9 @@ SYNTHETIC | --------------------------------------------------------------------
 SYNTHETIC | �3 step 1 � the registered substrate; run->column mapping by name; the eight iteration-250008 values
 SYNTHETIC | ------------------------------------------------------------------------------
 SYNTHETIC | substrate (the one registered file, �10 v7): results/night4/night_report_checkpoints.csv
-SYNTHETIC | substrate sha256 (raw bytes)        : 31fe0d1826f004fb80f37ee6112fe841c77edcf8484c65cc737d5deab34b201b
-SYNTHETIC | substrate sha256 (normalized to LF) : 31fe0d1826f004fb80f37ee6112fe841c77edcf8484c65cc737d5deab34b201b
-SYNTHETIC | input pin (�10, v7): match � the LF-normalized sha256 equals INPUT_SHA256_REGISTERED = 31fe0d1826f004fb80f37ee6112fe841c77edcf8484c65cc737d5deab34b201b (a mismatch refuses with exit 3 before any of this prints)
+SYNTHETIC | substrate sha256 (raw bytes)        : da16d5357120d26afce2ae1a2de190e144f271684b050bbe3cea9cbf46332d59
+SYNTHETIC | substrate sha256 (normalized to LF) : da16d5357120d26afce2ae1a2de190e144f271684b050bbe3cea9cbf46332d59
+SYNTHETIC | input pin (�10, v7): match � the LF-normalized sha256 equals INPUT_SHA256_REGISTERED = da16d5357120d26afce2ae1a2de190e144f271684b050bbe3cea9cbf46332d59 (a mismatch refuses with exit 3 before any of this prints)
 SYNTHETIC | 
 SYNTHETIC | run -> column (the mapping IS the registered file's header): val_loss_seed<N> = the canonical run of seed N, val_loss_seed<N>prime = the replicate of seed N
 SYNTHETIC |   9991/000  seed 0  canonical   val_loss_seed0
@@ -181,7 +182,7 @@ SYNTHETIC | --------------------------------------------------------------------
 SYNTHETIC | (1) kink at iteration 150000 � rationale: s/iter halves at iteration 150000 in 8/8 runs (schedule signature); whether the loss trajectory itself changes slope there decides whether grid levels on either side are the same task; this is printed, not judged
 SYNTHETIC |     least-squares slope of val_loss per iteration; 'before' over checkpoints with 1000 <= iteration <= 150000 (the (0,12) head excluded), 'after' over checkpoints with iteration > 150000
 SYNTHETIC |     9991/000: slope_before = -2.347418e-04, slope_after = -2.356149e-04, ratio after/before = 1.004
-SYNTHETIC |     9991/900: slope_before = -2.347417e-04, slope_after = -2.356149e-04, ratio after/before = 1.004
+SYNTHETIC |     9991/900: slope_before = -2.347417e-04, slope_after = 8.017982e-05, ratio after/before = -0.342
 SYNTHETIC |     9991/001: slope_before = -2.323289e-04, slope_after = -2.356149e-04, ratio after/before = 1.014
 SYNTHETIC |     9991/002: slope_before = -2.189969e-04, slope_after = -2.356150e-04, ratio after/before = 1.076
 SYNTHETIC |     9991/003: slope_before = -1.965042e-04, slope_after = -2.356150e-04, ratio after/before = 1.199
@@ -223,4 +224,4 @@ SYNTHETIC | ACCEPT (�4: between-gap > twin-gap at every accepted level � 19 
 SYNTHETIC | 
 SYNTHETIC | reading finished (UTC): 2026-09-18T09:12:22+00:00
 SYNTHETIC | 
-SYNTHETIC | JSON report written to: C:\Users\mikha\AppData\Local\Temp\reach_harness_i5z0xvfo\case_ii\reading_out_as_registered\reachability_reading.json
+SYNTHETIC | JSON report written to: C:\Users\mikha\AppData\Local\Temp\reach_harness_i5z0xvfo\case_iv\reading_out_as_registered\reachability_reading.json

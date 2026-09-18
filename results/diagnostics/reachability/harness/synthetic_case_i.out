@@ -1,19 +1,23 @@
 SYNTHETIC | substrate: synthetic (fabricated curves; NOT the registered substrate). This file is a control, not a reading.
-SYNTHETIC | case i: twin offset 0 checkpoints; expected verdict by construction: TEST UNREADABLE
+SYNTHETIC | case i: twin offset 0 checkpoints; non-monotone twin: False
+SYNTHETIC | expected verdict by construction (§2, first crossing): TEST UNREADABLE
 SYNTHETIC | why: twins identical: twin-gap 0 <= one step, so §5 disqualifies every level and the whole-test rule fires
 SYNTHETIC | script: retargeted copy -- INPUT_SHA256_REGISTERED replaced with the fabricated file's hash, so this copy's own sha256 differs from the canonical script's on purpose.
 SYNTHETIC | exit code: 0 ; verdict read back: TEST UNREADABLE
+SYNTHETIC | LIMIT 1: this shows the ACCEPT branch is REACHABLE and that the registered rules produce the verdict they force on constructed data. It does NOT show that the endpoint works: the answer was chosen when the file was written.
+SYNTHETIC | LIMIT 2: the grid size below is this case's own -- the anchors are computed from the fabricated curves. It is NOT the registered grid of 23 tested levels.
+SYNTHETIC | LIMIT 3: the harness reads only the substrate's header and iteration column (structural, §11); it reads no loss value and computes no crossing time of the substrate.
 SYNTHETIC |
 SYNTHETIC | ==============================================================================
 SYNTHETIC | Reachability endpoint reading � docs/preregistration-reachability-endpoint.md
 SYNTHETIC | Executed by this script, run once; this output is the reading (�10).
-SYNTHETIC | UTC started : 2026-09-18T08:56:47+00:00
-SYNTHETIC | Repo root   : C:\Users\mikha\AppData\Local\Temp\claude\c--Users-mikha-Documents-dpc-research-autoresearch-win-rtx\714f7fbc-56f0-4d3e-9b3f-7ebc2492a568\scratchpad\keep\case_i
-SYNTHETIC | Script path : C:\Users\mikha\AppData\Local\Temp\claude\c--Users-mikha-Documents-dpc-research-autoresearch-win-rtx\714f7fbc-56f0-4d3e-9b3f-7ebc2492a568\scratchpad\keep\case_i\read_reachability_endpoint__RETARGETED.py
-SYNTHETIC | Script sha256: 1a1afd8a39feea31266cdfbe7a6e21828ab727c3d06bf0eaa6793f6de46f5272 � normalized to LF (checkout-independent; equals the blob hash)
+SYNTHETIC | UTC started : 2026-09-18T09:12:21+00:00
+SYNTHETIC | Repo root   : C:\Users\mikha\AppData\Local\Temp\reach_harness_i5z0xvfo\case_i
+SYNTHETIC | Script path : C:\Users\mikha\AppData\Local\Temp\reach_harness_i5z0xvfo\case_i\read_reachability_endpoint__RETARGETED.py
+SYNTHETIC | Script sha256: 2bd687c80ac3ddbf3ecb59077b7e9c7e107383937eeefafeaa063735942aeb87 � normalized to LF (checkout-independent; equals the blob hash)
 SYNTHETIC | Input file sha256 (�10: 'its own sha256 and the input file's sha256 are printed at the head of its output' � the input is the one registered substrate file, pinned in �10 v7):
-SYNTHETIC |   results/night4/night_report_checkpoints.csv : d8eca8a48e9314041a623ceece394962a334c5ebeda4046dec1fc8546f8b0b07
-SYNTHETIC |   normalized to LF : d8eca8a48e9314041a623ceece394962a334c5ebeda4046dec1fc8546f8b0b07 (checkout-independent; equals the blob hash)
+SYNTHETIC |   results/night4/night_report_checkpoints.csv : 052c57071d9e37e30b4b10bdc907ae8cd2c96ddb65da55d587524e18d507e6da
+SYNTHETIC |   normalized to LF : 052c57071d9e37e30b4b10bdc907ae8cd2c96ddb65da55d587524e18d507e6da (checkout-independent; equals the blob hash)
 SYNTHETIC | Constants   : step = 2.0 [registered, �3], one_step = 3600 iterations [registered, �5]; Lmin and L0 are COMPUTED at read time in v2 (�3) and are printed in �3 step 2 below, not here
 SYNTHETIC | No interpolation is used anywhere; no hook-field number enters any computation (�7, �11).
 SYNTHETIC | ==============================================================================
@@ -22,9 +26,9 @@ SYNTHETIC | --------------------------------------------------------------------
 SYNTHETIC | �3 step 1 � the registered substrate; run->column mapping by name; the eight iteration-250008 values
 SYNTHETIC | ------------------------------------------------------------------------------
 SYNTHETIC | substrate (the one registered file, �10 v7): results/night4/night_report_checkpoints.csv
-SYNTHETIC | substrate sha256 (raw bytes)        : d8eca8a48e9314041a623ceece394962a334c5ebeda4046dec1fc8546f8b0b07
-SYNTHETIC | substrate sha256 (normalized to LF) : d8eca8a48e9314041a623ceece394962a334c5ebeda4046dec1fc8546f8b0b07
-SYNTHETIC | input pin (�10, v7): match � the LF-normalized sha256 equals INPUT_SHA256_REGISTERED = d8eca8a48e9314041a623ceece394962a334c5ebeda4046dec1fc8546f8b0b07 (a mismatch refuses with exit 3 before any of this prints)
+SYNTHETIC | substrate sha256 (raw bytes)        : 052c57071d9e37e30b4b10bdc907ae8cd2c96ddb65da55d587524e18d507e6da
+SYNTHETIC | substrate sha256 (normalized to LF) : 052c57071d9e37e30b4b10bdc907ae8cd2c96ddb65da55d587524e18d507e6da
+SYNTHETIC | input pin (�10, v7): match � the LF-normalized sha256 equals INPUT_SHA256_REGISTERED = 052c57071d9e37e30b4b10bdc907ae8cd2c96ddb65da55d587524e18d507e6da (a mismatch refuses with exit 3 before any of this prints)
 SYNTHETIC | 
 SYNTHETIC | run -> column (the mapping IS the registered file's header): val_loss_seed<N> = the canonical run of seed N, val_loss_seed<N>prime = the replicate of seed N
 SYNTHETIC |   9991/000  seed 0  canonical   val_loss_seed0
@@ -153,6 +157,6 @@ SYNTHETIC | verdict
 SYNTHETIC | ------------------------------------------------------------------------------
 SYNTHETIC | TEST UNREADABLE (�5 whole-test rule: 19 of 19 grid levels left the test � more than half). Not a fail, not a pass; the criterion is not read as a verdict.
 SYNTHETIC | 
-SYNTHETIC | reading finished (UTC): 2026-09-18T08:56:47+00:00
+SYNTHETIC | reading finished (UTC): 2026-09-18T09:12:21+00:00
 SYNTHETIC | 
-SYNTHETIC | JSON report written to: C:\Users\mikha\AppData\Local\Temp\claude\c--Users-mikha-Documents-dpc-research-autoresearch-win-rtx\714f7fbc-56f0-4d3e-9b3f-7ebc2492a568\scratchpad\keep\case_i\reading_out\reachability_reading.json
+SYNTHETIC | JSON report written to: C:\Users\mikha\AppData\Local\Temp\reach_harness_i5z0xvfo\case_i\reading_out_as_registered\reachability_reading.json
