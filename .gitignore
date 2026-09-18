@@ -16,3 +16,17 @@ graph.json
 
 # full-text copies with no confirmed redistribution licence (2026-09-13/14 import)
 sources/local/
+
+# Raw wave output written next to the launcher. Until 2026-09-18 the runnable tree
+# lived in a session scratchpad, so nights 1-4 wrote these outside the repository and
+# no rule was needed; the venv now sits at tools/.venv and the launcher's --out-dir is
+# its own directory, so night 5 onwards writes here. These are the raw artefacts -- a
+# per-run json/log/stdout.log triple of ~8.6 MB each, plus the wave's pid, progress and
+# launcher logs. None has ever been in history: the repository keeps the distilled
+# results/ tree instead. Ignored rather than committed so that a wave in flight cannot
+# make the tree dirty, which is the state a pre-registration's own guard refuses to run
+# in (S52, autoresearch-win-rtx: an un-gitignored cache tripped the dirty-guard and the
+# runner had never once run).
+tools/night/*.json
+tools/night/*.log
+tools/night/wave_*.pid
