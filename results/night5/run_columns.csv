@@ -1,0 +1,13 @@
+# EXPLICIT run -> column mapping for results/night5/night_report_checkpoints.csv.
+"# Do not derive this from column names: the prime marks count marks, not order (0"" and 3''' are both THIRD runs)."
+run_id,column,seed,role,run_index_for_seed,night,boot_session
+9991/000,val_loss_seed0,0,canonical,1,1,A
+9991/900,val_loss_seed0prime,0,replicate,2,1,A
+9992/000,val_loss_seed0primeprime,0,replicate,3,5,B
+9991/001,val_loss_seed1,1,canonical,1,2,A
+9991/002,val_loss_seed2,2,canonical,1,2,B
+9991/003,val_loss_seed3,3,canonical,1,3,B
+9991/903,val_loss_seed3prime,3,replicate,2,4,B
+9992/003,val_loss_seed3primeprimeprime,3,replicate,3,5,B
+9991/004,val_loss_seed4,4,canonical,1,3,B
+9991/005,val_loss_seed5,5,canonical,1,4,B

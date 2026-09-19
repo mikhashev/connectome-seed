@@ -1,5 +1,5 @@
 "# FULL FLOAT from the run jsons' checkpoint_metrics -- same convention as results/night4/night_report_checkpoints.csv, extended from eight runs to TEN (adds 0"" = 9992/000 and 3''' = 9992/003)."
-# column grammar: val_loss_seed<N> followed by k 'prime' tokens is the (k+1)-th run of seed N; the eight night-4 names are unchanged. # script: results/night5/extract_night5.py
+"# run -> column is an EXPLICIT mapping, recorded in results/night5/run_columns.csv beside this file; do NOT derive it from the column name. # script: results/night5/extract_night5.py"
 iteration,val_loss_seed0,val_loss_seed0prime,val_loss_seed1,val_loss_seed2,val_loss_seed3,val_loss_seed4,val_loss_seed3prime,val_loss_seed5,val_loss_seed0primeprime,val_loss_seed3primeprimeprime
 0,1212.5555891990662,1212.5555891990662,1212.5529980659485,1212.5592331886292,1212.549735546112,1212.5379438400269,1212.549735546112,1212.5467114448547,1212.5555891990662,1212.5497364997864
 12,1212.2575192451477,1212.257432460785,1211.7470698356628,1211.874619960785,1211.7933373451233,1211.5977621078491,1211.7931632995605,1212.0451250076294,1212.2575488090515,1211.793267250061

@@ -47,6 +47,23 @@ OUT_DIR = os.path.join(REPO, "results", "night5")
 
 DROP_KEYS = ("iter_wall_s", "train_loss_per_iter")
 MACHINE_STATE_KEYS = {"machine_state_start", "machine_state_end"}
+
+# The explicit run -> column mapping for the ten-run table. Written out rather than
+# derived: see the note beside its writer below for why the name cannot be trusted to
+# encode the run index.
+# (run_id, column, seed, role, run_index_for_seed, night, boot_session)
+RUN_COLUMNS = [
+    ("9991/000", "val_loss_seed0",                0, "canonical", 1, 1, "A"),
+    ("9991/900", "val_loss_seed0prime",           0, "replicate", 2, 1, "A"),
+    ("9992/000", "val_loss_seed0primeprime",      0, "replicate", 3, 5, "B"),
+    ("9991/001", "val_loss_seed1",                1, "canonical", 1, 2, "A"),
+    ("9991/002", "val_loss_seed2",                2, "canonical", 1, 2, "B"),
+    ("9991/003", "val_loss_seed3",                3, "canonical", 1, 3, "B"),
+    ("9991/903", "val_loss_seed3prime",           3, "replicate", 2, 4, "B"),
+    ("9992/003", "val_loss_seed3primeprimeprime", 3, "replicate", 3, 5, "B"),
+    ("9991/004", "val_loss_seed4",                4, "canonical", 1, 3, "B"),
+    ("9991/005", "val_loss_seed5",                5, "canonical", 1, 4, "B"),
+]
 FINAL_IT = 250008
 
 # (raw file stem, run id, dashed id, column name in the ten-run table, label)
@@ -164,14 +181,39 @@ def main():
                     "convention as results/night4/night_report_checkpoints.csv, "
                     "extended from eight runs to TEN (adds 0\" = 9992/000 and "
                     "3''' = 9992/003)."])
-        w.writerow(["# column grammar: val_loss_seed<N> followed by k 'prime' tokens is "
-                    "the (k+1)-th run of seed N; the eight night-4 names are unchanged. "
-                    "# script: results/night5/extract_night5.py"])
+        w.writerow(["# run -> column is an EXPLICIT mapping, recorded in "
+                    "results/night5/run_columns.csv beside this file; do NOT derive it "
+                    "from the column name. # script: results/night5/extract_night5.py"])
         w.writerow(header + [c for c, _v in new_cols])
         for i, row in enumerate(rows):
             w.writerow(row + ["%r" % vals[i] for _c, vals in new_cols])
     print("ten-run checkpoint table: %s (%d data rows, %d columns)"
           % (out_path, len(rows), len(header) + len(new_cols)))
+
+    # ---- the explicit run -> column mapping -------------------------------------
+    # Written because the grammar this file first proposed was broken by its own second
+    # case (Ark, 2026-09-19): "seed<N> plus k prime tokens is the (k+1)-th run" is true of
+    # val_loss_seed0primeprime, which is the 3rd run of seed 0, and false of
+    # val_loss_seed3primeprimeprime, which carries three prime marks and is also a 3rd run.
+    # The cause is our own notation: 0" and 3''' both mean "third run" while carrying two
+    # and three marks. The names copied the marks, the rule spoke of order, and the two
+    # coincided for the first case only. No number was affected -- this script maps runs to
+    # columns from the table below, never from a name -- but a v2 resolver built on the
+    # grammar would have given seed 3 a fourth run it does not have, and a pooled df of 5
+    # instead of 4. So: the mapping is recorded, and the grammar is demoted to a comment.
+    mapping_path = os.path.join(OUT_DIR, "run_columns.csv")
+    with io.open(mapping_path, "w", encoding="utf-8", newline="") as fh:
+        w = csv.writer(fh, lineterminator="\n")
+        w.writerow(["# EXPLICIT run -> column mapping for "
+                    "results/night5/night_report_checkpoints.csv."])
+        w.writerow(["# Do not derive this from column names: the prime marks count marks, "
+                    "not order (0\" and 3''' are both THIRD runs)."])
+        w.writerow(["run_id", "column", "seed", "role", "run_index_for_seed", "night",
+                    "boot_session"])
+        for row in RUN_COLUMNS:
+            w.writerow(list(row))
+    print("explicit run->column mapping: %s (%d runs)"
+          % (mapping_path, len(RUN_COLUMNS)))
 
     # ---- the statistics the record needs ----------------------------------------
     finals = {}

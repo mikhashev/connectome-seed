@@ -95,9 +95,28 @@ differences, and it is the cross-session one.** The outlier is `0′`, which nev
 session A.
 
 Correspondingly the two definitions of replicate noise barely differ: **5.9316 on 4 df**
-including cross-session variation against **5.8705 on 3 df** within-session only. The seam
-shows up in the fourth digit. A v2 protocol therefore does **not** need to discard the
-eight cross-seam pairs of the between-gap on the evidence available.
+including cross-session variation against **5.8705 on 3 df** within-session only.
+
+**That measures one of the two questions, and an earlier draft of this paragraph answered
+both from it (Ark, 2026-09-19; the numbers below recomputed here).** The two questions are
+distinct: whether a cross-session pair adds to the **variance**, and whether the sessions
+sit at different **levels**.
+
+- **Variance: measured.** 5.9316 against 5.8705 — admitting the cross-session pair adds
+  essentially nothing to the pooled spread.
+- **Shift: not measured, and this substrate cannot measure it.** The only estimate available
+  is one run in B against the mean of two in A. Its own standard error is
+  σ·√(1 + ½) = 5.9316 × 1.2247 = **7.2648**, and the observed
+  |0″ − mean(0, 0′)| = |1147.4102 − 1154.8949| = **7.4847** — that is **1.03 σ**. The data
+  do not separate a shift of zero from a shift of fourteen. Nor is the small |0″ − 0| =
+  1.3973 evidence of agreement: it is one realisation of a quantity whose standard
+  deviation is σ√2 = **8.39**.
+
+So the defensible statement is narrow: **the cross-session pair does not inflate the pooled
+replicate variance.** Whether the sessions differ in level is open, and a v2 protocol should
+not drop the eight cross-seam pairs *on this evidence* — nor keep them on the strength of a
+shift estimate that carries one standard deviation of resolution. That is a decision for v2
+to make explicitly, not one this night settles.
 
 ## 3. Gates
 
@@ -163,10 +182,19 @@ the instrument instead of the science.
 - Assembly: `results/night5/extract_night5.py`. Its slim-json key check is narrowed rather
   than dropped: exactly `machine_state_start` and `machine_state_end` may be new against
   the night-4 reference, and a missing key still fails.
-- Column grammar of the ten-run table: `val_loss_seed<N>` followed by k `prime` tokens is
-  the (k+1)-th run of seed N. The eight night-4 names are unchanged, and the frozen v1
-  reading script is unaffected — it reads night 4's file by a pinned hash and never looks
-  here.
+- **Run → column is an explicit mapping, `results/night5/run_columns.csv`, and must not be
+  derived from a column name.** The first version of this file proposed a grammar —
+  "`val_loss_seed<N>` followed by k `prime` tokens is the (k+1)-th run of seed N" — which is
+  true of `val_loss_seed0primeprime` and **false** of `val_loss_seed3primeprimeprime`: three
+  prime marks, but still the third run. The cause is our own notation, where `0″` and `3‴`
+  both mean "third run" while carrying two marks and three; the names copied the marks, the
+  rule spoke of the order, and they coincided for the first case only — a rule validated by
+  its first instance and broken by its second (Ark, 2026-09-19). No number here was
+  affected, because `extract_night5.py` maps runs to columns from a table and never from a
+  name. But a v2 resolver built on the grammar would have given seed 3 a fourth run it does
+  not have, a pooled df of 5 instead of 4, and one degree of freedom of claimed power for
+  nothing. The eight night-4 names are unchanged, and the frozen v1 reading script is
+  unaffected — it reads night 4's file by a pinned hash and never looks here.
 - Independent checks of the same artefacts by Ark and Zcode are in the DPC Research group,
   2026-09-19.
 
