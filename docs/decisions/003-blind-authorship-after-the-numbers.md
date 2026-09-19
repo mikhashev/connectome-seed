@@ -58,12 +58,33 @@ Concretely, for the reachability endpoint:
 
 - **v1 is closed as unreadable and will not be re-read.** The verdict stands as the instrument
   reported it.
-- **v2 is written before the data it will judge exists.** Contamination requires both a rule
-  and its data; fixing the rule while the data is absent is clean by construction, and
-  strictly cleaner than fixing it before merely *reading* existing data.
-- **The author of v2 is a session that has not read** `results/diagnostics/reachability/`, the
-  group thread from 2026-09-18 onward, or §2–3 of experiment 005. The exclusion list is
-  written down, not remembered.
+- **The protection is the exclusion list, not the absence of the data.** This decision was
+  argued while night 5 had not run, on the ground that contamination needs both a rule and its
+  data, so fixing the rule while the data is absent is clean by construction. **That ground
+  expired before this ADR was written** (amended 2026-09-19, Zcode): night 5 finished at
+  04:59:37Z and its ten curves — the substrate v2 will read — have been on disk since. The
+  argument remains true of *this* v2 only in the weaker form that the rule is fixed before the
+  data is read. So the working protection is now the list below, and it must cover the
+  substrate itself.
+- **The author of v2 is a session that has not read any of:**
+  - `results/diagnostics/reachability/` — the v1 reading's stdout and JSON;
+  - **`results/night5/`** — the ten-run checkpoint table and the run jsons, i.e. **the
+    substrate v2 is being written for**, and **`tools/night/night5_*`**, the same runs' raw
+    files, which are gitignored but present on disk;
+  - **the repository's own history for 2026-09-18 and 2026-09-19** — the commit messages carry
+    the verdict, the ratio and the SDs in plain text, so `git log` leaks what the files would
+    (Ark, 2026-09-19);
+  - the DPC Research group thread from 2026-09-18 onward;
+  - §2–3 of `docs/experiments/005-night5-third-runs-of-seed-0-and-seed-3.md`.
+
+  **What the author may have, and needs:** the substrate's *structural* shape — that it is 72
+  checkpoints by 10 runs, the iteration grid, which run is which individual — supplied by the
+  handover as a description, never by opening the file. That distinction is the same one §11
+  of the v1 registration drew between structure and values.
+
+  The list is written down, not remembered, and it is written **by path**, because an author
+  can open a file "just to check it is there" without breaking any instruction phrased as
+  care.
 - **Those who have seen the numbers may review logic and may not review thresholds.** Whether
   a verdict follows from its premises is checkable by anyone; whether a bar is set at the
   right place is a judgement that silently consults what one has seen.
@@ -81,7 +102,10 @@ Concretely, for the reachability endpoint:
   are the same people who saw the numbers.
 - **Wait for an outside executor.** Rejected as unnecessary — a fresh session with a written
   exclusion list is available immediately and costs nothing.
-- **Blind author on a substrate that does not yet exist.** Chosen.
+- **Blind author, with the contaminated material excluded by path.** Chosen. It was argued as
+  "on a substrate that does not yet exist"; by the time the decision was written the substrate
+  did exist, which moves the whole weight of the option onto the exclusion list and is why
+  that list is exhaustive above rather than illustrative.
 
 ## Consequences
 
@@ -111,9 +135,14 @@ Concretely, for the reachability endpoint:
 - **Q1:** Whether a reviewer who has seen the numbers can usefully check a *derived* constant's
   derivation without checking the constant. Provisionally yes — the derivation is an argument,
   not a value — but it has not been tested.
-- **Q2:** How this interacts with the repository's own history. The contaminated numbers are
-  committed, so every future author inherits the exclusion list rather than a clean slate. No
-  mechanism enforces it beyond the handover saying so.
+- **Q2 — partly answered 2026-09-19, and the answer is uncomfortable.** The contaminated
+  numbers are **committed**, in the files and in the commit messages themselves, so `git log`
+  alone leaks the verdict, the ratio and the SDs. The history is therefore on the exclusion
+  list above. What remains open is that **nothing enforces any of it**: the list is a sentence
+  in a brief, and every future author inherits the contamination rather than a clean slate.
+  The only structural answers are an author outside this repository or a substrate this
+  repository has never recorded — neither of which is available today, and both of which cost
+  more than the discipline does.
 
 ## Authors
 

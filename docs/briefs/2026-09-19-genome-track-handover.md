@@ -86,14 +86,32 @@ are on the checkpoints already, before and after 150,000.
 
 ## 6. What a new session must NOT read, if it is to be the blind author
 
-Separate job, separate constraint. Ark and Zcode have asked that the **v2 registration of the
-reachability endpoint** be written by someone who has not seen v1's numbers, because a rule
-chosen after seeing them cannot be signed by anyone who saw them, and all three of us have.
-A session that takes that job must not read:
+Separate job, separate constraint, and it is now a decision:
+[ADR-003](../decisions/003-blind-authorship-after-the-numbers.md). The **v2 registration of
+the reachability endpoint** must be written by someone who has not seen v1's numbers, because
+a rule chosen after seeing them cannot be signed by anyone who saw them, and all three of us
+have. A session that takes that job must not read, **by path**:
 
 - `results/diagnostics/reachability/` — the v1 reading's stdout and JSON;
+- **`results/night5/`** — the ten-run checkpoint table and the run jsons. This is **the
+  substrate v2 is being written for**, and the first version of this list did not cover it
+  (Zcode, 2026-09-19): an author writing the reading script can open the curves "just to check
+  the file is there" and be contaminated without breaking any instruction;
+- **`tools/night/night5_*`** — the same runs' raw files, gitignored but present on disk;
+- **the repository's history for 2026-09-18 and 2026-09-19** — `git log` and `git show` on
+  those commits, because the commit messages carry the verdict, the ratio and the standard
+  deviations in plain text (Ark, 2026-09-19);
 - the DPC Research group chat from 2026-09-18 onward;
 - §2 and §3 of `docs/experiments/005-...md` above.
+
+**What that session may have, and needs:** the substrate's *structure* — 72 checkpoints × 10
+runs, the iteration grid, which run belongs to which individual and which boot session —
+described here rather than read from the file. The v1 registration drew the same line between
+structure and values in its §11, and it is the line that makes the job possible at all.
+
+**And one thing that expired.** This was argued as "v2 is written before the data exists".
+Night 5 finished at 2026-09-19T04:59:37Z, so the data exists now. The protection is entirely
+the list above; nothing else is doing any work.
 
 **These two jobs are therefore not for the same session.** The genome track above is safe to
 read everything; the v2 author is not. Whoever starts, say which of the two they are before
