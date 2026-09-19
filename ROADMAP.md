@@ -62,7 +62,7 @@ review of `rho_ci.py`'s construction (Zcode, 2026-09-15 18:45 local — construc
 its numbers reproduced independently) ends "Applied on Mike's word [to be filled at commit]" in
 the pre-registration's own §9 — that confirmation line is still unfilled in the source file.
 
-## Phase 2 — The test (IN PROGRESS — item 1 done 2026-09-13; nights 1–4 done, n = 6 individuals trained, N not yet reached)
+## Phase 2 — The test (IN PROGRESS — item 1 done 2026-09-13; **nights 1–5 done, ten runs: six individuals, two of them run three times**; N not yet reached; the registered (c)4 endpoint read once and returned UNREADABLE)
 
 **Goal:** the condition, measured.
 
@@ -178,6 +178,37 @@ the pre-registration's own §9 — that confirmation line is still unfilled in t
      the N floor is chosen, on the ground that the cost of N is currently not estimable. It is
      a recommendation from the 2026-09-17 review thread, **not a decision and not a
      registration** — no rule in this file changes by it.
+
+   - **(v) That recommendation was carried out, and both halves of it are now results
+     (2026-09-19).** No rule in this file changes by them either; they are Observed.
+
+     **The reachability endpoint was pre-registered, reviewed three times by three authors,
+     and read ONCE.** Verdict **`TEST UNREADABLE`** — §5's own resolution floor removed 16 of
+     23 grid levels, every one of them on the twin side, and the whole-test rule fires above
+     12. Not a pass and not a failure: the instrument reported that it could not read. Raw
+     output and JSON are committed verbatim at
+     [results/diagnostics/reachability/](results/diagnostics/reachability/); the registration
+     is [docs/preregistration-reachability-endpoint.md](docs/preregistration-reachability-endpoint.md)
+     (v7). **It will not be re-read**: the numbers are visible to all three reviewers, so any
+     corrected rule would be fitted to them. A corrected v2 belongs on a substrate that does
+     not exist yet, written by an author who has not seen these numbers.
+
+     **Night 5 gave the first replicate spread on more than one pair.** Third runs of seed 0
+     and seed 3 ([experiment 005](docs/experiments/005-night5-third-runs-of-seed-0-and-seed-3.md),
+     [results/night5/](results/night5/)): pooled replicate SD **5.9316 on 4 df** against a
+     between-individual SD of **5.2717 on 5 df**, ratio **0.889** — *below one*. On the same
+     estimator the ratio before night 5 was 0.734; the purchase is **2 df → 4 df**, not the
+     point value, and the two 95 % intervals (3.55–17.05 and 3.29–12.93) overlap almost
+     entirely. **The expensive rung still does not rank individuals**, now measured rather
+     than assumed.
+
+     Two by-products worth carrying forward. The boot seam feared since 2026-09-14 does **not**
+     inflate the replicate variance (5.9316 against 5.8705 within-session), though whether the
+     sessions differ in *level* remains unmeasured at 1.03 σ. And the cheap/expensive
+     mismatch has a named mechanism: `activity_penalty.stop_iter = 150000` pulls the 65
+     cell-type biases — the only parameters a seed moves — toward a common level for the first
+     60 % of training, so the C3 probe at 25,000 sits **inside** that regime and the top rung
+     **outside** it.
 
 **Scale (proposal only, no rule change).** What training learns is a small fraction of the
 untrained held-out loss level —

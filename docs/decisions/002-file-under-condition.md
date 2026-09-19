@@ -91,10 +91,56 @@ kill criterion was quietly re-labelled as a ladder rung (`autoresearch-win-rtx`,
 
 ## Confirmation
 
-- [ ] The pre-registration file exists with all five items as numbers, and was reviewed
-      before the first GPU iteration.
-- [ ] Hypotheses (a) and (b) have separate decision rules in that file.
-- [ ] The first GPU iteration's cost is recorded before any overnight run is scheduled.
+- [x] The pre-registration file exists with all five items as numbers, and was reviewed
+      before the first GPU iteration. — `docs/preregistration-cheap-vs-expensive.md`,
+      committed `8fd1d8a` on 2026-09-13, reviewed by Ark at 15:45 UTC and Zcode at 16:24 UTC
+      the same day, pre-launch edits applied on Mike's word at 17:06, the file itself
+      recording "run 0 not yet started". **One precision, since the box says "before the first
+      GPU iteration":** the 24-iteration *cost probe* ran that morning at 11:19, before the
+      review; the first *training* run began after it. Ticked on that reading — the probe
+      measured the price of an iteration and tested no hypothesis — and the ambiguity is
+      recorded rather than resolved silently (CC, 2026-09-19).
+- [x] Hypotheses (a) and (b) have separate decision rules in that file. — its §1 is "Purpose
+      and the two hypotheses, kept separate", §4 is the statistic and threshold for (b) alone,
+      §5 is "Decision rules, both outcomes".
+- [x] The first GPU iteration's cost is recorded before any overnight run is scheduled. —
+      2026-09-13, **0.0619 s per training iteration** (n = 22, min 0.0589, max 0.0694), on
+      Mike's word that the card was free; every night was scheduled after it (ROADMAP Phase 2
+      item 1).
+
+## Status of the condition — 2026-09-19, after five nights
+
+**The condition is not met, it is not refuted, and it has been found to be underspecified.**
+Recorded here because this ADR is what the project's existence hangs on, and because none of
+the three statements below chooses a branch.
+
+1. **The expensive side does not rank.** Ten runs exist — six individuals, two of them run
+   three times. Pooled replicate SD **5.9316 on 4 df** against a between-individual SD of
+   **5.2717 on 5 df**: ratio **0.889**, below one. Two runs of the same individual scatter at
+   least as much as six different individuals do. Before night 5 this stood on one pair of
+   runs; it now stands on four degrees of freedom and says the same thing
+   ([experiment 005](../experiments/005-night5-third-runs-of-seed-0-and-seed-3.md)). The 95 %
+   intervals overlap almost entirely, and the result is fragile to one run of the ten — a
+   statement about n = 3 per individual, not a licence to drop that run.
+2. **"Consistent with" was measured across two regularisation regimes.** `activity_penalty`
+   acts on `nodes_bias` alone — the 65 cell-type biases, the only parameters a seed moves —
+   for the first 150,000 of 250,000 iterations. The cheap probe sits at 25,000, inside that
+   regime; the expensive rung at 250,000, outside it. "The cheap estimate is uninformative"
+   and "the cheap estimate is informative about a differently-regularised system" are two
+   different failures with the same symptom, and the design cannot separate them.
+3. **One alternative endpoint was registered, read once, and closed.** Iterations to cross a
+   fixed level — the form USPEX uses — returned **`TEST UNREADABLE`**: its own resolution
+   floor removed 16 of 23 levels, all on the twin side
+   ([results/diagnostics/reachability/](../../results/diagnostics/reachability/)). It will not
+   be re-read, because every reviewer has seen the numbers and a corrected rule would be
+   fitted to them. A v2 belongs on a substrate that does not exist yet, authored by someone
+   who has not seen these — see [ADR-003](003-blind-authorship-after-the-numbers.md).
+
+**What this ADR does not do here.** It does not reformulate the condition and does not choose
+between abandoning the cheap side and changing the population. The next question is free and
+comes first: the 72 checkpoints per run already on disk can say whether a probe placed *after*
+150,000 predicts the final better than one at 25,000. If it does, the mismatch was where the
+probe was put, and the substrate need not be touched at all.
 
 ## Open Questions
 

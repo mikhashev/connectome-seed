@@ -52,6 +52,39 @@ others (flyvis; the whole-brain connectomic controller of a biomechanical fly). 
 That is the condition in [docs/decisions/002](docs/decisions/002-file-under-condition.md). It is one
 experiment, it is pre-registered before it runs, and both of its outcomes are results.
 
+### What the condition looks like after five nights (2026-09-19)
+
+Two things were learned that change how the condition must be read. Neither settles it.
+
+**The expensive side is not a fixed reference.** Ten runs now exist — six individuals, two of
+them run three times. The spread between two runs of *the same* individual is at least as large
+as the spread between six *different* ones: pooled replicate SD **5.93** on 4 degrees of freedom
+against a between-individual SD of **5.27**, a ratio of **0.889**, which is below one
+([experiment 005](docs/experiments/005-night5-third-runs-of-seed-0-and-seed-3.md)). Before
+night 5 that comparison stood on a single pair of runs; it now stands on four degrees of freedom
+and says the same thing. So "consistent with an expensive one" presumes an expensive evaluation
+that ranks — and on the final loss, it does not.
+
+**And the question was underspecified.** flyvis applies an activity penalty to the 65 cell-type
+biases — the only parameters a seed moves — for the first 150,000 of 250,000 iterations, and then
+never again. The cheap probe sits at 25,000, **inside** that regime; the expensive rung at
+250,000, **outside** it. So "does the cheap estimate agree with the expensive one" was being
+measured as "does it agree with one taken under different regularisation". Two different failures
+wear the same symptom, and the design as it stands cannot tell them apart.
+
+**One alternative was tried and closed honestly.** A reachability endpoint — iterations to cross
+a fixed loss level, the form USPEX uses — was pre-registered and read **once**. It returned
+`TEST UNREADABLE`: its own resolution floor removed 16 of 23 levels, all on the twin side. Not a
+pass, not a failure; the instrument reported that it could not read. It is closed in that form
+and will not be re-read, because a rule chosen after the numbers are visible is a rule fitted to
+them.
+
+**What this does not say.** It does not say the project is refuted, and it does not choose a
+branch. It says the condition is harder than it was written, that the cheap and the expensive
+side must first be defined in one regime, and that the next question — whether a probe placed
+*after* 150,000 predicts the final better than one at 25,000 — costs nothing, because the
+checkpoints are already on disk.
+
 ## What "expert", "module" and "seed" mean here
 
 - A **module** is a typed sub-circuit — a set of cell types and their average connectivity —
