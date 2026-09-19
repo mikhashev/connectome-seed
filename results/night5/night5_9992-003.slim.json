@@ -1,0 +1,1761 @@
+{
+ "tag": "night5",
+ "id": "9992/003",
+ "seed": 3,
+ "n_iters": 250000,
+ "rungs": [
+  1000,
+  5000,
+  25000,
+  250000
+ ],
+ "argv": [
+  "--seed",
+  "3",
+  "--id",
+  "9992/003",
+  "--n-iters",
+  "250000",
+  "--rungs",
+  "1000,5000,25000,250000",
+  "--tag",
+  "night5",
+  "--out-dir",
+  "C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed\\tools\\night",
+  "--no-determinism",
+  "--progress-every",
+  "100",
+  "--progress-file",
+  "C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed\\tools\\night\\wave_night5.progress.log"
+ ],
+ "pid": 32676,
+ "started_utc": "2026-09-19T01:05:40Z",
+ "exit": "ok",
+ "rung_metrics": [
+  {
+   "iteration": 1000,
+   "val_loss": 1210.4204397201538,
+   "wall_s_since_start": 65.26827509998111,
+   "torch_max_memory_allocated_MiB": 1426.09521484375,
+   "torch_max_memory_reserved_MiB": 1536.0,
+   "nvidia_smi_memory_used_MiB": 4606,
+   "hook_wall_s": 0.2707526999874972,
+   "solver_iteration_at_hook": 999,
+   "checks": {
+    "lr_unchanged": true,
+    "pen_lr_unchanged": true,
+    "dt_unchanged": true,
+    "scheduler_iter_unchanged": true,
+    "back_in_train_mode": true,
+    "was_in_train_mode_before": true,
+    "dataset_augment_restored": true
+   }
+  },
+  {
+   "iteration": 5000,
+   "val_loss": 1205.5372433662415,
+   "wall_s_since_start": 318.72530340001686,
+   "torch_max_memory_allocated_MiB": 1426.09521484375,
+   "torch_max_memory_reserved_MiB": 1536.0,
+   "nvidia_smi_memory_used_MiB": 4606,
+   "hook_wall_s": 0.28284289996372536,
+   "solver_iteration_at_hook": 4999,
+   "checks": {
+    "lr_unchanged": true,
+    "pen_lr_unchanged": true,
+    "dt_unchanged": true,
+    "scheduler_iter_unchanged": true,
+    "back_in_train_mode": true,
+    "was_in_train_mode_before": true,
+    "dataset_augment_restored": true
+   }
+  },
+  {
+   "iteration": 25000,
+   "val_loss": 1187.8845620155334,
+   "wall_s_since_start": 1584.6445527999895,
+   "torch_max_memory_allocated_MiB": 1426.09521484375,
+   "torch_max_memory_reserved_MiB": 1536.0,
+   "nvidia_smi_memory_used_MiB": 4606,
+   "hook_wall_s": 0.23123849998228252,
+   "solver_iteration_at_hook": 24999,
+   "checks": {
+    "lr_unchanged": true,
+    "pen_lr_unchanged": true,
+    "dt_unchanged": true,
+    "scheduler_iter_unchanged": true,
+    "back_in_train_mode": true,
+    "was_in_train_mode_before": true,
+    "dataset_augment_restored": true
+   }
+  },
+  {
+   "iteration": 250000,
+   "val_loss": 1156.2285361289978,
+   "wall_s_since_start": 14023.925050200021,
+   "torch_max_memory_allocated_MiB": 1426.09521484375,
+   "torch_max_memory_reserved_MiB": 1536.0,
+   "nvidia_smi_memory_used_MiB": 4607,
+   "hook_wall_s": 0.3354216999723576,
+   "solver_iteration_at_hook": 249999,
+   "checks": {
+    "lr_unchanged": true,
+    "pen_lr_unchanged": true,
+    "dt_unchanged": true,
+    "scheduler_iter_unchanged": true,
+    "back_in_train_mode": true,
+    "was_in_train_mode_before": true,
+    "dataset_augment_restored": true
+   }
+  }
+ ],
+ "checkpoint_metrics": [
+  {
+   "iteration": 0,
+   "val_loss": 1212.5497364997864,
+   "chkpt_index": 0,
+   "wall_s_since_start": 0.39277480001328513,
+   "test_wall_s": 0.3916025999933481
+  },
+  {
+   "iteration": 12,
+   "val_loss": 1211.793267250061,
+   "chkpt_index": 1,
+   "wall_s_since_start": 2.4289970999816433,
+   "test_wall_s": 0.20177960000000894
+  },
+  {
+   "iteration": 3612,
+   "val_loss": 1206.8360919952393,
+   "chkpt_index": 2,
+   "wall_s_since_start": 230.73991260002367,
+   "test_wall_s": 0.2036272999830544
+  },
+  {
+   "iteration": 7212,
+   "val_loss": 1207.4791598320007,
+   "chkpt_index": 3,
+   "wall_s_since_start": 459.2010831999942,
+   "test_wall_s": 0.20501520001562312
+  },
+  {
+   "iteration": 10812,
+   "val_loss": 1206.1308588981628,
+   "chkpt_index": 4,
+   "wall_s_since_start": 686.9530274000135,
+   "test_wall_s": 0.23016410000855103
+  },
+  {
+   "iteration": 14412,
+   "val_loss": 1206.4164953231812,
+   "chkpt_index": 5,
+   "wall_s_since_start": 914.6096193999983,
+   "test_wall_s": 0.26229899999452755
+  },
+  {
+   "iteration": 18012,
+   "val_loss": 1204.07195520401,
+   "chkpt_index": 6,
+   "wall_s_since_start": 1142.4166207999806,
+   "test_wall_s": 0.24240149999968708
+  },
+  {
+   "iteration": 21612,
+   "val_loss": 1202.0731081962585,
+   "chkpt_index": 7,
+   "wall_s_since_start": 1370.9225595999742,
+   "test_wall_s": 0.2026731999940239
+  },
+  {
+   "iteration": 25212,
+   "val_loss": 1187.8080883026123,
+   "chkpt_index": 8,
+   "wall_s_since_start": 1598.8433021000237,
+   "test_wall_s": 0.239622299966868
+  },
+  {
+   "iteration": 28812,
+   "val_loss": 1183.5400166511536,
+   "chkpt_index": 9,
+   "wall_s_since_start": 1826.3116431999952,
+   "test_wall_s": 0.20630090002669021
+  },
+  {
+   "iteration": 32412,
+   "val_loss": 1175.7087035179138,
+   "chkpt_index": 10,
+   "wall_s_since_start": 2053.7598128999816,
+   "test_wall_s": 0.280749499972444
+  },
+  {
+   "iteration": 36012,
+   "val_loss": 1188.0125102996826,
+   "chkpt_index": 11,
+   "wall_s_since_start": 2281.6806964999996,
+   "test_wall_s": 0.20269399997778237
+  },
+  {
+   "iteration": 39612,
+   "val_loss": 1184.6923713684082,
+   "chkpt_index": 12,
+   "wall_s_since_start": 2509.7566302000196,
+   "test_wall_s": 0.2604973000125028
+  },
+  {
+   "iteration": 43212,
+   "val_loss": 1184.6592946052551,
+   "chkpt_index": 13,
+   "wall_s_since_start": 2737.933208799979,
+   "test_wall_s": 0.4131913000019267
+  },
+  {
+   "iteration": 46812,
+   "val_loss": 1179.675908088684,
+   "chkpt_index": 14,
+   "wall_s_since_start": 2965.9198187,
+   "test_wall_s": 0.4114759999793023
+  },
+  {
+   "iteration": 50412,
+   "val_loss": 1181.274784564972,
+   "chkpt_index": 15,
+   "wall_s_since_start": 3193.7946324999793,
+   "test_wall_s": 0.21763709996594116
+  },
+  {
+   "iteration": 54012,
+   "val_loss": 1177.4626784324646,
+   "chkpt_index": 16,
+   "wall_s_since_start": 3422.1966838000226,
+   "test_wall_s": 0.23229159996844828
+  },
+  {
+   "iteration": 57612,
+   "val_loss": 1168.8074746131897,
+   "chkpt_index": 17,
+   "wall_s_since_start": 3650.030154499982,
+   "test_wall_s": 0.2183031999738887
+  },
+  {
+   "iteration": 61212,
+   "val_loss": 1169.8489985466003,
+   "chkpt_index": 18,
+   "wall_s_since_start": 3877.887618799985,
+   "test_wall_s": 0.20447699999203905
+  },
+  {
+   "iteration": 64812,
+   "val_loss": 1172.463119983673,
+   "chkpt_index": 19,
+   "wall_s_since_start": 4106.129342100001,
+   "test_wall_s": 0.28369710000697523
+  },
+  {
+   "iteration": 68412,
+   "val_loss": 1171.0926761627197,
+   "chkpt_index": 20,
+   "wall_s_since_start": 4334.132082899974,
+   "test_wall_s": 0.20268960000248626
+  },
+  {
+   "iteration": 72012,
+   "val_loss": 1170.4560780525208,
+   "chkpt_index": 21,
+   "wall_s_since_start": 4561.970837200002,
+   "test_wall_s": 0.2656449000351131
+  },
+  {
+   "iteration": 75612,
+   "val_loss": 1168.9749031066895,
+   "chkpt_index": 22,
+   "wall_s_since_start": 4790.1330357000115,
+   "test_wall_s": 0.23007690004305914
+  },
+  {
+   "iteration": 79212,
+   "val_loss": 1174.5949029922485,
+   "chkpt_index": 23,
+   "wall_s_since_start": 5018.20003040001,
+   "test_wall_s": 0.2032420000177808
+  },
+  {
+   "iteration": 82812,
+   "val_loss": 1162.4251036643982,
+   "chkpt_index": 24,
+   "wall_s_since_start": 5246.005988400022,
+   "test_wall_s": 0.20149160001892596
+  },
+  {
+   "iteration": 86412,
+   "val_loss": 1162.4106268882751,
+   "chkpt_index": 25,
+   "wall_s_since_start": 5473.980996900005,
+   "test_wall_s": 0.20603689999552444
+  },
+  {
+   "iteration": 90012,
+   "val_loss": 1166.555404663086,
+   "chkpt_index": 26,
+   "wall_s_since_start": 5702.0003919000155,
+   "test_wall_s": 0.37413330003619194
+  },
+  {
+   "iteration": 93612,
+   "val_loss": 1175.1622653007507,
+   "chkpt_index": 27,
+   "wall_s_since_start": 5930.125345800014,
+   "test_wall_s": 0.3212292999960482
+  },
+  {
+   "iteration": 97212,
+   "val_loss": 1168.922146320343,
+   "chkpt_index": 28,
+   "wall_s_since_start": 6159.374800299993,
+   "test_wall_s": 0.281625300005544
+  },
+  {
+   "iteration": 100812,
+   "val_loss": 1169.8193879127502,
+   "chkpt_index": 29,
+   "wall_s_since_start": 6387.583386000013,
+   "test_wall_s": 0.2035433000419289
+  },
+  {
+   "iteration": 104412,
+   "val_loss": 1179.3173985481262,
+   "chkpt_index": 30,
+   "wall_s_since_start": 6615.41735459998,
+   "test_wall_s": 0.2303867000155151
+  },
+  {
+   "iteration": 108012,
+   "val_loss": 1165.6168746948242,
+   "chkpt_index": 31,
+   "wall_s_since_start": 6843.850261199987,
+   "test_wall_s": 0.3449860999826342
+  },
+  {
+   "iteration": 111612,
+   "val_loss": 1171.3647694587708,
+   "chkpt_index": 32,
+   "wall_s_since_start": 7071.847160300007,
+   "test_wall_s": 0.21695150004234165
+  },
+  {
+   "iteration": 115212,
+   "val_loss": 1178.0510444641113,
+   "chkpt_index": 33,
+   "wall_s_since_start": 7300.0146542,
+   "test_wall_s": 0.2073579999851063
+  },
+  {
+   "iteration": 118812,
+   "val_loss": 1182.9998865127563,
+   "chkpt_index": 34,
+   "wall_s_since_start": 7528.181810399983,
+   "test_wall_s": 0.2570619999896735
+  },
+  {
+   "iteration": 122412,
+   "val_loss": 1177.0700335502625,
+   "chkpt_index": 35,
+   "wall_s_since_start": 7756.624193899974,
+   "test_wall_s": 0.2150091999792494
+  },
+  {
+   "iteration": 126012,
+   "val_loss": 1182.6137804985046,
+   "chkpt_index": 36,
+   "wall_s_since_start": 7984.687072400004,
+   "test_wall_s": 0.2796690000104718
+  },
+  {
+   "iteration": 129612,
+   "val_loss": 1168.9878511428833,
+   "chkpt_index": 37,
+   "wall_s_since_start": 8212.981156900001,
+   "test_wall_s": 0.31031929998425767
+  },
+  {
+   "iteration": 133212,
+   "val_loss": 1172.9795365333557,
+   "chkpt_index": 38,
+   "wall_s_since_start": 8441.384839900013,
+   "test_wall_s": 0.2057370000402443
+  },
+  {
+   "iteration": 136812,
+   "val_loss": 1175.557228565216,
+   "chkpt_index": 39,
+   "wall_s_since_start": 8669.284063400002,
+   "test_wall_s": 0.31339830002980307
+  },
+  {
+   "iteration": 140412,
+   "val_loss": 1164.8907985687256,
+   "chkpt_index": 40,
+   "wall_s_since_start": 8897.404880799993,
+   "test_wall_s": 0.22251629998208955
+  },
+  {
+   "iteration": 144012,
+   "val_loss": 1166.856803894043,
+   "chkpt_index": 41,
+   "wall_s_since_start": 9125.393260299985,
+   "test_wall_s": 0.24646509997546673
+  },
+  {
+   "iteration": 147612,
+   "val_loss": 1163.057623386383,
+   "chkpt_index": 42,
+   "wall_s_since_start": 9353.738986100012,
+   "test_wall_s": 0.31061200000112876
+  },
+  {
+   "iteration": 151212,
+   "val_loss": 1164.5384798049927,
+   "chkpt_index": 43,
+   "wall_s_since_start": 9560.035479700018,
+   "test_wall_s": 0.2898132000118494
+  },
+  {
+   "iteration": 154812,
+   "val_loss": 1160.8126940727234,
+   "chkpt_index": 44,
+   "wall_s_since_start": 9722.709057900007,
+   "test_wall_s": 0.20821110001998022
+  },
+  {
+   "iteration": 158412,
+   "val_loss": 1160.0968594551086,
+   "chkpt_index": 45,
+   "wall_s_since_start": 9885.790739600023,
+   "test_wall_s": 0.23946189996786416
+  },
+  {
+   "iteration": 162012,
+   "val_loss": 1165.1136546134949,
+   "chkpt_index": 46,
+   "wall_s_since_start": 10049.309287299984,
+   "test_wall_s": 0.3092964999959804
+  },
+  {
+   "iteration": 165612,
+   "val_loss": 1165.3110909461975,
+   "chkpt_index": 47,
+   "wall_s_since_start": 10212.0377247,
+   "test_wall_s": 0.21852350002154708
+  },
+  {
+   "iteration": 169212,
+   "val_loss": 1164.2804808616638,
+   "chkpt_index": 48,
+   "wall_s_since_start": 10374.902456899988,
+   "test_wall_s": 0.22908339998684824
+  },
+  {
+   "iteration": 172812,
+   "val_loss": 1161.4680275917053,
+   "chkpt_index": 49,
+   "wall_s_since_start": 10537.437361399992,
+   "test_wall_s": 0.4090321999974549
+  },
+  {
+   "iteration": 176412,
+   "val_loss": 1152.090950012207,
+   "chkpt_index": 50,
+   "wall_s_since_start": 10700.359109600016,
+   "test_wall_s": 0.20507460000226274
+  },
+  {
+   "iteration": 180012,
+   "val_loss": 1160.8209714889526,
+   "chkpt_index": 51,
+   "wall_s_since_start": 10862.946969199984,
+   "test_wall_s": 0.20743259997107089
+  },
+  {
+   "iteration": 183612,
+   "val_loss": 1159.850441455841,
+   "chkpt_index": 52,
+   "wall_s_since_start": 11025.692394600017,
+   "test_wall_s": 0.34998260001884773
+  },
+  {
+   "iteration": 187212,
+   "val_loss": 1160.002679347992,
+   "chkpt_index": 53,
+   "wall_s_since_start": 11188.75888779998,
+   "test_wall_s": 0.2130833999835886
+  },
+  {
+   "iteration": 190812,
+   "val_loss": 1160.4920363426208,
+   "chkpt_index": 54,
+   "wall_s_since_start": 11351.130764600006,
+   "test_wall_s": 0.24890200002118945
+  },
+  {
+   "iteration": 194412,
+   "val_loss": 1161.2851963043213,
+   "chkpt_index": 55,
+   "wall_s_since_start": 11513.57831870002,
+   "test_wall_s": 0.2050543000223115
+  },
+  {
+   "iteration": 198012,
+   "val_loss": 1155.337393283844,
+   "chkpt_index": 56,
+   "wall_s_since_start": 11676.064253400022,
+   "test_wall_s": 0.25294750003376976
+  },
+  {
+   "iteration": 201612,
+   "val_loss": 1163.1990661621094,
+   "chkpt_index": 57,
+   "wall_s_since_start": 11838.484049699968,
+   "test_wall_s": 0.3266309999744408
+  },
+  {
+   "iteration": 205212,
+   "val_loss": 1164.824234008789,
+   "chkpt_index": 58,
+   "wall_s_since_start": 12001.415060699976,
+   "test_wall_s": 0.26437150000128895
+  },
+  {
+   "iteration": 208812,
+   "val_loss": 1160.045931816101,
+   "chkpt_index": 59,
+   "wall_s_since_start": 12164.39075989998,
+   "test_wall_s": 0.24641580000752583
+  },
+  {
+   "iteration": 212412,
+   "val_loss": 1157.4162545204163,
+   "chkpt_index": 60,
+   "wall_s_since_start": 12327.325486599992,
+   "test_wall_s": 0.2425482000107877
+  },
+  {
+   "iteration": 216012,
+   "val_loss": 1158.5754237174988,
+   "chkpt_index": 61,
+   "wall_s_since_start": 12490.170778399974,
+   "test_wall_s": 0.28277669998351485
+  },
+  {
+   "iteration": 219612,
+   "val_loss": 1157.8857808113098,
+   "chkpt_index": 62,
+   "wall_s_since_start": 12653.02437519998,
+   "test_wall_s": 0.2831071999971755
+  },
+  {
+   "iteration": 223212,
+   "val_loss": 1156.9439387321472,
+   "chkpt_index": 63,
+   "wall_s_since_start": 12815.784326999972,
+   "test_wall_s": 0.20885870000347495
+  },
+  {
+   "iteration": 226812,
+   "val_loss": 1162.5878434181213,
+   "chkpt_index": 64,
+   "wall_s_since_start": 12978.251334199973,
+   "test_wall_s": 0.2721244999556802
+  },
+  {
+   "iteration": 230412,
+   "val_loss": 1161.15726852417,
+   "chkpt_index": 65,
+   "wall_s_since_start": 13140.644978699973,
+   "test_wall_s": 0.289120199973695
+  },
+  {
+   "iteration": 234012,
+   "val_loss": 1157.2409381866455,
+   "chkpt_index": 66,
+   "wall_s_since_start": 13303.301731600019,
+   "test_wall_s": 0.20941390004009008
+  },
+  {
+   "iteration": 237612,
+   "val_loss": 1155.9370350837708,
+   "chkpt_index": 67,
+   "wall_s_since_start": 13465.694043399999,
+   "test_wall_s": 0.27190940000582486
+  },
+  {
+   "iteration": 241212,
+   "val_loss": 1159.3134350776672,
+   "chkpt_index": 68,
+   "wall_s_since_start": 13627.810196699982,
+   "test_wall_s": 0.29017079999903217
+  },
+  {
+   "iteration": 244812,
+   "val_loss": 1156.4190125465393,
+   "chkpt_index": 69,
+   "wall_s_since_start": 13789.960026799992,
+   "test_wall_s": 0.24379929999122396
+  },
+  {
+   "iteration": 248412,
+   "val_loss": 1157.6893153190613,
+   "chkpt_index": 70,
+   "wall_s_since_start": 13952.407528600015,
+   "test_wall_s": 0.2036591000505723
+  },
+  {
+   "iteration": 250008,
+   "val_loss": 1158.8484101295471,
+   "chkpt_index": 71,
+   "wall_s_since_start": 14025.440914099978,
+   "test_wall_s": 0.30810849997214973
+  }
+ ],
+ "checkpoints": [
+  {
+   "chkpt_index": 0,
+   "iteration": 0,
+   "duration_s": 1.0417512999847531,
+   "wall_s_since_start": 1.0427857000031509
+  },
+  {
+   "chkpt_index": 1,
+   "iteration": 12,
+   "duration_s": 0.8448139000101946,
+   "wall_s_since_start": 3.0719098999979906
+  },
+  {
+   "chkpt_index": 2,
+   "iteration": 3612,
+   "duration_s": 0.726784200000111,
+   "wall_s_since_start": 231.26294909999706
+  },
+  {
+   "chkpt_index": 3,
+   "iteration": 7212,
+   "duration_s": 0.7706708000041544,
+   "wall_s_since_start": 459.7666166999843
+  },
+  {
+   "chkpt_index": 4,
+   "iteration": 10812,
+   "duration_s": 0.7812333999900147,
+   "wall_s_since_start": 687.5039723999798
+  },
+  {
+   "chkpt_index": 5,
+   "iteration": 14412,
+   "duration_s": 0.7376709000091068,
+   "wall_s_since_start": 915.0848724999814
+  },
+  {
+   "chkpt_index": 6,
+   "iteration": 18012,
+   "duration_s": 0.8030212000012398,
+   "wall_s_since_start": 1142.9771217000089
+  },
+  {
+   "chkpt_index": 7,
+   "iteration": 21612,
+   "duration_s": 0.7580579000059515,
+   "wall_s_since_start": 1371.477824200003
+  },
+  {
+   "chkpt_index": 8,
+   "iteration": 25212,
+   "duration_s": 0.7676569000468589,
+   "wall_s_since_start": 1599.37121870002
+  },
+  {
+   "chkpt_index": 9,
+   "iteration": 28812,
+   "duration_s": 0.7453483999706805,
+   "wall_s_since_start": 1826.8505680999951
+  },
+  {
+   "chkpt_index": 10,
+   "iteration": 32412,
+   "duration_s": 0.8192244000383653,
+   "wall_s_since_start": 2054.2981625999673
+  },
+  {
+   "chkpt_index": 11,
+   "iteration": 36012,
+   "duration_s": 0.6908852999913506,
+   "wall_s_since_start": 2282.168766000017
+  },
+  {
+   "chkpt_index": 12,
+   "iteration": 39612,
+   "duration_s": 0.7596479000058025,
+   "wall_s_since_start": 2510.255662099982
+  },
+  {
+   "chkpt_index": 13,
+   "iteration": 43212,
+   "duration_s": 0.9408210000256076,
+   "wall_s_since_start": 2738.4607188000227
+  },
+  {
+   "chkpt_index": 14,
+   "iteration": 46812,
+   "duration_s": 0.8885515999863856,
+   "wall_s_since_start": 2966.396775499976
+  },
+  {
+   "chkpt_index": 15,
+   "iteration": 50412,
+   "duration_s": 0.7211170000373386,
+   "wall_s_since_start": 3194.297994399967
+  },
+  {
+   "chkpt_index": 16,
+   "iteration": 54012,
+   "duration_s": 0.7524500000290573,
+   "wall_s_since_start": 3422.716719799966
+  },
+  {
+   "chkpt_index": 17,
+   "iteration": 57612,
+   "duration_s": 0.7474287999793887,
+   "wall_s_since_start": 3650.559157599986
+  },
+  {
+   "chkpt_index": 18,
+   "iteration": 61212,
+   "duration_s": 0.7610989999957383,
+   "wall_s_since_start": 3878.44412369997
+  },
+  {
+   "chkpt_index": 19,
+   "iteration": 64812,
+   "duration_s": 0.7733575999736786,
+   "wall_s_since_start": 4106.618876399996
+  },
+  {
+   "chkpt_index": 20,
+   "iteration": 68412,
+   "duration_s": 0.6700655000167899,
+   "wall_s_since_start": 4334.599341000023
+  },
+  {
+   "chkpt_index": 21,
+   "iteration": 72012,
+   "duration_s": 0.754165600053966,
+   "wall_s_since_start": 4562.459235999966
+  },
+  {
+   "chkpt_index": 22,
+   "iteration": 75612,
+   "duration_s": 0.7516786999767646,
+   "wall_s_since_start": 4790.65451839997
+  },
+  {
+   "chkpt_index": 23,
+   "iteration": 79212,
+   "duration_s": 0.6909392999950796,
+   "wall_s_since_start": 5018.687607300002
+  },
+  {
+   "chkpt_index": 24,
+   "iteration": 82812,
+   "duration_s": 0.8360134999966249,
+   "wall_s_since_start": 5246.640390200017
+  },
+  {
+   "chkpt_index": 25,
+   "iteration": 86412,
+   "duration_s": 0.7554331999854185,
+   "wall_s_since_start": 5474.530269199982
+  },
+  {
+   "chkpt_index": 26,
+   "iteration": 90012,
+   "duration_s": 0.9559674999909475,
+   "wall_s_since_start": 5702.5820926000015
+  },
+  {
+   "chkpt_index": 27,
+   "iteration": 93612,
+   "duration_s": 0.7888430000166409,
+   "wall_s_since_start": 5930.592834500014
+  },
+  {
+   "chkpt_index": 28,
+   "iteration": 97212,
+   "duration_s": 0.7619028000044636,
+   "wall_s_since_start": 6159.85495020001
+  },
+  {
+   "chkpt_index": 29,
+   "iteration": 100812,
+   "duration_s": 0.6728780000121333,
+   "wall_s_since_start": 6388.052596299967
+  },
+  {
+   "chkpt_index": 30,
+   "iteration": 104412,
+   "duration_s": 0.694132000033278,
+   "wall_s_since_start": 6615.880979300011
+  },
+  {
+   "chkpt_index": 31,
+   "iteration": 108012,
+   "duration_s": 0.836250199994538,
+   "wall_s_since_start": 6844.341399999976
+  },
+  {
+   "chkpt_index": 32,
+   "iteration": 111612,
+   "duration_s": 0.6811597000341862,
+   "wall_s_since_start": 7072.311247900012
+  },
+  {
+   "chkpt_index": 33,
+   "iteration": 115212,
+   "duration_s": 0.720671700022649,
+   "wall_s_since_start": 7300.527825900004
+  },
+  {
+   "chkpt_index": 34,
+   "iteration": 118812,
+   "duration_s": 0.7372285000164993,
+   "wall_s_since_start": 7528.661854700011
+  },
+  {
+   "chkpt_index": 35,
+   "iteration": 122412,
+   "duration_s": 0.6953644999885,
+   "wall_s_since_start": 7757.104430600011
+  },
+  {
+   "chkpt_index": 36,
+   "iteration": 126012,
+   "duration_s": 0.7553898000041954,
+   "wall_s_since_start": 7985.162671400001
+  },
+  {
+   "chkpt_index": 37,
+   "iteration": 129612,
+   "duration_s": 0.8977574000018649,
+   "wall_s_since_start": 8213.568471800012
+  },
+  {
+   "chkpt_index": 38,
+   "iteration": 133212,
+   "duration_s": 0.6749941000016406,
+   "wall_s_since_start": 8441.853968899988
+  },
+  {
+   "chkpt_index": 39,
+   "iteration": 136812,
+   "duration_s": 0.7954508999828249,
+   "wall_s_since_start": 8669.76599699998
+  },
+  {
+   "chkpt_index": 40,
+   "iteration": 140412,
+   "duration_s": 0.693654099944979,
+   "wall_s_since_start": 8897.87589799997
+  },
+  {
+   "chkpt_index": 41,
+   "iteration": 144012,
+   "duration_s": 0.7213361000176519,
+   "wall_s_since_start": 9125.868012499996
+  },
+  {
+   "chkpt_index": 42,
+   "iteration": 147612,
+   "duration_s": 0.903592899965588,
+   "wall_s_since_start": 9354.33184379997
+  },
+  {
+   "chkpt_index": 43,
+   "iteration": 151212,
+   "duration_s": 0.7640464999713004,
+   "wall_s_since_start": 9560.50959219999
+  },
+  {
+   "chkpt_index": 44,
+   "iteration": 154812,
+   "duration_s": 0.8519495000364259,
+   "wall_s_since_start": 9723.35267350002
+  },
+  {
+   "chkpt_index": 45,
+   "iteration": 158412,
+   "duration_s": 0.7958873999887146,
+   "wall_s_since_start": 9886.3470447
+  },
+  {
+   "chkpt_index": 46,
+   "iteration": 162012,
+   "duration_s": 0.9098583000013605,
+   "wall_s_since_start": 10049.90971799998
+  },
+  {
+   "chkpt_index": 47,
+   "iteration": 165612,
+   "duration_s": 0.7992368999985047,
+   "wall_s_since_start": 10212.618316399981
+  },
+  {
+   "chkpt_index": 48,
+   "iteration": 169212,
+   "duration_s": 0.7244856000179425,
+   "wall_s_since_start": 10375.397737399966
+  },
+  {
+   "chkpt_index": 49,
+   "iteration": 172812,
+   "duration_s": 0.9069092000136152,
+   "wall_s_since_start": 10537.93511620001
+  },
+  {
+   "chkpt_index": 50,
+   "iteration": 176412,
+   "duration_s": 0.7622853000066243,
+   "wall_s_since_start": 10700.916199699976
+  },
+  {
+   "chkpt_index": 51,
+   "iteration": 180012,
+   "duration_s": 0.689523899985943,
+   "wall_s_since_start": 10863.428934699972
+  },
+  {
+   "chkpt_index": 52,
+   "iteration": 183612,
+   "duration_s": 0.8120060000219382,
+   "wall_s_since_start": 11026.154256700014
+  },
+  {
+   "chkpt_index": 53,
+   "iteration": 187212,
+   "duration_s": 0.6799116999609396,
+   "wall_s_since_start": 11189.225595999975
+  },
+  {
+   "chkpt_index": 54,
+   "iteration": 190812,
+   "duration_s": 0.7358836000203155,
+   "wall_s_since_start": 11351.617623900005
+  },
+  {
+   "chkpt_index": 55,
+   "iteration": 194412,
+   "duration_s": 0.7144495999673381,
+   "wall_s_since_start": 11514.087594299985
+  },
+  {
+   "chkpt_index": 56,
+   "iteration": 198012,
+   "duration_s": 0.7274148999713361,
+   "wall_s_since_start": 11676.538595199992
+  },
+  {
+   "chkpt_index": 57,
+   "iteration": 201612,
+   "duration_s": 0.7904560000170022,
+   "wall_s_since_start": 11838.947746500024
+  },
+  {
+   "chkpt_index": 58,
+   "iteration": 205212,
+   "duration_s": 0.7758171000168659,
+   "wall_s_since_start": 12001.926384599996
+  },
+  {
+   "chkpt_index": 59,
+   "iteration": 208812,
+   "duration_s": 0.7298649000003934,
+   "wall_s_since_start": 12164.8740674
+  },
+  {
+   "chkpt_index": 60,
+   "iteration": 212412,
+   "duration_s": 0.7503030000370927,
+   "wall_s_since_start": 12327.833119700023
+  },
+  {
+   "chkpt_index": 61,
+   "iteration": 216012,
+   "duration_s": 0.7547280000289902,
+   "wall_s_since_start": 12490.642607700021
+  },
+  {
+   "chkpt_index": 62,
+   "iteration": 219612,
+   "duration_s": 0.774883400008548,
+   "wall_s_since_start": 12653.516030700004
+  },
+  {
+   "chkpt_index": 63,
+   "iteration": 223212,
+   "duration_s": 0.7177216000272892,
+   "wall_s_since_start": 12816.293069000007
+  },
+  {
+   "chkpt_index": 64,
+   "iteration": 226812,
+   "duration_s": 0.7464043999789283,
+   "wall_s_since_start": 12978.7254923
+  },
+  {
+   "chkpt_index": 65,
+   "iteration": 230412,
+   "duration_s": 0.8834828999824822,
+   "wall_s_since_start": 13141.2392215
+  },
+  {
+   "chkpt_index": 66,
+   "iteration": 234012,
+   "duration_s": 0.7204691999941133,
+   "wall_s_since_start": 13303.81266679999
+  },
+  {
+   "chkpt_index": 67,
+   "iteration": 237612,
+   "duration_s": 0.7472365000285208,
+   "wall_s_since_start": 13466.169255800021
+  },
+  {
+   "chkpt_index": 68,
+   "iteration": 241212,
+   "duration_s": 0.8735015999991447,
+   "wall_s_since_start": 13628.393406999996
+  },
+  {
+   "chkpt_index": 69,
+   "iteration": 244812,
+   "duration_s": 0.731452599982731,
+   "wall_s_since_start": 13790.447558899992
+  },
+  {
+   "chkpt_index": 70,
+   "iteration": 248412,
+   "duration_s": 0.7209563999786042,
+   "wall_s_since_start": 13952.924703600002
+  },
+  {
+   "chkpt_index": 71,
+   "iteration": 250008,
+   "duration_s": 0.8016481999657117,
+   "wall_s_since_start": 14025.934325199982
+  }
+ ],
+ "nondeterministic_ops": {},
+ "warnings": [
+  "Hydra14MigrationWarning: \nversion_base=\"1.1\" selects Hydra 1.1 compatibility behavior.\nHydra 1.4 will remove this compatibility behavior.\nBefore upgrading to Hydra 1.4, set version_base=\"1.3\" and test your application.\nSee https://hydra.cc/docs/upgrades/1.3_to_1.4/prepare_for_1_4/ for preparation instructions.",
+  "UserWarning: Using a non-tuple sequence for multidimensional indexing is deprecated and will be changed in pytorch 2.9; use x[tuple(seq)] instead of x[seq]. In pytorch 2.9 this will be interpreted as tensor index, x[torch.tensor(seq)], which will result either in an error or a different result (Triggered internally at C:\\actions-runner\\_work\\pytorch\\pytorch\\pytorch\\torch\\csrc\\autograd\\python_variable_indexing.cpp:351.)"
+ ],
+ "errors": [],
+ "determinism": {
+  "requested": false,
+  "cublas_workspace_config": ":4096:8",
+  "cudnn_deterministic": false,
+  "cudnn_benchmark": false,
+  "use_deterministic_algorithms": false,
+  "mode_query": false,
+  "warn_only_query": false,
+  "tf32_matmul": false,
+  "tf32_cudnn": true
+ },
+ "versions": {
+  "flyvis": "1.2.0",
+  "torch": "2.9.1+cu128",
+  "numpy": "2.2.6",
+  "python": "3.10.20",
+  "cuda": "12.8",
+  "cudnn": 91002,
+  "gpu": "NVIDIA RTX PRO 4500 Blackwell"
+ },
+ "flyvis_root_dir": "C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed-data",
+ "flyvis_device": "cuda",
+ "connectome_file": "C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed\\tools\\.venv\\lib\\site-packages\\flyvis\\connectome\\fib25-fib19_v2.2.json",
+ "connectome_sha256": "bfbb0766251ff09e22723d0ebbf7b14793e70b3ae8ad0eea64eac9d28223351a",
+ "hydra_overrides": [
+  "ensemble_and_network_id=9992/003",
+  "task_name=flow",
+  "train=true",
+  "resume=false",
+  "task.n_iters=250000",
+  "description=night5",
+  "network.node_config.bias.seed=3"
+ ],
+ "resolved_config_yaml": "ensemble_and_network_id: 9992/003\ntask_name: flow\ntrain: true\nresume: false\ncheckpoint_only: false\nnetwork_name: flow/9992/003\ndescription: night5\noverfit: false\ndelete_if_exists: false\nsave_environment: false\nnetwork:\n  connectome:\n    type: ConnectomeFromAvgFilters\n    file: fib25-fib19_v2.2.json\n    extent: 15\n    n_syn_fill: 1\n  dynamics:\n    type: PPNeuronIGRSynapses\n    activation:\n      type: relu\n  edge_config:\n    sign:\n      type: SynapseSign\n      form: value\n      requires_grad: false\n      initial_dist: Value\n      groupby:\n      - source_type\n      - target_type\n    syn_count:\n      type: SynapseCount\n      initial_dist: Lognormal\n      mode: mean\n      requires_grad: false\n      std: 1.0\n      groupby:\n      - source_type\n      - target_type\n      - dv\n      - du\n      penalize:\n        function: weight_decay\n        kwargs:\n          lambda: 0\n    syn_strength:\n      type: SynapseCountScaling\n      initial_dist: Value\n      requires_grad: true\n      scale: 0.01\n      clamp: non_negative\n      groupby:\n      - source_type\n      - target_type\n      penalize:\n        function: weight_decay\n        kwargs:\n          lambda: 0\n  node_config:\n    bias:\n      type: RestingPotential\n      groupby:\n      - type\n      initial_dist: Normal\n      mode: sample\n      requires_grad: true\n      seed: 3\n      mean: 0.5\n      std: 0.05\n      symmetric: []\n      penalize:\n        activity: true\n    time_const:\n      type: TimeConstant\n      groupby:\n      - type\n      initial_dist: Value\n      value: 0.05\n      requires_grad: true\n  stimulus_config:\n    type: Stimulus\n    init_buffer: false\ntask:\n  dataset:\n    type: MultiTaskSintel\n    tasks:\n    - flow\n    boxfilter:\n      extent: 15\n      kernel_size: 13\n    vertical_splits: 3\n    n_frames: 19\n    center_crop_fraction: 0.7\n    dt: 0.02\n    augment: true\n    random_temporal_crop: true\n    all_frames: false\n    resampling: true\n    interpolate: true\n    p_flip: 0.5\n    p_rot: 0.5\n    contrast_std: 0.2\n    brightness_std: 0.1\n    gaussian_white_noise: 0.08\n    gamma_std: null\n    _init_cache: true\n    unittest: false\n    flip_axes:\n    - 0\n    - 1\n    - 2\n    - 3\n  decoder:\n    flow:\n      type: DecoderGAVP\n      shape:\n      - 8\n      - 2\n      kernel_size: 5\n      const_weight: 0.001\n      n_out_features: null\n      p_dropout: 0.5\n  loss:\n    flow: l2norm\n  task_weights: null\n  batch_size: 4\n  n_iters: 250000\n  n_folds: 4\n  fold: 1\n  seed: 0\n  original_split: true\noptim:\n  type: Adam\n  optim_dec:\n    lr: 5.0e-05\n  optim_net:\n    lr: 5.0e-05\npenalizer:\n  activity_penalty:\n    activity_baseline: 5.0\n    activity_penalty: 0.1\n    stop_iter: 150000\n    below_baseline_penalty_weight: 1.0\n    above_baseline_penalty_weight: 0.1\n  optim: SGD\nscheduler:\n  lr_net:\n    function: stepwise\n    start: 5.0e-05\n    stop: 5.0e-06\n    steps: 10\n  lr_dec:\n    function: stepwise\n    start: 5.0e-05\n    stop: 5.0e-06\n    steps: 10\n  lr_pen:\n    function: stepwise\n    start: 5.0e-05\n    stop: 5.0e-06\n    steps: 10\n  dt:\n    function: stepwise\n    start: 0.02\n    stop: 0.02\n    steps: 10\n  chkpt_every_epoch: 300\n",
+ "solver_config": {
+  "network_name": "flow/9992/003",
+  "description": "night5",
+  "network": {
+   "connectome": {
+    "type": "ConnectomeFromAvgFilters",
+    "file": "fib25-fib19_v2.2.json",
+    "extent": 15,
+    "n_syn_fill": 1
+   },
+   "dynamics": {
+    "type": "PPNeuronIGRSynapses",
+    "activation": {
+     "type": "relu"
+    }
+   },
+   "edge_config": {
+    "sign": {
+     "type": "SynapseSign",
+     "form": "value",
+     "requires_grad": false,
+     "initial_dist": "Value",
+     "groupby": [
+      "source_type",
+      "target_type"
+     ]
+    },
+    "syn_count": {
+     "type": "SynapseCount",
+     "initial_dist": "Lognormal",
+     "mode": "mean",
+     "requires_grad": false,
+     "std": 1.0,
+     "groupby": [
+      "source_type",
+      "target_type",
+      "dv",
+      "du"
+     ],
+     "penalize": {
+      "function": "weight_decay",
+      "kwargs": {
+       "lambda": 0
+      }
+     }
+    },
+    "syn_strength": {
+     "type": "SynapseCountScaling",
+     "initial_dist": "Value",
+     "requires_grad": true,
+     "scale": 0.01,
+     "clamp": "non_negative",
+     "groupby": [
+      "source_type",
+      "target_type"
+     ],
+     "penalize": {
+      "function": "weight_decay",
+      "kwargs": {
+       "lambda": 0
+      }
+     }
+    }
+   },
+   "node_config": {
+    "bias": {
+     "type": "RestingPotential",
+     "groupby": [
+      "type"
+     ],
+     "initial_dist": "Normal",
+     "mode": "sample",
+     "requires_grad": true,
+     "seed": 3,
+     "mean": 0.5,
+     "std": 0.05,
+     "symmetric": [],
+     "penalize": {
+      "activity": true
+     }
+    },
+    "time_const": {
+     "type": "TimeConstant",
+     "groupby": [
+      "type"
+     ],
+     "initial_dist": "Value",
+     "value": 0.05,
+     "requires_grad": true
+    }
+   },
+   "stimulus_config": {
+    "type": "Stimulus",
+    "init_buffer": false
+   }
+  },
+  "task": {
+   "dataset": {
+    "type": "MultiTaskSintel",
+    "tasks": [
+     "flow"
+    ],
+    "boxfilter": {
+     "extent": 15,
+     "kernel_size": 13
+    },
+    "vertical_splits": 3,
+    "n_frames": 19,
+    "center_crop_fraction": 0.7,
+    "dt": 0.02,
+    "augment": true,
+    "random_temporal_crop": true,
+    "all_frames": false,
+    "resampling": true,
+    "interpolate": true,
+    "p_flip": 0.5,
+    "p_rot": 0.5,
+    "contrast_std": 0.2,
+    "brightness_std": 0.1,
+    "gaussian_white_noise": 0.08,
+    "gamma_std": null,
+    "_init_cache": true,
+    "unittest": false,
+    "flip_axes": [
+     0,
+     1,
+     2,
+     3
+    ]
+   },
+   "decoder": {
+    "flow": {
+     "type": "DecoderGAVP",
+     "shape": [
+      8,
+      2
+     ],
+     "kernel_size": 5,
+     "const_weight": 0.001,
+     "n_out_features": null,
+     "p_dropout": 0.5
+    }
+   },
+   "loss": {
+    "flow": "l2norm"
+   },
+   "task_weights": null,
+   "batch_size": 4,
+   "n_iters": 250000,
+   "n_folds": 4,
+   "fold": 1,
+   "seed": 0,
+   "original_split": true
+  },
+  "optim": {
+   "type": "Adam",
+   "optim_dec": {
+    "lr": 5e-05
+   },
+   "optim_net": {
+    "lr": 5e-05
+   }
+  },
+  "penalizer": {
+   "activity_penalty": {
+    "activity_baseline": 5.0,
+    "activity_penalty": 0.1,
+    "stop_iter": 150000,
+    "below_baseline_penalty_weight": 1.0,
+    "above_baseline_penalty_weight": 0.1
+   },
+   "optim": "SGD"
+  },
+  "scheduler": {
+   "lr_net": {
+    "function": "stepwise",
+    "start": 5e-05,
+    "stop": 5e-06,
+    "steps": 10
+   },
+   "lr_dec": {
+    "function": "stepwise",
+    "start": 5e-05,
+    "stop": 5e-06,
+    "steps": 10
+   },
+   "lr_pen": {
+    "function": "stepwise",
+    "start": 5e-05,
+    "stop": 5e-06,
+    "steps": 10
+   },
+   "dt": {
+    "function": "stepwise",
+    "start": 0.02,
+    "stop": 0.02,
+    "steps": 10
+   },
+   "chkpt_every_epoch": 300
+  }
+ },
+ "network_dir": "C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed-data\\results\\flow\\9992\\003",
+ "solver_init_s": 4.987297200015746,
+ "n_params": {
+  "network_trainable": 734,
+  "decoder_trainable": 7427
+ },
+ "bias_seed_in_network_config": 3,
+ "split": {
+  "original_split": true,
+  "n_items_total": 69,
+  "train_items": [
+   "sequence_00_alley_1_split_00",
+   "sequence_00_alley_1_split_01",
+   "sequence_00_alley_1_split_02",
+   "sequence_01_alley_2_split_00",
+   "sequence_01_alley_2_split_01",
+   "sequence_01_alley_2_split_02",
+   "sequence_03_ambush_4_split_00",
+   "sequence_03_ambush_4_split_01",
+   "sequence_03_ambush_4_split_02",
+   "sequence_04_ambush_5_split_00",
+   "sequence_04_ambush_5_split_01",
+   "sequence_04_ambush_5_split_02",
+   "sequence_05_ambush_6_split_00",
+   "sequence_05_ambush_6_split_01",
+   "sequence_05_ambush_6_split_02",
+   "sequence_06_ambush_7_split_00",
+   "sequence_06_ambush_7_split_01",
+   "sequence_06_ambush_7_split_02",
+   "sequence_08_bamboo_2_split_00",
+   "sequence_08_bamboo_2_split_01",
+   "sequence_08_bamboo_2_split_02",
+   "sequence_10_bandage_2_split_00",
+   "sequence_10_bandage_2_split_01",
+   "sequence_10_bandage_2_split_02",
+   "sequence_11_cave_2_split_00",
+   "sequence_11_cave_2_split_01",
+   "sequence_11_cave_2_split_02",
+   "sequence_14_market_5_split_00",
+   "sequence_14_market_5_split_01",
+   "sequence_14_market_5_split_02",
+   "sequence_15_market_6_split_00",
+   "sequence_15_market_6_split_01",
+   "sequence_15_market_6_split_02",
+   "sequence_17_shaman_2_split_00",
+   "sequence_17_shaman_2_split_01",
+   "sequence_17_shaman_2_split_02",
+   "sequence_18_shaman_3_split_00",
+   "sequence_18_shaman_3_split_01",
+   "sequence_18_shaman_3_split_02",
+   "sequence_19_sleeping_1_split_00",
+   "sequence_19_sleeping_1_split_01",
+   "sequence_19_sleeping_1_split_02",
+   "sequence_20_sleeping_2_split_00",
+   "sequence_20_sleeping_2_split_01",
+   "sequence_20_sleeping_2_split_02",
+   "sequence_21_temple_2_split_00",
+   "sequence_21_temple_2_split_01",
+   "sequence_21_temple_2_split_02",
+   "sequence_22_temple_3_split_00",
+   "sequence_22_temple_3_split_01",
+   "sequence_22_temple_3_split_02"
+  ],
+  "val_items": [
+   "sequence_02_ambush_2_split_00",
+   "sequence_02_ambush_2_split_01",
+   "sequence_02_ambush_2_split_02",
+   "sequence_07_bamboo_1_split_00",
+   "sequence_07_bamboo_1_split_01",
+   "sequence_07_bamboo_1_split_02",
+   "sequence_09_bandage_1_split_00",
+   "sequence_09_bandage_1_split_01",
+   "sequence_09_bandage_1_split_02",
+   "sequence_12_cave_4_split_00",
+   "sequence_13_market_2_split_00",
+   "sequence_13_market_2_split_01",
+   "sequence_13_market_2_split_02",
+   "sequence_16_mountain_1_split_00",
+   "sequence_16_mountain_1_split_01",
+   "sequence_16_mountain_1_split_02"
+  ],
+  "train_scenes": [
+   "alley_1",
+   "alley_2",
+   "ambush_4",
+   "ambush_5",
+   "ambush_6",
+   "ambush_7",
+   "bamboo_2",
+   "bandage_2",
+   "cave_2",
+   "market_5",
+   "market_6",
+   "shaman_2",
+   "shaman_3",
+   "sleeping_1",
+   "sleeping_2",
+   "temple_2",
+   "temple_3"
+  ],
+  "val_scenes": [
+   "ambush_2",
+   "bamboo_1",
+   "bandage_1",
+   "cave_4",
+   "market_2",
+   "mountain_1"
+  ],
+  "scene_intersection": [],
+  "item_intersection": [],
+  "items_in_neither_list": [
+   "sequence_12_cave_4_split_01",
+   "sequence_12_cave_4_split_02"
+  ],
+  "train_seq_index": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5,
+   9,
+   10,
+   11,
+   12,
+   13,
+   14,
+   15,
+   16,
+   17,
+   18,
+   19,
+   20,
+   24,
+   25,
+   26,
+   30,
+   31,
+   32,
+   33,
+   34,
+   35,
+   42,
+   43,
+   44,
+   45,
+   46,
+   47,
+   51,
+   52,
+   53,
+   54,
+   55,
+   56,
+   57,
+   58,
+   59,
+   60,
+   61,
+   62,
+   63,
+   64,
+   65,
+   66,
+   67,
+   68
+  ],
+  "val_seq_index": [
+   6,
+   7,
+   8,
+   21,
+   22,
+   23,
+   27,
+   28,
+   29,
+   36,
+   39,
+   40,
+   41,
+   48,
+   49,
+   50
+  ]
+ },
+ "augmentation": {
+  "params": {
+   "augment": true,
+   "random_temporal_crop": true,
+   "all_frames": false,
+   "resampling": true,
+   "interpolate": true,
+   "p_flip": 0.5,
+   "p_rot": 0.5,
+   "contrast_std": 0.2,
+   "brightness_std": 0.1,
+   "gaussian_white_noise": 0.08,
+   "gamma_std": null,
+   "flip_axes": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "n_frames": 19,
+   "dt": 0.02
+  },
+  "train_loader_context_augmentation(True)": {
+   "temporal_crop": true,
+   "jitter": true,
+   "rotate": true,
+   "flip": true,
+   "noise": true,
+   "piecewise_resample": true,
+   "linear_interpolate": true,
+   "gamma_correct": true,
+   "temporal_crop.random": true,
+   "dataset.augment": true
+  },
+  "val_loader_context_augmentation(False)": {
+   "temporal_crop": true,
+   "jitter": false,
+   "rotate": false,
+   "flip": false,
+   "noise": false,
+   "piecewise_resample": true,
+   "linear_interpolate": true,
+   "gamma_correct": false,
+   "temporal_crop.random": false,
+   "dataset.augment": false
+  },
+  "note": "piecewise_resample/linear_interpolate are frame-rate resampling, not augmentation; sintel.py augment.setter: 'these two are not affected by augment'",
+  "loaders": {
+   "train_data": {
+    "batch_size": 4,
+    "sampler": "SubsetRandomSampler",
+    "drop_last": true,
+    "len_batches": 12,
+    "num_workers": 0
+   },
+   "val_data": {
+    "batch_size": 1,
+    "sampler": "IndexSampler",
+    "drop_last": false,
+    "len_batches": 16,
+    "num_workers": 0
+   }
+  }
+ },
+ "schedule": {
+  "chkpt_every_epoch": 300,
+  "iters_per_epoch": 12,
+  "iters_between_checkpoints_nominal": 3600,
+  "stop_iter": 250000,
+  "lr_net_array_len": 250001,
+  "lr_net_unique": [
+   5e-05,
+   4.5e-05,
+   4e-05,
+   3.5e-05,
+   3e-05,
+   2.5e-05,
+   1.9999999999999998e-05,
+   1.4999999999999999e-05,
+   9.999999999999999e-06,
+   5e-06
+  ],
+  "lr_net_at_iter": {
+   "0": 5e-05,
+   "1000": 5e-05,
+   "5000": 5e-05,
+   "25000": 4.5e-05,
+   "250000": 5e-06
+  },
+  "lr_now": [
+   5e-05,
+   5e-05
+  ],
+  "activity_penalty_stop_iter": 150000
+ },
+ "machine_state_start": {
+  "nvidia_smi_compute_processes": "2524, [Insufficient Permissions], [N/A]\n13560, C:\\Windows\\SystemApps\\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\\CrossDeviceResume.exe, [N/A]\n12352, C:\\Windows\\explorer.exe, [N/A]\n15772, C:\\Windows\\SystemApps\\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\\SearchHost.exe, [N/A]\n15796, C:\\Windows\\SystemApps\\Microsoft.Windows.StartMenuExperienceHost_cw5n1h2txyewy\\StartMenuExperienceHost.exe, [N/A]\n18424, C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\153.0.4234.32\\msedgewebview2.exe, [N/A]\n17492, C:\\Program Files\\WindowsApps\\B9ECED6F.ArmouryCrate_6.5.14.0_x64__qmba6cd70vzyy\\ArmouryCrate.exe, [N/A]\n20668, C:\\Program Files\\AmneziaVPN\\AmneziaVPN.exe, [N/A]\n22180, C:\\Program Files\\WindowsApps\\KingstonTechnologyCompany.FURYCTRL_2.0.65.0_x64__5myjd26we8sq4\\FuryCTRL\\FURYCTRL.exe, [N/A]\n22380, C:\\Windows\\SystemApps\\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\\TextInputHost.exe, [N/A]\n23392, C:\\Program Files\\WindowsApps\\AdvancedMicroDevicesInc-2.AMDRadeonSoftware_10.25.10201.0_x64__0a9344xs7nr4m\\radeonsoftware\\AMDRSSrcExt.exe, [N/A]\n24800, C:\\Windows\\SystemApps\\ShellExperienceHost_cw5n1h2txyewy\\ShellExperienceHost.exe, [N/A]\n21212, C:\\Program Files\\WindowsApps\\Microsoft.WindowsTerminal_1.24.11911.0_x64__8wekyb3d8bbwe\\WindowsTerminal.exe, [N/A]\n21792, C:\\Program Files\\WindowsApps\\AdvancedMicroDevicesInc-2.AMDRadeonSoftware_10.25.10201.0_x64__0a9344xs7nr4m\\radeonsoftware\\RadeonSoftware.exe, [N/A]\n24900, C:\\Windows\\System32\\ApplicationFrameHost.exe, [N/A]\n12284, C:\\Windows\\ImmersiveControlPanel\\SystemSettings.exe, [N/A]\n40512, C:\\Windows\\SystemApps\\Microsoft.LockApp_cw5n1h2txyewy\\LockApp.exe, [N/A]\n37236, C:\\Windows\\SystemApps\\Windows.PrintDialog_cw5n1h2txyewy\\PrintDialog.exe, [N/A]\n13156, C:\\Users\\mikha\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe, [N/A]\n44476, C:\\Users\\mikha\\AppData\\Local\\Programs\\ZCode\\ZCode.exe, [N/A]\n20164, C:\\Program Files\\WindowsApps\\RealtekSemiconductorCorp.RealtekAudioControl_1.53.376.0_x64__dt26b99r8h8gj\\RtkUWP.exe, [N/A]\n48364, C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe, [N/A]\n28460, [Insufficient Permissions], [N/A]\n44092, C:\\Users\\mikha\\AppData\\Roaming\\Telegram Desktop\\Telegram.exe, [N/A]\n52524, C:\\Program Files\\WindowsApps\\Microsoft.YourPhone_1.26072.255.0_x64__8wekyb3d8bbwe\\PhoneExperienceHost.exe, [N/A]\n42480, C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe, [N/A]\n28548, C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\153.0.4234.46\\msedgewebview2.exe, [N/A]\n49048, C:\\Windows\\System32\\ShellHost.exe, [N/A]\n34732, C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe, [N/A]\n32676, C:\\Users\\mikha\\AppData\\Roaming\\uv\\python\\cpython-3.10.20-windows-x86_64-none\\python.exe, [N/A]",
+  "nvidia_smi_memory_used_total_driver": "3168 MiB, 32623 MiB, 596.86",
+  "uptime_s": 351278.125,
+  "boot_time_utc": "2026-09-14T23:31:12Z",
+  "hostname": "mike",
+  "other_python_processes": [
+   "24384 | C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed\\tools\\.venv\\Scripts\\python.exe C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed\\tools\\night\\launch_wave.py --tag night5 --ensemble 9992 --seeds 0,3 --n-iters 250000 --rungs 1000,5000,25000,250000 --progress-every 100 --sequential --n",
+   "38264 | \"C:\\Users\\mikha\\AppData\\Roaming\\uv\\python\\cpython-3.10-windows-x86_64-none\\python.exe\"  C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed\\tools\\night\\launch_wave.py --tag night5 --ensemble 9992 --seeds 0,3 --n-iters 250000 --rungs 1000,5000,25000,250000 --progress-every 100 --sequential ",
+   "18612 | C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed\\tools\\.venv\\Scripts\\python.exe C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed\\tools\\night\\run_individual.py --seed 3 --id 9992/003 --n-iters 250000 --rungs 1000,5000,25000,250000 --tag night5 --out-dir C:\\Users\\mikha\\Documents\\dpc-",
+   "32676 | \"C:\\Users\\mikha\\AppData\\Roaming\\uv\\python\\cpython-3.10-windows-x86_64-none\\python.exe\"  C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed\\tools\\night\\run_individual.py --seed 3 --id 9992/003 --n-iters 250000 --rungs 1000,5000,25000,250000 --tag night5 --out-dir C:\\Users\\mikha\\Documents\\d"
+  ]
+ },
+ "total_train_wall_s": 14026.10166569997,
+ "final_iteration": 250008,
+ "iter_wall_median_1000_2000_s": 0.062363,
+ "iter_wall_median_all_s": 0.059288,
+ "iter_wall_median_after_first_epoch_s": 0.059288,
+ "vram": {
+  "torch_max_memory_allocated_MiB": 1426.09521484375,
+  "torch_max_memory_reserved_MiB": 1536.0,
+  "nvidia_smi_memory_used_MiB_at_end": 4607
+ },
+ "checkpoint_cadence_observed": {
+  "checkpoint_iterations": [
+   0,
+   12,
+   3612,
+   7212,
+   10812,
+   14412,
+   18012,
+   21612,
+   25212,
+   28812,
+   32412,
+   36012,
+   39612,
+   43212,
+   46812,
+   50412,
+   54012,
+   57612,
+   61212,
+   64812,
+   68412,
+   72012,
+   75612,
+   79212,
+   82812,
+   86412,
+   90012,
+   93612,
+   97212,
+   100812,
+   104412,
+   108012,
+   111612,
+   115212,
+   118812,
+   122412,
+   126012,
+   129612,
+   133212,
+   136812,
+   140412,
+   144012,
+   147612,
+   151212,
+   154812,
+   158412,
+   162012,
+   165612,
+   169212,
+   172812,
+   176412,
+   180012,
+   183612,
+   187212,
+   190812,
+   194412,
+   198012,
+   201612,
+   205212,
+   208812,
+   212412,
+   216012,
+   219612,
+   223212,
+   226812,
+   230412,
+   234012,
+   237612,
+   241212,
+   244812,
+   248412,
+   250008
+  ],
+  "iters_between_checkpoints": [
+   12,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   3600,
+   1596
+  ],
+  "iters_per_epoch": 12
+ },
+ "machine_state_end": {
+  "nvidia_smi_compute_processes": "2524, [Insufficient Permissions], [N/A]\n13560, C:\\Windows\\SystemApps\\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\\CrossDeviceResume.exe, [N/A]\n12352, C:\\Windows\\explorer.exe, [N/A]\n15772, C:\\Windows\\SystemApps\\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\\SearchHost.exe, [N/A]\n15796, C:\\Windows\\SystemApps\\Microsoft.Windows.StartMenuExperienceHost_cw5n1h2txyewy\\StartMenuExperienceHost.exe, [N/A]\n18424, C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\153.0.4234.32\\msedgewebview2.exe, [N/A]\n17492, C:\\Program Files\\WindowsApps\\B9ECED6F.ArmouryCrate_6.5.14.0_x64__qmba6cd70vzyy\\ArmouryCrate.exe, [N/A]\n20668, C:\\Program Files\\AmneziaVPN\\AmneziaVPN.exe, [N/A]\n22180, C:\\Program Files\\WindowsApps\\KingstonTechnologyCompany.FURYCTRL_2.0.65.0_x64__5myjd26we8sq4\\FuryCTRL\\FURYCTRL.exe, [N/A]\n22380, C:\\Windows\\SystemApps\\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\\TextInputHost.exe, [N/A]\n23392, C:\\Program Files\\WindowsApps\\AdvancedMicroDevicesInc-2.AMDRadeonSoftware_10.25.10201.0_x64__0a9344xs7nr4m\\radeonsoftware\\AMDRSSrcExt.exe, [N/A]\n24800, C:\\Windows\\SystemApps\\ShellExperienceHost_cw5n1h2txyewy\\ShellExperienceHost.exe, [N/A]\n21212, C:\\Program Files\\WindowsApps\\Microsoft.WindowsTerminal_1.24.11911.0_x64__8wekyb3d8bbwe\\WindowsTerminal.exe, [N/A]\n21792, C:\\Program Files\\WindowsApps\\AdvancedMicroDevicesInc-2.AMDRadeonSoftware_10.25.10201.0_x64__0a9344xs7nr4m\\radeonsoftware\\RadeonSoftware.exe, [N/A]\n24900, C:\\Windows\\System32\\ApplicationFrameHost.exe, [N/A]\n12284, C:\\Windows\\ImmersiveControlPanel\\SystemSettings.exe, [N/A]\n40512, C:\\Windows\\SystemApps\\Microsoft.LockApp_cw5n1h2txyewy\\LockApp.exe, [N/A]\n37236, C:\\Windows\\SystemApps\\Windows.PrintDialog_cw5n1h2txyewy\\PrintDialog.exe, [N/A]\n13156, C:\\Users\\mikha\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe, [N/A]\n44476, C:\\Users\\mikha\\AppData\\Local\\Programs\\ZCode\\ZCode.exe, [N/A]\n20164, C:\\Program Files\\WindowsApps\\RealtekSemiconductorCorp.RealtekAudioControl_1.53.376.0_x64__dt26b99r8h8gj\\RtkUWP.exe, [N/A]\n48364, C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe, [N/A]\n28460, [Insufficient Permissions], [N/A]\n44092, C:\\Users\\mikha\\AppData\\Roaming\\Telegram Desktop\\Telegram.exe, [N/A]\n52524, C:\\Program Files\\WindowsApps\\Microsoft.YourPhone_1.26072.255.0_x64__8wekyb3d8bbwe\\PhoneExperienceHost.exe, [N/A]\n42480, C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe, [N/A]\n28548, C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\153.0.4234.46\\msedgewebview2.exe, [N/A]\n49048, C:\\Windows\\System32\\ShellHost.exe, [N/A]\n32676, C:\\Users\\mikha\\AppData\\Roaming\\uv\\python\\cpython-3.10.20-windows-x86_64-none\\python.exe, [N/A]\n9396, C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe, [N/A]",
+  "nvidia_smi_memory_used_total_driver": "4607 MiB, 32623 MiB, 596.86",
+  "uptime_s": 365304.656,
+  "boot_time_utc": "2026-09-14T23:31:12Z",
+  "hostname": "mike",
+  "other_python_processes": [
+   "24384 | C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed\\tools\\.venv\\Scripts\\python.exe C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed\\tools\\night\\launch_wave.py --tag night5 --ensemble 9992 --seeds 0,3 --n-iters 250000 --rungs 1000,5000,25000,250000 --progress-every 100 --sequential --n",
+   "38264 | \"C:\\Users\\mikha\\AppData\\Roaming\\uv\\python\\cpython-3.10-windows-x86_64-none\\python.exe\"  C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed\\tools\\night\\launch_wave.py --tag night5 --ensemble 9992 --seeds 0,3 --n-iters 250000 --rungs 1000,5000,25000,250000 --progress-every 100 --sequential ",
+   "18612 | C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed\\tools\\.venv\\Scripts\\python.exe C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed\\tools\\night\\run_individual.py --seed 3 --id 9992/003 --n-iters 250000 --rungs 1000,5000,25000,250000 --tag night5 --out-dir C:\\Users\\mikha\\Documents\\dpc-",
+   "32676 | \"C:\\Users\\mikha\\AppData\\Roaming\\uv\\python\\cpython-3.10-windows-x86_64-none\\python.exe\"  C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed\\tools\\night\\run_individual.py --seed 3 --id 9992/003 --n-iters 250000 --rungs 1000,5000,25000,250000 --tag night5 --out-dir C:\\Users\\mikha\\Documents\\d"
+  ]
+ },
+ "finished_utc": "2026-09-19T04:59:37Z"
+}
