@@ -90,19 +90,31 @@ Separate job, separate constraint, and it is now a decision:
 [ADR-003](../decisions/003-blind-authorship-after-the-numbers.md). The **v2 registration of
 the reachability endpoint** must be written by someone who has not seen v1's numbers, because
 a rule chosen after seeing them cannot be signed by anyone who saw them, and all three of us
-have. A session that takes that job must not read, **by path**:
+have. **The list of paths is generated, not written here.** `docs/blind-author-exclusions.txt`,
+produced by `tools/contamination_scan.py` against a values file held outside the repository —
+**regenerate it immediately before the session starts.** The first hand-written version named
+five paths; the scan found **52 of 288 tracked files**, including `VISION.md`, `ROADMAP.md`,
+ADR-002, the v1 registration, §4 of experiment 005 (only §2–3 had been named), and ADR-003
+itself. A list that was wrong by 47 entries on its first day is why this is a scan and not a
+paragraph.
 
-- `results/diagnostics/reachability/` — the v1 reading's stdout and JSON;
-- **`results/night5/`** — the ten-run checkpoint table and the run jsons. This is **the
-  substrate v2 is being written for**, and the first version of this list did not cover it
-  (Zcode, 2026-09-19): an author writing the reading script can open the curves "just to check
-  the file is there" and be contaminated without breaking any instruction;
-- **`tools/night/night5_*`** — the same runs' raw files, gitignored but present on disk;
-- **the repository's history for 2026-09-18 and 2026-09-19** — `git log` and `git show` on
-  those commits, because the commit messages carry the verdict, the ratio and the standard
-  deviations in plain text (Ark, 2026-09-19);
-- the DPC Research group chat from 2026-09-18 onward;
-- §2 and §3 of `docs/experiments/005-...md` above.
+Excluded regardless of the scan, because they *are* the values or are untracked:
+`results/diagnostics/reachability/`, `results/night5/` — **the substrate v2 is written for**,
+which the first list did not cover (Zcode) — `tools/night/night5_*`, the repository history
+for 2026-09-18 and 2026-09-19, and the group chat from 2026-09-18 onward.
+
+**And a style template that is safe to copy.** The most natural model for a v2 registration is
+the v1 file, and it is one of the worst leaks in the repository: it carries every curve
+minimum and every iteration-12 value by name (Zcode). So the sighted side owes the blind
+author a **sanitised skeleton** — v1's section structure with every value removed: header →
+hypothesis → endpoint → grid as a rule → criterion in one sentence → resolution and
+disqualification → control → field → the §11 boundary. It is a transformation rather than a
+rewrite, because v1 already separates the two layers with its own `[PUBLISHED: …]` convention:
+rule in prose, number in a bracket with an address (Ark). **Its gate can go red: no decimal
+point may survive in the skeleton** — that catches every contaminating literal at once. The
+honest limit is that *integers* are not caught this way: "72 × 10" is structure and "16 of 23"
+is an outcome, and both are integers, so those need a short hand-written whitelist — which is
+the same structure-versus-values distinction, not an exception to it.
 
 **What that session may have, and needs:** the substrate's *structure* — 72 checkpoints × 10
 runs, the iteration grid, which run belongs to which individual and which boot session —

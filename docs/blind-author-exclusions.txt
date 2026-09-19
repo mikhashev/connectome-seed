@@ -1,0 +1,72 @@
+# Blind-author exclusion list — GENERATED, do not edit by hand.
+# Produced by tools/contamination_scan.py over 288 tracked files against a
+# values file held outside this repository. Paths only: a path is not a
+# value, so this file is safe for the blind author to read. The values are
+# not recorded here and must not be added.
+#
+# Regenerate before any blind session begins. The hand-written list this
+# replaced named five paths; the first scan found 52, so it was wrong by 47
+# entries on its first day (ADR-003).
+#
+# 53 files carry at least one contaminating literal:
+ROADMAP.md
+VISION.md
+backlog.md
+backlog_closed.md
+docs/briefs/2026-09-17-night5.md
+docs/briefs/2026-09-19-genome-track-handover.md
+docs/decisions/002-file-under-condition.md
+docs/decisions/003-blind-authorship-after-the-numbers.md
+docs/experiments/002-night2-seeds-1-and-2.md
+docs/experiments/004-night4-replicate-3prime-and-seed-5.md
+docs/experiments/005-night5-third-runs-of-seed-0-and-seed-3.md
+docs/plans/2026-09-17-endpoint-before-n.md
+docs/preregistration-reachability-endpoint.md
+results/diagnostics/c3/partA/jitter_9991-703.json
+results/diagnostics/reachability/harness/synthetic_case_i.out
+results/diagnostics/reachability/reachability_reading.json
+results/diagnostics/reachability/reading_stdout.txt
+results/night1/night1_9991-000.slim.json
+results/night1/night_report.md
+results/night1/train_loss_last1000_9991-900.csv
+results/night2/diagnostics/diag1c_per_item.json
+results/night2/diagnostics/per_item_25212.csv
+results/night2/diagnostics/rowB/rowB_profiles_250008.csv
+results/night2/diagnostics/rowB/rowB_profiles_25212.csv
+results/night2/diagnostics/rowB/rowC_trajectory.csv
+results/night2/night2b_9991-002.slim.json
+results/night2/night_report_1v0.md
+results/night2/night_report_checkpoints.csv
+results/night3/diagnostics/ablation/ablation_profiles.csv
+results/night3/diagnostics/rowB/rowB_profiles_250008.csv
+results/night3/diagnostics/rowB/rowB_profiles_25212.csv
+results/night3/diagnostics/rowB/rowB_profiles_iter0.csv
+results/night3/diagnostics/rowB/rowC_trajectory.csv
+results/night3/night3_9991-004.slim.json
+results/night3/night_report_4v0.md
+results/night3/night_report_4v3.md
+results/night3/night_report_checkpoints_4v0.csv
+results/night3/night_report_checkpoints_4v3.csv
+results/night3/train_loss_last1000_9991-004.csv
+results/night3/wave_night3.progress.log
+results/night4/README.md
+results/night4/night4_9991-005.slim.json
+results/night4/night_report_3primev0prime.md
+results/night4/night_report_3primev3.md
+results/night4/night_report_checkpoints_3primev0prime.csv
+results/night4/night_report_checkpoints_3primev3.csv
+results/night4/rep_9991-903.slim.json
+results/night4/train_loss_last1000_9991-005.csv
+results/night4/wave_night4.progress.log
+results/night5/night5_9992-003.slim.json
+results/night5/night_report_checkpoints.csv
+tools/reachability/read_reachability_endpoint.py
+tools/reachability/synthetic_reading_harness.py
+#
+# Whole directories excluded regardless of scan, because their contents are
+# the values themselves or are untracked:
+results/diagnostics/reachability/
+results/night5/
+tools/night/night5_*
+the repository history for 2026-09-18 and 2026-09-19 (git log and git show)
+the DPC Research group thread from 2026-09-18 onward

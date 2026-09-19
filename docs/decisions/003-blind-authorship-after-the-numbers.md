@@ -66,25 +66,40 @@ Concretely, for the reachability endpoint:
   argument remains true of *this* v2 only in the weaker form that the rule is fixed before the
   data is read. So the working protection is now the list below, and it must cover the
   substrate itself.
-- **The author of v2 is a session that has not read any of:**
-  - `results/diagnostics/reachability/` — the v1 reading's stdout and JSON;
-  - **`results/night5/`** — the ten-run checkpoint table and the run jsons, i.e. **the
-    substrate v2 is being written for**, and **`tools/night/night5_*`**, the same runs' raw
-    files, which are gitignored but present on disk;
-  - **the repository's own history for 2026-09-18 and 2026-09-19** — the commit messages carry
-    the verdict, the ratio and the SDs in plain text, so `git log` leaks what the files would
-    (Ark, 2026-09-19);
-  - the DPC Research group thread from 2026-09-18 onward;
-  - §2–3 of `docs/experiments/005-night5-third-runs-of-seed-0-and-seed-3.md`.
-
-  **What the author may have, and needs:** the substrate's *structural* shape — that it is 72
-  checkpoints by 10 runs, the iteration grid, which run is which individual — supplied by the
-  handover as a description, never by opening the file. That distinction is the same one §11
-  of the v1 registration drew between structure and values.
-
-  The list is written down, not remembered, and it is written **by path**, because an author
-  can open a file "just to check it is there" without breaking any instruction phrased as
-  care.
+- **Blindness is required to the VALUES, not to the rule** (Ark and Zcode, 2026-09-19; this
+  is the load-bearing clause and the earlier wording was wider than its mechanism). The
+  repairs the v1 reading exposed — that a resolution floor belongs to the *difference* being
+  compared and not to one of its terms, that a lower anchor needs an offset — are supplied to
+  the author **as requirements**, because the first is derivable from dimensions and the
+  second is not derivable at all. What then protects against fitting is not ignorance of the
+  problem but that **no constant is free**: where a number is needed it is derived, and a rule
+  with nothing adjustable cannot be tuned toward an answer. The empirical support is this
+  project's own history — v1 carried exactly three hand-set constants marked "registered
+  choice — fix in review", and the entire authorship dispute was about them; once v2 made the
+  anchors computed, the question of who wrote the rule lost most of its force.
+- **The exclusion list is GENERATED, not maintained.** `docs/blind-author-exclusions.txt`,
+  produced by `tools/contamination_scan.py` against a values file kept **outside** this
+  repository, so the literals never enter it and only paths — which are not values — come back
+  in. **The first version of this list was written by hand and named five paths; the scan
+  found 52 of 288 tracked files**, including `VISION.md`, `ROADMAP.md`, ADR-002, the v1
+  registration (which is a data sheet for eight of the ten curves: it carries every curve
+  minimum and every iteration-12 value by name), §4 of experiment 005, and **this ADR itself**.
+  A list wrong by 47 entries on its first day is a recollection, not a list — and none of the
+  three people able to check it would have noticed by reading, because all three had already
+  seen the numbers. Regenerate it before any blind session begins.
+- **Whole directories are excluded regardless of the scan**, because they *are* the values or
+  are untracked: `results/diagnostics/reachability/`, `results/night5/`,
+  `tools/night/night5_*`, the repository history for 2026-09-18 and 2026-09-19 (`git log` and
+  `git show` — the commit messages carry the verdict and the ratios in plain text), and the
+  DPC Research group thread from 2026-09-18 onward.
+- **What the author may have, and needs:** the substrate's *structural* shape — 72 checkpoints
+  by 10 runs, the iteration grid, which run is which individual and which boot session —
+  supplied by the handover as a description, never by opening the file. The same line §11 of
+  the v1 registration drew between structure and values.
+- **This Decision section is the authoritative copy of the rule; the handover is the working
+  copy for a session, and `docs/blind-author-exclusions.txt` is the authoritative list of
+  paths.** Named because three places referred to the list differently and a later edit would
+  otherwise diverge (Ark, 2026-09-19).
 - **Those who have seen the numbers may review logic and may not review thresholds.** Whether
   a verdict follows from its premises is checkable by anyone; whether a bar is set at the
   right place is a judgement that silently consults what one has seen.
@@ -124,7 +139,11 @@ Concretely, for the reachability endpoint:
 
 - [ ] v2 exists, and its own header names the session that wrote it and states that the
       session had not read the excluded material.
-- [ ] The excluded material is listed by path in the handover, not described in prose.
+- [ ] The excluded material is listed by path in `docs/blind-author-exclusions.txt`,
+      **regenerated by `tools/contamination_scan.py` immediately before the blind session
+      starts**, not described in prose and not carried forward from a previous run. (This box
+      previously said "in the handover", while the rule lives in Decision and the list in the
+      generated file — three places, no named authority. Corrected 2026-09-19 on Ark's point.)
 - [ ] v2 contains no constant chosen by hand: every number in it is derived from a rule stated
       before the data exists.
 - [ ] The review of v2 by anyone who saw v1's numbers is recorded as a logic review, and says
@@ -155,6 +174,14 @@ Concretely, for the reachability endpoint:
 - **Mike** — the decision
 
 ## References
+
+> **For the blind author: read §Decision and §Consequences of this file and nothing else in
+> it.** The references below are the provenance of the decision, and several of them are
+> addresses of the very material the decision excludes — a pointer is not a value, but a
+> pointer in the document you are required to read is an invitation rather than a risk (Ark,
+> 2026-09-19). The Context section above is worse: it states both the diagnosis and the
+> repair, which is deliberate — you are meant to receive the repairs as requirements — but it
+> also quotes the shape of the result, so it is not neutral reading either.
 
 - `docs/preregistration-reachability-endpoint.md` (v7) — the registration that produced the
   unreadable verdict, including its §11 rules on what voids a reading
