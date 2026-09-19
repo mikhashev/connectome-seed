@@ -231,9 +231,20 @@ one dense diagnostic run, and none of it changes a pre-registration rule.
 - **Step 2 — tuning battery.** Brief ready
   ([docs/briefs/2026-09-16-step2-tuning-battery.md](docs/briefs/2026-09-16-step2-tuning-battery.md)),
   waits on step 1.
-- **Step 3 — genome.** Not started; design and boundary in the plan above (§ Step 3): Ark writes
-  the design around S2 with label provenance, CC the two-page "what is the genome here" note,
-  Zcode the C6 control specification.
+- **Step 3 — genome.** Not started; design and boundary in
+  [docs/plans/2026-09-16-functional-readout-plan.md](docs/plans/2026-09-16-functional-readout-plan.md)
+  § "Step 3 — genome": Ark writes the design around S2 with label provenance, CC the two-page
+  "what is the genome here" note, Zcode the C6 control specification.
+  **This track needs no GPU and is not blocked by the nightly accrual** — it is text and design
+  work and can run in parallel. That was already true when this line was written on 2026-09-16,
+  and it was rediscovered as a fresh idea on 2026-09-19; saying it here is cheaper than
+  rediscovering it a third time.
+  *(Reference made explicit on 2026-09-19, CC. It read "in the plan above (§ Step 3)", which is
+  positional — this file names a second plan earlier, at the Phase-2 entry, so a reader skimming
+  could take "above" for the wrong one. Checked before editing rather than after: there is no
+  label collision, because `2026-09-17-endpoint-before-n.md` has no "Step 3" heading at all —
+  its sections are numbered "## 3. Order of work". The link resolved correctly; only the
+  phrasing was ambiguous, and nothing was renamed because nothing needed renaming.)*
 
 ## Phase 3 — The article (NOT STARTED)
 
