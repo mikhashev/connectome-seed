@@ -132,34 +132,6 @@ language_cutoff: 2026-09-13
   this measurement is what bounds N per night.
 - **axis:** knowledge
 
-
-### THE-NIGHT-TOOLING-LIVES-IN-A-TEMPORARY-SCRATCHPAD: the runner, the launcher and the patched environment sit in a session temp directory that nothing in the repository points at, and the venv cannot be moved (HIGH, open, 2026-09-14 — CC, on finishing the night tooling; instructions sent 2026-09-13 17:55 UTC)
-
-- **Observed.** `flyvis-probe/night/run_individual.py`, `launch_wave.py`, `start_night.ps1`
-  and the environment `flyvis-probe/.venv` (torch 2.9.1+cu128, flyvis 1.2.0, datamate with
-  the close-before-unlink patch) are all under `AppData/Local/Temp/claude/…/scratchpad/`;
-  the repository holds none of them; a uv venv is not relocatable.
-- **Observed 2026-09-14.** Scripts copied to `tools/night/` in commit (this commit); the
-  venv recipe still to be documented.
-- **Observed 2026-09-14 (this commit).** Scripts and recipe now in `tools/night/`:
-  `run_individual.py`, `launch_wave.py`, `start_night.ps1` (with the new `-NoReplicate`
-  switch), `night_report.py`, and `tools/night/README.md` (python/torch/flyvis/datamate
-  versions, the datamate Windows patch extracted from the live venv's `io.py`,
-  `FLYVIS_ROOT_DIR`, both launch commands). Remaining: re-create the venv outside the
-  scratchpad from that recipe.
-- **Inferred.** The night can run from there once. The next night cannot if the scratchpad
-  is gone, and the datamate patch goes with it —
-  [[DATAMATE-UNLINKS-AN-OPEN-HDF5-FILE-AND-WINDOWS-REFUSES]].
-- **First step.** After the night, on Mike's word: copy `night/` into the repository as
-  `tools/night/` (scripts only, no logs); write the venv recipe beside them (uv venv, torch
-  2.9.1+cu128, flyvis 1.2.0, the datamate patch); re-create the environment outside the
-  scratchpad and re-patch it; one 24-iteration dry run from the new location.
-- **2026-09-15, CC:** Night 3 (2026-09-15) again runs from the scratchpad copy (.../63f3961a-.../scratchpad/flyvis-probe/, per docs/next-session-plan.md §2); venv and scripts verified present and byte-identical to tools/night/ for the three executed files (run_individual.py, launch_wave.py, start_night.ps1); the migration per tools/night/README.md is scheduled after night 3, not before -- a pause costs more than the risk tonight (Ark 10:00); the two open entries about the night killing itself (this one and [[WINDOWS-UPDATE-RESTARTS-INSIDE-THE-NIGHT-WINDOW-BECAUSE-ACTIVE-HOURS-END-AT-0600]]) are both live tonight.
-- **2026-09-17 UTC (2026-09-18 local), CC:** Still unmigrated. Night 3 and night 4 both ran off the same scratchpad copy: `results/night3/README.md:51` and `results/night4/README.md:61` each set `RAW` to `.../63f3961a-96ce-4048-8338-72c162ea66f8/scratchpad/flyvis-probe/night`. The C3 diagnostic (2026-09-17) ran the same way: `results/diagnostics/c3/README.md:39` and `:97` write its netdir roots and A0-smoke output under `<scratchpad>`. The machine-state patch (commit `4f1b30c`, 2026-09-17) was verified against the scratchpad copy too -- its commit message: "the patched file's sha256 matches between the repo and the scratchpad night dir." The venv has still not been re-created outside the scratchpad.
-- **2026-09-18, CC — "a uv venv is not relocatable" is half true, and the half that matters here is false.** The venv was copied to `tools/.venv` and hashed against the original: 21,650 files each with `__pycache__` excluded, combined sha256 `94f7f483e8410e54887c98b20d520872823f1ba5ad9fa1c12d6b95359da7e318` on both sides, zero differing and zero present on one side only. From the new path `python.exe` runs, `import flyvis, datamate, torch` succeeds, `torch.cuda.is_available()` is `True`, and `start_night.ps1 -DryRun` reaches the launcher — so the night path, which invokes `python.exe <script>` and never a console entry point, is unaffected by the move. What genuinely does not relocate is the `Scripts\*.exe` layer: `flyvis.exe` carries the literal string `...\63f3961a-...\scratchpad\flyvis-probe\.venv\Scripts\python.exe` inside the binary, and it ran during the check **only because that path still exists**. The 2026-09-14 claim was written without a measurement behind it and was too strong; the accurate form is that the entry-point executables are not relocatable and the interpreter is. There is also no `pip` in this venv at all — uv creates it without one — so "re-create and re-patch from the recipe" was never going to be a `pip install` either way.
-- **Residual risk, named because the copy does not remove it.** Once the scratchpad is deleted, every `Scripts\*.exe` in the copy becomes a broken stub pointing at a directory that no longer exists. Nothing in the night path calls them, so no night breaks; a person who types `flyvis …` gets a failure whose message names a temp directory and explains nothing. Either re-create the venv from `tools/night/README.md` at leisure, or leave the stubs and know why they fail. See [[THE-ONLY-RUNNABLE-ENVIRONMENT-LIVES-IN-A-SCRATCHPAD-OF-A-SESSION-THAT-HAS-ENDED]] for the move itself.
-- **axis:** collective
-
 ### FLYVIS-RESUME-AND-RECOVER-ARE-BROKEN-IN-1-2-0: five defects found by execution in the installed flyvis stand between anyone and a resumed run, and none of them is reported upstream (MEDIUM, open, 2026-09-14 — CC, from the interrupt-and-resume test of 2026-09-13)
 
 - **Observed.** `night/resA_9989-000.json` and `night/resA_9989-000.resume2.stdout.log`
@@ -275,6 +247,39 @@ language_cutoff: 2026-09-13
   bare. It closes only when superseded by the registered N reading itself, or folded verbatim
   into a future registration's own text.
 - **axis:** honesty
+
+### THE-GENOME-TRACK-HANDOVER-OVERSTATES-WHAT-A-SEED-MOVES: `docs/briefs/2026-09-19-genome-track-handover.md` §3 calls the 65 biases "the whole of individuality" when the same seed also spends itself on the decoder and the data order (MEDIUM, open, 2026-09-20 — CC)
+
+- **Observed.** `docs/briefs/2026-09-19-genome-track-handover.md:42`: "The 65 biases are the whole of individuality". `tools/night/run_individual.py:356` spends `--seed` on `network.node_config.bias.seed` alone, but `:282-284` and `:703-705` spend the *same* seed on the global `random`/`numpy`/`torch` RNGs, set before the solver is built and again before training ("data order / augmentation stream"). Two individuals therefore also differ in the decoder's 7,427 initial weights and in data order / augmentation. `VISION.md` and `ROADMAP.md` do not carry the sentence (checked this session, no match).
+- **Inferred.** The claim holds for network parameters only, not for the individual as a whole. The confound was already on record in `docs/next-session-plan.md` (the bias-only / order-only 2×2, Ark and Zcode, 2026-09-15) and is now restated in `docs/notes/2026-09-20-what-is-the-genome-here.md` §3.
+- **First step.** Correct the handover sentence — the correction must carry no result value, since the doc is required reading for the blind v2 author. `VISION.md` / `ROADMAP.md` need no matching edit; they do not carry the sentence.
+- **axis:** knowledge
+
+### THE-BOARD-CHECKER-REFUSES-ON-ROADMAP-AND-NOBODY-READS-THE-REFUSAL: `build.py --check` reports REFUSE on `ROADMAP.md` because its generated status block no longer matches the board, and the cure is regeneration, not a hand edit (MEDIUM, open, 2026-09-20 — CC)
+
+- **Observed, 2026-09-20.** `uv run python tools/backlog/build.py --check C:/Users/mikha/Documents/dpc-research/connectome-seed/backlog.md` (run from `C:\Users\mikha\Documents\dpc-messenger`) prints: `REFUSE  ROADMAP.md` / `the generated status block no longer matches the decisions and the board it is rendered from. Run \`build.py --roadmap C:\Users\mikha\Documents\dpc-research\connectome-seed\backlog.md --out=C:\Users\mikha\Documents\dpc-research\connectome-seed\` — and if the new numbers are wrong, they are wrong at the source, which is the point of generating them`.
+- **Observed.** The `--roadmap` mode exists and rewrites exactly that block: `if "--roadmap" in sys.argv:` (`tools/backlog/build.py:1483`), and the block itself is fenced by generated markers (`GEN_OPEN = "<!-- generated by tools/backlog/build.py --roadmap · do not edit inside -->"`, `build.py:422`).
+- **Inferred.** The checker is right and the block is tool-generated; red predates 2026-09-20 (this run did not cause it).
+- **First step.** On Mike's word, regenerate with the exact command the refusal names, then commit.
+- **axis:** honesty
+
+### SIXTEEN-MEGABYTES-OF-UNARCHIVED-SCRATCHPAD-MATERIAL-SITS-BESIDE-FLYVIS-PROBE: preregistration drafts, chat dumps, a PDF and a lora-work directory remain unarchived in the ended session's scratchpad, and Mike must decide their fate by hand (LOW, open, 2026-09-20 — CC)
+
+- **Observed.** `C:\Users\mikha\AppData\Local\Temp\claude\c--Users-mikha-Documents-dpc-research-autoresearch-win-rtx\63f3961a-96ce-4048-8338-72c162ea66f8\scratchpad\` holds ≈16 MB: preregistration drafts, chat dumps (`chatall.txt` etc.), `alphagenome-atlas.pdf`, `lora-work/`.
+- **Observed, 2026-09-20 (this session).** `flyvis-probe` no longer exists at that path (`Test-Path` → `False`, checked 2026-09-20). It was archived and hash-verified earlier the same day per the prior record, and Mike had said to delete it; an automated deletion was blocked by a Claude Code safety guard, so the deletion (now apparently done) was Mike's by hand.
+- **First step.** Mike decides whether the remaining files are archived to `connectome-seed-archive/` or discarded.
+- **axis:** collective
+
+### ROW-B-EXTRACTION-ON-NIGHTS-4-AND-5-NEEDS-THREE-SETTLED-POINTS-BEFORE-THE-FIRST-VALUE: Ark's field list for row B extraction on the checkpoints of nights 4 and 5 came with three points that are cheap to fix now and unfixable after the first value is read (HIGH, open, 2026-09-20 — Ark, group chat 19:13 local; script and first run CC's; launch an unregistered diagnostic on Mike's word)
+
+- **Observed.** No existing entry names row B extraction (checked this session: no match for "row.b"/"rowB"/"ROW-B" in `backlog.md` or `backlog_closed.md`).
+- **Observed — (a) two time axes.** "65 x 72" names two different axes: 72 is the training axis (checkpoints `chkpt_00000`..`chkpt_00071`); the simulation axis is `n_frames` per the run's own `_meta.yaml`, separate from the checkpoint count.
+- **Observed — (b) the penalty's reduction is not the ablation's reduction.** The penalty reads one central cell per type and discards the first quarter of frames: `activity_mean = activity[:, n_frames // 4 :, self.central_cells_index].mean(dim=1)` (`tools/.venv/Lib/site-packages/flyvis/solver.py:869-872`). Ablation silences all nodes of a type: `make_mask` zeroes the mask entries for the ablated types (`results/night2/diagnostics/ablation/ablation.py:90-98`), applied via `net.register_state_hook(ablate_hook, mask=mask)` (`ablation.py:106`). **Correction to the field list as handed over:** the ablation citation given was `ablation.py:98-104`, in the flyvis package; there is no `ablation.py` under `tools/.venv/Lib/site-packages/flyvis` at all — the file is a project script, `results/night2/diagnostics/ablation/ablation.py`, and the lines that do the silencing are `:90-98` (mask construction) and `:106` (hook registration), not `:98-104`. So "65 numbers" is two instruments under one name and both must be written to the file.
+- **Observed — (c) the type axis and the controls.** The type axis must be taken from the same source as row A (`net.connectome.nodes.type`), fingerprinted against `ablation_controls.json` (present at `results/night2/diagnostics/ablation/ablation_controls.json` and `results/night3/diagnostics/ablation/ablation_controls.json`). Controls P1/P2 do not transfer to a passive recording and must be reformulated: P1' — the recording hook does not change the loss; P2' — the instrument sees something.
+- **Inferred.** Ark's free falsifier — print the penalised quantity per checkpoint to test whether the 150,000 boundary binds — is cheap and should run before the first row-B value is read.
+- **First step.** CC writes the extraction script recording both instruments (penalty-style central-cell read and ablation-style full-type silencing) separately, with the type axis fingerprinted against the same controls file as row A; run only on Mike's word, as an unregistered diagnostic.
+- **2026-09-20, CC:** script and protocol are **written and unrun**. `results/night5/diagnostics/rowB/rowB.py` (the extraction; CLI `--netdir`/`--night {4,5,all}`, `--chkpts all|i,j,k`, `--out-dir`, `--dry-run`, `--floor-repeat`, `--floor-summarize`) and `results/night5/diagnostics/rowB/README.md` (the protocol, written before any value exists — the two time axes and the two reductions named separately, axis provenance, P0/P1′/P2′ with P2′'s thresholds left null until a floor exists, the floor procedure, the twin trap, the launch commands, the cost estimate and its source). No checkpoint has been loaded and no network has been run: the only things executed were `python -m py_compile`, `--help`, and `--dry-run`, which resolves paths, h5py shapes, checkpoint counts and the type axis without importing torch or flyvis. `--dry-run` confirms 4 runs × 72 checkpoints keyed by netdir (`9991/903`, `9991/005`, `9991`-side night 4; `9992/000`, `9992/003`, night 5), the type axis identical to row A's census in both `results/night{2,3}/diagnostics/ablation/ablation_controls.json`, and a non-zero exit (code 3) if it ever is not. Two source corrections are recorded in the protocol: `connectome.unique_cell_types` order is asserted equal to the first-appearance order `ablation.py:164` used (they are the same list, now checked rather than assumed), and `side_of_150k` is written under both iteration conventions because `chkpt_iter.h5` stores `solver.iteration - 1`. Neither file is gitignored (`git check-ignore` clean). Launch is Mike's word.
+- **axis:** knowledge
 
 ## IN PROGRESS
 

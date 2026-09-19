@@ -135,3 +135,11 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools\night\start_night.
 
 Dry-run first (`-DryRun` added to either command) to confirm the exact command and the ids
 before anything starts.
+
+## Frozen requirements
+
+`tools/night/requirements-frozen.txt` is a `uv pip freeze` of the live `tools/.venv`
+taken 2026-09-20, after the venv itself was copied into the repo. It records exactly
+what is installed, for comparison if the venv ever needs rebuilding — it is not a
+`pip install -r` recipe, since torch needs the cu128 index above and datamate needs
+the Windows patch above; neither survives a plain freeze/restore.

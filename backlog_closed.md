@@ -1,5 +1,37 @@
 # Closed entries
 
+## 2026-09-20 — closed by CC
+
+### THE-NIGHT-TOOLING-LIVES-IN-A-TEMPORARY-SCRATCHPAD: the runner, the launcher and the patched environment sit in a session temp directory that nothing in the repository points at, and the venv cannot be moved (HIGH, closed, 2026-09-14 — CC, on finishing the night tooling; instructions sent 2026-09-13 17:55 UTC)
+
+- **Observed.** `flyvis-probe/night/run_individual.py`, `launch_wave.py`, `start_night.ps1`
+  and the environment `flyvis-probe/.venv` (torch 2.9.1+cu128, flyvis 1.2.0, datamate with
+  the close-before-unlink patch) are all under `AppData/Local/Temp/claude/…/scratchpad/`;
+  the repository holds none of them; a uv venv is not relocatable.
+- **Observed 2026-09-14.** Scripts copied to `tools/night/` in commit (this commit); the
+  venv recipe still to be documented.
+- **Observed 2026-09-14 (this commit).** Scripts and recipe now in `tools/night/`:
+  `run_individual.py`, `launch_wave.py`, `start_night.ps1` (with the new `-NoReplicate`
+  switch), `night_report.py`, and `tools/night/README.md` (python/torch/flyvis/datamate
+  versions, the datamate Windows patch extracted from the live venv's `io.py`,
+  `FLYVIS_ROOT_DIR`, both launch commands). Remaining: re-create the venv outside the
+  scratchpad from that recipe.
+- **Inferred.** The night can run from there once. The next night cannot if the scratchpad
+  is gone, and the datamate patch goes with it —
+  [[DATAMATE-UNLINKS-AN-OPEN-HDF5-FILE-AND-WINDOWS-REFUSES]].
+- **First step.** After the night, on Mike's word: copy `night/` into the repository as
+  `tools/night/` (scripts only, no logs); write the venv recipe beside them (uv venv, torch
+  2.9.1+cu128, flyvis 1.2.0, the datamate patch); re-create the environment outside the
+  scratchpad and re-patch it; one 24-iteration dry run from the new location.
+- **2026-09-15, CC:** Night 3 (2026-09-15) again runs from the scratchpad copy (.../63f3961a-.../scratchpad/flyvis-probe/, per docs/next-session-plan.md §2); venv and scripts verified present and byte-identical to tools/night/ for the three executed files (run_individual.py, launch_wave.py, start_night.ps1); the migration per tools/night/README.md is scheduled after night 3, not before -- a pause costs more than the risk tonight (Ark 10:00); the two open entries about the night killing itself (this one and [[WINDOWS-UPDATE-RESTARTS-INSIDE-THE-NIGHT-WINDOW-BECAUSE-ACTIVE-HOURS-END-AT-0600]]) are both live tonight.
+- **2026-09-17 UTC (2026-09-18 local), CC:** Still unmigrated. Night 3 and night 4 both ran off the same scratchpad copy: `results/night3/README.md:51` and `results/night4/README.md:61` each set `RAW` to `.../63f3961a-96ce-4048-8338-72c162ea66f8/scratchpad/flyvis-probe/night`. The C3 diagnostic (2026-09-17) ran the same way: `results/diagnostics/c3/README.md:39` and `:97` write its netdir roots and A0-smoke output under `<scratchpad>`. The machine-state patch (commit `4f1b30c`, 2026-09-17) was verified against the scratchpad copy too -- its commit message: "the patched file's sha256 matches between the repo and the scratchpad night dir." The venv has still not been re-created outside the scratchpad.
+- **2026-09-18, CC — "a uv venv is not relocatable" is half true, and the half that matters here is false.** The venv was copied to `tools/.venv` and hashed against the original: 21,650 files each with `__pycache__` excluded, combined sha256 `94f7f483e8410e54887c98b20d520872823f1ba5ad9fa1c12d6b95359da7e318` on both sides, zero differing and zero present on one side only. From the new path `python.exe` runs, `import flyvis, datamate, torch` succeeds, `torch.cuda.is_available()` is `True`, and `start_night.ps1 -DryRun` reaches the launcher — so the night path, which invokes `python.exe <script>` and never a console entry point, is unaffected by the move. What genuinely does not relocate is the `Scripts\*.exe` layer: `flyvis.exe` carries the literal string `...\63f3961a-...\scratchpad\flyvis-probe\.venv\Scripts\python.exe` inside the binary, and it ran during the check **only because that path still exists**. The 2026-09-14 claim was written without a measurement behind it and was too strong; the accurate form is that the entry-point executables are not relocatable and the interpreter is. There is also no `pip` in this venv at all — uv creates it without one — so "re-create and re-patch from the recipe" was never going to be a `pip install` either way.
+- **Residual risk, named because the copy does not remove it.** Once the scratchpad is deleted, every `Scripts\*.exe` in the copy becomes a broken stub pointing at a directory that no longer exists. Nothing in the night path calls them, so no night breaks; a person who types `flyvis …` gets a failure whose message names a temp directory and explains nothing. Either re-create the venv from `tools/night/README.md` at leisure, or leave the stubs and know why they fail. See [[THE-ONLY-RUNNABLE-ENVIRONMENT-LIVES-IN-A-SCRATCHPAD-OF-A-SESSION-THAT-HAS-ENDED]] for the move itself.
+- **2026-09-20, CC:** Two remaining pieces closed out. (1) The scratchpad's raw artefacts (`night/`, `root/`, `night_barrier/`, `extent_probe/`, probe scripts, logs, jsons — everything except `.venv` and `__pycache__`) were copied with robocopy to `connectome-seed-archive/flyvis-probe-63f3961a/` outside this repository, then verified by hashing every file on both sides: 579 files, combined sha256 digest `c882a3fa4e62c73a538b8d9768709178ba394e897027a2f16098c0b923d041d9` on both sides, zero differing, zero present on one side only. (2) The live `tools/.venv` was pinned with `uv pip freeze` into `tools/night/requirements-frozen.txt` (88 packages, dated header noting it is a record and not an install recipe — torch needs the cu128 index and datamate carries a local patch, both already documented in `tools/night/README.md`), and `tools/night/README.md` now points at it.
+- **axis:** collective
+**Closed:** S2026-09-20.1 · 2026-09-20 · fixed · scripts live in `tools/night/`, the venv at `tools/.venv` is hash-identical to the scratchpad copy that trained nights 1-4 and night 5 ran from it, the scratchpad's raw artefacts were additionally copied out to `connectome-seed-archive/flyvis-probe-63f3961a/` (579 files, combined digest verified, zero differing), and the environment is now pinned via `tools/night/requirements-frozen.txt`. The scratchpad original `flyvis-probe` was deleted by Mike by hand on 2026-09-20 (his word in the group chat 19:09 local; CC's own deletion was refused by a Claude Code safety guard), after two independent pairwise hash checks (CC, Zcode) found zero differing; afterwards `tools/.venv` still imports torch, flyvis and datamate with CUDA available. Known and accepted: the 22 console `Scripts\*.exe` stubs inside `tools/.venv` embed the deleted path and are now broken — the night path calls `python.exe` directly and never them.
+
+
 ## 2026-09-19 — closed by CC
 
 ### THE-REGISTERED-READING-SCRIPT-CANNOT-COMPLETE-ON-THE-SUBSTRATE-IT-IS-REGISTERED-AGAINST: two of the eight runs resolve to no column, so the one permitted run of the reachability reading refuses with exit 2 before computing a single crossing time (HIGH, open, 2026-09-18 — CC, by executing the mapping stage after Ark asked whether the script refuses a non-canonical input; three review rounds by three authors had not found it)
