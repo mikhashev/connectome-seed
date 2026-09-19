@@ -1,22 +1,19 @@
 # Blind-author exclusion list — GENERATED, do not edit by hand.
-# Produced by tools/contamination_scan.py over 288 tracked files against a
+# Produced by tools/contamination_scan.py over 290 tracked files against a
 # values file held outside this repository. Paths only: a path is not a
 # value, so this file is safe for the blind author to read. The values are
 # not recorded here and must not be added.
 #
-# Regenerate before any blind session begins. The hand-written list this
-# replaced named five paths; the first scan found 52, so it was wrong by 47
-# entries on its first day (ADR-003).
+# Regenerate before any blind session begins: this list is only as current
+# as its last run (ADR-003).
 #
-# 53 files carry at least one contaminating literal:
+# 51 files carry at least one contaminating literal:
 ROADMAP.md
 VISION.md
 backlog.md
 backlog_closed.md
 docs/briefs/2026-09-17-night5.md
-docs/briefs/2026-09-19-genome-track-handover.md
 docs/decisions/002-file-under-condition.md
-docs/decisions/003-blind-authorship-after-the-numbers.md
 docs/experiments/002-night2-seeds-1-and-2.md
 docs/experiments/004-night4-replicate-3prime-and-seed-5.md
 docs/experiments/005-night5-third-runs-of-seed-0-and-seed-3.md

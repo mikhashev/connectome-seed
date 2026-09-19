@@ -112,9 +112,11 @@ disqualification → control → field → the §11 boundary. It is a transforma
 rewrite, because v1 already separates the two layers with its own `[PUBLISHED: …]` convention:
 rule in prose, number in a bracket with an address (Ark). **Its gate can go red: no decimal
 point may survive in the skeleton** — that catches every contaminating literal at once. The
-honest limit is that *integers* are not caught this way: "72 × 10" is structure and "16 of 23"
-is an outcome, and both are integers, so those need a short hand-written whitelist — which is
-the same structure-versus-values distinction, not an exception to it.
+honest limit is that *integers* are not caught this way: the substrate's shape is a pair of
+integers and so is a count of how many grid levels survived, but the first is structure and
+the second is an outcome. Those need a short hand-written whitelist — the same
+structure-versus-values distinction, not an exception to it. (No example of the second kind is
+given here on purpose: this file is required reading for the author who must not see one.)
 
 **What that session may have, and needs:** the substrate's *structure* — 72 checkpoints × 10
 runs, the iteration grid, which run belongs to which individual and which boot session —

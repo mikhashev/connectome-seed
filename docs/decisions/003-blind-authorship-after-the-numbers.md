@@ -15,8 +15,11 @@ axis: honesty
 
 ## Context and Problem Statement
 
-A pre-registered test was executed once on 2026-09-18 and returned `TEST UNREADABLE`: its own
-resolution floor removed 16 of 23 grid levels, every one on the twin side. Within an hour the
+A pre-registered test was executed once on 2026-09-18 and the instrument reported that it
+could not read: its own resolution floor removed most of the grid, and every dropped level
+went on the twin side. *(The verdict string and the counts are deliberately not repeated here.
+This document is required reading for the very author who must not see them — see the
+sanitisation note at the end of Consequences.)* Within an hour the
 reason was clear and, on the face of it, structural — the floor had been placed on the twin
 gap, one of the two quantities being compared, rather than on the **margin** between them.
 Closeness of the twins raises resolution; the rule read it as absence of information and

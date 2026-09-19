@@ -3,12 +3,16 @@ generated rather than maintained by hand.
 
 Why this exists. ADR-003 requires that a criterion devised after its numbers are visible be
 authored by someone who has not seen them, and protects that by excluding the contaminated
-material **by path**. The first version of that list was written by hand and named five
-paths. A scan found **seventeen** tracked markdown files carrying the same values on the same
-day — including the ADR itself, and including VISION and ROADMAP, which the author has every
-reason to open. A list that is wrong by twelve entries on its first day is not a list, it is a
-recollection; and each of the three people who could have checked it had already seen the
-numbers, so none of them would have noticed by reading.
+material **by path**. The first version of that list was written by hand, and a scan found
+many times as many files carrying the same values on the same day — including the ADR itself,
+and including VISION and ROADMAP, which the author has every reason to open. A hand-written
+list is a recollection, not a list; and each of the three people who could have checked it had
+already seen the numbers, so none of them would have noticed by reading.
+
+**No count appears in this docstring on purpose.** An earlier version stated two, they drifted
+against the one the emitter computes, and three numbers about a single quantity then sat in
+one file (Ark and Zcode, 2026-09-19) — which is the same defect the scan exists to catch, one
+level up. The count is computed and printed by the run; it is not restated anywhere.
 
 The values never enter this repository. They are given in a file on the command line, kept by
 whoever is *sighted*, and only the **paths** are written out — a path is not a value, so the
@@ -58,6 +62,11 @@ def main(argv=None):
     parser.add_argument("--repo", default=os.getcwd())
     parser.add_argument("--out", default=None,
                         help="where to write the paths-only list (default: stdout only)")
+    parser.add_argument("--required", nargs="*", default=[
+        "docs/decisions/003-blind-authorship-after-the-numbers.md",
+        "docs/briefs/2026-09-19-genome-track-handover.md",
+    ], help="paths the blind author MUST read; the scan fails if any of them carries a "
+            "value, because a list that excludes required reading is unexecutable")
     args = parser.parse_args(argv)
 
     if not os.path.exists(args.values):
@@ -92,9 +101,8 @@ def main(argv=None):
     lines.append("# value, so this file is safe for the blind author to read. The values are")
     lines.append("# not recorded here and must not be added.")
     lines.append("#")
-    lines.append("# Regenerate before any blind session begins. The hand-written list this")
-    lines.append("# replaced named five paths; the first scan found 52, so it was wrong by 47")
-    lines.append("# entries on its first day (ADR-003).")
+    lines.append("# Regenerate before any blind session begins: this list is only as current")
+    lines.append("# as its last run (ADR-003).")
     lines.append("#")
     lines.append("# %d files carry at least one contaminating literal:" % len(hits))
     for rel in sorted(hits):
@@ -107,6 +115,20 @@ def main(argv=None):
                   "2026-09-19 (git log and git show)",
                   "the DPC Research group thread from 2026-09-18 onward"):
         lines.append(extra)
+
+    # The gate that can go red. A list naming a document the author is required to read
+    # forbids exactly what the job needs, so the list is unexecutable and the fix is to
+    # sanitise the document, never to exempt it (Ark, 2026-09-19 — the first generated list
+    # named both the governing ADR and the handover).
+    conflict = [p for p in args.required if p in hits]
+    if conflict:
+        print("REFUSED: %d document(s) the blind author MUST read carry a contaminating "
+              "value, so this list would forbid its own required reading:" % len(conflict))
+        for p in conflict:
+            print("   %s" % p)
+        print("Sanitise those files -- remove the values, keep the argument -- and re-run. "
+              "Do not exempt them from the list.")
+        return 3
 
     text = "\n".join(lines) + "\n"
     print("%d of %d tracked files carry a contaminating literal"
