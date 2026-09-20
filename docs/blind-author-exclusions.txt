@@ -1,5 +1,5 @@
 # Blind-author exclusion list — GENERATED, do not edit by hand.
-# Produced by tools/contamination_scan.py over 338 tracked files against a
+# Produced by tools/contamination_scan.py over 355 tracked files against a
 # values file held outside this repository. Paths only: a path is not a
 # value, so this file is safe for the blind author to read. The values are
 # not recorded here and must not be added.
@@ -7,7 +7,7 @@
 # Regenerate before any blind session begins: this list is only as current
 # as its last run (ADR-003).
 #
-# 68 files carry at least one contaminating literal:
+# 71 files carry at least one contaminating literal:
 ROADMAP.md
 VISION.md
 backlog.md
@@ -55,6 +55,8 @@ results/night4/night_report_checkpoints_3primev3.csv
 results/night4/rep_9991-903.slim.json
 results/night4/train_loss_last1000_9991-005.csv
 results/night4/wave_night4.progress.log
+results/night5/diagnostics/rowB/profiles_ratio_trajectory.svg
+results/night5/diagnostics/rowB/profiles_reading_distances.csv
 results/night5/diagnostics/rowB/rowB_controls.json
 results/night5/diagnostics/rowB/rowB_controls_det.json
 results/night5/diagnostics/rowB/rowB_controls_floor_proc1.json
@@ -73,6 +75,7 @@ results/night5/diagnostics/rowB/three_checkpoint_gpu_path/rowB_records.json
 results/night5/diagnostics/rowB/three_checkpoint_gpu_path/rowB_records_det.json
 results/night5/night5_9992-003.slim.json
 results/night5/night_report_checkpoints.csv
+results/night6/control_a_runs.json
 tools/atlas/verdicts.json
 tools/reachability/read_reachability_endpoint.py
 tools/reachability/synthetic_reading_harness.py
@@ -81,6 +84,9 @@ tools/reachability/synthetic_reading_harness.py
 # the values themselves or are untracked:
 results/diagnostics/reachability/
 results/night5/
+results/night6/
+results/diagnostics/labels/
+atlas.html and tools/atlas/ (generated view of every result; ignored by git)
 tools/night/night5_*
-the repository history for 2026-09-18 and 2026-09-19 (git log and git show)
+the repository history for 2026-09-18, 2026-09-19 and 2026-09-20 (git log and git show)
 the DPC Research group thread from 2026-09-18 onward
