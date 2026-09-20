@@ -1,5 +1,5 @@
 # Blind-author exclusion list — GENERATED, do not edit by hand.
-# Produced by tools/contamination_scan.py over 337 tracked files against a
+# Produced by tools/contamination_scan.py over 338 tracked files against a
 # values file held outside this repository. Paths only: a path is not a
 # value, so this file is safe for the blind author to read. The values are
 # not recorded here and must not be added.
