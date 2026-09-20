@@ -11,7 +11,12 @@ Default: all runs start concurrently, staggered by --stagger seconds.
   <out-dir>/wave_<tag>.pid with the detached launcher PID and prints it. The
   detached launcher writes <out-dir>/wave_<tag>.progress.log (one timestamped line
   per run start / exit) and its own stdout/stderr to <out-dir>/wave_<tag>.launcher.log.
---no-determinism is passed through to every run_individual.py.
+--replicate-tag TAG renames those replicate jobs' tag (default "rep", as every wave up to
+  night 5 used); the id keeps its 9xx marking either way.
+--no-determinism is passed through to every run_individual.py; omitting it leaves
+  run_individual.py's own default, which is determinism ON.
+--stop-after-iter K is passed through to every run_individual.py when given (default: not
+  passed at all, so --n-iters alone sets the horizon, as for nights 1-5).
 --progress-every N is passed through to every run_individual.py; --progress-file too
   when given. With --sequential and no --progress-file every run's progress file is
   the wave's own <out-dir>/wave_<tag>.progress.log, so one file carries the START/EXIT
@@ -62,12 +67,19 @@ def build_parser():
     p.add_argument("--replicate", action="store_true", help="add run 0': seed 0, id <ENS>/900, tag rep")
     p.add_argument("--replicate-of", type=int, action="append", default=[],
                    help="add run S': seed S, id <ENS>/9<S:02d>, tag rep; repeatable; --replicate is --replicate-of 0")
+    p.add_argument("--replicate-tag", default="rep",
+                   help="tag for the --replicate/--replicate-of jobs (default 'rep', the value every "
+                        "wave up to night 5 used). Night 6 sets it to the wave tag so one prefix carries "
+                        "the whole wave while the id keeps its 9xx replicate marking.")
     p.add_argument("--n-iters", type=int, default=250_000)
     p.add_argument("--rungs", default="1000,5000,25000,250000")
     p.add_argument("--stagger", type=float, default=5.0)
     p.add_argument("--sequential", action="store_true", help="run one after another")
     p.add_argument("--detach", action="store_true", help="re-spawn as a detached Windows process and return")
     p.add_argument("--no-determinism", action="store_true", help="pass --no-determinism to run_individual.py")
+    p.add_argument("--stop-after-iter", type=int, default=None,
+                   help="passed through to run_individual.py --stop-after-iter (must be one of --rungs and "
+                        "< --n-iters there); default None: not passed, so --n-iters decides the horizon")
     p.add_argument("--progress-every", type=int, default=100, help="passed to run_individual.py --progress-every")
     p.add_argument("--progress-file", default=None,
                    help="passed to run_individual.py --progress-file for every run; default: the wave's "
@@ -105,7 +117,7 @@ def main():
         if s >= 100:
             print(f"--replicate-of {s}: seed must be < 100", file=sys.stderr)
             return 2
-        rep = {"seed": s, "id": f"{a.ensemble}/9{s:02d}", "tag": "rep"}
+        rep = {"seed": s, "id": f"{a.ensemble}/9{s:02d}", "tag": a.replicate_tag}
         if rep["id"] in seen_ids:
             print(f"--replicate-of {s}: id {rep['id']} already queued", file=sys.stderr)
             return 2
@@ -122,6 +134,8 @@ def main():
                     "--out-dir", str(out_dir)]
         if a.no_determinism:
             j["cmd"].append("--no-determinism")
+        if a.stop_after_iter is not None:
+            j["cmd"] += ["--stop-after-iter", str(a.stop_after_iter)]
         j["cmd"] += ["--progress-every", str(a.progress_every)]
         run_progress_file = a.progress_file or (str(progress_path) if a.sequential else None)
         if run_progress_file:

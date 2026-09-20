@@ -1,0 +1,6 @@
+{
+  "file": "results/diagnostics/labels/README.md",
+  "sha256": "db3e00857ccafda39eeed77a4bb210f16e6d539ad2d6953809458f4679a17085",
+  "recorded_utc": "2026-09-20T09:32:49Z",
+  "note": "Hash taken after the disposition was saved and BEFORE check_labels.py was written or run."
+}

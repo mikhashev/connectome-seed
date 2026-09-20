@@ -1,0 +1,260 @@
+{
+ "9993/010": {
+  "tag": "night6ctrl",
+  "id": "9993/010",
+  "seed": 0,
+  "argv": [
+   "--seed",
+   "0",
+   "--id",
+   "9993/010",
+   "--n-iters",
+   "250000",
+   "--rungs",
+   "1000,2000,250000",
+   "--stop-after-iter",
+   "2000",
+   "--tag",
+   "night6ctrl",
+   "--out-dir",
+   "C:\\Users\\mikha\\AppData\\Local\\Temp\\claude\\c--Users-mikha-Documents-dpc-research-connectome-seed\\869ddc8e-67d1-4c2a-a0b4-05a5cfc8f782\\scratchpad\\control",
+   "--progress-every",
+   "200"
+  ],
+  "started_utc": "2026-09-20T09:38:56Z",
+  "finished_utc": "2026-09-20T09:46:37Z",
+  "final_iteration": 1999,
+  "stopped_after_iter": 2000,
+  "total_train_wall_s": 453.9393047999911,
+  "solver_init_s": 4.752753299995675,
+  "determinism": {
+   "requested": true,
+   "cublas_workspace_config": ":4096:8",
+   "cudnn_deterministic": true,
+   "cudnn_benchmark": false,
+   "use_deterministic_algorithms": true,
+   "warn_only": true,
+   "mode_query": true,
+   "warn_only_query": true,
+   "tf32_matmul": false,
+   "tf32_cudnn": true
+  },
+  "nondeterministic_ops": {},
+  "vram": {
+   "torch_max_memory_allocated_MiB": 1470.94775390625,
+   "torch_max_memory_reserved_MiB": 1556.0,
+   "nvidia_smi_memory_used_MiB_at_end": 27118
+  },
+  "rung_metrics": [
+   {
+    "iteration": 1000,
+    "val_loss": 1208.935793876648,
+    "wall_s_since_start": 227.8317734000011,
+    "torch_max_memory_allocated_MiB": 1470.94775390625,
+    "torch_max_memory_reserved_MiB": 1556.0,
+    "nvidia_smi_memory_used_MiB": 26989,
+    "hook_wall_s": 0.7128060999966692,
+    "solver_iteration_at_hook": 999,
+    "checks": {
+     "lr_unchanged": true,
+     "pen_lr_unchanged": true,
+     "dt_unchanged": true,
+     "scheduler_iter_unchanged": true,
+     "back_in_train_mode": true,
+     "was_in_train_mode_before": true,
+     "dataset_augment_restored": true
+    }
+   },
+   {
+    "iteration": 2000,
+    "val_loss": 1207.443675518036,
+    "wall_s_since_start": 453.2444794000039,
+    "torch_max_memory_allocated_MiB": 1470.94775390625,
+    "torch_max_memory_reserved_MiB": 1556.0,
+    "nvidia_smi_memory_used_MiB": 27118,
+    "hook_wall_s": 0.6895737999875564,
+    "solver_iteration_at_hook": 1999,
+    "checks": {
+     "lr_unchanged": true,
+     "pen_lr_unchanged": true,
+     "dt_unchanged": true,
+     "scheduler_iter_unchanged": true,
+     "back_in_train_mode": true,
+     "was_in_train_mode_before": true,
+     "dataset_augment_restored": true
+    }
+   }
+  ],
+  "checkpoint_metrics": [
+   {
+    "iteration": 0,
+    "val_loss": 1212.5555891990662,
+    "chkpt_index": 0,
+    "wall_s_since_start": 0.8936715000018012,
+    "test_wall_s": 0.8924700000061421
+   },
+   {
+    "iteration": 12,
+    "val_loss": 1212.257435798645,
+    "chkpt_index": 1,
+    "wall_s_since_start": 6.1570903999963775,
+    "test_wall_s": 0.7112363000051118
+   }
+  ],
+  "checkpoints": [
+   {
+    "chkpt_index": 0,
+    "iteration": 0,
+    "duration_s": 2.270059599992237,
+    "wall_s_since_start": 2.2711000999988755
+   },
+   {
+    "chkpt_index": 1,
+    "iteration": 12,
+    "duration_s": 2.042416399999638,
+    "wall_s_since_start": 7.488146100004087
+   }
+  ],
+  "network_dir": "C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed-data\\results\\flow\\9993\\010",
+  "versions": {
+   "flyvis": "1.2.0",
+   "torch": "2.9.1+cu128",
+   "numpy": "2.2.6",
+   "python": "3.10.20",
+   "cuda": "12.8",
+   "cudnn": 91002,
+   "gpu": "NVIDIA RTX PRO 4500 Blackwell"
+  },
+  "exit": "ok",
+  "errors": []
+ },
+ "9993/011": {
+  "tag": "night6ctrl",
+  "id": "9993/011",
+  "seed": 0,
+  "argv": [
+   "--seed",
+   "0",
+   "--id",
+   "9993/011",
+   "--n-iters",
+   "250000",
+   "--rungs",
+   "1000,2000,250000",
+   "--stop-after-iter",
+   "2000",
+   "--tag",
+   "night6ctrl",
+   "--out-dir",
+   "C:\\Users\\mikha\\AppData\\Local\\Temp\\claude\\c--Users-mikha-Documents-dpc-research-connectome-seed\\869ddc8e-67d1-4c2a-a0b4-05a5cfc8f782\\scratchpad\\control",
+   "--progress-every",
+   "200"
+  ],
+  "started_utc": "2026-09-20T09:46:39Z",
+  "finished_utc": "2026-09-20T09:54:22Z",
+  "final_iteration": 1999,
+  "stopped_after_iter": 2000,
+  "total_train_wall_s": 455.4762710000068,
+  "solver_init_s": 4.816680899995845,
+  "determinism": {
+   "requested": true,
+   "cublas_workspace_config": ":4096:8",
+   "cudnn_deterministic": true,
+   "cudnn_benchmark": false,
+   "use_deterministic_algorithms": true,
+   "warn_only": true,
+   "mode_query": true,
+   "warn_only_query": true,
+   "tf32_matmul": false,
+   "tf32_cudnn": true
+  },
+  "nondeterministic_ops": {},
+  "vram": {
+   "torch_max_memory_allocated_MiB": 1470.94775390625,
+   "torch_max_memory_reserved_MiB": 1556.0,
+   "nvidia_smi_memory_used_MiB_at_end": 27188
+  },
+  "rung_metrics": [
+   {
+    "iteration": 1000,
+    "val_loss": 1208.935793876648,
+    "wall_s_since_start": 229.88600640000368,
+    "torch_max_memory_allocated_MiB": 1470.94775390625,
+    "torch_max_memory_reserved_MiB": 1556.0,
+    "nvidia_smi_memory_used_MiB": 27173,
+    "hook_wall_s": 0.7067854000051739,
+    "solver_iteration_at_hook": 999,
+    "checks": {
+     "lr_unchanged": true,
+     "pen_lr_unchanged": true,
+     "dt_unchanged": true,
+     "scheduler_iter_unchanged": true,
+     "back_in_train_mode": true,
+     "was_in_train_mode_before": true,
+     "dataset_augment_restored": true
+    }
+   },
+   {
+    "iteration": 2000,
+    "val_loss": 1207.443675518036,
+    "wall_s_since_start": 454.7812808000017,
+    "torch_max_memory_allocated_MiB": 1470.94775390625,
+    "torch_max_memory_reserved_MiB": 1556.0,
+    "nvidia_smi_memory_used_MiB": 27188,
+    "hook_wall_s": 0.6889258000010159,
+    "solver_iteration_at_hook": 1999,
+    "checks": {
+     "lr_unchanged": true,
+     "pen_lr_unchanged": true,
+     "dt_unchanged": true,
+     "scheduler_iter_unchanged": true,
+     "back_in_train_mode": true,
+     "was_in_train_mode_before": true,
+     "dataset_augment_restored": true
+    }
+   }
+  ],
+  "checkpoint_metrics": [
+   {
+    "iteration": 0,
+    "val_loss": 1212.5555891990662,
+    "chkpt_index": 0,
+    "wall_s_since_start": 0.889257800008636,
+    "test_wall_s": 0.8880879000062123
+   },
+   {
+    "iteration": 12,
+    "val_loss": 1212.257435798645,
+    "chkpt_index": 1,
+    "wall_s_since_start": 5.993138799996814,
+    "test_wall_s": 0.7007632000022568
+   }
+  ],
+  "checkpoints": [
+   {
+    "chkpt_index": 0,
+    "iteration": 0,
+    "duration_s": 2.2042311999975936,
+    "wall_s_since_start": 2.2052628000092227
+   },
+   {
+    "chkpt_index": 1,
+    "iteration": 12,
+    "duration_s": 2.347421000013128,
+    "wall_s_since_start": 7.639668000003439
+   }
+  ],
+  "network_dir": "C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed-data\\results\\flow\\9993\\011",
+  "versions": {
+   "flyvis": "1.2.0",
+   "torch": "2.9.1+cu128",
+   "numpy": "2.2.6",
+   "python": "3.10.20",
+   "cuda": "12.8",
+   "cudnn": 91002,
+   "gpu": "NVIDIA RTX PRO 4500 Blackwell"
+  },
+  "exit": "ok",
+  "errors": []
+ }
+}

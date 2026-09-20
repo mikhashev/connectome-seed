@@ -14,6 +14,14 @@ Parameters
   -NoReplicate     omit --replicate from the launcher args: no run 0' (id <ENS>/900) is queued
   -ReplicateOf "3" comma list of seeds S; each adds --replicate-of S to the launcher (run S', id
                    <ENS>/9<S:02d>, tag rep); independent of -NoReplicate, which only controls run 0'
+  -ReplicateTag T  tag for those replicate jobs instead of the built-in "rep"; omitted = "rep",
+                   which is what nights 1-5 used
+  -Deterministic   do NOT pass --no-determinism: the runs train with cudnn.deterministic and
+                   torch.use_deterministic_algorithms ON. Omitted = --no-determinism, exactly as
+                   nights 1-5 ran. Measured cost on this machine: about 3.3x the s/iter
+                   (docs/briefs/2026-09-20-night6-deterministic-pairs.md)
+  -StopAfterIter K stop each run right after the rung hook of completed iteration K (K must be one
+                   of -Rungs and < -NIters); omitted = 0 = not passed, -NIters alone is the horizon
   -Extent N        flyvis hexagonal extent (default 15 = the flyvis default). When not 15 BOTH Hydra overrides are
                    passed: network.connectome.extent=N (config/network/connectome/connectome.yaml) and
                    task.dataset.boxfilter.extent=N (config/task/task.yaml) -- the task rendering does not
@@ -28,6 +36,9 @@ param(
     [switch]$FollowOnly,
     [switch]$NoReplicate,
     [string]$ReplicateOf = "",
+    [string]$ReplicateTag = "",
+    [switch]$Deterministic,
+    [int]$StopAfterIter = 0,
     [string]$Tag = "night1",
     [string]$Ensemble = "9991",
     [string]$Seeds = "0",
@@ -56,7 +67,10 @@ $waveJson    = Join-Path $night ("wave_" + $Tag + ".json")
 if (-not (Test-Path $py))       { throw "venv python not found: $py" }
 if (-not (Test-Path $launcher)) { throw "launcher not found: $launcher" }
 
-# ---- the launcher command (sequential, detached, determinism OFF) ----
+# ---- the launcher command (sequential, detached, determinism OFF unless -Deterministic) ----
+# With -Deterministic absent the argument list below is byte-for-byte the one nights 1-5 used;
+# the switch only removes --no-determinism, and -StopAfterIter / -ReplicateTag append nothing
+# when they are left at their defaults.
 $launchArgs = @(
     $launcher,
     "--tag", $Tag,
@@ -65,10 +79,19 @@ $launchArgs = @(
     "--n-iters", "$NIters",
     "--rungs", $Rungs,
     "--progress-every", "$ProgressEvery",
-    "--sequential", "--detach", "--no-determinism"
+    "--sequential", "--detach"
 )
+if (-not $Deterministic) {
+    $launchArgs += "--no-determinism"
+}
 if (-not $NoReplicate) {
     $launchArgs += "--replicate"
+}
+if ($ReplicateTag -ne "") {
+    $launchArgs += @("--replicate-tag", $ReplicateTag)
+}
+if ($StopAfterIter -gt 0) {
+    $launchArgs += @("--stop-after-iter", "$StopAfterIter")
 }
 $replicateOfSeeds = @()
 if ($ReplicateOf -ne "") {
@@ -112,6 +135,17 @@ if ($repOfDescs.Count -gt 0) {
     $seedsMsg += " + replicate-of: " + ($repOfDescs -join ", ")
 }
 Write-Output $seedsMsg
+# Printed only when a night-6 switch is actually used, so a launch without them produces
+# exactly the output nights 1-5 produced.
+if ($Deterministic) {
+    Write-Output ("determinism     : ON (--no-determinism NOT passed; nights 1-5 passed it)")
+}
+if ($StopAfterIter -gt 0) {
+    Write-Output ("stop after iter : " + $StopAfterIter + "  (must be one of --rungs; --n-iters stays " + $NIters + ", so the schedule is the night runs')")
+}
+if ($ReplicateTag -ne "") {
+    Write-Output ("replicate tag   : " + $ReplicateTag + "  (instead of the built-in 'rep')")
+}
 Write-Output ("PID file        : " + $pidFile)
 Write-Output ("wave progress   : " + $progressLog + "   (START/EXIT + iter/RUNG/CHECKPOINT/DONE of the running job)")
 Write-Output ("launcher log    : " + $launcherLog)

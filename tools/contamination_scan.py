@@ -119,9 +119,16 @@ def main(argv=None):
     lines.append("#")
     lines.append("# Whole directories excluded regardless of scan, because their contents are")
     lines.append("# the values themselves or are untracked:")
+    # 2026-09-20 (Ark's condition, Mike's word): a directory that is new today is covered by
+    # no earlier list, and the literal scan only finds the values it was told about -- so
+    # today's result directories are named here rather than left to it. results/night6/
+    # and results/diagnostics/labels/ carry instrument and provenance numbers rather than
+    # outcomes, and are listed anyway: the author loses nothing by not opening them.
     for extra in ("results/diagnostics/reachability/", "results/night5/",
-                  "tools/night/night5_*", "the repository history for 2026-09-18 and "
-                  "2026-09-19 (git log and git show)",
+                  "results/night6/", "results/diagnostics/labels/",
+                  "atlas.html and tools/atlas/ (generated view of every result; ignored by git)",
+                  "tools/night/night5_*", "the repository history for 2026-09-18, "
+                  "2026-09-19 and 2026-09-20 (git log and git show)",
                   "the DPC Research group thread from 2026-09-18 onward"):
         lines.append(extra)
 

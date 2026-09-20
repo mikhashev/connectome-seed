@@ -424,7 +424,8 @@ calmest of its three seed-3 replicates. Whoever next opens the activity **profil
 its replicates as "a twin like the others", and must not silently drop it either — **both
 choices must be stated, before the profiles are opened**, not discovered afterward.
 
-**The question the profiles will be read for — PENDING, not yet authorised (recorded 2026-09-20,
+**The question the profiles will be read for — AUTHORISED by Mike 2026-09-20 09:27 UTC; read once
+— see PROFILES-READING.md (recorded 2026-09-20,
 before the repository's own reading of the profiles; wording Ark's, group chat 21:43 local):**
 «различает ли ряд B индивидов; где на этой оси лежит `3‴` после границы» — does row B tell
 individuals apart, and where does `3‴` lie on this axis after the boundary. N is counted in

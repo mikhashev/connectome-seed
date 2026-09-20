@@ -1,0 +1,127 @@
+{
+ "det_probe": {
+  "id": "9993/000",
+  "tag": "night6probe",
+  "argv": [
+   "--seed",
+   "0",
+   "--id",
+   "9993/000",
+   "--n-iters",
+   "250000",
+   "--rungs",
+   "600,250000",
+   "--stop-after-iter",
+   "600",
+   "--tag",
+   "night6probe",
+   "--out-dir",
+   "C:\\Users\\mikha\\AppData\\Local\\Temp\\claude\\c--Users-mikha-Documents-dpc-research-connectome-seed\\869ddc8e-67d1-4c2a-a0b4-05a5cfc8f782\\scratchpad\\probe",
+   "--progress-every",
+   "100"
+  ],
+  "n_iter": 600,
+  "s_per_iter_median_all": 0.218915,
+  "s_per_iter_median_100_600": 0.219134,
+  "first_iter_s": 0.445415,
+  "solver_init_s": 5.399942499992903,
+  "total_train_wall_s": 139.28317539999261,
+  "determinism": {
+   "requested": true,
+   "cublas_workspace_config": ":4096:8",
+   "cudnn_deterministic": true,
+   "cudnn_benchmark": false,
+   "use_deterministic_algorithms": true,
+   "warn_only": true,
+   "mode_query": true,
+   "warn_only_query": true,
+   "tf32_matmul": false,
+   "tf32_cudnn": true
+  },
+  "nondeterministic_ops": {},
+  "vram": {
+   "torch_max_memory_allocated_MiB": 1470.94775390625,
+   "torch_max_memory_reserved_MiB": 1556.0,
+   "nvidia_smi_memory_used_MiB_at_end": 26994
+  },
+  "rung_metrics": [
+   {
+    "iteration": 600,
+    "val_loss": 1209.925260066986
+   }
+  ],
+  "nvidia_smi_at_start": "25589 MiB, 32623 MiB, 596.86",
+  "versions": {
+   "flyvis": "1.2.0",
+   "torch": "2.9.1+cu128",
+   "numpy": "2.2.6",
+   "python": "3.10.20",
+   "cuda": "12.8",
+   "cudnn": 91002,
+   "gpu": "NVIDIA RTX PRO 4500 Blackwell"
+  }
+ },
+ "normal_probe": {
+  "id": "9993/001",
+  "tag": "night6probenorm",
+  "argv": [
+   "--seed",
+   "0",
+   "--id",
+   "9993/001",
+   "--n-iters",
+   "250000",
+   "--rungs",
+   "600,250000",
+   "--stop-after-iter",
+   "600",
+   "--tag",
+   "night6probenorm",
+   "--out-dir",
+   "C:\\Users\\mikha\\AppData\\Local\\Temp\\claude\\c--Users-mikha-Documents-dpc-research-connectome-seed\\869ddc8e-67d1-4c2a-a0b4-05a5cfc8f782\\scratchpad\\probe",
+   "--progress-every",
+   "100",
+   "--no-determinism"
+  ],
+  "n_iter": 600,
+  "s_per_iter_median_all": 0.065666,
+  "s_per_iter_median_100_600": 0.065762,
+  "first_iter_s": 0.182198,
+  "solver_init_s": 4.619896999996854,
+  "total_train_wall_s": 42.25721959999646,
+  "determinism": {
+   "requested": false,
+   "cublas_workspace_config": ":4096:8",
+   "cudnn_deterministic": false,
+   "cudnn_benchmark": false,
+   "use_deterministic_algorithms": false,
+   "mode_query": false,
+   "warn_only_query": false,
+   "tf32_matmul": false,
+   "tf32_cudnn": true
+  },
+  "nondeterministic_ops": {},
+  "vram": {
+   "torch_max_memory_allocated_MiB": 1426.09521484375,
+   "torch_max_memory_reserved_MiB": 1536.0,
+   "nvidia_smi_memory_used_MiB_at_end": 26975
+  },
+  "rung_metrics": [
+   {
+    "iteration": 600,
+    "val_loss": 1209.9303302764893
+   }
+  ],
+  "nvidia_smi_at_start": "25534 MiB, 32623 MiB, 596.86",
+  "versions": {
+   "flyvis": "1.2.0",
+   "torch": "2.9.1+cu128",
+   "numpy": "2.2.6",
+   "python": "3.10.20",
+   "cuda": "12.8",
+   "cudnn": 91002,
+   "gpu": "NVIDIA RTX PRO 4500 Blackwell"
+  }
+ },
+ "ratio_det_over_normal_median_100_600": 3.33222833855418
+}

@@ -1,0 +1,254 @@
+{
+ "a": "C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed-data\\results\\flow\\9993\\010",
+ "b": "C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed-data\\results\\flow\\9993\\011",
+ "h5": {
+  "loss.h5": {
+   "n": [
+    12,
+    12
+   ],
+   "dtype": "float64",
+   "sha256": [
+    "032df2a72afc579f85925681a1db68014f9551dfc184cd2ecb6abd7dc97dfb91",
+    "032df2a72afc579f85925681a1db68014f9551dfc184cd2ecb6abd7dc97dfb91"
+   ],
+   "identical": true
+  },
+  "loss_flow.h5": {
+   "n": [
+    12,
+    12
+   ],
+   "dtype": "float64",
+   "sha256": [
+    "032df2a72afc579f85925681a1db68014f9551dfc184cd2ecb6abd7dc97dfb91",
+    "032df2a72afc579f85925681a1db68014f9551dfc184cd2ecb6abd7dc97dfb91"
+   ],
+   "identical": true
+  },
+  "training/loss.h5": {
+   "n": [
+    2,
+    2
+   ],
+   "dtype": "float64",
+   "sha256": [
+    "28b74324d9513164825b86fe0ddc97f161f6d3997a58230258b00f9f22ba0302",
+    "28b74324d9513164825b86fe0ddc97f161f6d3997a58230258b00f9f22ba0302"
+   ],
+   "identical": true
+  },
+  "training/loss_flow.h5": {
+   "n": [
+    2,
+    2
+   ],
+   "dtype": "float64",
+   "sha256": [
+    "28b74324d9513164825b86fe0ddc97f161f6d3997a58230258b00f9f22ba0302",
+    "28b74324d9513164825b86fe0ddc97f161f6d3997a58230258b00f9f22ba0302"
+   ],
+   "identical": true
+  },
+  "training/iteration.h5": {
+   "n": [
+    2,
+    2
+   ],
+   "dtype": "int64",
+   "sha256": [
+    "df065f4871e06699366ccb668ce9b2a58f41b698fc7f95123d307a70c5379505",
+    "df065f4871e06699366ccb668ce9b2a58f41b698fc7f95123d307a70c5379505"
+   ],
+   "identical": true
+  },
+  "training_batch/loss.h5": {
+   "n": [
+    2,
+    2
+   ],
+   "dtype": "float64",
+   "sha256": [
+    "e05af7670831ff4674007915e5aa4239be6934e2e0ebde19d790643907e88144",
+    "e05af7670831ff4674007915e5aa4239be6934e2e0ebde19d790643907e88144"
+   ],
+   "identical": true
+  },
+  "training_batch/loss_flow.h5": {
+   "n": [
+    2,
+    2
+   ],
+   "dtype": "float64",
+   "sha256": [
+    "e05af7670831ff4674007915e5aa4239be6934e2e0ebde19d790643907e88144",
+    "e05af7670831ff4674007915e5aa4239be6934e2e0ebde19d790643907e88144"
+   ],
+   "identical": true
+  },
+  "training_batch/iteration.h5": {
+   "n": [
+    2,
+    2
+   ],
+   "dtype": "int64",
+   "sha256": [
+    "df065f4871e06699366ccb668ce9b2a58f41b698fc7f95123d307a70c5379505",
+    "df065f4871e06699366ccb668ce9b2a58f41b698fc7f95123d307a70c5379505"
+   ],
+   "identical": true
+  },
+  "validation/loss.h5": {
+   "n": [
+    2,
+    2
+   ],
+   "dtype": "float64",
+   "sha256": [
+    "198bc6fd3b0360b8e5a6e460f4e0f36d5dd7691ff582d3cec0aea5da866e8b95",
+    "198bc6fd3b0360b8e5a6e460f4e0f36d5dd7691ff582d3cec0aea5da866e8b95"
+   ],
+   "identical": true
+  },
+  "validation/loss_flow.h5": {
+   "n": [
+    2,
+    2
+   ],
+   "dtype": "float64",
+   "sha256": [
+    "198bc6fd3b0360b8e5a6e460f4e0f36d5dd7691ff582d3cec0aea5da866e8b95",
+    "198bc6fd3b0360b8e5a6e460f4e0f36d5dd7691ff582d3cec0aea5da866e8b95"
+   ],
+   "identical": true
+  },
+  "validation/iteration.h5": {
+   "n": [
+    2,
+    2
+   ],
+   "dtype": "int64",
+   "sha256": [
+    "df065f4871e06699366ccb668ce9b2a58f41b698fc7f95123d307a70c5379505",
+    "df065f4871e06699366ccb668ce9b2a58f41b698fc7f95123d307a70c5379505"
+   ],
+   "identical": true
+  },
+  "validation_batch/loss.h5": {
+   "n": [
+    2,
+    2
+   ],
+   "dtype": "float64",
+   "sha256": [
+    "d05d1b9ee4aa8aca7a46e73457d96d1e5a87b4a8b4d985f87b146858e90ae0bd",
+    "d05d1b9ee4aa8aca7a46e73457d96d1e5a87b4a8b4d985f87b146858e90ae0bd"
+   ],
+   "identical": true
+  },
+  "validation_batch/loss_flow.h5": {
+   "n": [
+    2,
+    2
+   ],
+   "dtype": "float64",
+   "sha256": [
+    "d05d1b9ee4aa8aca7a46e73457d96d1e5a87b4a8b4d985f87b146858e90ae0bd",
+    "d05d1b9ee4aa8aca7a46e73457d96d1e5a87b4a8b4d985f87b146858e90ae0bd"
+   ],
+   "identical": true
+  },
+  "validation_batch/iteration.h5": {
+   "n": [
+    2,
+    2
+   ],
+   "dtype": "int64",
+   "sha256": [
+    "df065f4871e06699366ccb668ce9b2a58f41b698fc7f95123d307a70c5379505",
+    "df065f4871e06699366ccb668ce9b2a58f41b698fc7f95123d307a70c5379505"
+   ],
+   "identical": true
+  }
+ },
+ "differences": [],
+ "rung_metrics": {
+  "n": [
+   2,
+   2
+  ],
+  "identical": true,
+  "iterations": [
+   1000,
+   2000
+  ]
+ },
+ "checkpoint_metrics": {
+  "n": [
+   2,
+   2
+  ],
+  "identical": true,
+  "iterations": [
+   0,
+   12
+  ]
+ },
+ "final_iteration": [
+  1999,
+  1999
+ ],
+ "determinism": [
+  {
+   "requested": true,
+   "cublas_workspace_config": ":4096:8",
+   "cudnn_deterministic": true,
+   "cudnn_benchmark": false,
+   "use_deterministic_algorithms": true,
+   "warn_only": true,
+   "mode_query": true,
+   "warn_only_query": true,
+   "tf32_matmul": false,
+   "tf32_cudnn": true
+  },
+  {
+   "requested": true,
+   "cublas_workspace_config": ":4096:8",
+   "cudnn_deterministic": true,
+   "cudnn_benchmark": false,
+   "use_deterministic_algorithms": true,
+   "warn_only": true,
+   "mode_query": true,
+   "warn_only_query": true,
+   "tf32_matmul": false,
+   "tf32_cudnn": true
+  }
+ ],
+ "nondeterministic_ops": [
+  {},
+  {}
+ ],
+ "checkpoint": {
+  "file": [
+   "chkpt_00001",
+   "chkpt_00001"
+  ],
+  "entries_total": 90,
+  "entries_identical": 89,
+  "entries_differing": 0,
+  "entries_on_one_side_only": [],
+  "differing_names": [],
+  "wall_clock_fields_excluded_and_differing": [
+   {
+    "key": "time",
+    "a": "scalar:'Sun Sep 20 16:39:10 2026'",
+    "b": "scalar:'Sun Sep 20 16:46:54 2026'"
+   }
+  ],
+  "file_sha256": [
+   "e544b80bdce1e79d4ed3679fe1933924d8b9cc75a971d823083a1eb5a28ab123",
+   "181a8e6a2df1beb732155db7d0d815e5ca4dd5c6251ec2a8abf3bb4971a9c94b"
+  ]
+ },
+ "verdict": "BITWISE IDENTICAL"
+}

@@ -1,0 +1,331 @@
+{
+  "header": "PREVIEW DIAGNOSTIC -- NOT A TEST",
+  "run_utc": "2026-09-20T09:35:10Z",
+  "script_sha256": "44f458ba3b1c14b027dd43e36ffbdfc485be6fd51f6cd4038a537c3fd46df2d9",
+  "disposition_sha256": "db3e00857ccafda39eeed77a4bb210f16e6d539ad2d6953809458f4679a17085",
+  "sources": {
+    "json": "C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed\\tools\\.venv\\Lib\\site-packages\\flyvis\\connectome\\fib25-fib19_v2.2.json",
+    "json_sha256": "bfbb0766251ff09e22723d0ebbf7b14793e70b3ae8ad0eea64eac9d28223351a",
+    "connectome_dir": "C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed-data\\connectome\\ConnectomeFromAvgFilters_0000",
+    "groundtruth_utils": "C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed\\tools\\.venv\\Lib\\site-packages\\flyvis\\utils\\groundtruth_utils.py",
+    "groundtruth_utils_sha256": "fe3927cbfc5463abf2dfefd590b8b628a7f3be11c9a079a6bd0de70d5241dae6"
+  },
+  "denominator_verified_from_module": {
+    "groundtruth_utils_sha256": "fe3927cbfc5463abf2dfefd590b8b628a7f3be11c9a079a6bd0de70d5241dae6",
+    "n_types_with_polarity_entry": 65,
+    "n_polarity_ON_plus1": 18,
+    "n_polarity_OFF_minus1": 14,
+    "n_polarity_unknown_0": 33,
+    "n_defined_denominator": 32,
+    "defined_types": [
+      "R1",
+      "R2",
+      "R3",
+      "R4",
+      "R5",
+      "R6",
+      "R7",
+      "R8",
+      "L1",
+      "L2",
+      "L3",
+      "L4",
+      "L5",
+      "C3",
+      "CT1(Lo1)",
+      "CT1(M10)",
+      "Mi1",
+      "Mi4",
+      "Mi9",
+      "T4a",
+      "T4b",
+      "T4c",
+      "T4d",
+      "T5a",
+      "T5b",
+      "T5c",
+      "T5d",
+      "Tm1",
+      "Tm2",
+      "Tm3",
+      "Tm4",
+      "Tm9"
+    ],
+    "claim_18_ON_14_OFF_33_unknown_holds": true,
+    "claim_denominator_32_holds": true,
+    "on_pathway": [
+      "L1",
+      "L3",
+      "L5",
+      "Mi1",
+      "Tm3",
+      "Mi4",
+      "Mi9",
+      "CT1(M10)",
+      "T4a",
+      "T4b",
+      "T4c",
+      "T4d"
+    ],
+    "off_pathway": [
+      "L2",
+      "L3",
+      "L4",
+      "Tm1",
+      "Tm2",
+      "Tm4",
+      "Tm9",
+      "CT1(Lo1)",
+      "T5a",
+      "T5b",
+      "T5c",
+      "T5d"
+    ],
+    "n_on_pathway": 12,
+    "n_off_pathway": 12,
+    "n_distinct_types_in_either_pathway": 23,
+    "types_in_both_pathways": [
+      "L3"
+    ],
+    "types_polarity_minus1_and_in_on_pathway": [
+      "L1",
+      "L3",
+      "Mi9"
+    ],
+    "claim_L1_L3_Mi9_holds": true,
+    "types_polarity_plus1_and_in_off_pathway": []
+  },
+  "question_c_coverage": {
+    "n_per_type_fields_in_bank": 22,
+    "n_per_edge_fields_in_bank": 23,
+    "polarity_like_fields_found": [],
+    "n_polarity_like_fields_found": 0,
+    "answer": "The bank carries no polarity; nothing was synthesised and nothing copied.",
+    "outcome_case": "no such field",
+    "meaning": "The label array cannot be 'predicted from the bank' because it is not in the bank. The ON/OFF axis enters this repository only through flyvis.utils.groundtruth_utils.",
+    "explicitly_excluded": {
+      "edge_alpha_json": "per-(src,tar) excitatory/inhibitory sign, NOT ON/OFF polarity",
+      "edge_sign_h5": "per-edge-instance copy of alpha, NOT ON/OFF polarity",
+      "layout_role": "anatomical stage (retina/intermediate/output), NOT ON/OFF polarity"
+    }
+  },
+  "question_d_twin_markers": {
+    "runnable": false,
+    "status": "NOT RUNNABLE -- conditional on (c); (c) found no polarity-like field in the bank, so there is no second marker to compare against.",
+    "types_that_would_be_compared": [
+      "L1",
+      "L3",
+      "Mi9"
+    ],
+    "source_polarity_of_those": {
+      "L1": -1,
+      "L3": -1,
+      "Mi9": -1
+    },
+    "in_on_pathway": {
+      "L1": true,
+      "L3": true,
+      "Mi9": true
+    },
+    "in_off_pathway": {
+      "L1": false,
+      "L3": true,
+      "Mi9": false
+    }
+  },
+  "question_b_recomputation": {
+    "runnable": false,
+    "status": "NOT RUNNABLE: no registered rule.",
+    "searched": [
+      "docs/briefs/2026-09-16-step2-tuning-battery.md §8",
+      "docs/plans/2026-09-16-functional-readout-plan.md",
+      "flyvis docs/source (absent: the installed package ships no docs tree)",
+      "repo-wide grep for a connectivity->ON/OFF mapping"
+    ],
+    "only_candidate_found": {
+      "path_line": "docs/briefs/2026-09-16-step2-tuning-battery.md:98-99",
+      "quote": "recompute polarity from the input rule of the connectome itself (L1 -> ON, L2 -> OFF pathway) and compare it with groundtruth_utils.polarity",
+      "restated_at": "docs/plans/2026-09-20-genome-design-around-s2.md:186",
+      "axis": "MIXED: its target is response polarity (`polarity`) while its content is pathway membership (`on_pathway`/`off_pathway`). These are the two axes.",
+      "withdrawn_by_author": true,
+      "withdrawal": "Ark, group chat 2026-09-20 09:16 UTC, withdrew §4 as originally written for exactly this axis mix.",
+      "operational": false,
+      "why_not_operational": "Even setting the withdrawal aside, the sentence states no operator: no threshold, no weighting by n_syn, no path depth (direct input only or transitive), no tie rule for types receiving both. It names two seed types, not a mapping."
+    },
+    "conclusion": "No rule exists in writing that is both on a single axis and operational. Supplying one would be inventing it, which the disposition forbids. (b) is reported not runnable.",
+    "descriptive_reach_only": {
+      "note": "DESCRIPTIVE ONLY. These counts say how far a rule of the 'L1/L2 direct input' family could reach if such a rule were ever written. No rule is applied and no polarity is recomputed here.",
+      "n_types_with_direct_L1_input": 6,
+      "n_types_with_direct_L2_input": 16,
+      "n_types_with_BOTH_L1_and_L2": 4,
+      "n_types_with_NEITHER": 47
+    }
+  },
+  "question_a_literature_match": {
+    "runnable": false,
+    "status": "NOT RUNNABLE as a match: there is no second, independent ON/OFF assignment in this repository to match groundtruth_utils.polarity against. (c) established the bank has none; (b) established no rule can generate one without invention.",
+    "what_is_recorded_instead": "The source's own two axes and their disagreement, below.",
+    "axis_disagreement": {
+      "types_polarity_minus1_in_on_pathway": [
+        "L1",
+        "L3",
+        "Mi9"
+      ],
+      "types_polarity_plus1_in_off_pathway": [],
+      "types_in_both_pathways": [
+        "L3"
+      ],
+      "comment": "Within groundtruth_utils itself, polarity and pathway membership are different axes and disagree on named types. Neither can stand in for the other."
+    }
+  },
+  "sign_provenance": {
+    "n_json_edge_entries": 605,
+    "n_source_types_appearing": 63,
+    "types_never_a_source": [
+      "Mi11",
+      "Tm30"
+    ],
+    "sign_one_per_source_type": false,
+    "n_source_types_sign_consistent": 59,
+    "source_types_sign_inconsistent": [
+      "Am",
+      "C2",
+      "C3",
+      "R8"
+    ],
+    "n_source_types_alpha_fixed_ALL": 22,
+    "source_types_alpha_fixed_ALL": [
+      "CT1(Lo1)",
+      "CT1(M10)",
+      "L1",
+      "L2",
+      "L3",
+      "Mi10",
+      "Mi13",
+      "Mi2",
+      "Mi3",
+      "Mi4",
+      "Mi9",
+      "R1",
+      "R2",
+      "R3",
+      "R4",
+      "R5",
+      "R6",
+      "R7",
+      "R8",
+      "TmY14",
+      "TmY15",
+      "TmY5a"
+    ],
+    "n_source_types_alpha_fixed_SOME": 16,
+    "source_types_alpha_fixed_SOME": [
+      "Am",
+      "C2",
+      "C3",
+      "T4a",
+      "T4b",
+      "T4c",
+      "T4d",
+      "T5a",
+      "T5b",
+      "T5c",
+      "T5d",
+      "Tm1",
+      "Tm2",
+      "Tm4",
+      "Tm9",
+      "TmY4"
+    ],
+    "n_source_types_alpha_fixed_NONE": 25,
+    "source_types_alpha_fixed_NONE": [
+      "L4",
+      "L5",
+      "Lawf1",
+      "Lawf2",
+      "Mi1",
+      "Mi12",
+      "Mi14",
+      "Mi15",
+      "T1",
+      "T2",
+      "T2a",
+      "T3",
+      "Tm16",
+      "Tm20",
+      "Tm28",
+      "Tm3",
+      "Tm5Y",
+      "Tm5a",
+      "Tm5b",
+      "Tm5c",
+      "TmY10",
+      "TmY13",
+      "TmY18",
+      "TmY3",
+      "TmY9"
+    ],
+    "n_entries_alpha_fixed_true": 272,
+    "n_entries_with_alpha_references": 338,
+    "n_entries_alpha_fixed_AND_referenced": 272,
+    "n_entries_alpha_fixed_WITHOUT_reference": 0,
+    "n_entries_referenced_but_NOT_alpha_fixed": 66,
+    "n_distinct_reference_keys": 5,
+    "reference_keys": {
+      "Hardie1989": 40,
+      "Karuppudurai2014": 12,
+      "Lin2016": 12,
+      "NernPC2018": 286,
+      "ReiserPC2017": 82
+    },
+    "n_citation_slots_total": 432,
+    "citation_keys_that_are_personal_communications": {
+      "keys": [
+        "NernPC2018",
+        "ReiserPC2017"
+      ],
+      "n_slots": 368,
+      "note": "'NernPC2018' and 'ReiserPC2017' are personal-communication keys, not publications. They are reported as such because the SIGN column's provenance is what this sub-check measures. No judgement of their reliability is made here."
+    },
+    "citation_keys_that_are_publications": {
+      "keys": [
+        "Hardie1989",
+        "Karuppudurai2014",
+        "Lin2016"
+      ],
+      "n_slots": 64
+    },
+    "compiled_sign_one_per_source_type": false,
+    "dale_note": "Four source types carry BOTH an excitatory and an inhibitory alpha across their outgoing entries, so sign is NOT one value per source type in this json. A genome track that regenerated sign as a per-type property would be unable to reproduce these four by construction.",
+    "inconsistent_detail": {
+      "Am": {
+        "n_entries": 11,
+        "n_exc": 2,
+        "n_inh": 9
+      },
+      "C2": {
+        "n_entries": 14,
+        "n_exc": 2,
+        "n_inh": 12
+      },
+      "C3": {
+        "n_entries": 22,
+        "n_exc": 2,
+        "n_inh": 20
+      },
+      "R8": {
+        "n_entries": 9,
+        "n_exc": 4,
+        "n_inh": 5
+      }
+    }
+  },
+  "side_observation_layout": {
+    "note": "layout IS in the bank: connectome.py:196-221 builds it from json input_units/output_units. Reported because it shows what a bank-derived label looks like. It is an anatomical stage axis, not ON/OFF.",
+    "n_agree": 65,
+    "n_types": 65,
+    "disagreements": {}
+  },
+  "OPEN": [],
+  "runner_note": "The runner reports the partition and does not write the reading beyond it (ADR-003)."
+}
