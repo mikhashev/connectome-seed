@@ -262,7 +262,8 @@ one dense diagnostic run, and none of it changes a pre-registration rule.
 - **Step 2 — tuning battery.** Brief ready
   ([docs/briefs/2026-09-16-step2-tuning-battery.md](docs/briefs/2026-09-16-step2-tuning-battery.md)),
   waits on step 1.
-- **Step 3 — genome.** Not started; design and boundary in
+- **Step 3 — genome. Its state now lives in "The grammar track" below**, where it was moved on
+  2026-09-19; the design and the boundary stay in
   [docs/plans/2026-09-16-functional-readout-plan.md](docs/plans/2026-09-16-functional-readout-plan.md)
   § "Step 3 — genome": Ark writes the design around S2 with label provenance, CC the two-page
   "what is the genome here" note, Zcode the C6 control specification.
@@ -277,6 +278,51 @@ one dense diagnostic run, and none of it changes a pre-registration rule.
   its sections are numbered "## 3. Order of work". The link resolved correctly; only the
   phrasing was ambiguous, and nothing was renamed because nothing needed renaming.)*
 
+## The grammar track — point 1 of the idea, open since 2026-09-19
+
+**Where the goal is stated:** [idea.md](idea.md) / [idea_en.md](idea_en.md), verbatim, Mike
+Shevchenko, author, 2026-09-12 12:18 — five points, the evolutionary tree as the main artefact, and
+the author's own named first step: *"formalising the representation of the genome … Almost
+everything else depends on it."* Restated as the project's description on 2026-09-19:
+«научиться делать из мухи слона» — to learn to make an elephant out of a fly.
+
+**This section is point 1 only** — the heritable grammar and how it is written down. Points 2
+(body and brain growing together along the fly → beetle → six-legged truck → small quadruped →
+heavy quadruped curriculum), 3 (the USPEX operators on a living graph) and 5 (multi-objective
+fitness on a held-out set of arenas) are part of the goal and are **designed for, not run** — see
+"Not on this roadmap, deliberately" below, which is unchanged by this section.
+
+**Chosen as the track to run next** by Mike, owner, DPC Research group, 2026-09-19 14:45 UTC. It
+needs no GPU and is not blocked by the nightly accrual, so it runs **in parallel** with Phase 2
+rather than in place of it: point 4 of the idea is the cheap-and-expensive pair Phase 2 tests, and
+the tree of point 5 is only worth growing if the instrument that selects for it can tell two
+individuals apart. **The ordering — grammar the main line, measurement its instrument in
+parallel — is the owner's own** (Mike, owner, 2026-09-20 09:27 UTC).
+
+**What the elephant means here, so that it is not re-derived a fourth time.** Not a larger fly:
+more cells of the same types is a lattice parameter, the number of parameters on cell types does
+not grow with it, and the wiring is given rather than produced. An elephant is a rule that
+generates the wiring — more cell types and specific connections between them. Stated with its
+sources at `docs/notes/2026-09-20-what-is-the-genome-here.md` § "What a grammar would have to be",
+which is also where the finding sits that the substrate holds one production over a lookup table
+that is not generative.
+
+**Owners** (unchanged from `docs/briefs/2026-09-19-genome-track-handover.md` § "Who owns what"):
+
+| piece | owner | state |
+|---|---|---|
+| Design around S2, with label provenance | Ark | open |
+| The note "what is the genome here" | CC | **delivered** — `docs/notes/2026-09-20-what-is-the-genome-here.md` |
+| C6 control specification | Zcode | open, blocked by nothing |
+| Extraction of the field list | CC | blocked on the design naming the fields |
+
+**And the other line is deferred, not cancelled.** The blind-authored v2 registration of the
+reachability endpoint ([ADR-003](docs/decisions/003-blind-authorship-after-the-numbers.md)) waits;
+the two are separate sessions by that decision, and the cost of waiting is that the excluded-paths
+list grows with every commit.
+
+**Decision record:** [ADR-004](docs/decisions/004-grammar-is-the-main-line.md).
+
 ## Phase 3 — The article (NOT STARTED)
 
 Written for `Documents/articles`, in English. Its size is set by Phase 2: with a result, an
@@ -286,8 +332,15 @@ step — and it is written as that, without claiming an experiment.
 
 ## Not on this roadmap, deliberately
 
-- Growing anything. No body, no curriculum, no USPEX operators until Phase 2 has a number.
-- Choosing the genome representation. Its absence is the *symptom* the condition tests for;
+- Growing anything. No body, no curriculum, no USPEX operators until Phase 2 has a number. This
+  covers points 2, 3 and 5 of the idea — body and brain growing together along the curriculum,
+  heredity/softmutation/permutation on a living graph, and multi-objective fitness on a held-out
+  set of arenas. They are **designable, not runnable**: writing the design is allowed and is part
+  of the grammar track above; building or running any of them is not, and this prohibition is not
+  lifted by that track.
+- Choosing the genome representation *for growth*. Its absence is the *symptom* the condition
+  tests for; writing down what a grammar would have to produce is point 1 and is the track above,
+  and is not excluded here — what is excluded is adopting a representation and growing from it;
   three requirements (compression, composability, expressivity) pull apart, and the two
   candidate pieces that exist each pay for one with another — see `literature.md` §A1 and §F.
   The substrate already carries a graph-level description: flyvis compiles 45,669 cells (extent

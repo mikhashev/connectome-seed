@@ -19,6 +19,12 @@ fitness after each offspring has had a short period of plasticity. The artefact 
 the **evolutionary tree** — which module was inherited, where a line diverged, which skills
 survived a change of body — not a single video of something walking. The original statement
 of the idea is in [idea.md](idea.md), verbatim.
+The five points, the artefact and the author's own named first step are there verbatim and are the
+goal; this paragraph is a summary of them and not a substitute (Mike Shevchenko, author,
+2026-09-12 12:18). Restated by him as the project's description on 2026-09-19 —
+**«научиться делать из мухи слона»**, *to learn to make an elephant out of a fly* — which is the
+idea's own opening distinction ("not 'emulate a fly and call it an elephant'") promoted from a
+disclaimer to the goal.
 
 ## The operating principle: the loop has a middle, and the middle is unproven
 
@@ -51,6 +57,37 @@ others (flyvis; the whole-brain connectomic controller of a biomechanical fly). 
 
 That is the condition in [docs/decisions/002](docs/decisions/002-file-under-condition.md). It is one
 experiment, it is pre-registered before it runs, and both of its outcomes are results.
+
+### The two lines, and why both exist — 2026-09-19
+
+The condition above is not a rival of the idea's point 1; it is the idea's point 4 turned into a
+test. Point 4 says each offspring gets a short "youth" of limited plasticity and *only then* is
+fitness measured — that is the cheap evaluation and the expensive one, named by the author before
+any of this was built. The idea's own annotation records that this is precisely the mechanism
+arXiv 2508.17464 measured as the source of mis-ranking (`idea.md`, closing note, 2026-09-13). And
+the main artefact is a tree (point 5's selection, point 2's lineage): a tree selected by an
+instrument that cannot tell two individuals apart is a tree of noise. So the measurement is what
+makes a grammar's result readable, not a detour from it.
+
+**Which is the main line.** *Ark, reviewer, DPC Research group, 2026-09-19 11:11 UTC:* "if the goal
+is the elephant, then the grammar is the main line and measuring the fly is instrumentation." That
+is Ark's reading, and CC's record of the same day agrees with it. **The owner confirmed it** —
+*Mike, owner, 2026-09-20 09:27 UTC:* the grammar is the main line and the measurement runs in
+parallel as its instrument. The narrower fact that preceded the confirmation: on 2026-09-19 Mike
+chose the grammar track as the one to run next (*Mike, owner, DPC Research group, 2026-09-19
+14:45 UTC*), the track that needs no GPU and is not blocked by the nightly accrual; the
+blind-authored second registration of the reachability endpoint is deferred, not cancelled
+([ADR-003](docs/decisions/003-blind-authorship-after-the-numbers.md)). The two run in parallel.
+
+**The order lifts nothing.** Nothing is grown until Phase 2 has a number (`ROADMAP.md`, "Not on this
+roadmap, deliberately"): the grammar of point 1 is *designed* now, and points 2, 3 and 5 — body and
+brain growing together, the USPEX operators, the multi-objective fitness on held-out arenas — are
+designed for and not run. The reason is the one this file already gives from the other side: an
+elephant cannot be designed by a team that cannot yet weigh a fly.
+
+*(The decision is recorded as
+[ADR-004](docs/decisions/004-grammar-is-the-main-line.md); this paragraph is a summary and not the
+decision record.)*
 
 ### What the condition looks like after five nights (2026-09-19)
 
@@ -96,6 +133,14 @@ checkpoints are already on disk.
   the *product* of development; the genome is the *process*; inverting one product into a
   process is underdetermined, and the missing representation is the hole named by every reader
   of the idea, the author included.
+- A **grammar** — point 1 of the idea, and the thing the restated goal asks us to learn to write —
+  is a rule that *produces* the wiring table: which cell types exist, which pairs connect, at which
+  offsets, with which signs. By that test the substrate we run on holds exactly one production —
+  tile a column motif over a hex disc of a given radius — over a lookup table that is not
+  generative; raising the radius adds columns, not types or motifs. An individual today is an
+  initial condition on wiring identical in every individual, not a genome in the generative sense
+  ([docs/notes/2026-09-20-what-is-the-genome-here.md](docs/notes/2026-09-20-what-is-the-genome-here.md)
+  §3, §5).
 - **Cheap** and **expensive** evaluation are numbers of training iterations, fixed in writing
   before a run, never chosen after seeing a result.
 

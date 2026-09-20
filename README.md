@@ -9,8 +9,11 @@ word (DPC Research group, 2026-09-13 06:22 UTC: «сохрани сюда всё
 ([chat/82](chat/82-ark-064101.md)); corrections applied in place on Mike's word
 ([chat/83](chat/83-mike-064218.md)). Every change carries the reviewer's name where it lands.
 
-**Status:** idea, not started. No code, no runs, no repository. Nothing in here has been
-executed except the literature search.
+**Status:** the idea of 2026-09-13 as it was first written; this file has not been rewritten
+since. What happened after it is not here — the pre-registration, the runs and their records
+live in `docs/` and `results/`, and the current state of the condition is in
+[ADR-002](docs/decisions/002-file-under-condition.md) § "Status of the condition". Which part of
+the idea is being worked on now is stated in "The goal, in the owner's own words" below.
 
 ---
 
@@ -25,6 +28,72 @@ controller is plastic, permutation of roles, a diversity archive), give every of
 closed arenas. The main artefact is the **evolutionary tree**, not one video. Full text as
 posted in the thread: [chat/67](chat/67-mike-055707.md); a clean copy of the five points:
 [idea.md](idea.md); in English, [idea_en.md](idea_en.md).
+
+## The goal, in the owner's own words
+
+The goal is not a paraphrase and does not have to be reconstructed from discussion: it is in this
+repository, verbatim and dated, as [idea.md](idea.md) (the record, Russian) and
+[idea_en.md](idea_en.md) (translation). Mike Shevchenko, author, 2026-09-12 12:18. Restated by him
+in one line as the project's description on 2026-09-19: **«научиться делать из мухи слона»** — *to
+learn to make an elephant out of a fly.* The two say the same thing: the idea opens with **"Not
+'emulate a fly and call it an elephant', but grow a lineage of creatures from a real
+connectome-seed"**, and the restatement promotes that distinction from a disclaimer to the goal.
+
+It is five points, an artefact, and a named first step. All five are the goal; none of them is a
+later addition.
+
+1. **The seed is a heritable grammar, not all the weights** — neuron types, E/I balance, recurring
+   graph motifs, sensory and motor circuits. "This is the first genome, not a cemented brain."
+2. **Body and brain grow together** — the genome says which segments, joints and sensors the body
+   has and how neuromodules are duplicated, connected and specialised. **Not a "fly → elephant"
+   jump, but a curriculum:** fly → beetle → six-legged truck → small quadruped → heavy quadruped.
+3. **USPEX operations, on a living graph** — heredity of working brain and body modules from two
+   ancestors; softmutation where the controller is plastic rather than random axon-cutting;
+   permutation of a module's role, type or sensory channel; random embryos and a diversity archive.
+4. **A short "youth" before fitness is measured** — limited plasticity in several safe worlds, and
+   only then the measurement: "we evaluate not the raw embryo, but what it stably settles into."
+5. **Multi-objective fitness on a held-out set of arenas** — energy, stability, speed, recovery
+   after a broken sensor or joint, novelty, transfer to unseen terrain; the arenas are held out
+   "otherwise the winner is whoever found a hole in MuJoCo".
+
+**The main artefact is not a single elephant video, but an evolutionary tree:** which mutation
+appeared, which module was inherited from the fly, what grew, where a line broke, and which skills
+survived the change of body.
+
+**The first step is the author's own, and it is the one open now.** From the same message: *"the
+most interesting next step, in my view, is formalising the representation of the genome (exactly
+how the heritable grammar of modules and growth rules is written down). Almost everything else
+depends on it."* That is point 1, and it is the track being worked on — see
+[ROADMAP.md](ROADMAP.md) § "The grammar track". It is the first point, not the whole goal: points 2,
+3 and 5 are designed for and not run, and nothing is grown until the condition below has a number.
+
+**What the elephant means, operationally.** An elephant is not a bigger fly: more cells of the same
+types is a lattice parameter, it does not add types, motifs or knobs, and the wiring is given to us
+rather than produced. An elephant is a rule that *generates* the wiring — more cell types and
+specific connections between them. Measured against that test, what we run on today holds a single
+production over a lookup table that is not generative, and an individual is an initial condition on
+wiring identical in every individual — not a genome in the generative sense
+([docs/notes/2026-09-20-what-is-the-genome-here.md](docs/notes/2026-09-20-what-is-the-genome-here.md)).
+
+**Why the measurement line below is not a detour.** Point 4 *is* the cheap-and-expensive pair: the
+short youth is the cheap evaluation, the fitness measured after it is the expensive one. The idea's
+own annotation says so — the short "youth" of point 4 is exactly the mechanism arXiv 2508.17464
+measured as the source of mis-ranking. And the main artefact is a tree, so a selection instrument
+that cannot tell one individual from another would grow a tree of noise. The two lines are
+parallel: the grammar is the main line, the measurement is what makes its result readable, and each
+feeds the other — confirmed by Mike, owner, 2026-09-20 09:27 UTC, and recorded as
+[ADR-004](docs/decisions/004-grammar-is-the-main-line.md).
+
+**Two annotations the idea carries about itself**, recorded on 2026-09-13 and repeated here so this
+section cannot be read without them: **"first" is not true** — OpenWorm since 2014, C. elegans
+whole-body simulators, whole-fly-brain emulation on Loihi 2, and a connectome-as-controller fly in
+2026 ([literature.md](literature.md)); and the point-4 note above. Neither kills the idea; both
+change where it starts.
+
+Owners of the open track: Ark — the design around S2 with label provenance; CC — the note "what is
+the genome here" (delivered) and the extraction; Zcode — the C6 control specification
+([docs/briefs/2026-09-19-genome-track-handover.md](docs/briefs/2026-09-19-genome-track-handover.md)).
+The track needs no GPU and is not blocked by the nightly accrual.
 
 ## What the readers found — the shape, not the retelling
 
@@ -152,8 +221,10 @@ sources/           shuvaev-2024-genomic-bottleneck-pnas.pdf (open-access, 7.5 MB
 **Clocks.** Chat timestamps are UTC; this machine is UTC+07. The thread ran 05:57–06:43 UTC
 on 2026-09-13, which is 12:57–13:43 local.
 
-**Not done, deliberately.** No repository initialised, no backlog entry, no card in
-`autoresearch-win-rtx/docs/articles/` — those are Mike's calls and none was given.
+**Not done, deliberately — as of 2026-09-13.** No repository initialised, no backlog entry, no
+card in `autoresearch-win-rtx/docs/articles/` — those were Mike's calls and none had been given
+that day. A repository and a board exist since; this paragraph is kept as the record of the day,
+not as a statement about now.
 
 ## Licence
 
