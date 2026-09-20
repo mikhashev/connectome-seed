@@ -1,6 +1,7 @@
 # Retrospective — session S2026-09-13.1 (2026-09-13 05:57 UTC → 2026-09-14 05:54 UTC)
 
-**Written by:** CC, on Mike's word (DPC Research chat, 2026-09-14 05:53 UTC: «Давайте ретроспективу оба»). Ark writes his own. **Audience:** Mike and the reviewers. Every claim below is Observed unless marked.
+**Written by:** CC, on Mike's word (DPC Research chat, 2026-09-14 05:53 UTC: "both of you, write a retrospective" —
+translated from Russian). Ark writes his own. **Audience:** Mike and the reviewers. Every claim below is Observed unless marked.
 
 ## What the session produced
 
@@ -14,7 +15,7 @@
 
 1. **Pre-registration before the run.** The tolerance written at 07:55 UTC caught at 02:39 UTC what would otherwise have been read as "the seed converged". The void conditions prevented any retuning after the fact; the record says FAIL and the rules are unchanged.
 2. **Execution over reading.** Ten of the day's conclusions were checked by a cheap run; five fell. None of the five would have fallen to a second reading.
-3. **Three reviewers with different optics.** Ark (design, the composition test, the floor as a distribution), Zcode (source checks on flyvis, the resume test that proved decisive, the provenance corrections), and Mike's own questions («а почему прибор ломается?», «что важнее — точность или повторяемость?») that forced the SNR framing.
+3. **Three reviewers with different optics.** Ark (design, the composition test, the floor as a distribution), Zcode (source checks on flyvis, the resume test that proved decisive, the provenance corrections), and Mike's own questions ("but why does the instrument break?", "which matters more — accuracy or repeatability?" — both translated from Russian) that forced the SNR framing.
 4. **Delegation.** ~20 subagents executed the mechanical and the measured work; the main thread kept the chat, the decisions and the verification by tool output and commit hash.
 
 ## CC's errors this session, counted

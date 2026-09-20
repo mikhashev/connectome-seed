@@ -1,7 +1,8 @@
 # Literature — what exists, verified how
 
-Searched 2026-09-13 on Mike's word («поищите работу — может кто уже решил этот вопрос; может
-есть что-то похожее из решённых проблем из других областей — кодеки, материаловедение»).
+Searched 2026-09-13 on Mike's word ("go and look for work on this — maybe somebody has already
+solved this question; maybe there is something similar among solved problems in other fields —
+codecs, materials science" — translated from Russian).
 Every entry says **how far it was read**. Quotes are verbatim from the source named; nothing
 below is from a retelling. Where a source refused the fetch (paywall, cookie wall, rate
 limit) that is written down rather than papered over.
@@ -420,7 +421,8 @@ were read, not the whole paper.
 
 ### I.1 Genome representation — how "a rule that generates wiring" has been written down before
 
-This is point 1 and Mike's own named next step («формализация представления генома»). Six
+This is point 1 and Mike's own named next step ("formalising the representation of the genome",
+translated from Russian). Six
 entries; they are the ones Ark's track should read before proposing a rule.
 
 #### 9. The original: one graph encodes body and brain, and it is read as growth instructions
@@ -440,7 +442,8 @@ instructions to make similar or recursive components within the creature."* The 
 same kind of object: *"The genotype descriptions of virtual brains and the actual phenotype
 brains are both directed graphs of nodes and connections."*
 
-Two mating operators, verbatim — this is point 3's «склеиваем рабочие модули двух предков»,
+Two mating operators, verbatim — this is point 3's "we splice together the working modules of
+two ancestors" (translated from Russian),
 written down in 1994: *"The first is a crossover operation … The nodes of two parents are each
 aligned in a row as they are stored, and the nodes of the first parent are copied to make the
 child, but one or more crossover points determine when the copying source should switch to the
@@ -487,7 +490,7 @@ One measurement detail that belongs to §I.5, not here — their fitness is alre
 using different random noise, with the lowest score assigned as the creature's fitness."*
 
 **What it says to our points — (i) a worked technique.** This is the closest published thing to
-«наследуемая грамматика»: rules, parameters, re-use, and a decoder that turns a derived string
+"heritable grammar" (translated from Russian): rules, parameters, re-use, and a decoder that turns a derived string
 into a body. The reason to read it before writing our own rule is its constraint list —
 conditions restricted to comparisons of a parameter against a constant, parameters restricted to
 one arithmetic operation — which is how they kept an arbitrary grammar decodable. Compare with
@@ -598,8 +601,8 @@ but **no numbers are in the abstract**, and the paper itself was not read.
 
 **What it says to our points — (i) a technique, and the missing half of entry 11.** This is the
 branch Stanley's CPPN paper deliberately gave up — local interaction and unfolding over time —
-put back, with the growth rule itself a network. That is what point 2's «модули дублируются,
-соединяются, специализируются» needs a formalism for. Not verified beyond the abstract; read
+put back, with the growth rule itself a network. That is what point 2's "modules are duplicated,
+joined up, specialised" (translated from Russian) needs a formalism for. Not verified beyond the abstract; read
 before adopting.
 
 ### I.2 Body and brain together, and curricula (point 2)
@@ -665,8 +668,9 @@ obstacle course) and reward functions (e.g., progress through the obstacle cours
 touching red objects)"*. The abstract reports no quantitative result — it says *"We showcase the
 explosive creativity of OMNI-EPIC"* — and the paper was not read.
 
-**What it says to our points — (i), weakly.** It is the current form of point 5's «отдельный
-закрытый набор арен»: arenas as generated code rather than a fixed list. Also a caution — if a
+**What it says to our points — (i), weakly.** It is the current form of point 5's "a separate,
+closed set of arenas" (translated from Russian): arenas as generated code rather than a fixed
+list. Also a caution — if a
 model writes the reward function, the evaluator itself becomes part of the search space. See
 §I.6.
 
@@ -705,7 +709,8 @@ contribute when it is done right."* And on the harder benchmark: *"NEAT takes 25
 evaluations than Gruau's original benchmark."*
 
 **What it says to our points — (i) a worked technique, and the one point 3 needs most.**
-«Склеиваем рабочие модули мозга и тела двух предков» is crossover on graphs, and this paper says
+"We splice together the working brain and body modules of two ancestors" (translated from
+Russian) is crossover on graphs, and this paper says
 plainly that doing it without a homology record damages offspring. The lesson transfers exactly:
 every module, rule or connection in our genome needs a **birth id that is never reused and never
 renumbered**, and inheritance is defined by matching those ids. That one decision is also what
@@ -740,9 +745,9 @@ runs."* A size effect worth noting: solutions found by fitness had *"66.74 conne
 novelty search (24.6 connections, sd = 4.59)."*
 
 **What it says to our points — (i) a technique, and (iii) a challenge to point 5.** The archive
-in point 3 («random embryos и diversity archive») is this, and it is not decoration: on the
+in point 3 ("random embryos and a diversity archive", translated from Russian) is this, and it is not decoration: on the
 deceptive map the objective-driven run is no better than random selection. The challenge is
-sharper than it looks. Point 5 lists «новизна стратегии» as *one objective among six*. This
+sharper than it looks. Point 5 lists "novelty of strategy" (translated from Russian) as *one objective among six*. This
 paper's result is that novelty works when it **replaces** the objective, and their own control
 shows the weaker version is weaker: when behaviour was characterised by the fitness measure
 itself, *"The maze was solved in only 11 out of 40 runs."*
@@ -861,7 +866,8 @@ nature."* And the paper's own status, verbatim: *"This paper is the crowd-source
 researchers in the fields of artificial life and evolutionary computation who have provided
 first-hand accounts of such cases. It thus serves as a written, fact-checked collection of
 scientifically important and even entertaining stories."* The individual anecdotes were **not
-read**, so none is quoted here — including whichever ones the idea's phrase «нашёл дыру в MuJoCo»
+read**, so none is quoted here — including whichever ones the idea's phrase "found a hole in
+MuJoCo" (translated from Russian)
 is reaching for.
 
 **What it says to our points — (ii), and it is the reference point 5 should cite.** The held-out
@@ -969,8 +975,9 @@ that evolved under identical conditions, 23 of which acquired EQU. The phylogene
 which EQU first appeared ranged from 51 to 721 steps."*
 
 **What it says to our points — (i), and it is the standard the artefact must meet.** The idea
-wants a tree that says «какая мутация появилась, какой модуль унаследован от мухи, где линия
-сломалась». This paper shows such a claim is only as good as two operations the drawn tree cannot
+wants a tree that says "which mutation appeared, which module was inherited from the fly, where
+the lineage broke" (translated from Russian). This paper shows such a claim is only as good as
+two operations the drawn tree cannot
 perform: **knockout** (remove the element — does the skill die?) and **reversal** (undo the
 ancestral step — does the skill still arise?). A tree is a hypothesis; those two experiments turn
 an edge into a finding. It also warns about replicate count: 50 populations, 23 reached the
@@ -1043,7 +1050,7 @@ constructing machine M next makes a tape for the new machine, copies its own tap
 **What it says to our points — (i) framing, with one sharp consequence for point 1.** The
 description is used twice and differently: *interpreted* to build the body, and *copied
 uninterpreted* to be inherited. A genome that is only interpreted has no heredity; a genome that
-is only copied has no phenotype. The «наследуемая грамматика» must survive both readings — which
+is only copied has no phenotype. The "heritable grammar" (translated from Russian) must survive both readings — which
 is a concrete, cheap test for any proposed representation: can it be copied bit-for-bit by a
 process that does not understand it, and separately decoded by one that does?
 

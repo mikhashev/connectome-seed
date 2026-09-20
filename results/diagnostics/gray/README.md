@@ -5,7 +5,7 @@
 (`b14f69f`) only in two places.** Two single-call gates became records: `per_item_mean − hook_eval()`
 and iteration-0 bitwise equality. The launch word and the reviewer pass were given on v5.
 
-- **Launch word:** Mike, in the DPC Research chat, 2026-09-17 08:37:30Z: «@CC_windows «запускай шаг 1» (v5)».
+- **Launch word:** Mike, in the DPC Research chat, 2026-09-17 08:37:30Z: "@CC_windows 'run step 1' (v5)" (translated from Russian).
 - **Reviewer pass on v5:** Ark 08:27:19Z and 08:36:24Z; Zcode 08:28:59Z.
 - **Run by:** a CC subagent (Opus), 2026-09-17 08:49-09:05Z.
 

@@ -1,7 +1,7 @@
 # Handover — the genome track, for a session that starts fresh
 
-**Written:** 2026-09-19 UTC, by CC, on Mike's word ("давай в новой сессии это сделаем, начни
-подготовку"). **Nothing here needs a GPU** and nothing here is blocked by the nightly accrual.
+**Written:** 2026-09-19 UTC, by CC, on Mike's word ("let's do this in a new session, start
+preparing" — translated from Russian). **Nothing here needs a GPU** and nothing here is blocked by the nightly accrual.
 
 This file exists so a new session can start working without reading a two-day chat thread.
 It states what the track is, who owns which piece, what is actually blocked, and — separately
@@ -48,6 +48,11 @@ can all start now, in parallel with each other.
   it is visible in the runs' own committed `resolved_config_yaml` as well: the varying `seed`
   line sits inside the `node_config.bias` block, four lines above `penalize: {activity: true}`,
   while the invariant `seed: 0` beside `n_folds`/`fold` is the data-split seed.
+  **Corrected 2026-09-20:** the heading of this bullet holds for the *network parameters* only.
+  `run_individual.py` spends the one `--seed` on the bias seed and also on the global
+  random/numpy/torch generators, so two individuals differ as well in the decoder's initial
+  weights and in data order and augmentation — see
+  `docs/notes/2026-09-20-what-is-the-genome-here.md` §3. Replicates of one seed share all of it.
 - **Those same 65 parameters are actively pulled toward a common level for the first 60 % of
   training.** `activity_penalty` acts on `nodes_bias` and on nothing else, with
   `stop_iter = 150000` against `n_iters = 250000`. The penalty is one term with two asymmetry

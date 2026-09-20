@@ -377,21 +377,9 @@ written down by Ark on 2026-09-20 21:43 local, AFTER the reading, to record the 
 applied — the AMBIGUOUS branch names cases the reading had already met. It is recorded here so
 the next reading does not re-derive it.
 
-> **Правило чтения величины штрафа через границу 150 000** (сформулировано до первого значения).
-> Величина, которую штраф минимизировал, читается на каждом чекпойнте; смотрим, как она ведёт
-> себя на самой границе и за ней.
->
-> - **DRIFT** — после границы величина смещается от baseline, и смещение имеет общее направление
->   у большинства прогонов, заметно большее, чем на соседних границах: штраф держал состояние,
->   его снятие видно.
-> - **SMOOTH** — изменение на границе не выделяется среди соседних границ (у нас соседние дают от
->   −0,70 % до +0,53 %, граница +0,19 %), общего направления нет: к моменту снятия штраф
->   состояние не держал.
-> - **AMBIGUOUS** — случай не сводится ни к одной форме (смещение начинается не на границе, а
->   позже; или величина идёт *к* baseline, чего правило не описывает) — правило не применяется,
->   случай остаётся открытым и записывается явно.
-
-**English rendering (translation, not a second original).**
+The rule was stated in Russian; what follows is its faithful English translation
+(translated from Russian), and it is the form every later reading is answered against — a
+translation, not a second original.
 
 > **Rule for reading the penalty quantity across the 150,000 boundary** (formulated before the
 > first value). The quantity the penalty minimised is read at every checkpoint; we look at how
@@ -427,8 +415,9 @@ choices must be stated, before the profiles are opened**, not discovered afterwa
 **The question the profiles will be read for — AUTHORISED by Mike 2026-09-20 09:27 UTC; read once
 — see PROFILES-READING.md (recorded 2026-09-20,
 before the repository's own reading of the profiles; wording Ark's, group chat 21:43 local):**
-«различает ли ряд B индивидов; где на этой оси лежит `3‴` после границы» — does row B tell
-individuals apart, and where does `3‴` lie on this axis after the boundary. N is counted in
+"does row B tell individuals apart; where on this axis does `3‴` lie after the boundary"
+(translated from Russian). The question was registered in Russian; this is its faithful English
+translation, and it is the form the reading is answered against. N is counted in
 individuals (6), replicates do not enter N, and this remains a preview: no number from it reads
 as a test. The reading waits on Mike's word and on the stated handling of `9992/003` above.
 Honest note: on 2026-09-20 Ark compared the two modes' profiles in his own sandbox to size the

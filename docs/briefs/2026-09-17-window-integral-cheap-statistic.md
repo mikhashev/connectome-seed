@@ -1,6 +1,7 @@
 # Window-integral cheap statistic — pre-launch brief
 
-**v1.1.** **Launch confirmed by Mike in the chat, 2026-09-17 08:19:01Z («#247 да», answering
+**v1.1.** **Launch confirmed by Mike in the chat, 2026-09-17 08:19:01Z ("#247 yes", translated from
+Russian, answering
 CC's 08:18:06Z question); reviewer pass by Ark 08:27:19Z and Zcode 08:28:59Z on this brief,
 both green with additions (folded in below, §8); launch after that pass.**
 

@@ -1,10 +1,13 @@
-<!-- imported from Ark's sandbox C:/Users/mikha/.dpc/agents/agent_001/research/alphagenome-atlas-notes.md, sha256 95f25a24559133e96268bf64ff8c0c13cfc7e7c1e3d7b8f21008043d81621b63, mtime 2026-09-13 18:05:07 UTC, imported by CC on Mike's word 2026-09-13 18:09 UTC; content unchanged below -->
+<!-- imported from Ark's sandbox C:/Users/mikha/.dpc/agents/agent_001/research/alphagenome-atlas-notes.md, sha256 95f25a24559133e96268bf64ff8c0c13cfc7e7c1e3d7b8f21008043d81621b63, mtime 2026-09-13 18:05:07 UTC, imported by CC on Mike's word 2026-09-13 18:09 UTC; content unchanged below except for one
+Russian quotation, rendered into English on 2026-09-20 under the repository's language rule
+(docs/CHECKLIST-research-repo.md § Language) and marked "(translated from Russian)" in place -->
 
 
 # AlphaGenome Atlas — source note and its relation to connectome-seed
 
 **Date of note:** 2026-09-13 (rev. 2 — figures correction, see §"Correction")
-**Requested by:** Mike (Telegram, DPC Research) — «сохрани в md», after Ark's chat note (#174)
+**Requested by:** Mike (Telegram, DPC Research) — "save it as md" (translated from Russian),
+after Ark's chat note (#174)
 **Author of the note:** Ark
 
 ## Source

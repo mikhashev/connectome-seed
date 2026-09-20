@@ -130,7 +130,7 @@ specification.
 
 ## Open Questions
 
-- **Q1 — ANSWERED (Mike, 2026-09-20 09:27 UTC: «да»).** Does the owner confirm the reading —
+- **Q1 — ANSWERED (Mike, 2026-09-20 09:27 UTC: "yes", translated from Russian).** Does the owner confirm the reading —
   grammar as the main line, the measurement line parallel to it? No source settles this; every
   document that encodes the reading is citing an agent, not the owner. — Mike
 - **Q2:** What exactly is "the elephant" beyond the grammar? The five-point reading is

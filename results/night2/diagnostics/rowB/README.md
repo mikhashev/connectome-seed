@@ -7,7 +7,8 @@ A registered reading needs N ≥ 8. This label is repeated in every output json
 (`"status": "PREVIEW DIAGNOSTIC -- NOT A TEST (n=4, critical rho 0.90-1.00)"`).
 
 Design: `docs/proposals/mi-axis-per-cell-type-design.md` (Ark, 2026-09-15 08:09, with the
-Addendum of 08:13). Mike's word «делай ряд B», DPC Research chat 2026-09-15 09:56.
+Addendum of 08:13). Mike's word "do row B" (translated from Russian), DPC Research chat
+2026-09-15 09:56.
 Everything in **§1–§8 below was written and saved before `rowB.py` was run for the first
 time**; §9 onwards (commands, timings, results pointers) was appended after.
 

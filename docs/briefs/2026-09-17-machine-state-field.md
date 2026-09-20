@@ -63,7 +63,7 @@ No existing key's value changes; the two extra `dump()`-triggering writes do not
 
 ## Applied 2026-09-17
 
-Authority: Mike, chat #247 «да», 2026-09-17 08:19:01Z. Reviewer pass: Ark 08:27:19Z (design green,
+Authority: Mike, chat #247 "yes" (translated from Russian), 2026-09-17 08:19:01Z. Reviewer pass: Ark 08:27:19Z (design green,
 one addition — `boot_time_utc` — plus two checks), Zcode 08:28:59Z (green; default path byte-identical
 by argv check, new fields only in json). Base hash reverified `4aafb2c481551e2b51a7ca65f02a04fd691c81d80a14a591b72688b8534e7d5d`,
 `git apply` clean (no `--check` needed, applied directly, no reject).

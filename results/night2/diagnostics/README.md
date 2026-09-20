@@ -1,6 +1,7 @@
 # Night-2 diagnostics from saved checkpoints — commands, interpreter, outputs
 
-**Date:** 2026-09-15 · **Run by:** CC (subagent), on Mike's word «делай диагностики» (DPC Research
+**Date:** 2026-09-15 · **Run by:** CC (subagent), on Mike's word "do the diagnostics"
+(translated from Russian) (DPC Research
 chat 2026-09-15 06:22) · **Asked for by:** Ark and Zcode,
 `docs/experiments/002-night2-seeds-1-and-2.md` §5a items 7 and 10,
 `docs/next-session-plan.md` §3/§4.

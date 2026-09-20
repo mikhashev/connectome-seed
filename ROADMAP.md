@@ -5,6 +5,11 @@ lands on (`docs/decisions/`) and the tasks it consists of (`backlog.md`). Dates 
 local day; chat timestamps quoted anywhere in this repository are UTC (this machine is
 UTC+07).
 
+**Last updated 2026-09-20.** What happened in that session, who decided what, and what was not
+done: [docs/retrospectives/2026-09-20-session-close.md](docs/retrospectives/2026-09-20-session-close.md).
+What a fresh session needs — state in one page, owners, blocks, open decisions, reading order:
+[docs/briefs/2026-09-20-next-session-handover.md](docs/briefs/2026-09-20-next-session-handover.md).
+
 ---
 
 ## Phase 0 — Record (DONE, 2026-09-13)
@@ -55,20 +60,22 @@ numbers and was reviewed before the first GPU iteration: Ark (2026-09-13 15:45 U
 run 0 launched (18:40:31Z). The (b2) top-k amendment (§1/§4/§5 of the pre-registration) was
 reviewed under its own timing rule — committed before any `wave_night2.*` file or result for
 9991/001 or 9991/002 existed — by Ark and Zcode (2026-09-15 18:21/18:24 local) and applied on
-Mike's word «вноси» 18:32 local 2026-09-15, before seeds 1 and 2 started
+Mike's word "put them in" (translated from Russian) 18:32 local 2026-09-15, before seeds 1 and 2
+started
 (`docs/preregistration-cheap-vs-expensive.md` §9). Dataset on disk since 2026-09-13 (23/23
 sequences, flow task builds and yields samples). **One loose end, not blocking the exit:** the
 review of `rho_ci.py`'s construction (Zcode, 2026-09-15 18:45 local — construction accepted,
 its numbers reproduced independently) ends "Applied on Mike's word [to be filled at commit]" in
 the pre-registration's own §9 — that confirmation line is still unfilled in the source file.
 
-## Phase 2 — The test (IN PROGRESS — item 1 done 2026-09-13; **nights 1–5 done, ten runs: six individuals, two of them run three times**; N not yet reached; the registered (c)4 endpoint read once and returned UNREADABLE)
+## Phase 2 — The test (IN PROGRESS — item 1 done 2026-09-13; **nights 1–5 done, ten runs: six individuals, two of them run three times**; N not yet reached; the registered (c)4 endpoint read once and returned UNREADABLE; **2026-09-20: row B read on all ten runs in two modes, the 65-type profiles read once, `stop_iter` decided and left untouched — no registered rule changed by any of them**; night 6 prepared and not launched)
 
 **Goal:** the condition, measured.
 
 1. **One training iteration on the GPU**, in a maintenance window with production down — this
    gives the price of *expensive* on this card. Nothing is scheduled from an estimate.
-   **Done 2026-09-13** (Mike, 11:19 UTC: «карта свободна, можно делать прогоны»). Two runs of
+   **Done 2026-09-13** (Mike, 11:19 UTC: "the card is free, the runs can go ahead" — translated
+   from Russian). Two runs of
    24 iterations of the stock `flow` config (batch 4, extent 15), `flyvis train-single` and the
    same config in-process with timing after `torch.cuda.synchronize()`, RTX PRO 4500 Blackwell,
    torch 2.9.1+cu128. Observed: **0.0619 s per training iteration** within an epoch (n = 22,
@@ -210,6 +217,44 @@ the pre-registration's own §9 — that confirmation line is still unfilled in t
      60 % of training, so the C3 probe at 25,000 sits **inside** that regime and the top rung
      **outside** it.
 
+   - **(vi) The regime argument weakened, and the owner decided what follows (2026-09-20).**
+     The penalised quantity itself — not the loss, but the quantity the penalty acts on — was
+     read once across its own boundary, with the rule's branches stated before the first value
+     (`results/night5/diagnostics/rowB/PENALISED-QUANTITY-READING.md`). It is smooth through
+     150,000 in all ten runs, and held-out loss carries no step there either. So the "cheap and
+     dear are taken in two regimes" reading of (v) weakens at the boundary. It does not close:
+     at 25,000, where the C3 probe sits, the same quantity is markedly higher and more variable
+     in most runs, so **the cheap probe is taken while the system is unsettled** — the
+     observation stands, under that name. **Decision: `activity_penalty.stop_iter` is left
+     untouched** (Mike, owner, 2026-09-20). A "loss step at 150,100" claimed in the thread was
+     seconds per iteration, not loss — the two timing sub-gates of
+     `docs/briefs/2026-09-17-night5.md` §4.4, which exist because dropping the penalty optimiser
+     changes the per-iteration cost and not the network. Observed and decided; no registered
+     rule changes.
+
+   - **(vii) The replicate gap is made inside training, and its mechanism is the instrument's
+     (2026-09-20).** Replicates of one seed are copies of one config to the last field —
+     identical at iteration 0, apart by under one float32 step at iteration 12, apart by the
+     whole replicate gap at the end (Ark read the configs, CC's control measured it). The
+     mechanism is GPU operation order: the same thing that makes a single evaluation
+     non-repeatable and that goes to exactly zero under deterministic algorithms, where the
+     registered P1′ tolerance passes unamended
+     (`results/night5/diagnostics/rowB/README.md`). Ark's trap stands and is why nothing follows
+     from it automatically: switching determinism on *in training* would drive the replicate
+     spread toward zero and ratify the method rather than test it.
+
+   - **(viii) An individual shows in the shape of its profile (2026-09-20).** Row B's 65-type
+     profiles were read once, the reading rule hashed before any value was opened
+     (`results/night5/diagnostics/rowB/PROFILES-READING.md`). Before training, replicates of one
+     seed are identical; at the end they resemble each other by the rank **shape** of the
+     profile and not by its **magnitude**, and not by held-out loss. Declared answer **MIXED**,
+     reported as MIXED. Two readings sit beside it and neither is chosen: Ark's review (reviewer,
+     2026-09-20 09:45 UTC) narrowing it — margin not wins, one "win" a tie at printed precision,
+     the shape result resting on one individual of two against the nearest foreign run, pairs
+     within an individual not independent, and the starting rank order set by the connectome
+     rather than the seed — and a later descriptive recomputation by CC over the last 29
+     checkpoints, post hoc and never a verdict. Nothing here reads as a test.
+
 **Scale (proposal only, no rule change).** What training learns is a small fraction of the
 untrained held-out loss level —
 [docs/experiments/003-night3-seeds-3-and-4.md](docs/experiments/003-night3-seeds-3-and-4.md)
@@ -260,8 +305,41 @@ one dense diagnostic run, and none of it changes a pre-registration rule.
   an untrained network.
   [results/diagnostics/gray/README.md](results/diagnostics/gray/README.md).
 - **Step 2 — tuning battery.** Brief ready
-  ([docs/briefs/2026-09-16-step2-tuning-battery.md](docs/briefs/2026-09-16-step2-tuning-battery.md)),
-  waits on step 1.
+  ([docs/briefs/2026-09-16-step2-tuning-battery.md](docs/briefs/2026-09-16-step2-tuning-battery.md)).
+  **Its prerequisite closed with step 1 on 2026-09-17**, so it no longer waits on step 1 — it
+  waits on the owner's word to launch.
+- **Row B — the 65-type activity profiles, all ten runs, two modes. Done 2026-09-20**, as an
+  unregistered diagnostic on Mike's word, on checkpoints already on disk:
+  `results/night5/diagnostics/rowB/`. Instrument and protocol written before any value existed
+  and reviewed by three reviewers; both reductions of "65 numbers" recorded separately; the type
+  axis fingerprinted against row A's; every record carrying its reduction path and determinism
+  mode; the registered P1′ tolerance never amended. The deterministic run is the record because
+  it recomputes to the bit, and the two modes are never pooled. Its three readings are Phase 2
+  items 3(vi)–(viii) above. Raw per-checkpoint streams stay out of git by rule; instruments,
+  protocols, controls, records and summaries are committed.
+- **Label check — done 2026-09-20**, disposition hashed first, in the form its author revised
+  after finding that his own input rule mixed two axes: `results/diagnostics/labels/`. The bank
+  carries no polarity-like quantity, so three of the four questions are not runnable and are
+  recorded as such; `polarity` is a genuinely external label on the 32 types it covers and is
+  still unattributed; `layout` is wholly bank-derived and can judge nothing; synapse sign is not
+  one per source type and most of its citations are personal communications. Consequences for
+  the grammar track are in "The grammar track" below.
+- **Night 6 — prepared, not launched, and superseded by a proposal (2026-09-20).** The brief is
+  [docs/briefs/2026-09-20-night6-deterministic-pairs.md](docs/briefs/2026-09-20-night6-deterministic-pairs.md)
+  and `results/night6/` holds what was measured before it: deterministic training costs about
+  3.33× the nights' mode with no operator refusing, the same seed twice under determinism is
+  bitwise identical over 2,000 iterations — the first measurement of determinism on the
+  *training* path — gate 7 is blind to the determinism flag, and gate 7b is registered. The
+  authorised shape ("two deterministic pairs") was **not launched**: one full deterministic run
+  is about 13.4 h, and CC and Ark concluded separately that it cannot answer its own question,
+  because under determinism the replicate spread is undefined rather than zero and there is
+  nothing to compare a between-seed spread with. Mike declined to spend the night (owner,
+  2026-09-20 10:02 UTC). **Proposed in its place and NOT authorised:** a perturbation ladder
+  under deterministic training — one seed, one parameter nudged by a controlled amount in
+  float32 steps up to the full seed-to-seed difference, on an *edge* parameter rather than
+  `nodes_bias` because the activity penalty is a restoring force on the biases for the first
+  150,000 iterations (Ark); read by shape, against the night's own zero, with the reading rule
+  registered before launch.
 - **Step 3 — genome. Its state now lives in "The grammar track" below**, where it was moved on
   2026-09-19; the design and the boundary stay in
   [docs/plans/2026-09-16-functional-readout-plan.md](docs/plans/2026-09-16-functional-readout-plan.md)
@@ -284,7 +362,7 @@ one dense diagnostic run, and none of it changes a pre-registration rule.
 Shevchenko, author, 2026-09-12 12:18 — five points, the evolutionary tree as the main artefact, and
 the author's own named first step: *"formalising the representation of the genome … Almost
 everything else depends on it."* Restated as the project's description on 2026-09-19:
-«научиться делать из мухи слона» — to learn to make an elephant out of a fly.
+"to learn to make an elephant out of a fly" (translated from Russian).
 
 **This section is point 1 only** — the heritable grammar and how it is written down. Points 2
 (body and brain growing together along the fly → beetle → six-legged truck → small quadruped →
@@ -307,14 +385,31 @@ sources at `docs/notes/2026-09-20-what-is-the-genome-here.md` § "What a grammar
 which is also where the finding sits that the substrate holds one production over a lookup table
 that is not generative.
 
-**Owners** (unchanged from `docs/briefs/2026-09-19-genome-track-handover.md` § "Who owns what"):
+**Owners** (the assignment is `docs/briefs/2026-09-19-genome-track-handover.md` § "Who owns
+what"; the states below are current as of 2026-09-20):
 
 | piece | owner | state |
 |---|---|---|
-| Design around S2, with label provenance | Ark | open |
+| Design around S2, with label provenance | Ark | **delivered** — `docs/plans/2026-09-20-genome-design-around-s2.md`, **with an amendment owed by its author**: its §4 check as written is withdrawn by him (the input rule mixed two axes), `L5` is a key and not a field, and the four-question form is to be restated |
+| Step 0 — the design's field inventory verified against source | CC | **done** — `docs/plans/2026-09-20-step0-label-inventory-verified.md`, checked against `groundtruth_utils.py` rather than against the brief it was relayed from |
+| Label provenance check on the bank | Ark (design), CC (execution) | **done 2026-09-20** — `results/diagnostics/labels/`; see the diagnostics section above for what it found |
 | The note "what is the genome here" | CC | **delivered** — `docs/notes/2026-09-20-what-is-the-genome-here.md` |
-| C6 control specification | Zcode | open, blocked by nothing |
-| Extraction of the field list | CC | blocked on the design naming the fields |
+| C6 control specification | Zcode | **not started**, blocked by nothing |
+| Extraction of the rule bank and the label array | CC | **unblocked except for Ark's amendment** — the verified inventory names the fields |
+| `literature.md` §I — digital evolution with inheritance | CC | **added 2026-09-20**, 24 entries read at source; three address fixes owed (search instrument for the negative claim; the paper's address inside the sentence for two quoted figures; the RepliBench model count cited from the paper) |
+
+**Standing precondition (all three owners):** read `literature.md` §I.1 before proposing a rule.
+Four consequences from it that the design has to carry, and that are cheaper to decide before the
+first genome than after it: **birth ids that are never reused** must be settled first and assigned
+at generation zero on the bank itself — 65 type names, 605 rows (Ark); **"a rule instead of
+weights" is a bet with a measurable threshold**, and here regularity is maximal at the *rule*
+level (the table is identical at extent 5 and extent 15; `pattern` takes two values) and is **not
+measured** at the level of the type-pair table, which is where the entropy sits and what a grammar
+would actually have to produce (Ark); **HyperNEAT-style coordinate functions give modules no
+identity**, so they conflict with point 3's inheritance of modules (Ark); and **noisy-selection
+cures do not transfer**, because re-evaluating "the same point" here gives diverging trajectories
+rather than samples around a mean — the fix is to change what counts as the point and define an
+individual by *shape*, which is also where item 3(viii) above points (Ark).
 
 **And the other line is deferred, not cancelled.** The blind-authored v2 registration of the
 reachability endpoint ([ADR-003](docs/decisions/003-blind-authorship-after-the-numbers.md)) waits;
@@ -379,11 +474,11 @@ one that can be trusted to be current.
 
 | axis | decisions | board entries | awaiting observation |
 |---|---|---|---|
-| **collective** | — | 5 | 0 |
-| **knowledge** | — | 7 | 0 |
+| **collective** | — | 6 | 0 |
+| **knowledge** | ADR-004 accepted | 10 | 0 |
 | **network** | — | 0 | 0 |
-| **honesty** | ADR-002 accepted · ADR-003 accepted | 12 | 0 |
-| **reach** | ADR-001 accepted | 2 | 0 |
+| **honesty** | ADR-002 accepted · ADR-003 accepted | 14 | 0 |
+| **reach** | ADR-001 accepted | 3 | 0 |
 
 **Observation debt: 0 under an axis + 0 in entries that carry none = 0.** Work finished and never seen working; per axis it says which direction is running ahead of its evidence.
 

@@ -242,7 +242,8 @@ cell-type-level reading of the pre-registered clause is not made here.
 **Ablation profiles of seeds 3 and 4 and the pre-registered reading (2026-09-16; protocol of 002
 §5f, `ablation.py` imported not copied; run by CC's subagent on Opus; verified by CC)**
 
-> **Override of the machine verdict (2026-09-16, on Mike's word «давайте пробовать», reviewers
+> **Override of the machine verdict (2026-09-16, on Mike's word "let's try it" — translated from
+> Russian — reviewers
 > Ark 05:27Z and Zcode 05:27Z concurring).** `ablation_reading.json`'s own `verdict` field reads
 > `"positive_reading_triggered": true` and text *"POSITIVE: a single-type dependence exceeding
 > 2863 appears in seed 3 or seed 4 -> the R2 finding becomes a REPEATED OBSERVATION, still not a

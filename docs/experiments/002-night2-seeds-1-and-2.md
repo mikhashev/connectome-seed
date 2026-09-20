@@ -307,7 +307,7 @@ construction; what remains is "property of the pair (sign random pair to pair)" 
 SECOND in a wave whose FIRST job is a new seed — high → position; near seed 1 → pair-random. Night
 2's seed 2 ran solo in `night2b`, so it is no witness to position.
 
-## 5b. Diagnostics from saved checkpoints, 2026-09-15 (Mike's word 06:22 «делай диагностики»; run by CC's subagent on Opus; verified by CC)
+## 5b. Diagnostics from saved checkpoints, 2026-09-15 (Mike's word 06:22 "do the diagnostics", translated from Russian; run by CC's subagent on Opus; verified by CC)
 
 **Observed**, from `results/night2/diagnostics/` (`diag1_eval_paths.py`, `diag2_weight_distance.py`,
 their README, and the JSON/CSV outputs listed there) — the reviewers' sequence item (i) from §5a.7.
@@ -897,7 +897,7 @@ check.
 09:39 verified the lattice arithmetic (207,987,676 × 2⁻¹⁶) and the (a) margin in lattice steps
 (≈ 52,000); the base-rate rule (item 18) and the two-formatter provenance rule (item 19) added.
 
-## 5i. Row B — per-cell-type activity profiles (Mike's word 09:56 «делай ряд B»; design Ark `docs/proposals/mi-axis-per-cell-type-design.md` with its addendum; run by CC's subagent on Opus; verified by CC)
+## 5i. Row B — per-cell-type activity profiles (Mike's word 09:56 "do row B", translated from Russian; design Ark `docs/proposals/mi-axis-per-cell-type-design.md` with its addendum; run by CC's subagent on Opus; verified by CC)
 
 **PREVIEW DIAGNOSTIC, n = 4, critical ρ 0.90–1.00 — not a test.**
 
@@ -1038,7 +1038,7 @@ one coarser by nature).
 3. Amplitude floats between twins, rank does not (Ark, on CC's numbers): T5c 41.6 vs 23.8
 (1.75×), profile sd 7.4 vs 5.2 (1.42×) between the two runs of one seed.
 
-**Поправка 2026-09-16 (CC):** per the night-2 CSV
+**Correction 2026-09-16 (CC):** per the night-2 CSV
 (`results/night2/diagnostics/rowB/rowB_profiles_250008.csv`), seed 0′'s T5c is **−0.04**, not
 23.8; **23.84 is seed 0′'s Tm4**, that profile's maximum. 1.75 was the ratio of two profiles'
 maxima sitting on *different types* (seed 0's T5c against seed 0′'s Tm4), not a per-type ratio —

@@ -8,7 +8,7 @@ estimates, not measurements.
 
 ## Roles
 
-- **Mike** — the words «старт» / «пиши команду» and the decisions.
+- **Mike** — the words "start" / "write the command" (translated from Russian) and the decisions.
 - **CC** — briefs, execution by subagents, verification of raw outputs, records, commits.
 - **Ark and Zcode** — review every brief BEFORE launch and recompute from raw files AFTER.
   Ark additionally: provenance of the `groundtruth_utils` fields and the genome design rewritten
@@ -107,11 +107,12 @@ Replicate 3′ first in the wave, new seed 5 second, `-NoReplicate`, Windows Upd
 
 ## Order and start
 
-Step 0 starts now on Mike's «давайте пробовать». Briefs for steps 1 and 2 follow and are posted
+Step 0 starts now on Mike's "let's try it" (translated from Russian). Briefs for steps 1 and 2 follow and are posted
 to chat for review by Ark/Zcode before launch. "Minutes" are estimates from run volume, not
 measurements — the first thing reported after launch is the actual time.
 
-**Rule (Mike, 06:3xZ): nothing launches without Mike's explicit «запускай» in the chat; plan
+**Rule (Mike, 06:3xZ): nothing launches without Mike's explicit "go ahead" (translated from
+Russian) in the chat; plan
 approval is not a launch word. On 2026-09-16 CC launched step 1 before the reviews arrived; the
 output was discarded unread and step 1 is re-run from brief v2 only on Mike's word.**
 

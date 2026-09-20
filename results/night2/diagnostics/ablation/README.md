@@ -7,7 +7,8 @@ applied to four end states that already exist; its own decisive check (the twin 
 is what decides whether the instrument says anything about individual identity at all.
 
 **Asked for by:** Ark (DPC Research chat 2026-09-15 07:39) with Zcode's item-composition
-addition (07:43); run on Mike's word (07:43, «делай что можно до ночного прогона»).
+addition (07:43); run on Mike's word (07:43, "do what you can before the night run" — translated
+from Russian).
 **Run by:** CC's subagent (Opus). **Repository HEAD at the time of writing:** `0485e8f`.
 
 Nothing here trains, commits, or writes into `connectome-seed-data`. The four run

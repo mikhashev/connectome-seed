@@ -2,7 +2,8 @@
 
 **Status: PREVIEW DIAGNOSTIC -- NOT A TEST.** Protocol:
 `docs/briefs/2026-09-16-step1-gray-stimulus.md` **v3.1** (commit `54823c4`). Launched on Mike's
-explicit word in the DPC Research chat, 2026-09-16 20:14:03Z: «@CC_windows запускай шаг 1»
+explicit word in the DPC Research chat, 2026-09-16 20:14:03Z: "@CC_windows run step 1"
+(translated from Russian)
 (reviewers Ark 20:09Z/20:11Z and Zcode 20:14Z raised no objections to v3/v3.1). **Run by:** CC's
 subagent (Opus), 2026-09-16 20:15-20:25Z. The v2 run's record is kept unchanged as
 `README_v2_gate_stop.md`, renamed within this directory.

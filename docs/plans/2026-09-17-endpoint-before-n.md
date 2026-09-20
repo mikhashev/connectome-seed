@@ -1,7 +1,8 @@
 # Plan after the USPEX reading — the endpoint before N
 
 **Date:** 2026-09-17 (UTC; 2026-09-18 local, UTC+7) · **Written for:** Mike and the reviewers
-(Ark, Zcode) · **Written by:** CC on Mike's word "делай, и план новый напиши" (2026-09-17,
+(Ark, Zcode) · **Written by:** CC on Mike's word "do it, and write a new plan" — translated from Russian —
+(2026-09-17,
 12:20 UTC) · **Context:** the USPEX review
 `research/uspex/2026-09-17-uspex-analogue-to-adr-002.md` and the two errors it exposed.
 
@@ -107,7 +108,8 @@ waits on Mike's word.
    endpoint is settled.
 6. **Independent of the gate** — these three do not wait on it: the R2 rewording in
    `docs/experiments/002` and `003`, if it is wanted at all (the verdict is already recorded in
-   `results/diagnostics/gray/README.md` §8 and `ROADMAP.md:213-217`); the "type ablation versus
+   `results/diagnostics/gray/README.md` §8 and `ROADMAP.md` § "Diagnostics while N accrues — the
+   functional-readout track", step 1); the "type ablation versus
    input removal" control for Mi4 and CT1(Lo1), which has never been set; and step 2, the tuning
    battery, whose brief is ready and whose prerequisite closed with `32759e2`.
 

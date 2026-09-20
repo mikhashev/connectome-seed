@@ -1,6 +1,7 @@
 # Checklist — research repository, start here
 
-**Status:** in force for this repository from 2026-09-15 (Mike's word «пиши чек-лист» 09:56);
+**Status:** in force for this repository from 2026-09-15 (Mike's word "write the checklist",
+translated from Russian, 09:56);
 written by Ark (08:50, 09:39, 09:51) with CC's additions; a new research repository starts by
 reading the incidents below, not by re-deriving the principles.
 
@@ -68,6 +69,41 @@ reading the incidents below, not by re-deriving the principles.
     the gate is not ready. (2026-09-16: step 1 stopped twice falsely at its copy-fidelity gate —
     exact equality, then one quantisation step over a 10-pair floor; Ark 20:23Z, Zcode 20:24Z;
     records in results/diagnostics/gray/.)
+
+## Language
+
+**The repository is in English.** Every tracked file — prose, code comments, UI strings, board
+entries, READMEs — is written in English. The rule is the owner's, stated in the DPC Research
+group's project description and again on 2026-09-20 after `atlas.html` opened in Russian.
+
+**Quotations.** Most Russian in this repository is a verbatim quote of a participant (Mike, Ark,
+Zcode). A quote is given in faithful English translation inside the same quotation marks, marked
+**"(translated from Russian)"** once per quote, placed like the attribution beside it. Names,
+dates, UTC times and message numbers stay exactly as recorded. The translation keeps the tone,
+including profanity; it never changes who said what or what was decided. Where a Russian term was
+used as a label inside English prose, it is translated and the translation is then used
+consistently everywhere.
+
+**The one Russian original.** `idea.md` is the author's text as written and is the record; it is
+never translated in place. `idea_en.md` is its translation and says so. Both stay byte-identical
+to what they are.
+
+**Files not edited for language.** A registered document or a file whose bytes are pinned by a
+sha256 recorded elsewhere must not change silently — a language edit moves the hash just as a
+content edit does. These files keep their Russian until their registration is superseded, and
+they are listed here so the debt is visible rather than forgotten (state as of 2026-09-20):
+
+| file | what pins it | what the Russian is |
+|---|---|---|
+| `docs/preregistration-cheap-vs-expensive.md` | a registered pre-registration under its own timing rule (§5, §7, §9); its Russian lines are the dated authorisation quotes the registration's provenance rests on | Mike's decision words of 2026-09-13 and 2026-09-15 |
+| `results/night2/diagnostics/rowB/rowB.py` | `script_sha256` `195a89b5…` in `rowB_*.json`, `ablation_*.json`, `gray_*.json`, `c3B*.json` | one docstring line |
+| `results/night3/diagnostics/rowB/rowB.py` | the same hash, plus `results/night3/diagnostics/rowB/SHA256.txt` | one docstring line |
+| `results/diagnostics/gray/gray_stimulus.py` | `script_sha256` `61eb8bf3…` in `gray_controls.json`, `gray_readings.json`, `gray_repeat_controls.json` | two docstring lines and one **string literal** written into the output json's `meta` — editing it would change the outputs, not only the hash |
+| `results/diagnostics/c3/README.md` | `results/diagnostics/c3/SHA256SUMS.txt` (`4e132696…`) | one launch-word line |
+| `results/diagnostics/labels/README.md` | `results/diagnostics/labels/disposition.sha256.json` (`db3e0085…`, taken before the check was written) | one launch-word line |
+| `results/night5/diagnostics/rowB/PROFILES-READING.md` | its own §0 — the declaration written and hashed (`a4d10e67…`) before any profile value was opened; the registered question stands there in Russian with an English rendering beside it. The language pass translated it, and CC restored it: a declaration whose hash no longer reproduces is no longer a declaration | the registered question, one line |
+
+A file leaves this table by being superseded, never by being edited quietly.
 
 Related: `docs/tool-hardening-package.md` (the code fixes these rules imply for this
 repository, with falsifiers); `docs/preregistration-cheap-vs-expensive.md` §7 (void

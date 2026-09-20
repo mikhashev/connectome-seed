@@ -13,7 +13,7 @@ different USPEX release (9.4.4), not a damaged copy of 10.6, per Zcode's reading
 objects; (5) "65 of 8161 parameters" undercounts an individual, which also carries a seeded
 data-order/augmentation stream. Verified quotes and numbers for all four are folded in below with
 their sources, and the document is transferred into `connectome-seed` by CC.
-**Requested by:** Mike — "поищи работы USPEX Оганова, там были такие же проблемы или нет" → "сделай разбор на одну страницу с прямыми цитатами, разнеси по трём пунктам".
+**Requested by:** Mike — "look up Oganov's USPEX work, did they have the same problems or not" → "write a one-page analysis with direct quotations, laid out under three points" (both translated from Russian).
 **Answers to:** `docs/decisions/002-file-under-condition.md` (connectome-seed), whose condition is *"Show that a cheap evaluation of an individual is consistent with an expensive one."*
 
 ---

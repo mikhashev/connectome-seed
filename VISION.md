@@ -22,7 +22,7 @@ of the idea is in [idea.md](idea.md), verbatim.
 The five points, the artefact and the author's own named first step are there verbatim and are the
 goal; this paragraph is a summary of them and not a substitute (Mike Shevchenko, author,
 2026-09-12 12:18). Restated by him as the project's description on 2026-09-19 —
-**«научиться делать из мухи слона»**, *to learn to make an elephant out of a fly* — which is the
+**"to learn to make an elephant out of a fly"** (translated from Russian) — which is the
 idea's own opening distinction ("not 'emulate a fly and call it an elephant'") promoted from a
 disclaimer to the goal.
 
@@ -121,6 +121,65 @@ branch. It says the condition is harder than it was written, that the cheap and 
 side must first be defined in one regime, and that the next question — whether a probe placed
 *after* 150,000 predicts the final better than one at 25,000 — costs nothing, because the
 checkpoints are already on disk.
+
+### And what it looks like one day later (2026-09-20)
+
+The section above stands; three things beneath it moved, and one of them removes a reason the
+section gave. Numbers are not restated here — each item names the file that carries them.
+
+**The second half of "the question was underspecified" has weakened, and the owner has decided
+what follows from that.** The penalised quantity itself was read once, across its own boundary,
+with the rule's branches written before the first value:
+`results/night5/diagnostics/rowB/PENALISED-QUANTITY-READING.md`. It is smooth through 150,000 in
+all ten runs, and held-out loss shows no step there either — so by the time the penalty is
+dropped it was no longer holding the network, and "the cheap and the dear estimate live in two
+regimes" is not the sharp contrast it was written as. What survives is narrower and is still
+open as its own question: at 25,000, where the cheap probe sits, the penalised quantity is
+markedly higher and more variable in most runs, so **the cheap probe is taken while the system is
+still unsettled**. On that reading **`activity_penalty.stop_iter` is left untouched** — Mike,
+owner, 2026-09-20. (A "loss step at 150,100" claimed in the thread was seconds per iteration, not
+loss: the two timing sub-gates of `docs/briefs/2026-09-17-night5.md` §4.4, which exist precisely
+because dropping the penalty optimiser changes the per-iteration cost and not the network.)
+
+**The expensive side's non-ranking now has a mechanism, and it is ours rather than the
+individuals'.** Replicates of one seed are copies of one config to the last field: identical at
+iteration 0, apart by under one float32 step at iteration 12, and apart by the whole replicate
+gap at the end. The same GPU operation order that makes a single evaluation non-repeatable —
+driven to exactly zero when deterministic algorithms are switched on, in every pair of the full
+row B run, with the registered control never amended
+(`results/night5/diagnostics/rowB/README.md`) — runs uncontrolled for 250,000 training
+iterations. Determinism on the training path was measured for the first time this session: about
+3.33× slower, no operator refusing, and the same seed twice bitwise identical over 2,000
+iterations (`docs/briefs/2026-09-20-night6-deterministic-pairs.md`). So the replicate spread the
+section above reports is a property of how we train, not a property of an individual — which
+makes the condition harder again, not easier, because switching determinism on would drive that
+spread toward zero and ratify the method instead of testing it (Ark's trap, named before the
+measurement).
+
+**And an individual does show somewhere — in a shape, not in a level.** Row B's 65-type profiles
+were read once, the reading rule hashed before any value was opened
+(`results/night5/diagnostics/rowB/PROFILES-READING.md`). Before training, replicates of one seed
+are identical, so the whole replicate gap is made inside training; at the end, replicates
+resemble each other by the rank **shape** of the profile and not by its **magnitude**, and not by
+held-out loss. The declared answer was MIXED and is reported as MIXED. Two readings of it are
+kept side by side and neither is chosen: *Ark, reviewer, 2026-09-20 09:45 UTC (translated from
+Russian)* — count by margin rather than by wins, one "win" is a tie at printed precision, the
+shape result rests on one individual of two when each pair is judged against the nearest foreign
+run, pairs within an individual are not independent so the denominator is individuals, and the
+rank order of types at the start is set by the connectome rather than by the seed; and a later
+descriptive recomputation by CC over the last 29 checkpoints — post hoc, description only, never
+a verdict — in which loss and magnitude put replicates as far apart as different individuals
+while shape puts different individuals about twice as far apart as replicates, for both
+individuals that have replicates.
+
+**What this does not say.** It does not choose a branch and it does not settle the condition. It
+says that the instrument's own contribution to the spread is now identified and measurable, that
+the regime argument is weaker than it was written, and that if an individual is to be *defined*
+at all, shape is the candidate the data point at. The proposed next step — a perturbation ladder
+under deterministic training, to measure how fast the system forgets its initial condition — is
+**not authorised**; the night that was authorised was not launched, because under determinism the
+replicate spread is undefined rather than zero and there would be nothing to compare against.
+Session record: [docs/retrospectives/2026-09-20-session-close.md](docs/retrospectives/2026-09-20-session-close.md).
 
 ## What "expert", "module" and "seed" mean here
 

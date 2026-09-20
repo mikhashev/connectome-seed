@@ -15,7 +15,8 @@ from the original equals the original's own repeat floor exactly. P0 passed at b
 Nothing else ran. §6 and §7 below are revised to state the evaluator's own measured floor as the
 bar, in place of exact equality and an unstated "explodes" threshold; v2's text is kept and the
 diffs are itemised in the revision history (§10). **Launch of v3 requires Mike's explicit
-«запускай» in the chat again; the v2 launch word was consumed by the run that stopped at the
+"go ahead" (translated from Russian) in the chat again; the v2 launch word was consumed by the
+run that stopped at the
 gate.**
 
 **v4, 2026-09-17, after the second gate stop.** v3.1 was launched on Mike's word and stopped a
@@ -30,8 +31,8 @@ accepted with additions. §6's copy-fidelity control is replaced by a **code gat
 copied function against its source, not a number (Ark: the diff replaces the numeric gate in that
 role) — and the numeric comparisons between copy and original become recorded quantities with a
 documented ceiling, never a comparison against another run's extremum; see checklist rule 17. See
-revised §6 and the v3.1 -> v4 entry in §10. **Launch of v4 requires Mike's explicit «запускай шаг
-1» in the chat again, naming the step; the v3.1 launch word was consumed by the run that stopped
+revised §6 and the v3.1 -> v4 entry in §10. **Launch of v4 requires Mike's explicit "run step
+1" (translated from Russian) in the chat again, naming the step; the v3.1 launch word was consumed by the run that stopped
 at the gate a second time; not while a training wave runs.**
 
 **v5, 2026-09-17, after the third gate stop.** v4 was launched on Mike's word (08:14:48Z) and
@@ -46,10 +47,10 @@ to **1e-2**, with the ceiling and its derivation printed next to every number (A
 likewise redefined on the mean of five calls against the stored `val_loss`, ceiling **1e-3**. The
 fresh-process repeat (§6) is likewise redefined on the mean of five calls per cell, ceiling
 **1e-2**. §6 gains an explicit Stops enumeration; §8 gains a cost note reflecting the five-call
-design. See revised §6, §8 and the v4 -> v5 entry in §10. **Launch requires Mike's new «запускай
-шаг 1» in the chat; the 08:14:48Z word was used by the v4 run.**
+design. See revised §6, §8 and the v4 -> v5 entry in §10. **Launch requires Mike's new "run step
+1" (translated from Russian) in the chat; the 08:14:48Z word was used by the v4 run.**
 
-**Launch only on Mike's explicit «запускай шаг 1» for this step in the DPC Research chat; not
+**Launch only on Mike's explicit "run step 1" (translated from Russian) for this step in the DPC Research chat; not
 while a training wave runs.**
 
 Path aliases used below:
@@ -308,7 +309,8 @@ exists under `CSD/renderings/RenderedSintel_0000`.
   unchanged.
 - **v3 -> v3.1** (2026-09-16 20:09Z, Ark): the copy-fidelity floor is the maximum over all 10
   pairs of five calls of the original evaluator, not one pair; no other change. Reviewer pass on
-  v3: Ark 20:09Z, no objections to the four v3 edits. Launch still requires Mike's «запускай».
+  v3: Ark 20:09Z, no objections to the four v3 edits. Launch still requires Mike's "go ahead"
+  (translated from Russian).
 - **v3.1 -> v4** (2026-09-17, after the second gate stop; source: DPC Research chat 20:23–20:29Z;
   records `results/diagnostics/gray/README.md` and `README_v2_gate_stop.md`, commits `4e54965`,
   `8f0208f`): v3.1 was launched and stopped a second time at §6's copy-fidelity gate — the copy's
@@ -327,7 +329,8 @@ exists under `CSD/renderings/RenderedSintel_0000`.
   per-item losses, e.g. ambush_2 ≈ 4049–4765, so the grid is a property of the largest values, not
   the mean). Fresh-process repeat (§6) gate simplified to the 16-item mean alone (≤ 1e-4 per cell);
   per-item repeat differences between the two processes recorded, not gating. Header gains the v4
-  note and a fresh launch-word requirement naming the step, «запускай шаг 1», and excluding launch
+  note and a fresh launch-word requirement naming the step, "run step 1" (translated from
+  Russian), and excluding launch
   while a training wave runs. New checklist rule 17 (`docs/CHECKLIST-research-repo.md`) records the
   general defect. Ark 20:23Z, Zcode 20:24Z, both accepted with additions.
 - **v4 -> v5** (2026-09-17, after the third gate stop; source: DPC Research chat 08:25:52–08:28:59Z;
@@ -357,4 +360,4 @@ exists under `CSD/renderings/RenderedSintel_0000`.
   `per_item_mean − hook_eval()` becomes recorded (measured up to 1.435e-4 on the same weights, C3
   Part B) with the 1e-3 P0 ceiling as its sanity bound; iteration-0 bitwise equality becomes recorded
   (one-float64-step deviations measured in C3 Part B). No other change. Launch still requires Mike's
-  new «запускай шаг 1».
+  new "run step 1" (translated from Russian).

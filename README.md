@@ -1,7 +1,8 @@
 # connectome-seed — a lineage of artificial organisms grown from a real connectome
 
 **What this folder is.** The record of one idea and one day of examining it, saved on Mike's
-word (DPC Research group, 2026-09-13 06:22 UTC: «сохрани сюда всё в новую папку»). It is a
+word (DPC Research group, 2026-09-13 06:22 UTC: "save everything here, in a new folder" —
+translated from Russian). It is a
 **file under a condition, not a project** — that is the verdict of the three agent readers
 (Johnny, Ark, CC), and the condition is stated below, precisely enough to be tested.
 
@@ -14,6 +15,46 @@ since. What happened after it is not here — the pre-registration, the runs and
 live in `docs/` and `results/`, and the current state of the condition is in
 [ADR-002](docs/decisions/002-file-under-condition.md) § "Status of the condition". Which part of
 the idea is being worked on now is stated in "The goal, in the owner's own words" below.
+
+## State at 2026-09-20
+
+*Dated block, kept short on purpose. The full account is in the two files it links; the only
+status that is not typed by hand is the generated block at the bottom of
+[ROADMAP.md](ROADMAP.md). No result value appears here — where a finding is numerical, the file
+that carries the number is named.*
+
+- **Goal and documents.** The goal is the five points of [idea.md](idea.md) plus the evolutionary
+  tree, quoted by point number and no longer rebuilt from chat. The grammar track is the main
+  line; measuring the fly is its instrument and runs in parallel —
+  [ADR-004](docs/decisions/004-grammar-is-the-main-line.md), accepted on the owner's word of
+  2026-09-20.
+- **The measurement track.** Ten runs on disk — six individuals, two of them run three times.
+  Nothing beyond that is a test. This session established that evaluation non-repeatability is
+  GPU operation order rather than the recording hook, that the same mechanism inside training is
+  where the whole replicate gap is made, and that an individual shows in the rank *shape* of its
+  65-type cell profile rather than in its magnitude or in held-out loss (declared and reported
+  MIXED, with a reviewer's narrowing recorded beside it). Numbers live in
+  `results/night5/diagnostics/rowB/`.
+- **`activity_penalty.stop_iter` is left untouched** (owner's decision, 2026-09-20): the
+  penalised quantity is smooth across its own 150,000 boundary in all ten runs and held-out loss
+  shows no step there. The observation that survives is narrower — the cheap probe at 25,000 sits
+  in an unsettled phase.
+- **Night 6 is prepared and was not launched**
+  ([brief](docs/briefs/2026-09-20-night6-deterministic-pairs.md)); a perturbation ladder is
+  proposed in its place and is **not authorised**.
+- **The grammar track** has its note delivered, its design placed with an amendment owed by its
+  author, its label check done, and `literature.md` §I (digital evolution with inheritance, 24
+  entries read at source) added. The extraction of the rule bank waits only on that amendment;
+  the C6 control specification is not started and is blocked by nothing.
+- **Session close:**
+  [docs/retrospectives/2026-09-20-session-close.md](docs/retrospectives/2026-09-20-session-close.md)
+  — what was done, decided, and by whom; what was not done; and the errors, including this
+  session's own: the goal was first reconstructed from chat paraphrases and narrowed to point 1
+  while `idea.md` sat in this directory.
+- **Next session:**
+  [docs/briefs/2026-09-20-next-session-handover.md](docs/briefs/2026-09-20-next-session-handover.md)
+  — the state in one page, owners, what is blocked on what, the open decisions, and the reading
+  order. Whoever starts must say which of the two jobs they are before reading anything.
 
 ---
 
@@ -34,8 +75,8 @@ posted in the thread: [chat/67](chat/67-mike-055707.md); a clean copy of the fiv
 The goal is not a paraphrase and does not have to be reconstructed from discussion: it is in this
 repository, verbatim and dated, as [idea.md](idea.md) (the record, Russian) and
 [idea_en.md](idea_en.md) (translation). Mike Shevchenko, author, 2026-09-12 12:18. Restated by him
-in one line as the project's description on 2026-09-19: **«научиться делать из мухи слона»** — *to
-learn to make an elephant out of a fly.* The two say the same thing: the idea opens with **"Not
+in one line as the project's description on 2026-09-19: **"to learn to make an elephant out of a
+fly"** (translated from Russian). The two say the same thing: the idea opens with **"Not
 'emulate a fly and call it an elephant', but grow a lineage of creatures from a real
 connectome-seed"**, and the restatement promotes that distinction from a disclaimer to the goal.
 
@@ -214,7 +255,8 @@ idea.md            the five points, verbatim (Russian, the record)
 idea_en.md         English translation of idea.md, 2026-09-13 — not the record
 literature.md      every source, what was verified how, numbers and quotes
 chat/              the thread, one file per message, 67 → 84, UTC timestamps
-                   (79–84 = the review round: Johnny 81, Ark 82, Mike's "доделай" 83)
+                   (79–84 = the review round: Johnny 81, Ark 82, Mike's "finish it" 83,
+                   translated from Russian)
 sources/           shuvaev-2024-genomic-bottleneck-pnas.pdf (open-access, 7.5 MB)
 ```
 

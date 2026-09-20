@@ -13,7 +13,8 @@ conventions), `docs/experiments/004-night4-replicate-3prime-and-seed-5.md` §§3
 
 **Section §7, "Controls, and what would invalidate the run".** Insert as a new paragraph
 immediately **after** the paragraph that begins `**Added 2026-09-15 (b2, secondary; Mike's word
-18:05 local «ок давай впишем»; written before seeds 1 and 2 started) — measurability of a top-k
+18:05 local "ok, let's write it in", translated from Russian; written before seeds 1 and 2
+started) — measurability of a top-k
 boundary.**` and ends `...Stated as a rule now, applied once, when all N individuals are in.` —
 and immediately **before** the paragraph that begins `**Proposed (CC), decision Mike +
 reviewers:** run seeds 1 and 2 to 250,000 next night...`. Both anchor paragraphs are on the

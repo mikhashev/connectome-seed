@@ -35,12 +35,13 @@ otherwise tracks.
    ([[THE-SPREAD-REPLICATE-RATIO-INVERTS-BETWEEN-C3-AND-THE-TOP-RUNG]]); the branch in §3 is now
    decidable, the call itself still waits on Mike + reviewers.
 2. ~~**Night 2 = seeds 1 and 2, sequential, to 250,000, no replicate** — yes/no.~~ Decided
-   2026-09-15, Mike «вноси…»/«запустил»; launched 2026-09-14T19:12:31Z, `wave_night2`.
+   2026-09-15, Mike "put them in…" / "launched" (translated from Russian); launched
+   2026-09-14T19:12:31Z, `wave_night2`.
 3. **Floor N: 8 or 10** (`docs/preregistration-cheap-vs-expensive.md` §4,
    [[N-EQUALS-EIGHT-IS-BELOW-THE-FILES-OWN-MINIMUM]]).
 4. ~~**Top-k as a secondary hypothesis** — enters the pre-registration or not
    ([[A-TRAINED-SURROGATE-IS-NOT-A-PREFIX-OF-THE-SAME-PROCESS]]).~~ Decided 2026-09-15,
-   Mike «ок давай впишем»; form in §4/§5 of the pre-registration.
+   Mike "ok, let's write it in" (translated from Russian); form in §4/§5 of the pre-registration.
 5. ~~Who fixes the PNAS line numbers in `research/analysis-cheap-step.md`.~~ Done in `dbeb878`
    (Ark's own correction applied by CC; verified lines 848–851 and 851–856).
 6. **(a) outcome reading** — stands as the rule reads it / relabelled uninformative by the
@@ -90,7 +91,7 @@ Update planned restart (KB5129195, see
 partial directory was renamed to `flow/9991/002_killed_by_reboot` and excluded under §7's
 resume rule (an interrupted run is a failed run). Seed 2 was re-run from scratch as wave
 `night2b` (`9991/002`): started 2026-09-15T01:13:46Z, EXIT rc=0, 250,008 iterations, 14,296.6 s,
-done 05:12:18Z. Mike, chat 05:19Z: «прогон завершен». Full record:
+done 05:12:18Z. Mike, chat 05:19Z: "the run has finished" (translated from Russian). Full record:
 `docs/experiments/002-night2-seeds-1-and-2.md`, `results/night2/`.
 
 Rung SD (seeds 0/1/2, n=3) against the run 0/run 0′ replicate offset:
@@ -132,7 +133,8 @@ across the two same-wave pairs is the first free separation of individual from n
 **Result 2026-09-16.** Both jobs ran in one wave, start to end, no reboot. Seed 3 (`9991/003`)
 EXIT rc=0, 250,008 iterations, 14,415.1 s (launcher wall); seed 4 (`9991/004`) EXIT rc=0,
 250,008 iterations, 14,684.5 s. `WAVE DONE 2/2 ok` 2026-09-16T04:40:23Z. Mike, chat 04:46Z:
-«Ночной прогон завершен». Full record: `docs/experiments/003-night3-seeds-3-and-4.md`,
+"The night run has finished" (translated from Russian). Full record:
+`docs/experiments/003-night3-seeds-3-and-4.md`,
 `results/night3/`.
 
 Rung SD at n=5 (seeds 0, 1, 2, 3, 4) against the run 0/run 0′ replicate offset, with the 95 % χ²
@@ -309,7 +311,8 @@ the two seeds needs a second script argument, which is a change to the registere
 night-script edit, and waits on a new registration.
 
 **Diagnostics-2 done 2026-09-15 (Mike 07:43).** Four more diagnostics ran from the saved
-checkpoints, on Mike's word «делай что можно до ночного прогона» — nothing trained, run dirs
+checkpoints, on Mike's word "do what you can before the night run" (translated from Russian) —
+nothing trained, run dirs
 verified unchanged. One line each, full detail `docs/experiments/002-night2-seeds-1-and-2.md`
 §5d–§5g: **connectivity** — the 0↔0′ linear path carries a barrier of 96.6 (variant 2) against
 an endpoint gap of 12.7, no better connected than the 0→1 control (115.2 at the same α) (§5d).
@@ -339,7 +342,7 @@ floor nearly reused for ρ.
 
 ## 4. Side tasks (board entry names)
 
-- Row B activity profiles (65 per-type means + within-type spread) from the 72 saved checkpoints of seeds 0, 0′, 1, 2, with P0 (cross-process reproducibility), P1, P2 and the twin trap, Spearman ρ pre-fixed as the measure, all 16 items — Ark's proposal `docs/proposals/mi-axis-per-cell-type-design.md`; preview, not a test. **Done 2026-09-15**, Mike's word 09:56 «делай ряд B»; run by CC; twin trap PASS (margin 0.1968 over the nearest foreign pair, floor 0.0); results in `results/night2/diagnostics/rowB/`, written up at `docs/experiments/002-night2-seeds-1-and-2.md` §5i; board [[ROW-B-CELL-TYPE-ACTIVITY-PROFILES-RUN-AS-A-PREVIEW-AT-N-EQUALS-FIVE-OR-SIX]] closed.
+- Row B activity profiles (65 per-type means + within-type spread) from the 72 saved checkpoints of seeds 0, 0′, 1, 2, with P0 (cross-process reproducibility), P1, P2 and the twin trap, Spearman ρ pre-fixed as the measure, all 16 items — Ark's proposal `docs/proposals/mi-axis-per-cell-type-design.md`; preview, not a test. **Done 2026-09-15**, Mike's word 09:56 "do row B" (translated from Russian); run by CC; twin trap PASS (margin 0.1968 over the nearest foreign pair, floor 0.0); results in `results/night2/diagnostics/rowB/`, written up at `docs/experiments/002-night2-seeds-1-and-2.md` §5i; board [[ROW-B-CELL-TYPE-ACTIVITY-PROFILES-RUN-AS-A-PREVIEW-AT-N-EQUALS-FIVE-OR-SIX]] closed.
 - **[[THE-NIGHT-TOOLING-LIVES-IN-A-TEMPORARY-SCRATCHPAD]]** — environment out of the scratchpad:
   recipe now in `tools/night/README.md` (this commit); remaining step is to re-create the venv
   from that recipe outside the scratchpad.
@@ -353,14 +356,15 @@ floor nearly reused for ρ.
   action on that sub-item.
 - **[[THIRTEEN-LINKS-POINT-INTO-A-DIRECTORY-THAT-WILL-NOT-BE-PUSHED]]** — the 13 `chat/` links
   before the repo opens.
-- ~~Diagnostics from saved checkpoints~~ — **Done 2026-09-15**, on Mike's word 06:22 «делай
-  диагностики». Result: the two reporting paths agree to ≈1e-4 (the 0.7–2.6 top-rung gaps are 8
+- ~~Diagnostics from saved checkpoints~~ — **Done 2026-09-15**, on Mike's word 06:22 "do the
+  diagnostics" (translated from Russian). Result: the two reporting paths agree to ≈1e-4 (the 0.7–2.6 top-rung gaps are 8
   iterations of weight movement, not two instruments); the twin (0,0′) weight-space gap at 250,008
   is 4.2372 = 0.52 of its own mean parameter norm, about three-quarters of the 0.59–0.78 spread
   between different-seed pairs; the loss gap is spread over 14 of 16 held-out items, not
   concentrated in one. Full detail: `docs/experiments/002-night2-seeds-1-and-2.md` §5b.
 - ~~Linear mode connectivity, seed 0 ↔ 0′, (0,1) as control~~ — **Done 2026-09-15**, design Ark
-  06:52 / Zcode 07:05, on Mike's word 07:43 «делай что можно до ночного прогона». Result: the
+  06:52 / Zcode 07:05, on Mike's word 07:43 "do what you can before the night run" (translated
+  from Russian). Result: the
   main path (0→0′) carries a barrier of 96.6 (variant 2, primary) against an endpoint gap of
   12.7 — 7.6× — and is no better connected than the 0→1 control (115.2 at the same α); the
   self-path is flat to ≈1e-4 under both variants; the design's own resolution criterion is not
@@ -407,11 +411,12 @@ floor nearly reused for ρ.
   `exit = "state_check_failed"` (`run_individual.py:635`) and `night_report.py` prints the error
   strings, not just their count (`:149`); an idempotence control of the evaluator (evaluate twice,
   compare result and state); preflight in `start_night.ps1` for a pending reboot and free VRAM —
-  all on Mike's word «чини инструменты». Night 3 runs the current script unchanged.
+  all on Mike's word "fix the instruments" (translated from Russian). Night 3 runs the current
+  script unchanged.
   Consolidated as `docs/tool-hardening-package.md` (19 items, 2026-09-15); execution on Mike's
   word.
-- ~~Research-repo start checklist (Ark 08:50)~~ — **Done 2026-09-15**, Mike's word 09:56 «пиши
-  чек-лист». File: `docs/CHECKLIST-research-repo.md` (14 rules with incident addresses, English,
+- ~~Research-repo start checklist (Ark 08:50)~~ — **Done 2026-09-15**, Mike's word 09:56 "write
+  the checklist" (translated from Russian). File: `docs/CHECKLIST-research-repo.md` (14 rules with incident addresses, English,
   dense style); linked from `README.md`; board
   [[RESEARCH-REPO-START-CHECKLIST-WRITTEN-ON-MIKES-WORD]] (closed).
 

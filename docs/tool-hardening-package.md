@@ -1,7 +1,8 @@
 # Tool-hardening package
 
 **Status:** SPECIFICATION — proposed 2026-09-15 by Ark, Zcode and CC from the code audit of the
-diagnostics and the night tooling; execution waits on Mike's word «чини инструменты». No item
+diagnostics and the night tooling; execution waits on Mike's word "fix the instruments"
+(translated from Russian). No item
 recomputes a recorded number; the null calibration is re-run once (item 14) and gets a second
 line beside the first.
 
@@ -55,7 +56,8 @@ Nothing; night 3 runs the current script unchanged.
 
 ## Rules for the repository checklist (not code fixes)
 
-These go to `docs/CHECKLIST-research-repo.md` on Mike's word «пиши чек-лист».
+These go to `docs/CHECKLIST-research-repo.md` on Mike's word "write the checklist" (translated
+from Russian).
 
 (R1) Each metric brings its own measured floor, per metric and per state; inheritance is
 forbidden. Bought twice on 2026-09-15: (a)'s floor from the replicate; the ablation floor nearly

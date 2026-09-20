@@ -81,11 +81,11 @@ def read_text(path: Path) -> str | None:
         except UnicodeDecodeError:
             continue
         except OSError as exc:
-            SRC.broke(path, f"не читается: {exc.__class__.__name__}")
+            SRC.broke(path, f"cannot be read: {exc.__class__.__name__}")
             return None
         SRC.hit(path)
         return text
-    SRC.broke(path, "не удалось подобрать кодировку")
+    SRC.broke(path, "no encoding matched")
     return None
 
 
@@ -96,7 +96,7 @@ def load_json(path: Path) -> object | None:
     try:
         return json.loads(text)
     except Exception as exc:
-        SRC.broke(path, f"JSON не разобран: {exc.__class__.__name__}")
+        SRC.broke(path, f"JSON not parsed: {exc.__class__.__name__}")
         return None
 
 
@@ -108,7 +108,7 @@ def read_csv_rows(path: Path) -> list[list[str]] | None:
     try:
         rows = list(csv.reader(io.StringIO(text)))
     except Exception as exc:
-        SRC.broke(path, f"CSV не разобран: {exc.__class__.__name__}")
+        SRC.broke(path, f"CSV not parsed: {exc.__class__.__name__}")
         return None
     return [r for r in rows if r and not r[0].lstrip().startswith("#")]
 
@@ -230,7 +230,7 @@ def collect_runs() -> tuple[list[dict], dict]:
         idx = {name: header.index(name) for name in
                ("run_id", "column", "seed", "role", "run_index_for_seed", "night", "boot_session")}
     except ValueError as exc:
-        SRC.broke(path, f"нет ожидаемого столбца: {exc}")
+        SRC.broke(path, f"expected column missing: {exc}")
         return runs, {"source": RUN_COLUMNS.as_posix(), "parsed": False}
 
     for row in rows[1:]:
@@ -249,7 +249,7 @@ def collect_runs() -> tuple[list[dict], dict]:
                 }
             )
         except Exception:
-            SRC.broke(path, "строка не разобрана, пропущена")
+            SRC.broke(path, "row not parsed, skipped")
 
     # each run's own record: results/night*/*.slim.json, keyed by the "id" inside
     records: dict[str, dict] = {}
@@ -276,7 +276,7 @@ def collect_runs() -> tuple[list[dict], dict]:
             run.update({k: v for k, v in rec.items() if k != "seed"})
         else:
             run["record"] = None
-        run["label"] = f"особь {run['seed']} · прогон {run['run_index']}"
+        run["label"] = f"individual {run['seed']} · run {run['run_index']}"
         run["short"] = f"{run['seed']}.{run['run_index']}"
 
     meta = {
@@ -377,7 +377,7 @@ def collect_curves(runs: list[dict]) -> dict:
         return out
     header = [h.strip() for h in rows[0]]
     if header[0] != "iteration":
-        SRC.broke(path, "первый столбец не 'iteration'")
+        SRC.broke(path, "first column is not 'iteration'")
         return out
     by_column = {r["column"]: r for r in runs}
     iterations: list[int] = []
@@ -449,7 +449,7 @@ def collect_penalised(runs: list[dict]) -> dict:
         return out
     rows = read_csv_rows(csv_path)
     if not rows or len(rows) < 2:
-        SRC.broke(csv_path, "пустой или без заголовка")
+        SRC.broke(csv_path, "empty, or without a header")
         return out
     header = [h.strip() for h in rows[0]]
     need = {}
@@ -464,7 +464,7 @@ def collect_penalised(runs: list[dict]) -> dict:
                 need[want + "_name"] = alt
                 break
     if not {"run", "x", "y"} <= set(need):
-        SRC.broke(csv_path, "нет столбцов run_id / chkpt_iter / pre_weight")
+        SRC.broke(csv_path, "columns run_id / chkpt_iter / pre_weight missing")
         return out
 
     by_run: dict[str, list[list[float]]] = {}
@@ -512,36 +512,36 @@ def collect_penalised(runs: list[dict]) -> dict:
 DIAGNOSTICS = [
     {
         "id": "ablation-night2",
-        "title": "Абляция (ночь 2)",
+        "title": "Ablation (night 2)",
         "dir": "results/night2/diagnostics/ablation",
         "readme": "results/night2/diagnostics/ablation/README.md",
         "controls": ["ablation_controls.json"],
     },
     {
         "id": "ablation-night3",
-        "title": "Абляция (ночь 3)",
+        "title": "Ablation (night 3)",
         "dir": "results/night3/diagnostics/ablation",
         "readme": "results/night3/diagnostics/ablation/README.md",
         "controls": ["ablation_controls.json"],
     },
     {
         "id": "rowB-night2",
-        "title": "Ряд B (ночь 2)",
+        "title": "Row B (night 2)",
         "dir": "results/night2/diagnostics/rowB",
         "readme": "results/night2/diagnostics/rowB/README.md",
         "controls": ["rowB_controls.json"],
     },
     {
         "id": "rowB-night3",
-        "title": "Ряд B (ночь 3)",
+        "title": "Row B (night 3)",
         "dir": "results/night3/diagnostics/rowB",
         "readme": "results/night3/diagnostics/rowB/README.md",
         "controls": ["rowB_controls.json"],
     },
     {
         "id": "rowB-night5",
-        "title": "Ряд B, ночь 5 — обычный режим",
-        "instrument": "обычный режим (как шли ночи): --no-determinism",
+        "title": "Row B, night 5 — normal mode",
+        "instrument": "normal mode, the way the nights were run: --no-determinism",
         "dir": "results/night5/diagnostics/rowB",
         "readme": "results/night5/diagnostics/rowB/README.md",
         "controls": [
@@ -553,8 +553,8 @@ DIAGNOSTICS = [
     },
     {
         "id": "rowB-night5-det",
-        "title": "Ряд B, ночь 5 — детерминированный режим",
-        "instrument": "детерминированный режим: отдельный прибор, файлы с суффиксом _det",
+        "title": "Row B, night 5 — deterministic mode",
+        "instrument": "deterministic mode: a separate instrument, writing files with the _det suffix",
         "dir": "results/night5/diagnostics/rowB",
         "readme": "results/night5/diagnostics/rowB/README.md",
         "controls": [
@@ -566,21 +566,21 @@ DIAGNOSTICS = [
     },
     {
         "id": "gray",
-        "title": "Серый стимул",
+        "title": "Gray stimulus",
         "dir": "results/diagnostics/gray",
         "readme": "results/diagnostics/gray/README.md",
         "controls": ["gray_controls.json", "gray_repeat_controls.json"],
     },
     {
         "id": "c3",
-        "title": "C3 — джиттер траектории и пол оценщика",
+        "title": "C3 — trajectory jitter and the evaluator floor",
         "dir": "results/diagnostics/c3",
         "readme": "results/diagnostics/c3/README.md",
         "controls": ["readings.json"],
     },
     {
         "id": "reachability",
-        "title": "Достижимость (зарегистрированный endpoint)",
+        "title": "Reachability (the registered endpoint)",
         "dir": "results/diagnostics/reachability",
         "readme": None,
         "controls": ["reachability_reading.json"],
@@ -588,14 +588,14 @@ DIAGNOSTICS = [
     },
     {
         "id": "window",
-        "title": "Оконный интеграл",
+        "title": "Window integral",
         "dir": "results/diagnostics/window",
         "readme": "results/diagnostics/window/README.md",
         "controls": ["window_readings.json"],
     },
     {
         "id": "connectivity",
-        "title": "Связность",
+        "title": "Connectivity",
         "dir": "results/night2/diagnostics/connectivity",
         "readme": "results/night2/diagnostics/connectivity/README.md",
         "controls": ["connectivity_summary.json"],
@@ -617,7 +617,7 @@ SHOWS_HEADING = re.compile(
     r"what this is not|conclusion|verdict).*$",
     re.I | re.M,
 )
-SENTENCE_END = re.compile(r"(?<=[.!?])\s+(?=[A-ZА-Я«\"'`*])")
+SENTENCE_END = re.compile(r"(?<=[.!?])\s+(?=[A-Z“«\"'`*])")
 
 
 def first_sentence(text: str) -> str:
@@ -628,7 +628,7 @@ def first_sentence(text: str) -> str:
 
 
 def readme_quote(readme_rel: str | None) -> dict | None:
-    """One sentence from the instrument's own README, quoted in its own language.
+    """One sentence from the instrument's own README, quoted verbatim.
 
     Preferred: the paragraph under a 'what this does not show' heading. Failing
     that, the README's leading bold status line. Nothing is paraphrased here.
@@ -648,7 +648,7 @@ def readme_quote(readme_rel: str | None) -> dict | None:
         if len(sentence) > 25:
             return {"text": sentence, "path": readme_rel, "kind": "what-this-shows"}
     for line in text.splitlines()[:30]:
-        if re.match(r"^\s*\*\*(status|статус)", line, re.I):
+        if re.match(r"^\s*\*\*status", line, re.I):
             sentence = first_sentence(re.sub(r"\*\*", "", line))
             if len(sentence) > 10:
                 return {"text": sentence, "path": readme_rel, "kind": "status"}
@@ -718,7 +718,7 @@ def collect_diagnostics() -> list[dict]:
             if data is None:
                 tile["controls"].append(
                     {"file": name, "present": True, "parsed": False,
-                     "reason": "JSON не разобран"}
+                     "reason": "JSON not parsed"}
                 )
                 continue
             counts = count_pass_fields(data)
@@ -860,7 +860,7 @@ def collect_decisions() -> list[dict]:
             continue
         m = re.match(r"^---\s*\n(.*?)\n---\s*\n", text, re.S)
         if not m:
-            SRC.broke(path, "нет front matter")
+            SRC.broke(path, "no front matter")
             continue
         fm = m.group(1)
 
@@ -887,15 +887,15 @@ def collect_decisions() -> list[dict]:
 # verdicts
 # --------------------------------------------------------------------------
 def collect_verdicts() -> tuple[dict, dict]:
-    """Card verdicts, and the Russian restatements of board entries beside them."""
+    """Card verdicts, and the plain-language restatements of board entries beside them."""
     data = load_json(VERDICTS_PATH)
     if not isinstance(data, dict):
         return {}, {}
 
-    ru: dict[str, dict] = {}
-    raw_ru = data.get("backlog_ru")
-    if isinstance(raw_ru, dict):
-        for name, value in raw_ru.items():
+    plain: dict[str, dict] = {}
+    raw_plain = data.get("backlog_plain")
+    if isinstance(raw_plain, dict):
+        for name, value in raw_plain.items():
             if name.startswith("_") or not isinstance(value, dict):
                 continue
             src = value.get("source")
@@ -903,7 +903,7 @@ def collect_verdicts() -> tuple[dict, dict]:
                 src = [src]
             elif not isinstance(src, list):
                 src = ["backlog.md"]
-            ru[name] = {
+            plain[name] = {
                 "text": value.get("text"),
                 "ask": value.get("ask"),
                 "source": [str(s) for s in src],
@@ -911,7 +911,7 @@ def collect_verdicts() -> tuple[dict, dict]:
 
     clean: dict[str, dict] = {}
     for key, value in data.items():
-        if key.startswith("_") or key == "backlog_ru":
+        if key.startswith("_") or key == "backlog_plain":
             continue
         if not isinstance(value, dict):
             continue
@@ -926,7 +926,7 @@ def collect_verdicts() -> tuple[dict, dict]:
             "awaits_mike": bool(value.get("awaits_mike", False)),
             "title": value.get("title"),
         }
-    return clean, ru
+    return clean, plain
 
 
 # --------------------------------------------------------------------------
@@ -936,7 +936,7 @@ def build_data() -> dict:
     now = _dt.datetime.now(_dt.timezone.utc)
     today = now.date()
     runs, runs_meta = collect_runs()
-    verdicts, backlog_ru = collect_verdicts()
+    verdicts, backlog_plain = collect_verdicts()
     data = {
         "built_utc": now.replace(microsecond=0).isoformat(),
         "built_local": _dt.datetime.now().replace(microsecond=0).isoformat(sep=" "),
@@ -951,7 +951,7 @@ def build_data() -> dict:
         "backlog": collect_backlog(today),
         "decisions": collect_decisions(),
         "verdicts": verdicts,
-        "backlog_ru": backlog_ru,
+        "backlog_plain": backlog_plain,
         "today": collect_today(today),
     }
     data["sources"] = {
@@ -966,11 +966,11 @@ def build_data() -> dict:
 # the page
 # --------------------------------------------------------------------------
 PAGE = r"""<!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Атлас — connectome-seed</title>
+<title>Atlas — connectome-seed</title>
 <style>
 :root{
   color-scheme: light;
@@ -1109,13 +1109,7 @@ function esc(s){
     ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 }
 function el(html){ const t = document.createElement("template"); t.innerHTML = html.trim(); return t.content.firstElementChild; }
-function plural(n, one, few, many){
-  const a = Math.abs(n) % 100, b = a % 10;
-  if (a > 10 && a < 20) return many;
-  if (b > 1 && b < 5) return few;
-  if (b === 1) return one;
-  return many;
-}
+function plural(n, one, many){ return Math.abs(n) === 1 ? one : many; }
 function fmtDate(iso){
   if (!iso) return "—";
   const d = new Date(iso);
@@ -1133,13 +1127,13 @@ function fmtDateTime(iso){
 function fmtDur(sec){
   if (sec == null || isNaN(sec)) return null;
   let h = Math.floor(sec / 3600), m = Math.round((sec - h*3600) / 60);
-  if (m === 60){ h += 1; m = 0; }          // 3 ч 60 мин is not a duration
-  return h > 0 ? (h + " ч " + String(m).padStart(2,"0") + " мин") : (m + " мин");
+  if (m === 60){ h += 1; m = 0; }          // 3 h 60 min is not a duration
+  return h > 0 ? (h + " h " + String(m).padStart(2,"0") + " min") : (m + " min");
 }
 function srcLine(paths){
   const list = [...new Set((paths || []).filter(Boolean))];
   if (!list.length) return "";
-  return '<div class="src"><b>источник:</b> ' + list.map(p => '<span class="mono">' + esc(p) + "</span>").join(" · ") + "</div>";
+  return '<div class="src"><b>source:</b> ' + list.map(p => '<span class="mono">' + esc(p) + "</span>").join(" · ") + "</div>";
 }
 function hatch(kind, text){
   return '<div class="hatch"><b>' + esc(kind) + "</b>" + esc(text) + "</div>";
@@ -1150,7 +1144,7 @@ function verdictBlock(id){
   if (v && v.text) {
     return '<p class="verdict">' + esc(v.text) + "</p>" + srcLine(v.source);
   }
-  return hatch("не объяснено", "Для карточки «" + id + "» нет текста в tools/atlas/verdicts.json.");
+  return hatch("not explained", "No text for card “" + id + "” in tools/atlas/verdicts.json.");
 }
 function hasVerdict(id){ const v = D.verdicts[id]; return !!(v && v.text); }
 function verdictText(id){
@@ -1167,17 +1161,17 @@ function seedColor(seed){
 }
 
 const NAV = [
-  ["a","Где мы сейчас"], ["b","Ждёт слова Mike"], ["c","Лента ночей"], ["d","Мухи"],
-  ["e","Кривые обучения"], ["f","Приборы и контроли"], ["g","Борд"], ["h","Последние события"],
+  ["a","Where we are"], ["b","Awaiting Mike's word"], ["c","Night timeline"], ["d","Flies"],
+  ["e","Learning curves"], ["f","Instruments and controls"], ["g","Board"], ["h","Recent activity"],
 ];
 function sectionHeader(){
   const g = D.git || {};
   const h = el("<header class=\"top\"></header>");
   h.innerHTML =
-    "<h1>Атлас — connectome-seed</h1>" +
-    '<div class="stamp">собрано: <b>' + esc(D.built_local) + "</b> · HEAD <span class=\"mono\">" +
-      esc(g.head_short || "—") + "</span> · ветка <span class=\"mono\">" + esc(g.branch || "—") + "</span></div>" +
-    '<nav class="mini" aria-label="Разделы">' +
+    "<h1>Atlas — connectome-seed</h1>" +
+    '<div class="stamp">built: <b>' + esc(D.built_local) + "</b> · HEAD <span class=\"mono\">" +
+      esc(g.head_short || "—") + "</span> · branch <span class=\"mono\">" + esc(g.branch || "—") + "</span></div>" +
+    '<nav class="mini" aria-label="Sections">' +
       NAV.map(([id, name]) => '<a href="#' + id + '">' + esc(name) + "</a>").join("") +
     "</nav>";
   return h;
@@ -1188,27 +1182,27 @@ function whatsNew(){
   const g = D.git || {}, b = D.backlog, t = (D.today || {});
   const bits = [];
   const c = g.commits_24h;
-  if (c != null) bits.push(c === 0 ? "коммитов за сутки нет" :
-    c + " " + plural(c,"коммит","коммита","коммитов") + " за сутки");
-  if (b.opened_today) bits.push(b.opened_today + " " + plural(b.opened_today,"новая запись","новые записи","новых записей") + " в борде");
-  if (b.closed_today) bits.push(b.closed_today + " " + plural(b.closed_today,"запись закрыта","записи закрыты","записей закрыто") + " сегодня");
+  if (c != null) bits.push(c === 0 ? "no commits in the last day" :
+    c + " " + plural(c,"commit","commits") + " in the last day");
+  if (b.opened_today) bits.push(b.opened_today + " new board " + plural(b.opened_today,"entry","entries"));
+  if (b.closed_today) bits.push(b.closed_today + " board " + plural(b.closed_today,"entry","entries") + " closed today");
   const touched = t.diagnostics_touched || [];
-  if (touched.length) bits.push("контроли писались сегодня: " + touched.join(", "));
-  if (!bits.length) bits.push("за сутки ничего не менялось");
-  return '<p class="ask"><b>Что нового за последние сутки</b>' + esc(bits.join(" · ")) + "</p>";
+  if (touched.length) bits.push("controls written today: " + touched.join(", "));
+  if (!bits.length) bits.push("nothing changed in the last day");
+  return '<p class="ask"><b>What is new in the last day</b>' + esc(bits.join(" · ")) + "</p>";
 }
 
 function sectionWhere(){
   const g = D.git || {};
   const ahead = g.ahead;
-  const s = el('<section id="a"><h2>Где мы сейчас</h2><div class="card"></div></section>');
+  const s = el('<section id="a"><h2>Where we are</h2><div class="card"></div></section>');
   const card = s.querySelector(".card");
   card.innerHTML = verdictBlock("where_we_are") +
     whatsNew() +
     '<div class="kv" style="margin-top:10px">' +
       "<span>HEAD: <b class=\"mono\">" + esc(g.head_short || "—") + "</b></span>" +
-      "<span>изменено отслеживаемых: <b>" + (g.dirty_tracked == null ? "—" : g.dirty_tracked) + "</b></span>" +
-      "<span>не запушено: <b>" + (ahead == null ? "неизвестно (нет upstream)" : ahead + " " + plural(ahead,"коммит","коммита","коммитов")) + "</b></span>" +
+      "<span>tracked files changed: <b>" + (g.dirty_tracked == null ? "—" : g.dirty_tracked) + "</b></span>" +
+      "<span>not pushed: <b>" + (ahead == null ? "unknown (no upstream)" : ahead + " " + plural(ahead,"commit","commits")) + "</b></span>" +
     "</div>" +
     '<div class="sub" style="margin-top:6px">' + esc(g.head_subject || "") + "</div>";
   return s;
@@ -1217,31 +1211,31 @@ function sectionWhere(){
 /* ------------------------------------------------------------------ B */
 function ageText(days){
   if (days == null) return "—";
-  if (days === 0) return "сегодня";
-  return days + " " + plural(days,"день","дня","дней");
+  if (days === 0) return "today";
+  return days + " " + plural(days,"day","days");
 }
-// A board entry as the owner should read it: Russian if we have it, the English
-// envelope under a visible hatch if we do not.
+// A board entry as the owner should read it: the plain-language restatement when
+// there is one, the board's own sentence under a visible hatch when there is not.
 function entryCard(e, extraClass){
-  const ru = (D.backlog_ru || {})[e.name];
+  const pl = (D.backlog_plain || {})[e.name];
   const card = el('<div class="card' + (extraClass ? " " + extraClass : "") + '"></div>');
   let body = "";
-  if (ru && ru.text){
-    body += '<p class="verdict" style="font-size:16px">' + esc(ru.text) + "</p>";
-    if (ru.ask) body += '<p class="ask"><b>что от тебя нужно</b>' + esc(ru.ask) + "</p>";
+  if (pl && pl.text){
+    body += '<p class="verdict" style="font-size:16px">' + esc(pl.text) + "</p>";
+    if (pl.ask) body += '<p class="ask"><b>what is needed from you</b>' + esc(pl.ask) + "</p>";
   } else {
-    body += hatch("не переведено",
-      "Для записи «" + e.name + "» нет русского текста в verdicts.json → backlog_ru. Ниже — фраза из борда как она записана.") +
+    body += hatch("no plain-language summary yet",
+      "There is no plain-language restatement of “" + e.name + "” in verdicts.json → backlog_plain. Below is the board's own sentence, as written.") +
       '<p class="sub">' + esc(e.sentence) + "</p>";
   }
   body += '<div class="kv" style="margin-top:8px">' +
       '<span><span class="pill ' + priClass(e.priority) + '">' + esc(e.priority) + "</span></span>" +
-      "<span>ждёт <b>" + ageText(e.age_days) + "</b></span>" +
-      "<span>с <b>" + esc(e.date) + "</b></span>" +
+      "<span>waiting <b>" + ageText(e.age_days) + "</b></span>" +
+      "<span>since <b>" + esc(e.date) + "</b></span>" +
     "</div>" +
-    '<div class="src"><b>источник:</b> <span class="mono">' + esc(e.source) + "</span> · <span class=\"mono\">" +
-      esc(e.name) + "</span>" + (ru && ru.source && ru.source.length ?
-      " · пересказ по <span class=\"mono\">" + ru.source.map(esc).join("</span>, <span class=\"mono\">") + "</span>" : "") + "</div>";
+    '<div class="src"><b>source:</b> <span class="mono">' + esc(e.source) + "</span> · <span class=\"mono\">" +
+      esc(e.name) + "</span>" + (pl && pl.source && pl.source.length ?
+      " · restated from <span class=\"mono\">" + pl.source.map(esc).join("</span>, <span class=\"mono\">") + "</span>" : "") + "</div>";
   card.innerHTML = body;
   return card;
 }
@@ -1251,12 +1245,12 @@ function sectionAwaiting(){
     const v = D.verdicts[e.name];
     return e.awaits_mike_text || (v && v.awaits_mike);
   });
-  const s = el('<section id="b"><h2>Ждёт слова Mike</h2><div class="grid g2"></div></section>');
+  const s = el('<section id="b"><h2>Awaiting Mike\'s word</h2><div class="grid g2"></div></section>');
   const grid = s.querySelector(".grid");
 
   if (!items.length){
-    grid.appendChild(el('<div class="card">' + hatch("не найдено",
-      "В backlog.md нет открытых записей с «Mike's word» / «Mike decides», и ни одна запись не помечена awaits_mike в verdicts.json.") + "</div>"));
+    grid.appendChild(el('<div class="card">' + hatch("nothing found",
+      "backlog.md holds no open entry carrying “Mike's word” / “Mike decides”, and no entry is marked awaits_mike in verdicts.json.") + "</div>"));
   } else {
     items.sort((a,b) => (PRI.indexOf(a.priority) - PRI.indexOf(b.priority)) || ((b.age_days||0) - (a.age_days||0)));
     for (const e of items) grid.appendChild(entryCard(e));
@@ -1267,16 +1261,16 @@ function sectionAwaiting(){
   const groups = (g.untracked_groups || []).map(x =>
     '<span class="pill">' + esc(x.dir) + " · " + x.n + "</span>").join(" ");
   const repo = el('<div class="card repo" style="margin-top:12px"></div>');
-  repo.innerHTML = "<h3>Состояние репозитория</h3>" +
+  repo.innerHTML = "<h3>Repository state</h3>" +
     "<ul>" +
-      "<li>изменено отслеживаемых файлов: <b>" + (g.dirty_tracked == null ? "—" : g.dirty_tracked) + "</b>" +
+      "<li>tracked files changed: <b>" + (g.dirty_tracked == null ? "—" : g.dirty_tracked) + "</b>" +
         ((g.tracked_paths || []).length ? ' <span class="sub mono">' + g.tracked_paths.slice(0,4).map(esc).join(", ") + "</span>" : "") + "</li>" +
-      "<li>новых (неотслеживаемых) файлов: <b>" + (g.dirty_untracked == null ? "—" : g.dirty_untracked) +
-        "</b>" + (groups ? ' <span class="sub">в основном:</span> ' + groups : "") + "</li>" +
-      "<li>коммитов не отправлено: <b>" + (g.ahead == null ? "неизвестно" : g.ahead) + "</b>" +
+      "<li>new (untracked) files: <b>" + (g.dirty_untracked == null ? "—" : g.dirty_untracked) +
+        "</b>" + (groups ? ' <span class="sub">mostly in:</span> ' + groups : "") + "</li>" +
+      "<li>commits not pushed: <b>" + (g.ahead == null ? "unknown" : g.ahead) + "</b>" +
         (g.upstream ? ' <span class="sub mono">(' + esc(g.upstream) + ")</span>" : "") + "</li>" +
     "</ul>" +
-    '<div class="src"><b>источник:</b> <span class="mono">git status --porcelain</span> · <span class="mono">git rev-list</span></div>';
+    '<div class="src"><b>source:</b> <span class="mono">git status --porcelain</span> · <span class="mono">git rev-list</span></div>';
   s.appendChild(repo);
   return s;
 }
@@ -1285,28 +1279,28 @@ function priClass(p){ return (p === "HIGH" || p === "CRITICAL" || p === "BLOCKER
 
 /* ------------------------------------------------------------------ C */
 function sectionNights(){
-  const s = el('<section id="c"><h2>Лента ночей</h2><div class="strip"></div></section>');
+  const s = el('<section id="c"><h2>Night timeline</h2><div class="strip"></div></section>');
   const strip = s.querySelector(".strip");
   for (const n of D.nights){
     const box = el('<div class="night"></div>');
     const runs = n.runs.map(id => D.runs.find(r => r.run_id === id)).filter(Boolean);
     const chips = runs.map(r => runChip(r)).join(" ");
     const killed = n.killed.map(k =>
-      '<span class="pill bad">убит: ' + esc(k.run_id || "?") + (k.exit ? " (" + esc(k.exit) + ")" : "") + "</span>").join(" ");
+      '<span class="pill bad">killed: ' + esc(k.run_id || "?") + (k.exit ? " (" + esc(k.exit) + ")" : "") + "</span>").join(" ");
     const walls = runs.map(r => fmtDur(r.wall_s)).filter(Boolean);
     const exits = runs.map(r => r.exit).filter(Boolean);
     const allOk = exits.length === runs.length && exits.every(e => e === "ok");
     const vid = "night" + n.n;
     box.innerHTML =
-      "<h3>Ночь " + n.n + " <span class=\"sub\">" + fmtDate(n.started_utc) + "</span></h3>" +
+      "<h3>Night " + n.n + " <span class=\"sub\">" + fmtDate(n.started_utc) + "</span></h3>" +
       (hasVerdict(vid)
         ? '<p class="verdict" style="font-size:15px">' + esc(D.verdicts[vid].text) + "</p>"
-        : hatch("не объяснено", "нет текста для карточки «" + vid + "»")) +
+        : hatch("not explained", "no text for card “" + vid + "”")) +
       '<div style="margin:8px 0">' + chips + (killed ? " " + killed : "") + "</div>" +
       '<div class="kv">' +
-        "<span>" + (runs.length ? (allOk ? '<span class="pill ok">дошли до конца</span>' :
-            '<span class="pill warn">' + esc(exits.join(", ") || "статус не записан") + "</span>") : '<span class="pill">прогонов нет</span>') + "</span>" +
-        (walls.length ? "<span>время: <b>" + esc(walls.join(" · ")) + "</b></span>" : "<span>время не записано</span>") +
+        "<span>" + (runs.length ? (allOk ? '<span class="pill ok">ran to the end</span>' :
+            '<span class="pill warn">' + esc(exits.join(", ") || "status not recorded") + "</span>") : '<span class="pill">no runs</span>') + "</span>" +
+        (walls.length ? "<span>wall time: <b>" + esc(walls.join(" · ")) + "</b></span>" : "<span>wall time not recorded</span>") +
       "</div>" +
       srcLine((hasVerdict(vid) ? D.verdicts[vid].source : []).concat(
         [n.experiment].concat(n.waves.map(w => w.source)).filter(Boolean)));
@@ -1319,26 +1313,26 @@ function runChip(r){
   return '<span class="chip' + (rep ? " rep" : "") + '">' +
     '<span class="dot" style="background:' + seedColor(r.seed) + '"></span>' +
     esc(r.label) + ' <span class="mono">' + esc(r.run_id) + "</span>" +
-    (rep ? ' <span class="sub">повтор</span>' : "") +
+    (rep ? ' <span class="sub">replicate</span>' : "") +
     "</span>";
 }
 
 /* ------------------------------------------------------------------ D */
 function sectionFlies(){
-  const s = el('<section id="d"><h2>Мухи</h2><div class="card"></div></section>');
+  const s = el('<section id="d"><h2>Flies</h2><div class="card"></div></section>');
   const card = s.querySelector(".card");
   let rows = "";
   for (const seed of seeds){
     const rs = D.runs.filter(r => r.seed === seed).sort((a,b) => a.run_index - b.run_index);
     const canonical = rs.find(r => r.role === "canonical");
     rows += '<div class="runrow">' +
-      '<div style="min-width:132px"><b>особь ' + seed + "</b> " +
-      '<span class="sub">' + rs.length + " " + plural(rs.length,"прогон","прогона","прогонов") + "</span></div>" +
+      '<div style="min-width:150px"><b>individual ' + seed + "</b> " +
+      '<span class="sub">' + rs.length + " " + plural(rs.length,"run","runs") + "</span></div>" +
       "<div>" + rs.map(r =>
         '<span class="chip' + (r.role === "canonical" ? "" : " rep") + '">' +
           '<span class="dot" style="background:' + seedColor(seed) + (r.role === "canonical" ? "" : ";opacity:.6") + '"></span>' +
-          "ночь " + r.night + ' <span class="mono">' + esc(r.run_id) + "</span>" +
-          (r.role === "canonical" ? "" : ' <span class="sub">повтор' + (canonical ? " от " + esc(canonical.run_id) : "") + "</span>") +
+          "night " + r.night + ' <span class="mono">' + esc(r.run_id) + "</span>" +
+          (r.role === "canonical" ? "" : ' <span class="sub">replicate' + (canonical ? " of " + esc(canonical.run_id) : "") + "</span>") +
         "</span>").join(" ") + "</div></div>";
   }
   card.innerHTML = verdictBlock("flies") + rows +
@@ -1348,24 +1342,24 @@ function sectionFlies(){
 
 /* ------------------------------------------------------------------ E */
 function sectionCurves(){
-  const s = el('<section id="e"><h2>Кривые обучения</h2><div class="card" id="curvecard"></div></section>');
+  const s = el('<section id="e"><h2>Learning curves</h2><div class="card" id="curvecard"></div></section>');
   const card = s.querySelector("#curvecard");
   const c = D.curves;
   if (!c.parsed || !c.series.length){
-    card.innerHTML = hatch("источник не разобран",
-      "Не удалось прочитать " + c.source + " или сопоставить его столбцы с " + (c.mapping_source || "run_columns.csv") + ".") +
+    card.innerHTML = hatch("source not parsed",
+      "Could not read " + c.source + ", or could not match its columns to " + (c.mapping_source || "run_columns.csv") + ".") +
       srcLine([c.source]);
     return s;
   }
   card.innerHTML =
     verdictBlock("curves") +
     '<div class="toolbar">' +
-      '<span class="sub">ось Y:</span>' +
-      '<button id="ylin" aria-pressed="true">линейная</button>' +
-      '<button id="ylog" aria-pressed="false">логарифм</button>' +
-      '<span class="sub" style="margin-left:6px">итерации:</span>' +
-      '<button id="xall" aria-pressed="true">все</button>' +
-      '<button id="xcut" aria-pressed="false">с 50 000</button>' +
+      '<span class="sub">Y axis:</span>' +
+      '<button id="ylin" aria-pressed="true">linear</button>' +
+      '<button id="ylog" aria-pressed="false">log</button>' +
+      '<span class="sub" style="margin-left:6px">iterations:</span>' +
+      '<button id="xall" aria-pressed="true">all</button>' +
+      '<button id="xcut" aria-pressed="false">from 50,000</button>' +
       '<span class="sub" id="axrange"></span>' +
     "</div>" +
     '<div class="chartbox" id="chartbox"></div>' +
@@ -1418,11 +1412,11 @@ function drawCurves(){
   };
   const rng = document.getElementById("axrange");
   const r2 = v => Math.round(v * 100) / 100;
-  if (rng) rng.textContent = "видимые значения: " + r2(ymin) + " … " + r2(ymax);
+  if (rng) rng.textContent = "visible range: " + r2(ymin) + " … " + r2(ymax);
 
   const parts = [];
   parts.push('<svg viewBox="0 0 ' + W + " " + H + '" width="' + W + '" height="' + H +
-    '" role="img" aria-label="Held-out loss по итерациям для десяти прогонов">');
+    '" role="img" aria-label="Held-out loss by iteration, ten runs">');
   // grid + y ticks
   const ticks = [];
   for (let i = 0; i <= 4; i++){
@@ -1440,21 +1434,21 @@ function drawCurves(){
   // x ticks on the round 50 000 grid, clipped to the window
   for (let v = Math.ceil(xmin / 50000) * 50000; v <= xmax; v += 50000){
     parts.push('<text class="axlabel" x="' + X(v) + '" y="' + (H-m.b+16) + '" text-anchor="middle">' +
-      v.toLocaleString("ru-RU") + "</text>");
+      v.toLocaleString("en-US") + "</text>");
   }
   parts.push('<line x1="' + m.l + '" x2="' + (W-m.r) + '" y1="' + (H-m.b) + '" y2="' + (H-m.b) +
     '" stroke="var(--line)" stroke-width="1"/>');
-  parts.push('<text class="axlabel" x="' + m.l + '" y="' + (H-6) + '">итерация</text>');
+  parts.push('<text class="axlabel" x="' + m.l + '" y="' + (H-6) + '">iteration</text>');
 
   // marked iterations
-  const marks = [[150000, "штраф активности снимается"], [25000, "дешёвая проба C3"]];
+  const marks = [[150000, "activity penalty lifted"], [25000, "cheap probe C3"]];
   for (const [it, label] of marks){
     if (it < xmin || it > xmax) continue;
     const x = X(it);
     parts.push('<line x1="' + x + '" x2="' + x + '" y1="' + m.t + '" y2="' + (H-m.b) +
       '" stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="3 3"/>');
     parts.push('<text class="marklabel" x="' + (x+4) + '" y="' + (m.t+11) + '">' + esc(label) + "</text>");
-    parts.push('<text class="marklabel" x="' + (x+4) + '" y="' + (m.t+24) + '">' + it.toLocaleString("ru-RU") + "</text>");
+    parts.push('<text class="marklabel" x="' + (x+4) + '" y="' + (m.t+24) + '">' + it.toLocaleString("en-US") + "</text>");
   }
 
   // series
@@ -1481,7 +1475,7 @@ function drawCurves(){
         const v = s.values[idxs[k]];
         if (v != null && isFinite(v)){ last = idxs[k]; break; }
       }
-      if (last >= 0) endLabels.push({x: X(its[last])+6, y: Y(s.values[last])+3.5, t: "особь " + s.seed});
+      if (last >= 0) endLabels.push({x: X(its[last])+6, y: Y(s.values[last])+3.5, t: "individual " + s.seed});
     }
   }
   parts.push(drawEndLabels(endLabels));
@@ -1525,7 +1519,7 @@ function drawCurves(){
     dot.setAttribute("stroke", seedColor(best.s.seed)); dot.setAttribute("opacity", "1");
     tip.innerHTML = "<b>" + esc(best.s.label) + "</b><br>" +
       '<span class="mono">' + esc(best.s.run_id) + " · " + esc(best.s.column) + "</span><br>" +
-      "итерация " + its[best.i].toLocaleString("ru-RU") + "<br>val_loss " + best.v;
+      "iteration " + its[best.i].toLocaleString("en-US") + "<br>val_loss " + best.v;
     tip.style.opacity = "1";
     const tw = tip.offsetWidth, th = tip.offsetHeight;
     tip.style.left = Math.min(window.innerWidth - tw - 8, ev.clientX + 14) + "px";
@@ -1548,7 +1542,7 @@ function drawCurves(){
       const b = el('<button type="button" aria-pressed="true">' +
         '<svg width="18" height="8" aria-hidden="true"><line x1="0" y1="4" x2="18" y2="4" stroke="' +
         seedColor(s.seed) + '" stroke-width="2"' + (rep ? ' stroke-dasharray="5 3" opacity="0.72"' : "") + "/></svg>" +
-        "<span>" + esc(s.label) + (rep ? " · повтор" : "") + "</span></button>");
+        "<span>" + esc(s.label) + (rep ? " · replicate" : "") + "</span></button>");
       b.addEventListener("click", () => {
         if (CHART.off.has(s.column)){ CHART.off.delete(s.column); b.setAttribute("aria-pressed","true"); }
         else { CHART.off.add(s.column); b.setAttribute("aria-pressed","false"); }
@@ -1576,31 +1570,31 @@ function sectionPenalised(){
   const p = D.penalised || {};
   const s = el('<section><div class="card"></div></section>');
   const card = s.querySelector(".card");
-  const head = "<h3>Штрафуемая величина по чекпойнтам</h3>";
+  const head = "<h3>The penalised quantity, by checkpoint</h3>";
   if (!p.parsed || !(p.series || []).length){
     card.innerHTML = head +
       (p.present
-        ? hatch("источник не разобран",
-            "Файл " + (p.csv || "") + " есть, но нужных столбцов (run_id / chkpt_iter / pre_weight) в нём не нашлось.")
-        : hatch("ещё не прочитано",
-            "Файла " + (p.csv || "") + " на диске нет" +
-            (p.reading_present ? ", хотя чтение " + p.md + " уже написано" : "; чтение " + (p.md || "") + " тоже не написано") +
-            ". Свободный фальсификатор (README ряда B, §8) ещё не выполнен.")) +
+        ? hatch("source not parsed",
+            "File " + (p.csv || "") + " is there, but the columns this chart needs (run_id / chkpt_iter / pre_weight) are not in it.")
+        : hatch("not read yet",
+            "File " + (p.csv || "") + " is not on disk" +
+            (p.reading_present ? ", although the reading " + p.md + " is already written" : "; the reading " + (p.md || "") + " is not written either") +
+            ". The free falsifier (Row B README, §8) has not been carried out yet.")) +
       srcLine([p.csv, p.md]);
     return s;
   }
   card.innerHTML = head +
     (hasVerdict("penalised") ? verdictBlock("penalised")
-      : hatch("не объяснено", "нет текста для карточки «penalised» в verdicts.json")) +
-    '<div class="sub">по оси Y — <span class="mono">' + esc(p.y_column) + "</span>, по оси X — <span class=\"mono\">" +
-      esc(p.x_column) + '</span>; ' + p.series.length + " прогонов, " + p.n_rows + " точек, как записано</div>" +
+      : hatch("not explained", "no text for card “penalised” in verdicts.json")) +
+    '<div class="sub">Y axis — <span class="mono">' + esc(p.y_column) + "</span>, X axis — <span class=\"mono\">" +
+      esc(p.x_column) + '</span>; ' + p.series.length + " runs, " + p.n_rows + " points, as recorded</div>" +
     '<div class="toolbar">' +
-      '<span class="sub">ось Y:</span>' +
-      '<button id="pylin" aria-pressed="false">линейная</button>' +
-      '<button id="pylog" aria-pressed="true">логарифм</button>' +
-      '<span class="sub" style="margin-left:6px">итерации:</span>' +
-      '<button id="pxall" aria-pressed="true">все</button>' +
-      '<button id="pxcut" aria-pressed="false">с 50 000</button>' +
+      '<span class="sub">Y axis:</span>' +
+      '<button id="pylin" aria-pressed="false">linear</button>' +
+      '<button id="pylog" aria-pressed="true">log</button>' +
+      '<span class="sub" style="margin-left:6px">iterations:</span>' +
+      '<button id="pxall" aria-pressed="true">all</button>' +
+      '<button id="pxcut" aria-pressed="false">from 50,000</button>' +
     "</div>" +
     '<div class="chartbox" id="penbox"></div>' +
     srcLine([p.csv, p.reading_present ? p.md : null]);
@@ -1630,7 +1624,7 @@ function drawPenalised(){
   const p = D.penalised || {};
   const box = document.getElementById("penbox");
   if (!box || !p.parsed) return;
-  const W = 700, H = 240, m = {t:14, r:78, b:34, l:66};
+  const W = 700, H = 240, m = {t:14, r:96, b:34, l:66};
   const keep = pt => !PEN.xcut || pt[0] >= XCUT;
   let xmin = Infinity, xmax = -Infinity, ymin = Infinity, ymax = -Infinity;
   for (const se of p.series) for (const pt of se.points){
@@ -1649,7 +1643,7 @@ function drawPenalised(){
     return m.t + (ymax - v) / (ymax - ymin || 1) * (H - m.t - m.b);
   };
   const parts = ['<svg viewBox="0 0 ' + W + " " + H + '" width="' + W + '" height="' + H +
-    '" role="img" aria-label="Штрафуемая величина pre_weight по чекпойнтам, десять прогонов">'];
+    '" role="img" aria-label="The penalised quantity pre_weight by checkpoint, ten runs">'];
   parts.push('<line x1="' + m.l + '" x2="' + (W-m.r) + '" y1="' + (H-m.b) + '" y2="' + (H-m.b) +
     '" stroke="var(--line)" stroke-width="1"/>');
   for (let i = 0; i <= 3; i++){
@@ -1660,18 +1654,18 @@ function drawPenalised(){
     parts.push('<line x1="' + m.l + '" x2="' + (W-m.r) + '" y1="' + y + '" y2="' + y +
       '" stroke="var(--grid)" stroke-width="1"/>');
     parts.push('<text class="axlabel" x="' + (m.l-8) + '" y="' + (y+3.5) + '" text-anchor="end">' +
-      (v >= 1000 ? Math.round(v).toLocaleString("ru-RU") : Math.round(v*100)/100) + "</text>");
+      (v >= 1000 ? Math.round(v).toLocaleString("en-US") : Math.round(v*100)/100) + "</text>");
   }
   for (let v = Math.max(0, Math.ceil(xmin / 50000) * 50000); v <= xmax; v += 50000){
     parts.push('<text class="axlabel" x="' + X(v) + '" y="' + (H-m.b+15) + '" text-anchor="middle">' +
-      v.toLocaleString("ru-RU") + "</text>");
+      v.toLocaleString("en-US") + "</text>");
   }
   if (150000 >= xmin && 150000 <= xmax){
     const x = X(150000);
     parts.push('<line x1="' + x + '" x2="' + x + '" y1="' + m.t + '" y2="' + (H-m.b) +
       '" stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="3 3"/>');
-    parts.push('<text class="marklabel" x="' + (x+4) + '" y="' + (m.t+11) + '">штраф активности снимается</text>');
-    parts.push('<text class="marklabel" x="' + (x+4) + '" y="' + (m.t+24) + '">150 000</text>');
+    parts.push('<text class="marklabel" x="' + (x+4) + '" y="' + (m.t+11) + '">activity penalty lifted</text>');
+    parts.push('<text class="marklabel" x="' + (x+4) + '" y="' + (m.t+24) + '">150,000</text>');
   }
   const repSeeds = new Set(p.series.filter(x => x.role !== "canonical").map(x => x.seed));
   const endLabels = [];
@@ -1688,7 +1682,7 @@ function drawPenalised(){
     const pts = se.points.filter(keep);
     const last = pts[pts.length - 1];
     if (last && !rep && repSeeds.has(se.seed))
-      endLabels.push({x: X(last[0])+5, y: Y(last[1])+3.5, t: "особь " + se.seed});
+      endLabels.push({x: X(last[0])+5, y: Y(last[1])+3.5, t: "individual " + se.seed});
   }
   parts.push(drawEndLabels(endLabels));
   parts.push("</svg>");
@@ -1697,7 +1691,7 @@ function drawPenalised(){
 
 /* ------------------------------------------------------------------ F */
 function sectionInstruments(){
-  const s = el('<section id="f"><h2>Приборы и контроли</h2><div class="grid g2"></div></section>');
+  const s = el('<section id="f"><h2>Instruments and controls</h2><div class="grid g2"></div></section>');
   const grid = s.querySelector(".grid");
   for (const t of D.diagnostics){
     const card = el('<div class="card"></div>');
@@ -1705,35 +1699,35 @@ function sectionInstruments(){
     let body = "<h3>" + esc(t.title) + "</h3>";
     if (t.instrument) body += '<p class="instr">' + esc(t.instrument) + "</p>";
     body += '<div class="kv"><span>' +
-      (t.ran ? '<span class="pill ok">запускался</span>' : '<span class="pill">не запускался</span>') +
+      (t.ran ? '<span class="pill ok">has run</span>' : '<span class="pill">not run</span>') +
       "</span>";
     if (t.ran && (t.passed || t.failed)){
-      body += '<span><span class="pill ok">прошло ' + t.passed + "</span></span>";
-      body += '<span><span class="pill ' + (t.failed ? "bad" : "") + '">не прошло ' + t.failed + "</span></span>";
+      body += '<span><span class="pill ok">passed ' + t.passed + "</span></span>";
+      body += '<span><span class="pill ' + (t.failed ? "bad" : "") + '">failed ' + t.failed + "</span></span>";
     }
     body += "</div>";
     // the hatched debt and the README quote sit under the verdict, not above it
     let pending = "";
     if (t.ran && !t.passed && !t.failed){
-      pending += hatch("не измерено",
-        "Контроли этого прибора записаны не булевыми полями `pass`, а разностями, поэтому счёт «прошло / не прошло» отсюда не читается. Файлы: " +
+      pending += hatch("not measured",
+        "This instrument records its controls as differences, not as boolean `pass` fields, so a passed / failed count cannot be read off them. Files: " +
         (t.controls || []).filter(c => c.present).map(c => c.file).join(", "));
-      if (t.quote) pending += '<div class="quote"><b>из README <span class="path mono">' +
+      if (t.quote) pending += '<div class="quote"><b>from the README <span class="path mono">' +
         esc(t.quote.path) + "</span></b>" + esc(t.quote.text) + "</div>";
     }
     if (t.status_line) body += '<p class="sub mono">' + esc(t.status_line) + "</p>";
-    if (t.recorded_verdict) body += '<p class="sub">записанный вердикт: <b>' + esc(t.recorded_verdict) + "</b></p>";
+    if (t.recorded_verdict) body += '<p class="sub">recorded verdict: <b>' + esc(t.recorded_verdict) + "</b></p>";
     body += hasVerdict(vid) ? verdictText(vid)
-      : hatch("не объяснено", "нет текста для карточки «" + vid + "» в verdicts.json");
+      : hatch("not explained", "no text for card “" + vid + "” in verdicts.json");
     body += pending;
     const fields = [];
     for (const c of (t.controls || [])){
-      if (!c.present){ fields.push('<span class="pill">нет файла: ' + esc(c.file) + "</span>"); continue; }
-      if (c.parsed === false){ fields.push('<span class="pill bad">не разобран: ' + esc(c.file) + "</span>"); continue; }
+      if (!c.present){ fields.push('<span class="pill">no file: ' + esc(c.file) + "</span>"); continue; }
+      if (c.parsed === false){ fields.push('<span class="pill bad">not parsed: ' + esc(c.file) + "</span>"); continue; }
       const names = Object.keys(c.by_field || {});
       const detail = names.map(n => esc(n) + " " + c.by_field[n].true + "/" +
         (c.by_field[n].true + c.by_field[n].false)).join(", ");
-      fields.push('<span class="pill wrap">' + esc(c.file) + (c.n_entries ? " · " + c.n_entries + " пар" : "") +
+      fields.push('<span class="pill wrap">' + esc(c.file) + (c.n_entries ? " · " + c.n_entries + " " + plural(c.n_entries,"pair","pairs") : "") +
         (detail ? " · " + detail : "") + "</span>");
     }
     if (fields.length) body += '<div class="kv" style="margin-top:8px">' + fields.join(" ") + "</div>";
@@ -1749,7 +1743,7 @@ function sectionInstruments(){
 
 /* ------------------------------------------------------------------ G */
 function sectionBoard(){
-  const s = el('<section id="g"><h2>Борд</h2><div class="grid g2"></div></section>');
+  const s = el('<section id="g"><h2>Board</h2><div class="grid g2"></div></section>');
   const grid = s.querySelector(".grid");
   const b = D.backlog;
 
@@ -1758,32 +1752,32 @@ function sectionBoard(){
     '<span class="pill ' + priClass(p) + '">' + p + " · " + b.by_priority[p] + "</span>").join(" ");
   const st = Object.keys(b.by_status).sort().map(k =>
     '<span class="pill">' + esc(k) + " · " + b.by_status[k] + "</span>").join(" ");
-  counts.innerHTML = "<h3>Счёт</h3>" +
+  counts.innerHTML = "<h3>Counts</h3>" +
     (hasVerdict("board") ? verdictBlock("board") : "") +
-    '<div class="kv"><span>открыто: <b>' + b.open_count + "</b></span><span>закрыто: <b>" + b.closed_count + "</b></span></div>" +
+    '<div class="kv"><span>open: <b>' + b.open_count + "</b></span><span>closed: <b>" + b.closed_count + "</b></span></div>" +
     '<div class="kv" style="margin-top:8px">' + pri + "</div>" +
     '<div class="kv" style="margin-top:6px">' + st + "</div>" +
-    (b.unparsed_headers ? hatch("источник не разобран",
-        b.unparsed_headers + " заголовков не подошли под конверт «### ИМЯ: фраза (ПРИОРИТЕТ, статус, дата — происхождение)» и не сосчитаны.") : "") +
+    (b.unparsed_headers ? hatch("source not parsed",
+        b.unparsed_headers + " headings did not fit the envelope “### NAME: sentence (PRIORITY, status, date — origin)” and are not counted.") : "") +
     (b.view_present ? '<div class="src"><a href="' + esc(b.view) + '">' + esc(b.view) + "</a></div>" : "") +
     srcLine(b.sources);
   grid.appendChild(counts);
 
   const high = b.open.filter(e => e.priority === "HIGH" || e.priority === "CRITICAL" || e.priority === "BLOCKER");
   const hiCard = el('<div class="card"></div>');
-  hiCard.innerHTML = "<h3>HIGH, открытые (" + high.length + ")</h3><ul>" +
+  hiCard.innerHTML = "<h3>HIGH and above, open (" + high.length + ")</h3><ul>" +
     high.map(e => {
-      const ru = (D.backlog_ru || {})[e.name];
-      const text = (ru && ru.text) ? esc(ru.text)
-        : '<span class="pill warn">не переведено</span> ' + esc(firstSentence(e.sentence));
-      const ask = (ru && ru.ask) ? '<br><span class="sub"><b>нужно:</b> ' + esc(ru.ask) + "</span>" : "";
+      const pl = (D.backlog_plain || {})[e.name];
+      const text = (pl && pl.text) ? esc(pl.text)
+        : '<span class="pill warn">no plain-language summary yet</span> ' + esc(firstSentence(e.sentence));
+      const ask = (pl && pl.ask) ? '<br><span class="sub"><b>needed:</b> ' + esc(pl.ask) + "</span>" : "";
       return "<li>" + text + ' <span class="sub">(' + esc(e.date) + ", " + ageText(e.age_days) + ")</span>" + ask + "</li>";
     }).join("") +
     "</ul>" + srcLine(["backlog.md", "tools/atlas/verdicts.json"]);
   grid.appendChild(hiCard);
 
   const adr = el('<div class="card"></div>');
-  adr.innerHTML = "<h3>Решения (ADR)</h3><table><tbody>" +
+  adr.innerHTML = "<h3>Decisions (ADR)</h3><table><tbody>" +
     D.decisions.map(d => "<tr><td class=\"mono\">ADR-" + esc(d.adr) + "</td><td>" + esc(d.title) +
       '</td><td><span class="pill ' + (d.status === "accepted" ? "ok" : "") + '">' + esc(d.status) + "</span></td>" +
       "<td>" + esc(d.date || "") + "</td></tr>").join("") +
@@ -1798,18 +1792,18 @@ function firstSentence(text){
 
 /* ------------------------------------------------------------------ H */
 function sectionCommits(){
-  const s = el('<section id="h"><h2>Последние события</h2><div class="card"></div></section>');
+  const s = el('<section id="h"><h2>Recent activity</h2><div class="card"></div></section>');
   const card = s.querySelector(".card");
   const cs = (D.git && D.git.commits) || [];
   if (!cs.length){
-    card.innerHTML = hatch("источник не разобран", "git log не дал ответа.");
+    card.innerHTML = hatch("source not parsed", "git log returned nothing.");
     return s;
   }
   card.innerHTML = "<table><tbody>" + cs.map(c =>
     '<tr><td class="mono" style="white-space:nowrap">' + esc(c.sha) + "</td>" +
     '<td class="sub" style="white-space:nowrap">' + fmtDateTime(c.date) + "</td>" +
     "<td>" + esc(c.subject) + "</td></tr>").join("") + "</tbody></table>" +
-    '<div class="src"><b>источник:</b> <span class="mono">git log -15</span></div>';
+    '<div class="src"><b>source:</b> <span class="mono">git log -15</span></div>';
   return s;
 }
 
@@ -1818,14 +1812,14 @@ function sectionFoot(){
   const u = (D.sources && D.sources.unparsed) || [];
   const f = el('<div class="foot"></div>');
   f.innerHTML =
-    "<p>Страница собрана скриптом <span class=\"mono\">tools/atlas/build.py</span> из того, что лежит в репозитории в машиночитаемом виде. " +
-    "Числа показаны так, как они записаны: ничего не пересчитано. Тексты вердиктов — из <span class=\"mono\">tools/atlas/verdicts.json</span>.</p>" +
-    "<p>Прочитано источников: <b>" + ((D.sources && D.sources.found) || []).length + "</b>; не найдено: <b>" +
-    ((D.sources && D.sources.missing) || []).length + "</b>; не разобрано: <b>" + u.length + "</b>.</p>" +
-    (u.length ? '<div class="hatch"><b>источник не разобран</b>' +
+    "<p>This page is assembled by <span class=\"mono\">tools/atlas/build.py</span> out of whatever the repository holds in machine-readable form. " +
+    "Numbers are shown exactly as they are recorded: nothing is recomputed. The verdict texts come from <span class=\"mono\">tools/atlas/verdicts.json</span>.</p>" +
+    "<p>Sources read: <b>" + ((D.sources && D.sources.found) || []).length + "</b>; not found: <b>" +
+    ((D.sources && D.sources.missing) || []).length + "</b>; not parsed: <b>" + u.length + "</b>.</p>" +
+    (u.length ? '<div class="hatch"><b>source not parsed</b>' +
       u.map(x => esc(x.path) + " — " + esc(x.reason)).join("<br>") + "</div>" : "") +
-    "<p><b>Эта страница — вид, а не запись.</b> Она никогда не коммитится (" +
-    "<span class=\"mono\">atlas.html</span> в <span class=\"mono\">.gitignore</span>) и закрыта для слепого автора v2 (ADR-003).</p>";
+    "<p><b>This page is a view, not a record.</b> It is never committed (" +
+    "<span class=\"mono\">atlas.html</span> is in <span class=\"mono\">.gitignore</span>) and it is closed to the blind author v2 (ADR-003).</p>";
   return f;
 }
 
@@ -1834,8 +1828,8 @@ for (const make of [sectionHeader, sectionWhere, sectionAwaiting, sectionNights,
                     sectionBoard, sectionCommits, sectionFoot]){
   try { app.appendChild(make()); }
   catch (err) {
-    app.appendChild(el('<div class="card"><div class="hatch"><b>источник не разобран</b>' +
-      "Секция не построена: " + esc(err && err.message) + "</div></div>"));
+    app.appendChild(el('<div class="card"><div class="hatch"><b>source not parsed</b>' +
+      "Section not built: " + esc(err && err.message) + "</div></div>"));
   }
 }
 let rt;
@@ -1858,12 +1852,12 @@ def render(data: dict) -> str:
 
 # --------------------------------------------------------------------------
 def main(argv: list[str] | None = None) -> int:
-    ap = argparse.ArgumentParser(description="Собрать atlas.html из артефактов репозитория.")
-    ap.add_argument("--out", default=str(REPO / "atlas.html"), help="куда писать (по умолчанию atlas.html в корне)")
-    ap.add_argument("--check", action="store_true", help="только отчёт о найденных/пропавших источниках")
+    ap = argparse.ArgumentParser(description="Build atlas.html from the repository's own artefacts.")
+    ap.add_argument("--out", default=str(REPO / "atlas.html"), help="where to write it (default: atlas.html in the repository root)")
+    ap.add_argument("--check", action="store_true", help="report found / missing / unparsed sources only, and write nothing")
     args = ap.parse_args(argv)
 
-    # a Windows console is cp1252/cp866 by default and would abort on Cyrillic
+    # a Windows console is cp1252/cp866 by default and would abort on non-ASCII output
     for stream in (sys.stdout, sys.stderr):
         try:
             stream.reconfigure(encoding="utf-8", errors="replace")
@@ -1873,21 +1867,21 @@ def main(argv: list[str] | None = None) -> int:
     data = build_data()
 
     if args.check:
-        print(f"atlas --check · репозиторий {REPO}")
-        print(f"  найдено источников : {len(SRC.found)}")
+        print(f"atlas --check · repository {REPO}")
+        print(f"  sources found      : {len(SRC.found)}")
         for p in SRC.found:
             print(f"    + {p}")
-        print(f"  не найдено         : {len(SRC.missing)}")
+        print(f"  not found          : {len(SRC.missing)}")
         for p in SRC.missing:
             print(f"    - {p}")
-        print(f"  не разобрано       : {len(SRC.unparsed)}")
+        print(f"  not parsed         : {len(SRC.unparsed)}")
         for item in SRC.unparsed:
             print(f"    ? {item['path']}: {item['reason']}")
         cards = ["where_we_are", "flies", "curves", "penalised", "board"]
         cards += [f"night{n['n']}" for n in data["nights"]]
         cards += [f"diag:{t['id']}" for t in data["diagnostics"]]
         missing_v = [c for c in cards if c not in data["verdicts"] or not data["verdicts"][c].get("text")]
-        print(f"  карточек без вердикта: {len(missing_v)} из {len(cards)}")
+        print(f"  cards without a verdict: {len(missing_v)} of {len(cards)}")
         for c in missing_v:
             print(f"    ~ {c}")
         return 0
@@ -1907,12 +1901,12 @@ def main(argv: list[str] | None = None) -> int:
         if c in data["verdicts"] and data["verdicts"][c].get("text")
     )
     print(
-        f"atlas: {out.name} {out.stat().st_size // 1024} КБ · "
-        f"{len(data['runs'])} прогонов / {data['runs_meta'].get('n_individuals', 0)} особей · "
-        f"{n_series} кривых · {len(data['diagnostics'])} приборов · "
-        f"{data['backlog']['open_count']} открытых записей · "
-        f"вердиктов {have}/{cards_total} · "
-        f"источников {len(SRC.found)} найдено, {len(SRC.missing)} нет, {len(SRC.unparsed)} не разобрано"
+        f"atlas: {out.name} {out.stat().st_size // 1024} kB · "
+        f"{len(data['runs'])} runs / {data['runs_meta'].get('n_individuals', 0)} individuals · "
+        f"{n_series} curves · {len(data['diagnostics'])} instruments · "
+        f"{data['backlog']['open_count']} open board entries · "
+        f"verdicts {have}/{cards_total} · "
+        f"sources {len(SRC.found)} found, {len(SRC.missing)} missing, {len(SRC.unparsed)} not parsed"
     )
     return 0
 

@@ -19,7 +19,7 @@ whoever is *sighted*, and only the **paths** are written out — a path is not a
 blind author may read the output. That is the whole design: the contaminating input stays
 outside, the harmless output comes in.
 
-Holder and place (Mike, 2026-09-20: "ты держатель"). The holder is CC. The file lives at
+Holder and place (Mike, 2026-09-20: "you are the holder", translated from Russian). The holder is CC. The file lives at
     C:/Users/mikha/Documents/dpc-research/connectome-seed-archive/blind-author/contamination_values.txt
 beside the archived raw artefacts and outside every repository. Until that day its only copy
 sat in the scratchpad of a session that had ended — the third thing this project kept in a
@@ -74,6 +74,10 @@ def main(argv=None):
     parser.add_argument("--required", nargs="*", default=[
         "docs/decisions/003-blind-authorship-after-the-numbers.md",
         "docs/briefs/2026-09-19-genome-track-handover.md",
+        # Added 2026-09-20: the session-close handover is the blind author's entry point
+        # (it is what tells them to declare the role and regenerate this list), so it is
+        # required reading by the same argument as the two above.
+        "docs/briefs/2026-09-20-next-session-handover.md",
     ], help="paths the blind author MUST read; the scan fails if any of them carries a "
             "value, because a list that excludes required reading is unexecutable")
     args = parser.parse_args(argv)

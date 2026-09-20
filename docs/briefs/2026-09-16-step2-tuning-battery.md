@@ -3,7 +3,8 @@
 **v2, 2026-09-16, after review by Ark and Zcode; v1 was posted at 06:23Z; no v1 sweep was run for
 step 2 (only step 1's v1 sweep was launched and discarded — see brief 1's header).**
 
-**Launch only on Mike's explicit «запускай» for this step in the DPC Research chat.**
+**Launch only on Mike's explicit "go ahead" (translated from Russian) for this step in the DPC
+Research chat.**
 
 Aliases: `FV` = `.../63f3961a-.../scratchpad/flyvis-probe/.venv/Lib/site-packages/flyvis` (1.2.0); `CS` = `...\dpc-research\connectome-seed`; `CSD` = `...\dpc-research\connectome-seed-data`.
 
