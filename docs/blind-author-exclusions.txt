@@ -1,5 +1,5 @@
 # Blind-author exclusion list — GENERATED, do not edit by hand.
-# Produced by tools/contamination_scan.py over 290 tracked files against a
+# Produced by tools/contamination_scan.py over 335 tracked files against a
 # values file held outside this repository. Paths only: a path is not a
 # value, so this file is safe for the blind author to read. The values are
 # not recorded here and must not be added.
@@ -7,7 +7,7 @@
 # Regenerate before any blind session begins: this list is only as current
 # as its last run (ADR-003).
 #
-# 51 files carry at least one contaminating literal:
+# 68 files carry at least one contaminating literal:
 ROADMAP.md
 VISION.md
 backlog.md
@@ -55,8 +55,25 @@ results/night4/night_report_checkpoints_3primev3.csv
 results/night4/rep_9991-903.slim.json
 results/night4/train_loss_last1000_9991-005.csv
 results/night4/wave_night4.progress.log
+results/night5/diagnostics/rowB/rowB_controls.json
+results/night5/diagnostics/rowB/rowB_controls_det.json
+results/night5/diagnostics/rowB/rowB_controls_floor_proc1.json
+results/night5/diagnostics/rowB/rowB_controls_floor_proc1_det.json
+results/night5/diagnostics/rowB/rowB_controls_floor_proc2.json
+results/night5/diagnostics/rowB/rowB_controls_floor_proc2_det.json
+results/night5/diagnostics/rowB/rowB_controls_floor_proc3.json
+results/night5/diagnostics/rowB/rowB_controls_floor_proc3_det.json
+results/night5/diagnostics/rowB/rowB_records.json
+results/night5/diagnostics/rowB/rowB_records_det.json
+results/night5/diagnostics/rowB/superseded_cpu_path_first_run/rowB_controls.json
+results/night5/diagnostics/rowB/superseded_cpu_path_first_run/rowB_records.json
+results/night5/diagnostics/rowB/three_checkpoint_gpu_path/rowB_controls.json
+results/night5/diagnostics/rowB/three_checkpoint_gpu_path/rowB_controls_det.json
+results/night5/diagnostics/rowB/three_checkpoint_gpu_path/rowB_records.json
+results/night5/diagnostics/rowB/three_checkpoint_gpu_path/rowB_records_det.json
 results/night5/night5_9992-003.slim.json
 results/night5/night_report_checkpoints.csv
+tools/atlas/verdicts.json
 tools/reachability/read_reachability_endpoint.py
 tools/reachability/synthetic_reading_harness.py
 #
