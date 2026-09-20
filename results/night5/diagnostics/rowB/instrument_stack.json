@@ -1,0 +1,21 @@
+{
+  "_comment": "Same-day witness of the driver/library stack (Zcode, 2026-09-20/21). gpu_instrument_labels() exists in rowB.py (rowB.py:254) but no run's own record carries a driver_version for the 2026-09-20 runs -- this file is not part of any run's own provenance block; it records the stack of THIS machine, read on 2026-09-20, and states (below) that the 2026-09-20 runs were made on this same machine the same day.",
+  "recorded": "2026-09-20",
+  "witness_statement": "The row-B runs of 2026-09-20 (results/night5/diagnostics/rowB/rowB_records.json, rowB_records_det.json, and the floor/three-checkpoint outputs) were made on this machine, the same day this file was written. The driver version was NOT captured inside those runs' own records (gpu_instrument.driver_version was added to rowB.py after they were produced -- see README.md's 2026-09-20 amendment on instrument labels, section 9). This file is therefore a SAME-DAY WITNESS of the stack, not run provenance: it does not prove the driver was unchanged for the full duration of the 2026-09-20 runs, only that it reads this today, the same day, on the same machine.",
+  "gpu": {
+    "name": "NVIDIA RTX PRO 4500 Blackwell",
+    "driver_version": "596.86",
+    "source": "nvidia-smi --query-gpu=name,driver_version --format=csv,noheader"
+  },
+  "cuda_runtime_version": "12.8",
+  "cudnn_version": 91002,
+  "torch_version": "2.9.1+cu128",
+  "flyvis_version": "1.2.0",
+  "numpy_version": "2.2.6",
+  "python_version": "3.10.20 (main, Jun 23 2026, 15:19:56) [MSC v.1944 64 bit (AMD64)]",
+  "os": {
+    "name": "Windows",
+    "release": "10",
+    "version": "10.0.26200"
+  }
+}

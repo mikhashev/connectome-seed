@@ -1,0 +1,179 @@
+{
+ "status": "unregistered_diagnostic",
+ "readable_as_verdict": false,
+ "hook_kind": "record",
+ "activity_mutated": false,
+ "recording_detached": true,
+ "note": "recording_detached means the hook calls .detach() inside the hook; the reduction runs on the GPU and only the reduced per-type vectors (65) and the central-cell vector (65) are moved to CPU; activity_mutated=false is asserted in the hook (`state.nodes.activity is x` after the read), not assumed",
+ "reduction_path": "gpu",
+ "reduction_device": "the activity's own device (GPU); float64 index_add_ on the GPU may sum in a different order than on the CPU, so the last bits can differ. The three-checkpoint outputs of 2026-09-20 in this directory were produced on the CPU path and are SUPERSEDED, not mixed.",
+ "deterministic": false,
+ "determinism_mode": "as the nights ran: --no-determinism (diag1_eval_paths.build_solver:90-93, run_individual.py:284-286); use_deterministic_algorithms is NOT set",
+ "floor_k": 5,
+ "env": {
+  "git_head": "effaff28c07c1e0c6462d7bfd3c2dbf993e2e000",
+  "script_sha256": "6e5a5c3c39da336095c4173cd2db17bd751baea3b4ba90d0cf18ae9e8080d6a1",
+  "torch": "2.9.1+cu128",
+  "flyvis": "1.2.0",
+  "numpy": "2.2.6",
+  "python": "3.10.20",
+  "CUBLAS_WORKSPACE_CONFIG": ":4096:8",
+  "FLYVIS_ROOT_DIR": "C:/Users/mikha/Documents/dpc-research/connectome-seed-data",
+  "device": "cuda",
+  "gpu": "NVIDIA RTX PRO 4500 Blackwell",
+  "cudnn_deterministic": false,
+  "cudnn_benchmark": false,
+  "deterministic": false,
+  "determinism_applied": {
+   "before_any_cuda_work": {
+    "requested": false,
+    "when": "before_any_cuda_work",
+    "CUBLAS_WORKSPACE_CONFIG": ":4096:8",
+    "use_deterministic_algorithms": false,
+    "note": "not set -- the nights ran under --no-determinism and this is the instrument that mirrors them",
+    "cudnn_deterministic": false,
+    "cudnn_benchmark": false
+   },
+   "after_build_solver": {
+    "requested": false,
+    "when": "after_build_solver",
+    "CUBLAS_WORKSPACE_CONFIG": ":4096:8",
+    "use_deterministic_algorithms": false,
+    "note": "not set -- the nights ran under --no-determinism and this is the instrument that mirrors them",
+    "cudnn_deterministic": false,
+    "cudnn_benchmark": false
+   }
+  },
+  "determinism_note": "set by diag1_eval_paths.build_solver:90-93, which reproduces run_individual.py:284-286 under --no-determinism, the flag every night wave ran under (wave_night4.json / wave_night5.json \"no_determinism\": true)",
+  "reduction_path": "gpu",
+  "floor_k": 5,
+  "scratch_netdir": "C:\\Users\\mikha\\AppData\\Local\\Temp\\claude\\c--Users-mikha-Documents-dpc-research-connectome-seed\\869ddc8e-67d1-4c2a-a0b4-05a5cfc8f782\\scratchpad\\rowB5\\netdir\\flow\\9991\\000"
+ },
+ "N": {
+  "n_runs": 1,
+  "n_individuals": 1,
+  "individuals": [
+   3
+  ],
+  "n_replicate_runs": 1,
+  "runs_per_individual": {
+   "3": [
+    "9992/003"
+   ]
+  },
+  "N_is_counted_in": "individuals; replicate runs of the same seed do NOT enter N"
+ },
+ "p2prime_threshold_rule": {
+  "rule": "threshold for P2' = 10 x the measured floor of README Sec 6, taken on the SAME reduction path and the SAME determinism mode as the statistic it judges. A computation, not a judgement.",
+  "declared": "2026-09-20",
+  "multiplier": 10
+ },
+ "entries": {
+  "('C:\\\\Users\\\\mikha\\\\Documents\\\\dpc-research\\\\connectome-seed-data\\\\results\\\\flow\\\\9992\\\\003', 71)": {
+   "P0_evaluation_without_recording_reproduces_the_stored_value": {
+    "what": "the same evaluation with NO hook registered, against the val_loss stored inside the checkpoint file",
+    "tolerance": 0.001,
+    "tolerance_source": "results/night2/diagnostics/ablation/README.md Sec 5 (P0)",
+    "stored_checkpoint_val_loss": "1158.8484101295471",
+    "per_item_mean_without_hook": "1158.8484101295471",
+    "rung_hook_path_value": "1158.8483996391296",
+    "abs_diff_per_item_mean_minus_stored": "0.0",
+    "abs_diff_hook_path_minus_stored": "1.049041748046875e-05",
+    "pass": true
+   },
+   "P1prime_the_recording_hook_does_not_change_the_loss": {
+    "what": "the loss with the recording hook registered, against P0. The criterion is ON THE LOSS -- the aggregate the rung reports -- and the per-item figures are recorded beside it, at their own separately named level.",
+    "tolerance": 1e-06,
+    "tolerance_status": "REGISTERED and NOT amended on 2026-09-20; the verdicts it produced on the first run stand",
+    "per_item_mean_with_recorder": "1158.8484044075012",
+    "abs_diff": "5.7220458984375e-06",
+    "abs_diff_level": "loss (the per-item mean); this is the level `pass` is taken at",
+    "abs_diff_loss_nohook_vs_nohook": "3.8623809814453125e-05",
+    "abs_diff_loss_nohook_vs_nohook_what": "the floor AT THE JUDGED LEVEL: the largest loss-level difference among the K no-hook repeats of the same state (A2, Johnny; confirmed by Ark and Zcode)",
+    "bitwise_identical_per_item": false,
+    "per_item_max_abs_diff": "0.0001220703125",
+    "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": "0.00048828125",
+    "per_item_max_abs_diff_in_float32_ulps": "0.25",
+    "ulps_level": "the ULP figure above is the PER-ITEM level; the loss-level difference is a different and larger number of ULPs and is not the same statistic",
+    "abs_diff_loss_in_float32_ulps": "0.046875",
+    "floor_nohook_vs_nohook": {
+     "k": 5,
+     "n_no_hook_evaluations": 6,
+     "what": "the same state, the same code path, no hook at all, evaluated K+1 times in ONE process; each repeat differenced against the first (P0's reading)",
+     "registered": false,
+     "differences_per_item_max": [
+      "6.103515625e-05",
+      "0.00018310546875",
+      "0.00048828125",
+      "0.0001220703125",
+      "0.0001220703125"
+     ],
+     "differences_loss": [
+      "1.4781951904296875e-05",
+      "1.52587890625e-05",
+      "3.8623809814453125e-05",
+      "1.430511474609375e-06",
+      "1.5735626220703125e-05"
+     ],
+     "max_difference_per_item_max": "0.00048828125",
+     "max_difference_loss": "3.8623809814453125e-05",
+     "all_bitwise_identical": false,
+     "note": "a within-process floor. The across-process floor of README Sec 6 is a different and larger quantity and is measured by --floor-repeat."
+    },
+    "descriptive_hook_diff_le_max_floor": {
+     "registered": false,
+     "replaces_the_verdict": false,
+     "what": "is the with-hook difference no larger than the largest of the K no-hook-vs-no-hook differences of the same state? Descriptive only: it does not enter, soften or override the P1' pass/fail above, which is the registered 1e-6 on the loss.",
+     "k": 5,
+     "loss_level": {
+      "hook_diff": "5.7220458984375e-06",
+      "max_floor": "3.8623809814453125e-05",
+      "hook_diff_le_max_floor": true
+     },
+     "per_item_level": {
+      "hook_diff": "0.0001220703125",
+      "max_floor": "0.00048828125",
+      "hook_diff_le_max_floor": true
+     },
+     "caveat_at_k_1": "at --floor-k 1 the floor is a sample of size one and this comparison is a coin toss dressed as a bound"
+    },
+    "pass": false,
+    "pass_level": "loss"
+   },
+   "P2prime_the_instrument_sees_something": {
+    "what": "(i) the per-item vectors over the input cell types differ between items; (ii) the 65-vector is not constant",
+    "threshold_source": "the measured floor (README Sec 6); NEVER the data being judged",
+    "threshold_rule": "threshold for P2' = 10 x the measured floor of README Sec 6, taken on the SAME reduction path and the SAME determinism mode as the statistic it judges. A computation, not a judgement.",
+    "threshold_rule_declared": "2026-09-20",
+    "threshold_rule_multiplier": 10,
+    "threshold_rule_applied_by": "--floor-summarize, which writes the products into rowB_floor[_det].json; this block keeps its nulls until that file exists",
+    "i_input_type_vectors_differ_between_items": {
+     "input_type_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "n_item_pairs": 120,
+     "min_pairwise_max_abs_diff": "0.007731154008452368",
+     "max_pairwise_max_abs_diff": "0.6478242007385159",
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    },
+    "ii_the_65_vector_is_not_constant": {
+     "population_sd_over_types": "6.650469915080762",
+     "range_over_types": "59.119006672083415",
+     "n_distinct_values": 65,
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    }
+   }
+  }
+ }
+}

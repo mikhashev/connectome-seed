@@ -1,0 +1,3277 @@
+{
+ "status": "unregistered_diagnostic",
+ "readable_as_verdict": false,
+ "hook_kind": "record",
+ "activity_mutated": false,
+ "recording_detached": true,
+ "note": "recording_detached means the hook calls .detach() inside the hook; the reduction runs on the GPU and only the reduced per-type vectors (65) and the central-cell vector (65) are moved to CPU; activity_mutated=false is asserted in the hook (`state.nodes.activity is x` after the read), not assumed",
+ "reduction_path": "gpu",
+ "reduction_device": "the activity's own device (GPU); float64 index_add_ on the GPU may sum in a different order than on the CPU, so the last bits can differ. The three-checkpoint outputs of 2026-09-20 in this directory were produced on the CPU path and are SUPERSEDED, not mixed.",
+ "deterministic": true,
+ "determinism_mode": "torch.use_deterministic_algorithms(True), cudnn.deterministic=True, cudnn.benchmark=False (A4, --deterministic); outputs carry the _det suffix",
+ "floor_k": 5,
+ "env": {
+  "git_head": "effaff28c07c1e0c6462d7bfd3c2dbf993e2e000",
+  "script_sha256": "6e5a5c3c39da336095c4173cd2db17bd751baea3b4ba90d0cf18ae9e8080d6a1",
+  "torch": "2.9.1+cu128",
+  "flyvis": "1.2.0",
+  "numpy": "2.2.6",
+  "python": "3.10.20",
+  "CUBLAS_WORKSPACE_CONFIG": ":4096:8",
+  "FLYVIS_ROOT_DIR": "C:/Users/mikha/Documents/dpc-research/connectome-seed-data",
+  "device": "cuda",
+  "gpu": "NVIDIA RTX PRO 4500 Blackwell",
+  "cudnn_deterministic": true,
+  "cudnn_benchmark": false,
+  "deterministic": true,
+  "determinism_applied": {
+   "before_any_cuda_work": {
+    "requested": true,
+    "when": "before_any_cuda_work",
+    "CUBLAS_WORKSPACE_CONFIG": ":4096:8",
+    "use_deterministic_algorithms": true,
+    "warn_only": false,
+    "cudnn_deterministic": true,
+    "cudnn_benchmark": false
+   },
+   "after_build_solver": {
+    "requested": true,
+    "when": "after_build_solver",
+    "CUBLAS_WORKSPACE_CONFIG": ":4096:8",
+    "use_deterministic_algorithms": true,
+    "warn_only": false,
+    "cudnn_deterministic": true,
+    "cudnn_benchmark": false
+   }
+  },
+  "determinism_note": "set by diag1_eval_paths.build_solver:90-93, which reproduces run_individual.py:284-286 under --no-determinism, the flag every night wave ran under (wave_night4.json / wave_night5.json \"no_determinism\": true) -- and then OVERRIDDEN by --deterministic (A4): use_deterministic_algorithms(True), cudnn.deterministic=True, cudnn.benchmark=False. This is a DIFFERENT instrument from the nights' evaluation path and writes under _det names.",
+  "reduction_path": "gpu",
+  "floor_k": 5,
+  "scratch_netdir": "C:\\Users\\mikha\\AppData\\Local\\Temp\\claude\\c--Users-mikha-Documents-dpc-research-connectome-seed\\869ddc8e-67d1-4c2a-a0b4-05a5cfc8f782\\scratchpad\\rowB5\\netdir\\flow\\9991\\000"
+ },
+ "N": {
+  "n_runs": 10,
+  "n_individuals": 6,
+  "individuals": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5
+  ],
+  "n_replicate_runs": 4,
+  "runs_per_individual": {
+   "0": [
+    "9991/000",
+    "9991/900",
+    "9992/000"
+   ],
+   "1": [
+    "9991/001"
+   ],
+   "2": [
+    "9991/002"
+   ],
+   "3": [
+    "9991/003",
+    "9991/903",
+    "9992/003"
+   ],
+   "4": [
+    "9991/004"
+   ],
+   "5": [
+    "9991/005"
+   ]
+  },
+  "N_is_counted_in": "individuals; replicate runs of the same seed do NOT enter N"
+ },
+ "p2prime_threshold_rule": {
+  "rule": "threshold for P2' = 10 x the measured floor of README Sec 6, taken on the SAME reduction path and the SAME determinism mode as the statistic it judges. A computation, not a judgement.",
+  "declared": "2026-09-20",
+  "multiplier": 10
+ },
+ "entries": {
+  "('C:\\\\Users\\\\mikha\\\\Documents\\\\dpc-research\\\\connectome-seed-data\\\\results\\\\flow\\\\9991\\\\000', 0)": {
+   "P0_evaluation_without_recording_reproduces_the_stored_value": {
+    "what": "the same evaluation with NO hook registered, against the val_loss stored inside the checkpoint file",
+    "tolerance": 0.001,
+    "tolerance_source": "results/night2/diagnostics/ablation/README.md Sec 5 (P0)",
+    "stored_checkpoint_val_loss": "1212.5555891990662",
+    "per_item_mean_without_hook": "1212.5555891990662",
+    "rung_hook_path_value": "1212.5555891990662",
+    "abs_diff_per_item_mean_minus_stored": "0.0",
+    "abs_diff_hook_path_minus_stored": "0.0",
+    "pass": true
+   },
+   "P1prime_the_recording_hook_does_not_change_the_loss": {
+    "what": "the loss with the recording hook registered, against P0. The criterion is ON THE LOSS -- the aggregate the rung reports -- and the per-item figures are recorded beside it, at their own separately named level.",
+    "tolerance": 1e-06,
+    "tolerance_status": "REGISTERED and NOT amended on 2026-09-20; the verdicts it produced on the first run stand",
+    "per_item_mean_with_recorder": "1212.5555891990662",
+    "abs_diff": "0.0",
+    "abs_diff_level": "loss (the per-item mean); this is the level `pass` is taken at",
+    "abs_diff_loss_nohook_vs_nohook": "0.0",
+    "abs_diff_loss_nohook_vs_nohook_what": "the floor AT THE JUDGED LEVEL: the largest loss-level difference among the K no-hook repeats of the same state (A2, Johnny; confirmed by Ark and Zcode)",
+    "bitwise_identical_per_item": true,
+    "per_item_max_abs_diff": "0.0",
+    "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": "0.0",
+    "per_item_max_abs_diff_in_float32_ulps": "0.0",
+    "ulps_level": "the ULP figure above is the PER-ITEM level; the loss-level difference is a different and larger number of ULPs and is not the same statistic",
+    "abs_diff_loss_in_float32_ulps": "0.0",
+    "floor_nohook_vs_nohook": {
+     "k": 5,
+     "n_no_hook_evaluations": 6,
+     "what": "the same state, the same code path, no hook at all, evaluated K+1 times in ONE process; each repeat differenced against the first (P0's reading)",
+     "registered": false,
+     "differences_per_item_max": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "differences_loss": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "max_difference_per_item_max": "0.0",
+     "max_difference_loss": "0.0",
+     "all_bitwise_identical": true,
+     "note": "a within-process floor. The across-process floor of README Sec 6 is a different and larger quantity and is measured by --floor-repeat."
+    },
+    "descriptive_hook_diff_le_max_floor": {
+     "registered": false,
+     "replaces_the_verdict": false,
+     "what": "is the with-hook difference no larger than the largest of the K no-hook-vs-no-hook differences of the same state? Descriptive only: it does not enter, soften or override the P1' pass/fail above, which is the registered 1e-6 on the loss.",
+     "k": 5,
+     "loss_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "per_item_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "caveat_at_k_1": "at --floor-k 1 the floor is a sample of size one and this comparison is a coin toss dressed as a bound"
+    },
+    "pass": true,
+    "pass_level": "loss"
+   },
+   "P2prime_the_instrument_sees_something": {
+    "what": "(i) the per-item vectors over the input cell types differ between items; (ii) the 65-vector is not constant",
+    "threshold_source": "the measured floor (README Sec 6); NEVER the data being judged",
+    "threshold_rule": "threshold for P2' = 10 x the measured floor of README Sec 6, taken on the SAME reduction path and the SAME determinism mode as the statistic it judges. A computation, not a judgement.",
+    "threshold_rule_declared": "2026-09-20",
+    "threshold_rule_multiplier": 10,
+    "threshold_rule_applied_by": "--floor-summarize, which writes the products into rowB_floor[_det].json; this block keeps its nulls until that file exists",
+    "i_input_type_vectors_differ_between_items": {
+     "input_type_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "n_item_pairs": 120,
+     "min_pairwise_max_abs_diff": "0.00042151572717563646",
+     "max_pairwise_max_abs_diff": "0.62174730934151",
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    },
+    "ii_the_65_vector_is_not_constant": {
+     "population_sd_over_types": "0.1855666804478323",
+     "range_over_types": "0.9229317210873992",
+     "n_distinct_values": 65,
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    }
+   }
+  },
+  "('C:\\\\Users\\\\mikha\\\\Documents\\\\dpc-research\\\\connectome-seed-data\\\\results\\\\flow\\\\9991\\\\000', 8)": {
+   "P0_evaluation_without_recording_reproduces_the_stored_value": {
+    "what": "the same evaluation with NO hook registered, against the val_loss stored inside the checkpoint file",
+    "tolerance": 0.001,
+    "tolerance_source": "results/night2/diagnostics/ablation/README.md Sec 5 (P0)",
+    "stored_checkpoint_val_loss": "1192.749345779419",
+    "per_item_mean_without_hook": "1192.749339580536",
+    "rung_hook_path_value": "1192.749339580536",
+    "abs_diff_per_item_mean_minus_stored": "6.198883056640625e-06",
+    "abs_diff_hook_path_minus_stored": "6.198883056640625e-06",
+    "pass": true
+   },
+   "P1prime_the_recording_hook_does_not_change_the_loss": {
+    "what": "the loss with the recording hook registered, against P0. The criterion is ON THE LOSS -- the aggregate the rung reports -- and the per-item figures are recorded beside it, at their own separately named level.",
+    "tolerance": 1e-06,
+    "tolerance_status": "REGISTERED and NOT amended on 2026-09-20; the verdicts it produced on the first run stand",
+    "per_item_mean_with_recorder": "1192.749339580536",
+    "abs_diff": "0.0",
+    "abs_diff_level": "loss (the per-item mean); this is the level `pass` is taken at",
+    "abs_diff_loss_nohook_vs_nohook": "0.0",
+    "abs_diff_loss_nohook_vs_nohook_what": "the floor AT THE JUDGED LEVEL: the largest loss-level difference among the K no-hook repeats of the same state (A2, Johnny; confirmed by Ark and Zcode)",
+    "bitwise_identical_per_item": true,
+    "per_item_max_abs_diff": "0.0",
+    "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": "0.0",
+    "per_item_max_abs_diff_in_float32_ulps": "0.0",
+    "ulps_level": "the ULP figure above is the PER-ITEM level; the loss-level difference is a different and larger number of ULPs and is not the same statistic",
+    "abs_diff_loss_in_float32_ulps": "0.0",
+    "floor_nohook_vs_nohook": {
+     "k": 5,
+     "n_no_hook_evaluations": 6,
+     "what": "the same state, the same code path, no hook at all, evaluated K+1 times in ONE process; each repeat differenced against the first (P0's reading)",
+     "registered": false,
+     "differences_per_item_max": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "differences_loss": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "max_difference_per_item_max": "0.0",
+     "max_difference_loss": "0.0",
+     "all_bitwise_identical": true,
+     "note": "a within-process floor. The across-process floor of README Sec 6 is a different and larger quantity and is measured by --floor-repeat."
+    },
+    "descriptive_hook_diff_le_max_floor": {
+     "registered": false,
+     "replaces_the_verdict": false,
+     "what": "is the with-hook difference no larger than the largest of the K no-hook-vs-no-hook differences of the same state? Descriptive only: it does not enter, soften or override the P1' pass/fail above, which is the registered 1e-6 on the loss.",
+     "k": 5,
+     "loss_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "per_item_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "caveat_at_k_1": "at --floor-k 1 the floor is a sample of size one and this comparison is a coin toss dressed as a bound"
+    },
+    "pass": true,
+    "pass_level": "loss"
+   },
+   "P2prime_the_instrument_sees_something": {
+    "what": "(i) the per-item vectors over the input cell types differ between items; (ii) the 65-vector is not constant",
+    "threshold_source": "the measured floor (README Sec 6); NEVER the data being judged",
+    "threshold_rule": "threshold for P2' = 10 x the measured floor of README Sec 6, taken on the SAME reduction path and the SAME determinism mode as the statistic it judges. A computation, not a judgement.",
+    "threshold_rule_declared": "2026-09-20",
+    "threshold_rule_multiplier": 10,
+    "threshold_rule_applied_by": "--floor-summarize, which writes the products into rowB_floor[_det].json; this block keeps its nulls until that file exists",
+    "i_input_type_vectors_differ_between_items": {
+     "input_type_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "n_item_pairs": 120,
+     "min_pairwise_max_abs_diff": "0.0006201393507684894",
+     "max_pairwise_max_abs_diff": "0.653132731441651",
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    },
+    "ii_the_65_vector_is_not_constant": {
+     "population_sd_over_types": "6.825267817886018",
+     "range_over_types": "37.60479961865817",
+     "n_distinct_values": 65,
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    }
+   }
+  },
+  "('C:\\\\Users\\\\mikha\\\\Documents\\\\dpc-research\\\\connectome-seed-data\\\\results\\\\flow\\\\9991\\\\000', 71)": {
+   "P0_evaluation_without_recording_reproduces_the_stored_value": {
+    "what": "the same evaluation with NO hook registered, against the val_loss stored inside the checkpoint file",
+    "tolerance": 0.001,
+    "tolerance_source": "results/night2/diagnostics/ablation/README.md Sec 5 (P0)",
+    "stored_checkpoint_val_loss": "1148.8074851036072",
+    "per_item_mean_without_hook": "1148.8074307441711",
+    "rung_hook_path_value": "1148.8074307441711",
+    "abs_diff_per_item_mean_minus_stored": "5.435943603515625e-05",
+    "abs_diff_hook_path_minus_stored": "5.435943603515625e-05",
+    "pass": true
+   },
+   "P1prime_the_recording_hook_does_not_change_the_loss": {
+    "what": "the loss with the recording hook registered, against P0. The criterion is ON THE LOSS -- the aggregate the rung reports -- and the per-item figures are recorded beside it, at their own separately named level.",
+    "tolerance": 1e-06,
+    "tolerance_status": "REGISTERED and NOT amended on 2026-09-20; the verdicts it produced on the first run stand",
+    "per_item_mean_with_recorder": "1148.8074307441711",
+    "abs_diff": "0.0",
+    "abs_diff_level": "loss (the per-item mean); this is the level `pass` is taken at",
+    "abs_diff_loss_nohook_vs_nohook": "0.0",
+    "abs_diff_loss_nohook_vs_nohook_what": "the floor AT THE JUDGED LEVEL: the largest loss-level difference among the K no-hook repeats of the same state (A2, Johnny; confirmed by Ark and Zcode)",
+    "bitwise_identical_per_item": true,
+    "per_item_max_abs_diff": "0.0",
+    "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": "0.0",
+    "per_item_max_abs_diff_in_float32_ulps": "0.0",
+    "ulps_level": "the ULP figure above is the PER-ITEM level; the loss-level difference is a different and larger number of ULPs and is not the same statistic",
+    "abs_diff_loss_in_float32_ulps": "0.0",
+    "floor_nohook_vs_nohook": {
+     "k": 5,
+     "n_no_hook_evaluations": 6,
+     "what": "the same state, the same code path, no hook at all, evaluated K+1 times in ONE process; each repeat differenced against the first (P0's reading)",
+     "registered": false,
+     "differences_per_item_max": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "differences_loss": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "max_difference_per_item_max": "0.0",
+     "max_difference_loss": "0.0",
+     "all_bitwise_identical": true,
+     "note": "a within-process floor. The across-process floor of README Sec 6 is a different and larger quantity and is measured by --floor-repeat."
+    },
+    "descriptive_hook_diff_le_max_floor": {
+     "registered": false,
+     "replaces_the_verdict": false,
+     "what": "is the with-hook difference no larger than the largest of the K no-hook-vs-no-hook differences of the same state? Descriptive only: it does not enter, soften or override the P1' pass/fail above, which is the registered 1e-6 on the loss.",
+     "k": 5,
+     "loss_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "per_item_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "caveat_at_k_1": "at --floor-k 1 the floor is a sample of size one and this comparison is a coin toss dressed as a bound"
+    },
+    "pass": true,
+    "pass_level": "loss"
+   },
+   "P2prime_the_instrument_sees_something": {
+    "what": "(i) the per-item vectors over the input cell types differ between items; (ii) the 65-vector is not constant",
+    "threshold_source": "the measured floor (README Sec 6); NEVER the data being judged",
+    "threshold_rule": "threshold for P2' = 10 x the measured floor of README Sec 6, taken on the SAME reduction path and the SAME determinism mode as the statistic it judges. A computation, not a judgement.",
+    "threshold_rule_declared": "2026-09-20",
+    "threshold_rule_multiplier": 10,
+    "threshold_rule_applied_by": "--floor-summarize, which writes the products into rowB_floor[_det].json; this block keeps its nulls until that file exists",
+    "i_input_type_vectors_differ_between_items": {
+     "input_type_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "n_item_pairs": 120,
+     "min_pairwise_max_abs_diff": "0.002353947900039177",
+     "max_pairwise_max_abs_diff": "1.0163256738949746",
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    },
+    "ii_the_65_vector_is_not_constant": {
+     "population_sd_over_types": "7.3192508883313705",
+     "range_over_types": "43.52756418048058",
+     "n_distinct_values": 65,
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    }
+   }
+  },
+  "('C:\\\\Users\\\\mikha\\\\Documents\\\\dpc-research\\\\connectome-seed-data\\\\results\\\\flow\\\\9991\\\\900', 0)": {
+   "P0_evaluation_without_recording_reproduces_the_stored_value": {
+    "what": "the same evaluation with NO hook registered, against the val_loss stored inside the checkpoint file",
+    "tolerance": 0.001,
+    "tolerance_source": "results/night2/diagnostics/ablation/README.md Sec 5 (P0)",
+    "stored_checkpoint_val_loss": "1212.5555891990662",
+    "per_item_mean_without_hook": "1212.5555891990662",
+    "rung_hook_path_value": "1212.5555891990662",
+    "abs_diff_per_item_mean_minus_stored": "0.0",
+    "abs_diff_hook_path_minus_stored": "0.0",
+    "pass": true
+   },
+   "P1prime_the_recording_hook_does_not_change_the_loss": {
+    "what": "the loss with the recording hook registered, against P0. The criterion is ON THE LOSS -- the aggregate the rung reports -- and the per-item figures are recorded beside it, at their own separately named level.",
+    "tolerance": 1e-06,
+    "tolerance_status": "REGISTERED and NOT amended on 2026-09-20; the verdicts it produced on the first run stand",
+    "per_item_mean_with_recorder": "1212.5555891990662",
+    "abs_diff": "0.0",
+    "abs_diff_level": "loss (the per-item mean); this is the level `pass` is taken at",
+    "abs_diff_loss_nohook_vs_nohook": "0.0",
+    "abs_diff_loss_nohook_vs_nohook_what": "the floor AT THE JUDGED LEVEL: the largest loss-level difference among the K no-hook repeats of the same state (A2, Johnny; confirmed by Ark and Zcode)",
+    "bitwise_identical_per_item": true,
+    "per_item_max_abs_diff": "0.0",
+    "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": "0.0",
+    "per_item_max_abs_diff_in_float32_ulps": "0.0",
+    "ulps_level": "the ULP figure above is the PER-ITEM level; the loss-level difference is a different and larger number of ULPs and is not the same statistic",
+    "abs_diff_loss_in_float32_ulps": "0.0",
+    "floor_nohook_vs_nohook": {
+     "k": 5,
+     "n_no_hook_evaluations": 6,
+     "what": "the same state, the same code path, no hook at all, evaluated K+1 times in ONE process; each repeat differenced against the first (P0's reading)",
+     "registered": false,
+     "differences_per_item_max": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "differences_loss": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "max_difference_per_item_max": "0.0",
+     "max_difference_loss": "0.0",
+     "all_bitwise_identical": true,
+     "note": "a within-process floor. The across-process floor of README Sec 6 is a different and larger quantity and is measured by --floor-repeat."
+    },
+    "descriptive_hook_diff_le_max_floor": {
+     "registered": false,
+     "replaces_the_verdict": false,
+     "what": "is the with-hook difference no larger than the largest of the K no-hook-vs-no-hook differences of the same state? Descriptive only: it does not enter, soften or override the P1' pass/fail above, which is the registered 1e-6 on the loss.",
+     "k": 5,
+     "loss_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "per_item_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "caveat_at_k_1": "at --floor-k 1 the floor is a sample of size one and this comparison is a coin toss dressed as a bound"
+    },
+    "pass": true,
+    "pass_level": "loss"
+   },
+   "P2prime_the_instrument_sees_something": {
+    "what": "(i) the per-item vectors over the input cell types differ between items; (ii) the 65-vector is not constant",
+    "threshold_source": "the measured floor (README Sec 6); NEVER the data being judged",
+    "threshold_rule": "threshold for P2' = 10 x the measured floor of README Sec 6, taken on the SAME reduction path and the SAME determinism mode as the statistic it judges. A computation, not a judgement.",
+    "threshold_rule_declared": "2026-09-20",
+    "threshold_rule_multiplier": 10,
+    "threshold_rule_applied_by": "--floor-summarize, which writes the products into rowB_floor[_det].json; this block keeps its nulls until that file exists",
+    "i_input_type_vectors_differ_between_items": {
+     "input_type_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "n_item_pairs": 120,
+     "min_pairwise_max_abs_diff": "0.00042151572717563646",
+     "max_pairwise_max_abs_diff": "0.62174730934151",
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    },
+    "ii_the_65_vector_is_not_constant": {
+     "population_sd_over_types": "0.1855666804478323",
+     "range_over_types": "0.9229317210873992",
+     "n_distinct_values": 65,
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    }
+   }
+  },
+  "('C:\\\\Users\\\\mikha\\\\Documents\\\\dpc-research\\\\connectome-seed-data\\\\results\\\\flow\\\\9991\\\\900', 8)": {
+   "P0_evaluation_without_recording_reproduces_the_stored_value": {
+    "what": "the same evaluation with NO hook registered, against the val_loss stored inside the checkpoint file",
+    "tolerance": 0.001,
+    "tolerance_source": "results/night2/diagnostics/ablation/README.md Sec 5 (P0)",
+    "stored_checkpoint_val_loss": "1192.8248987197876",
+    "per_item_mean_without_hook": "1192.8249034881592",
+    "rung_hook_path_value": "1192.8249034881592",
+    "abs_diff_per_item_mean_minus_stored": "4.76837158203125e-06",
+    "abs_diff_hook_path_minus_stored": "4.76837158203125e-06",
+    "pass": true
+   },
+   "P1prime_the_recording_hook_does_not_change_the_loss": {
+    "what": "the loss with the recording hook registered, against P0. The criterion is ON THE LOSS -- the aggregate the rung reports -- and the per-item figures are recorded beside it, at their own separately named level.",
+    "tolerance": 1e-06,
+    "tolerance_status": "REGISTERED and NOT amended on 2026-09-20; the verdicts it produced on the first run stand",
+    "per_item_mean_with_recorder": "1192.8249034881592",
+    "abs_diff": "0.0",
+    "abs_diff_level": "loss (the per-item mean); this is the level `pass` is taken at",
+    "abs_diff_loss_nohook_vs_nohook": "0.0",
+    "abs_diff_loss_nohook_vs_nohook_what": "the floor AT THE JUDGED LEVEL: the largest loss-level difference among the K no-hook repeats of the same state (A2, Johnny; confirmed by Ark and Zcode)",
+    "bitwise_identical_per_item": true,
+    "per_item_max_abs_diff": "0.0",
+    "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": "0.0",
+    "per_item_max_abs_diff_in_float32_ulps": "0.0",
+    "ulps_level": "the ULP figure above is the PER-ITEM level; the loss-level difference is a different and larger number of ULPs and is not the same statistic",
+    "abs_diff_loss_in_float32_ulps": "0.0",
+    "floor_nohook_vs_nohook": {
+     "k": 5,
+     "n_no_hook_evaluations": 6,
+     "what": "the same state, the same code path, no hook at all, evaluated K+1 times in ONE process; each repeat differenced against the first (P0's reading)",
+     "registered": false,
+     "differences_per_item_max": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "differences_loss": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "max_difference_per_item_max": "0.0",
+     "max_difference_loss": "0.0",
+     "all_bitwise_identical": true,
+     "note": "a within-process floor. The across-process floor of README Sec 6 is a different and larger quantity and is measured by --floor-repeat."
+    },
+    "descriptive_hook_diff_le_max_floor": {
+     "registered": false,
+     "replaces_the_verdict": false,
+     "what": "is the with-hook difference no larger than the largest of the K no-hook-vs-no-hook differences of the same state? Descriptive only: it does not enter, soften or override the P1' pass/fail above, which is the registered 1e-6 on the loss.",
+     "k": 5,
+     "loss_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "per_item_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "caveat_at_k_1": "at --floor-k 1 the floor is a sample of size one and this comparison is a coin toss dressed as a bound"
+    },
+    "pass": true,
+    "pass_level": "loss"
+   },
+   "P2prime_the_instrument_sees_something": {
+    "what": "(i) the per-item vectors over the input cell types differ between items; (ii) the 65-vector is not constant",
+    "threshold_source": "the measured floor (README Sec 6); NEVER the data being judged",
+    "threshold_rule": "threshold for P2' = 10 x the measured floor of README Sec 6, taken on the SAME reduction path and the SAME determinism mode as the statistic it judges. A computation, not a judgement.",
+    "threshold_rule_declared": "2026-09-20",
+    "threshold_rule_multiplier": 10,
+    "threshold_rule_applied_by": "--floor-summarize, which writes the products into rowB_floor[_det].json; this block keeps its nulls until that file exists",
+    "i_input_type_vectors_differ_between_items": {
+     "input_type_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "n_item_pairs": 120,
+     "min_pairwise_max_abs_diff": "0.0008642106823334439",
+     "max_pairwise_max_abs_diff": "0.6481966836334062",
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    },
+    "ii_the_65_vector_is_not_constant": {
+     "population_sd_over_types": "7.217663336609366",
+     "range_over_types": "40.76406540879067",
+     "n_distinct_values": 65,
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    }
+   }
+  },
+  "('C:\\\\Users\\\\mikha\\\\Documents\\\\dpc-research\\\\connectome-seed-data\\\\results\\\\flow\\\\9991\\\\900', 71)": {
+   "P0_evaluation_without_recording_reproduces_the_stored_value": {
+    "what": "the same evaluation with NO hook registered, against the val_loss stored inside the checkpoint file",
+    "tolerance": 0.001,
+    "tolerance_source": "results/night2/diagnostics/ablation/README.md Sec 5 (P0)",
+    "stored_checkpoint_val_loss": "1160.9823441505432",
+    "per_item_mean_without_hook": "1160.9823369979858",
+    "rung_hook_path_value": "1160.9823369979858",
+    "abs_diff_per_item_mean_minus_stored": "7.152557373046875e-06",
+    "abs_diff_hook_path_minus_stored": "7.152557373046875e-06",
+    "pass": true
+   },
+   "P1prime_the_recording_hook_does_not_change_the_loss": {
+    "what": "the loss with the recording hook registered, against P0. The criterion is ON THE LOSS -- the aggregate the rung reports -- and the per-item figures are recorded beside it, at their own separately named level.",
+    "tolerance": 1e-06,
+    "tolerance_status": "REGISTERED and NOT amended on 2026-09-20; the verdicts it produced on the first run stand",
+    "per_item_mean_with_recorder": "1160.9823369979858",
+    "abs_diff": "0.0",
+    "abs_diff_level": "loss (the per-item mean); this is the level `pass` is taken at",
+    "abs_diff_loss_nohook_vs_nohook": "0.0",
+    "abs_diff_loss_nohook_vs_nohook_what": "the floor AT THE JUDGED LEVEL: the largest loss-level difference among the K no-hook repeats of the same state (A2, Johnny; confirmed by Ark and Zcode)",
+    "bitwise_identical_per_item": true,
+    "per_item_max_abs_diff": "0.0",
+    "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": "0.0",
+    "per_item_max_abs_diff_in_float32_ulps": "0.0",
+    "ulps_level": "the ULP figure above is the PER-ITEM level; the loss-level difference is a different and larger number of ULPs and is not the same statistic",
+    "abs_diff_loss_in_float32_ulps": "0.0",
+    "floor_nohook_vs_nohook": {
+     "k": 5,
+     "n_no_hook_evaluations": 6,
+     "what": "the same state, the same code path, no hook at all, evaluated K+1 times in ONE process; each repeat differenced against the first (P0's reading)",
+     "registered": false,
+     "differences_per_item_max": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "differences_loss": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "max_difference_per_item_max": "0.0",
+     "max_difference_loss": "0.0",
+     "all_bitwise_identical": true,
+     "note": "a within-process floor. The across-process floor of README Sec 6 is a different and larger quantity and is measured by --floor-repeat."
+    },
+    "descriptive_hook_diff_le_max_floor": {
+     "registered": false,
+     "replaces_the_verdict": false,
+     "what": "is the with-hook difference no larger than the largest of the K no-hook-vs-no-hook differences of the same state? Descriptive only: it does not enter, soften or override the P1' pass/fail above, which is the registered 1e-6 on the loss.",
+     "k": 5,
+     "loss_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "per_item_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "caveat_at_k_1": "at --floor-k 1 the floor is a sample of size one and this comparison is a coin toss dressed as a bound"
+    },
+    "pass": true,
+    "pass_level": "loss"
+   },
+   "P2prime_the_instrument_sees_something": {
+    "what": "(i) the per-item vectors over the input cell types differ between items; (ii) the 65-vector is not constant",
+    "threshold_source": "the measured floor (README Sec 6); NEVER the data being judged",
+    "threshold_rule": "threshold for P2' = 10 x the measured floor of README Sec 6, taken on the SAME reduction path and the SAME determinism mode as the statistic it judges. A computation, not a judgement.",
+    "threshold_rule_declared": "2026-09-20",
+    "threshold_rule_multiplier": 10,
+    "threshold_rule_applied_by": "--floor-summarize, which writes the products into rowB_floor[_det].json; this block keeps its nulls until that file exists",
+    "i_input_type_vectors_differ_between_items": {
+     "input_type_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "n_item_pairs": 120,
+     "min_pairwise_max_abs_diff": "0.0022334231231648793",
+     "max_pairwise_max_abs_diff": "0.6517397913075569",
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    },
+    "ii_the_65_vector_is_not_constant": {
+     "population_sd_over_types": "5.178896715550753",
+     "range_over_types": "24.681898760818378",
+     "n_distinct_values": 65,
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    }
+   }
+  },
+  "('C:\\\\Users\\\\mikha\\\\Documents\\\\dpc-research\\\\connectome-seed-data\\\\results\\\\flow\\\\9991\\\\001', 0)": {
+   "P0_evaluation_without_recording_reproduces_the_stored_value": {
+    "what": "the same evaluation with NO hook registered, against the val_loss stored inside the checkpoint file",
+    "tolerance": 0.001,
+    "tolerance_source": "results/night2/diagnostics/ablation/README.md Sec 5 (P0)",
+    "stored_checkpoint_val_loss": "1212.5529980659485",
+    "per_item_mean_without_hook": "1212.5529980659485",
+    "rung_hook_path_value": "1212.5529980659485",
+    "abs_diff_per_item_mean_minus_stored": "0.0",
+    "abs_diff_hook_path_minus_stored": "0.0",
+    "pass": true
+   },
+   "P1prime_the_recording_hook_does_not_change_the_loss": {
+    "what": "the loss with the recording hook registered, against P0. The criterion is ON THE LOSS -- the aggregate the rung reports -- and the per-item figures are recorded beside it, at their own separately named level.",
+    "tolerance": 1e-06,
+    "tolerance_status": "REGISTERED and NOT amended on 2026-09-20; the verdicts it produced on the first run stand",
+    "per_item_mean_with_recorder": "1212.5529980659485",
+    "abs_diff": "0.0",
+    "abs_diff_level": "loss (the per-item mean); this is the level `pass` is taken at",
+    "abs_diff_loss_nohook_vs_nohook": "0.0",
+    "abs_diff_loss_nohook_vs_nohook_what": "the floor AT THE JUDGED LEVEL: the largest loss-level difference among the K no-hook repeats of the same state (A2, Johnny; confirmed by Ark and Zcode)",
+    "bitwise_identical_per_item": true,
+    "per_item_max_abs_diff": "0.0",
+    "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": "0.0",
+    "per_item_max_abs_diff_in_float32_ulps": "0.0",
+    "ulps_level": "the ULP figure above is the PER-ITEM level; the loss-level difference is a different and larger number of ULPs and is not the same statistic",
+    "abs_diff_loss_in_float32_ulps": "0.0",
+    "floor_nohook_vs_nohook": {
+     "k": 5,
+     "n_no_hook_evaluations": 6,
+     "what": "the same state, the same code path, no hook at all, evaluated K+1 times in ONE process; each repeat differenced against the first (P0's reading)",
+     "registered": false,
+     "differences_per_item_max": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "differences_loss": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "max_difference_per_item_max": "0.0",
+     "max_difference_loss": "0.0",
+     "all_bitwise_identical": true,
+     "note": "a within-process floor. The across-process floor of README Sec 6 is a different and larger quantity and is measured by --floor-repeat."
+    },
+    "descriptive_hook_diff_le_max_floor": {
+     "registered": false,
+     "replaces_the_verdict": false,
+     "what": "is the with-hook difference no larger than the largest of the K no-hook-vs-no-hook differences of the same state? Descriptive only: it does not enter, soften or override the P1' pass/fail above, which is the registered 1e-6 on the loss.",
+     "k": 5,
+     "loss_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "per_item_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "caveat_at_k_1": "at --floor-k 1 the floor is a sample of size one and this comparison is a coin toss dressed as a bound"
+    },
+    "pass": true,
+    "pass_level": "loss"
+   },
+   "P2prime_the_instrument_sees_something": {
+    "what": "(i) the per-item vectors over the input cell types differ between items; (ii) the 65-vector is not constant",
+    "threshold_source": "the measured floor (README Sec 6); NEVER the data being judged",
+    "threshold_rule": "threshold for P2' = 10 x the measured floor of README Sec 6, taken on the SAME reduction path and the SAME determinism mode as the statistic it judges. A computation, not a judgement.",
+    "threshold_rule_declared": "2026-09-20",
+    "threshold_rule_multiplier": 10,
+    "threshold_rule_applied_by": "--floor-summarize, which writes the products into rowB_floor[_det].json; this block keeps its nulls until that file exists",
+    "i_input_type_vectors_differ_between_items": {
+     "input_type_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "n_item_pairs": 120,
+     "min_pairwise_max_abs_diff": "0.0004215141109884524",
+     "max_pairwise_max_abs_diff": "0.6217473363010377",
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    },
+    "ii_the_65_vector_is_not_constant": {
+     "population_sd_over_types": "0.20475510646281816",
+     "range_over_types": "0.9865880476833184",
+     "n_distinct_values": 65,
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    }
+   }
+  },
+  "('C:\\\\Users\\\\mikha\\\\Documents\\\\dpc-research\\\\connectome-seed-data\\\\results\\\\flow\\\\9991\\\\001', 8)": {
+   "P0_evaluation_without_recording_reproduces_the_stored_value": {
+    "what": "the same evaluation with NO hook registered, against the val_loss stored inside the checkpoint file",
+    "tolerance": 0.001,
+    "tolerance_source": "results/night2/diagnostics/ablation/README.md Sec 5 (P0)",
+    "stored_checkpoint_val_loss": "1192.410327911377",
+    "per_item_mean_without_hook": "1192.4103317260742",
+    "rung_hook_path_value": "1192.4103317260742",
+    "abs_diff_per_item_mean_minus_stored": "3.814697265625e-06",
+    "abs_diff_hook_path_minus_stored": "3.814697265625e-06",
+    "pass": true
+   },
+   "P1prime_the_recording_hook_does_not_change_the_loss": {
+    "what": "the loss with the recording hook registered, against P0. The criterion is ON THE LOSS -- the aggregate the rung reports -- and the per-item figures are recorded beside it, at their own separately named level.",
+    "tolerance": 1e-06,
+    "tolerance_status": "REGISTERED and NOT amended on 2026-09-20; the verdicts it produced on the first run stand",
+    "per_item_mean_with_recorder": "1192.4103317260742",
+    "abs_diff": "0.0",
+    "abs_diff_level": "loss (the per-item mean); this is the level `pass` is taken at",
+    "abs_diff_loss_nohook_vs_nohook": "0.0",
+    "abs_diff_loss_nohook_vs_nohook_what": "the floor AT THE JUDGED LEVEL: the largest loss-level difference among the K no-hook repeats of the same state (A2, Johnny; confirmed by Ark and Zcode)",
+    "bitwise_identical_per_item": true,
+    "per_item_max_abs_diff": "0.0",
+    "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": "0.0",
+    "per_item_max_abs_diff_in_float32_ulps": "0.0",
+    "ulps_level": "the ULP figure above is the PER-ITEM level; the loss-level difference is a different and larger number of ULPs and is not the same statistic",
+    "abs_diff_loss_in_float32_ulps": "0.0",
+    "floor_nohook_vs_nohook": {
+     "k": 5,
+     "n_no_hook_evaluations": 6,
+     "what": "the same state, the same code path, no hook at all, evaluated K+1 times in ONE process; each repeat differenced against the first (P0's reading)",
+     "registered": false,
+     "differences_per_item_max": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "differences_loss": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "max_difference_per_item_max": "0.0",
+     "max_difference_loss": "0.0",
+     "all_bitwise_identical": true,
+     "note": "a within-process floor. The across-process floor of README Sec 6 is a different and larger quantity and is measured by --floor-repeat."
+    },
+    "descriptive_hook_diff_le_max_floor": {
+     "registered": false,
+     "replaces_the_verdict": false,
+     "what": "is the with-hook difference no larger than the largest of the K no-hook-vs-no-hook differences of the same state? Descriptive only: it does not enter, soften or override the P1' pass/fail above, which is the registered 1e-6 on the loss.",
+     "k": 5,
+     "loss_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "per_item_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "caveat_at_k_1": "at --floor-k 1 the floor is a sample of size one and this comparison is a coin toss dressed as a bound"
+    },
+    "pass": true,
+    "pass_level": "loss"
+   },
+   "P2prime_the_instrument_sees_something": {
+    "what": "(i) the per-item vectors over the input cell types differ between items; (ii) the 65-vector is not constant",
+    "threshold_source": "the measured floor (README Sec 6); NEVER the data being judged",
+    "threshold_rule": "threshold for P2' = 10 x the measured floor of README Sec 6, taken on the SAME reduction path and the SAME determinism mode as the statistic it judges. A computation, not a judgement.",
+    "threshold_rule_declared": "2026-09-20",
+    "threshold_rule_multiplier": 10,
+    "threshold_rule_applied_by": "--floor-summarize, which writes the products into rowB_floor[_det].json; this block keeps its nulls until that file exists",
+    "i_input_type_vectors_differ_between_items": {
+     "input_type_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "n_item_pairs": 120,
+     "min_pairwise_max_abs_diff": "0.0004492123976826967",
+     "max_pairwise_max_abs_diff": "0.6471294806606228",
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    },
+    "ii_the_65_vector_is_not_constant": {
+     "population_sd_over_types": "10.48143723549935",
+     "range_over_types": "55.396747971687105",
+     "n_distinct_values": 65,
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    }
+   }
+  },
+  "('C:\\\\Users\\\\mikha\\\\Documents\\\\dpc-research\\\\connectome-seed-data\\\\results\\\\flow\\\\9991\\\\001', 71)": {
+   "P0_evaluation_without_recording_reproduces_the_stored_value": {
+    "what": "the same evaluation with NO hook registered, against the val_loss stored inside the checkpoint file",
+    "tolerance": 0.001,
+    "tolerance_source": "results/night2/diagnostics/ablation/README.md Sec 5 (P0)",
+    "stored_checkpoint_val_loss": "1144.636233329773",
+    "per_item_mean_without_hook": "1144.6362199783325",
+    "rung_hook_path_value": "1144.6362199783325",
+    "abs_diff_per_item_mean_minus_stored": "1.33514404296875e-05",
+    "abs_diff_hook_path_minus_stored": "1.33514404296875e-05",
+    "pass": true
+   },
+   "P1prime_the_recording_hook_does_not_change_the_loss": {
+    "what": "the loss with the recording hook registered, against P0. The criterion is ON THE LOSS -- the aggregate the rung reports -- and the per-item figures are recorded beside it, at their own separately named level.",
+    "tolerance": 1e-06,
+    "tolerance_status": "REGISTERED and NOT amended on 2026-09-20; the verdicts it produced on the first run stand",
+    "per_item_mean_with_recorder": "1144.6362199783325",
+    "abs_diff": "0.0",
+    "abs_diff_level": "loss (the per-item mean); this is the level `pass` is taken at",
+    "abs_diff_loss_nohook_vs_nohook": "0.0",
+    "abs_diff_loss_nohook_vs_nohook_what": "the floor AT THE JUDGED LEVEL: the largest loss-level difference among the K no-hook repeats of the same state (A2, Johnny; confirmed by Ark and Zcode)",
+    "bitwise_identical_per_item": true,
+    "per_item_max_abs_diff": "0.0",
+    "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": "0.0",
+    "per_item_max_abs_diff_in_float32_ulps": "0.0",
+    "ulps_level": "the ULP figure above is the PER-ITEM level; the loss-level difference is a different and larger number of ULPs and is not the same statistic",
+    "abs_diff_loss_in_float32_ulps": "0.0",
+    "floor_nohook_vs_nohook": {
+     "k": 5,
+     "n_no_hook_evaluations": 6,
+     "what": "the same state, the same code path, no hook at all, evaluated K+1 times in ONE process; each repeat differenced against the first (P0's reading)",
+     "registered": false,
+     "differences_per_item_max": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "differences_loss": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "max_difference_per_item_max": "0.0",
+     "max_difference_loss": "0.0",
+     "all_bitwise_identical": true,
+     "note": "a within-process floor. The across-process floor of README Sec 6 is a different and larger quantity and is measured by --floor-repeat."
+    },
+    "descriptive_hook_diff_le_max_floor": {
+     "registered": false,
+     "replaces_the_verdict": false,
+     "what": "is the with-hook difference no larger than the largest of the K no-hook-vs-no-hook differences of the same state? Descriptive only: it does not enter, soften or override the P1' pass/fail above, which is the registered 1e-6 on the loss.",
+     "k": 5,
+     "loss_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "per_item_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "caveat_at_k_1": "at --floor-k 1 the floor is a sample of size one and this comparison is a coin toss dressed as a bound"
+    },
+    "pass": true,
+    "pass_level": "loss"
+   },
+   "P2prime_the_instrument_sees_something": {
+    "what": "(i) the per-item vectors over the input cell types differ between items; (ii) the 65-vector is not constant",
+    "threshold_source": "the measured floor (README Sec 6); NEVER the data being judged",
+    "threshold_rule": "threshold for P2' = 10 x the measured floor of README Sec 6, taken on the SAME reduction path and the SAME determinism mode as the statistic it judges. A computation, not a judgement.",
+    "threshold_rule_declared": "2026-09-20",
+    "threshold_rule_multiplier": 10,
+    "threshold_rule_applied_by": "--floor-summarize, which writes the products into rowB_floor[_det].json; this block keeps its nulls until that file exists",
+    "i_input_type_vectors_differ_between_items": {
+     "input_type_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "n_item_pairs": 120,
+     "min_pairwise_max_abs_diff": "0.0026457811971860035",
+     "max_pairwise_max_abs_diff": "0.7378834074525222",
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    },
+    "ii_the_65_vector_is_not_constant": {
+     "population_sd_over_types": "2.422191700351195",
+     "range_over_types": "21.120605306087054",
+     "n_distinct_values": 65,
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    }
+   }
+  },
+  "('C:\\\\Users\\\\mikha\\\\Documents\\\\dpc-research\\\\connectome-seed-data\\\\results\\\\flow\\\\9991\\\\002', 0)": {
+   "P0_evaluation_without_recording_reproduces_the_stored_value": {
+    "what": "the same evaluation with NO hook registered, against the val_loss stored inside the checkpoint file",
+    "tolerance": 0.001,
+    "tolerance_source": "results/night2/diagnostics/ablation/README.md Sec 5 (P0)",
+    "stored_checkpoint_val_loss": "1212.5592331886292",
+    "per_item_mean_without_hook": "1212.5592331886292",
+    "rung_hook_path_value": "1212.5592331886292",
+    "abs_diff_per_item_mean_minus_stored": "0.0",
+    "abs_diff_hook_path_minus_stored": "0.0",
+    "pass": true
+   },
+   "P1prime_the_recording_hook_does_not_change_the_loss": {
+    "what": "the loss with the recording hook registered, against P0. The criterion is ON THE LOSS -- the aggregate the rung reports -- and the per-item figures are recorded beside it, at their own separately named level.",
+    "tolerance": 1e-06,
+    "tolerance_status": "REGISTERED and NOT amended on 2026-09-20; the verdicts it produced on the first run stand",
+    "per_item_mean_with_recorder": "1212.5592331886292",
+    "abs_diff": "0.0",
+    "abs_diff_level": "loss (the per-item mean); this is the level `pass` is taken at",
+    "abs_diff_loss_nohook_vs_nohook": "0.0",
+    "abs_diff_loss_nohook_vs_nohook_what": "the floor AT THE JUDGED LEVEL: the largest loss-level difference among the K no-hook repeats of the same state (A2, Johnny; confirmed by Ark and Zcode)",
+    "bitwise_identical_per_item": true,
+    "per_item_max_abs_diff": "0.0",
+    "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": "0.0",
+    "per_item_max_abs_diff_in_float32_ulps": "0.0",
+    "ulps_level": "the ULP figure above is the PER-ITEM level; the loss-level difference is a different and larger number of ULPs and is not the same statistic",
+    "abs_diff_loss_in_float32_ulps": "0.0",
+    "floor_nohook_vs_nohook": {
+     "k": 5,
+     "n_no_hook_evaluations": 6,
+     "what": "the same state, the same code path, no hook at all, evaluated K+1 times in ONE process; each repeat differenced against the first (P0's reading)",
+     "registered": false,
+     "differences_per_item_max": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "differences_loss": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "max_difference_per_item_max": "0.0",
+     "max_difference_loss": "0.0",
+     "all_bitwise_identical": true,
+     "note": "a within-process floor. The across-process floor of README Sec 6 is a different and larger quantity and is measured by --floor-repeat."
+    },
+    "descriptive_hook_diff_le_max_floor": {
+     "registered": false,
+     "replaces_the_verdict": false,
+     "what": "is the with-hook difference no larger than the largest of the K no-hook-vs-no-hook differences of the same state? Descriptive only: it does not enter, soften or override the P1' pass/fail above, which is the registered 1e-6 on the loss.",
+     "k": 5,
+     "loss_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "per_item_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "caveat_at_k_1": "at --floor-k 1 the floor is a sample of size one and this comparison is a coin toss dressed as a bound"
+    },
+    "pass": true,
+    "pass_level": "loss"
+   },
+   "P2prime_the_instrument_sees_something": {
+    "what": "(i) the per-item vectors over the input cell types differ between items; (ii) the 65-vector is not constant",
+    "threshold_source": "the measured floor (README Sec 6); NEVER the data being judged",
+    "threshold_rule": "threshold for P2' = 10 x the measured floor of README Sec 6, taken on the SAME reduction path and the SAME determinism mode as the statistic it judges. A computation, not a judgement.",
+    "threshold_rule_declared": "2026-09-20",
+    "threshold_rule_multiplier": 10,
+    "threshold_rule_applied_by": "--floor-summarize, which writes the products into rowB_floor[_det].json; this block keeps its nulls until that file exists",
+    "i_input_type_vectors_differ_between_items": {
+     "input_type_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "n_item_pairs": 120,
+     "min_pairwise_max_abs_diff": "0.00042151552670199877",
+     "max_pairwise_max_abs_diff": "0.6217473103914116",
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    },
+    "ii_the_65_vector_is_not_constant": {
+     "population_sd_over_types": "0.19047944160138963",
+     "range_over_types": "0.9360083883691865",
+     "n_distinct_values": 65,
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    }
+   }
+  },
+  "('C:\\\\Users\\\\mikha\\\\Documents\\\\dpc-research\\\\connectome-seed-data\\\\results\\\\flow\\\\9991\\\\002', 8)": {
+   "P0_evaluation_without_recording_reproduces_the_stored_value": {
+    "what": "the same evaluation with NO hook registered, against the val_loss stored inside the checkpoint file",
+    "tolerance": 0.001,
+    "tolerance_source": "results/night2/diagnostics/ablation/README.md Sec 5 (P0)",
+    "stored_checkpoint_val_loss": "1205.978184223175",
+    "per_item_mean_without_hook": "1205.9781885147095",
+    "rung_hook_path_value": "1205.9781885147095",
+    "abs_diff_per_item_mean_minus_stored": "4.291534423828125e-06",
+    "abs_diff_hook_path_minus_stored": "4.291534423828125e-06",
+    "pass": true
+   },
+   "P1prime_the_recording_hook_does_not_change_the_loss": {
+    "what": "the loss with the recording hook registered, against P0. The criterion is ON THE LOSS -- the aggregate the rung reports -- and the per-item figures are recorded beside it, at their own separately named level.",
+    "tolerance": 1e-06,
+    "tolerance_status": "REGISTERED and NOT amended on 2026-09-20; the verdicts it produced on the first run stand",
+    "per_item_mean_with_recorder": "1205.9781885147095",
+    "abs_diff": "0.0",
+    "abs_diff_level": "loss (the per-item mean); this is the level `pass` is taken at",
+    "abs_diff_loss_nohook_vs_nohook": "0.0",
+    "abs_diff_loss_nohook_vs_nohook_what": "the floor AT THE JUDGED LEVEL: the largest loss-level difference among the K no-hook repeats of the same state (A2, Johnny; confirmed by Ark and Zcode)",
+    "bitwise_identical_per_item": true,
+    "per_item_max_abs_diff": "0.0",
+    "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": "0.0",
+    "per_item_max_abs_diff_in_float32_ulps": "0.0",
+    "ulps_level": "the ULP figure above is the PER-ITEM level; the loss-level difference is a different and larger number of ULPs and is not the same statistic",
+    "abs_diff_loss_in_float32_ulps": "0.0",
+    "floor_nohook_vs_nohook": {
+     "k": 5,
+     "n_no_hook_evaluations": 6,
+     "what": "the same state, the same code path, no hook at all, evaluated K+1 times in ONE process; each repeat differenced against the first (P0's reading)",
+     "registered": false,
+     "differences_per_item_max": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "differences_loss": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "max_difference_per_item_max": "0.0",
+     "max_difference_loss": "0.0",
+     "all_bitwise_identical": true,
+     "note": "a within-process floor. The across-process floor of README Sec 6 is a different and larger quantity and is measured by --floor-repeat."
+    },
+    "descriptive_hook_diff_le_max_floor": {
+     "registered": false,
+     "replaces_the_verdict": false,
+     "what": "is the with-hook difference no larger than the largest of the K no-hook-vs-no-hook differences of the same state? Descriptive only: it does not enter, soften or override the P1' pass/fail above, which is the registered 1e-6 on the loss.",
+     "k": 5,
+     "loss_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "per_item_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "caveat_at_k_1": "at --floor-k 1 the floor is a sample of size one and this comparison is a coin toss dressed as a bound"
+    },
+    "pass": true,
+    "pass_level": "loss"
+   },
+   "P2prime_the_instrument_sees_something": {
+    "what": "(i) the per-item vectors over the input cell types differ between items; (ii) the 65-vector is not constant",
+    "threshold_source": "the measured floor (README Sec 6); NEVER the data being judged",
+    "threshold_rule": "threshold for P2' = 10 x the measured floor of README Sec 6, taken on the SAME reduction path and the SAME determinism mode as the statistic it judges. A computation, not a judgement.",
+    "threshold_rule_declared": "2026-09-20",
+    "threshold_rule_multiplier": 10,
+    "threshold_rule_applied_by": "--floor-summarize, which writes the products into rowB_floor[_det].json; this block keeps its nulls until that file exists",
+    "i_input_type_vectors_differ_between_items": {
+     "input_type_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "n_item_pairs": 120,
+     "min_pairwise_max_abs_diff": "0.0019358928361843022",
+     "max_pairwise_max_abs_diff": "0.64701391890769",
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    },
+    "ii_the_65_vector_is_not_constant": {
+     "population_sd_over_types": "3.595350911693149",
+     "range_over_types": "30.062697063642787",
+     "n_distinct_values": 65,
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    }
+   }
+  },
+  "('C:\\\\Users\\\\mikha\\\\Documents\\\\dpc-research\\\\connectome-seed-data\\\\results\\\\flow\\\\9991\\\\002', 71)": {
+   "P0_evaluation_without_recording_reproduces_the_stored_value": {
+    "what": "the same evaluation with NO hook registered, against the val_loss stored inside the checkpoint file",
+    "tolerance": 0.001,
+    "tolerance_source": "results/night2/diagnostics/ablation/README.md Sec 5 (P0)",
+    "stored_checkpoint_val_loss": "1147.717873096466",
+    "per_item_mean_without_hook": "1147.7179489135742",
+    "rung_hook_path_value": "1147.7179489135742",
+    "abs_diff_per_item_mean_minus_stored": "7.581710815429688e-05",
+    "abs_diff_hook_path_minus_stored": "7.581710815429688e-05",
+    "pass": true
+   },
+   "P1prime_the_recording_hook_does_not_change_the_loss": {
+    "what": "the loss with the recording hook registered, against P0. The criterion is ON THE LOSS -- the aggregate the rung reports -- and the per-item figures are recorded beside it, at their own separately named level.",
+    "tolerance": 1e-06,
+    "tolerance_status": "REGISTERED and NOT amended on 2026-09-20; the verdicts it produced on the first run stand",
+    "per_item_mean_with_recorder": "1147.7179489135742",
+    "abs_diff": "0.0",
+    "abs_diff_level": "loss (the per-item mean); this is the level `pass` is taken at",
+    "abs_diff_loss_nohook_vs_nohook": "0.0",
+    "abs_diff_loss_nohook_vs_nohook_what": "the floor AT THE JUDGED LEVEL: the largest loss-level difference among the K no-hook repeats of the same state (A2, Johnny; confirmed by Ark and Zcode)",
+    "bitwise_identical_per_item": true,
+    "per_item_max_abs_diff": "0.0",
+    "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": "0.0",
+    "per_item_max_abs_diff_in_float32_ulps": "0.0",
+    "ulps_level": "the ULP figure above is the PER-ITEM level; the loss-level difference is a different and larger number of ULPs and is not the same statistic",
+    "abs_diff_loss_in_float32_ulps": "0.0",
+    "floor_nohook_vs_nohook": {
+     "k": 5,
+     "n_no_hook_evaluations": 6,
+     "what": "the same state, the same code path, no hook at all, evaluated K+1 times in ONE process; each repeat differenced against the first (P0's reading)",
+     "registered": false,
+     "differences_per_item_max": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "differences_loss": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "max_difference_per_item_max": "0.0",
+     "max_difference_loss": "0.0",
+     "all_bitwise_identical": true,
+     "note": "a within-process floor. The across-process floor of README Sec 6 is a different and larger quantity and is measured by --floor-repeat."
+    },
+    "descriptive_hook_diff_le_max_floor": {
+     "registered": false,
+     "replaces_the_verdict": false,
+     "what": "is the with-hook difference no larger than the largest of the K no-hook-vs-no-hook differences of the same state? Descriptive only: it does not enter, soften or override the P1' pass/fail above, which is the registered 1e-6 on the loss.",
+     "k": 5,
+     "loss_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "per_item_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "caveat_at_k_1": "at --floor-k 1 the floor is a sample of size one and this comparison is a coin toss dressed as a bound"
+    },
+    "pass": true,
+    "pass_level": "loss"
+   },
+   "P2prime_the_instrument_sees_something": {
+    "what": "(i) the per-item vectors over the input cell types differ between items; (ii) the 65-vector is not constant",
+    "threshold_source": "the measured floor (README Sec 6); NEVER the data being judged",
+    "threshold_rule": "threshold for P2' = 10 x the measured floor of README Sec 6, taken on the SAME reduction path and the SAME determinism mode as the statistic it judges. A computation, not a judgement.",
+    "threshold_rule_declared": "2026-09-20",
+    "threshold_rule_multiplier": 10,
+    "threshold_rule_applied_by": "--floor-summarize, which writes the products into rowB_floor[_det].json; this block keeps its nulls until that file exists",
+    "i_input_type_vectors_differ_between_items": {
+     "input_type_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "n_item_pairs": 120,
+     "min_pairwise_max_abs_diff": "0.0030275695999861796",
+     "max_pairwise_max_abs_diff": "0.6564080183469172",
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    },
+    "ii_the_65_vector_is_not_constant": {
+     "population_sd_over_types": "2.6963624015890266",
+     "range_over_types": "11.893418499366735",
+     "n_distinct_values": 65,
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    }
+   }
+  },
+  "('C:\\\\Users\\\\mikha\\\\Documents\\\\dpc-research\\\\connectome-seed-data\\\\results\\\\flow\\\\9991\\\\003', 0)": {
+   "P0_evaluation_without_recording_reproduces_the_stored_value": {
+    "what": "the same evaluation with NO hook registered, against the val_loss stored inside the checkpoint file",
+    "tolerance": 0.001,
+    "tolerance_source": "results/night2/diagnostics/ablation/README.md Sec 5 (P0)",
+    "stored_checkpoint_val_loss": "1212.549735546112",
+    "per_item_mean_without_hook": "1212.549735546112",
+    "rung_hook_path_value": "1212.549735546112",
+    "abs_diff_per_item_mean_minus_stored": "0.0",
+    "abs_diff_hook_path_minus_stored": "0.0",
+    "pass": true
+   },
+   "P1prime_the_recording_hook_does_not_change_the_loss": {
+    "what": "the loss with the recording hook registered, against P0. The criterion is ON THE LOSS -- the aggregate the rung reports -- and the per-item figures are recorded beside it, at their own separately named level.",
+    "tolerance": 1e-06,
+    "tolerance_status": "REGISTERED and NOT amended on 2026-09-20; the verdicts it produced on the first run stand",
+    "per_item_mean_with_recorder": "1212.549735546112",
+    "abs_diff": "0.0",
+    "abs_diff_level": "loss (the per-item mean); this is the level `pass` is taken at",
+    "abs_diff_loss_nohook_vs_nohook": "0.0",
+    "abs_diff_loss_nohook_vs_nohook_what": "the floor AT THE JUDGED LEVEL: the largest loss-level difference among the K no-hook repeats of the same state (A2, Johnny; confirmed by Ark and Zcode)",
+    "bitwise_identical_per_item": true,
+    "per_item_max_abs_diff": "0.0",
+    "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": "0.0",
+    "per_item_max_abs_diff_in_float32_ulps": "0.0",
+    "ulps_level": "the ULP figure above is the PER-ITEM level; the loss-level difference is a different and larger number of ULPs and is not the same statistic",
+    "abs_diff_loss_in_float32_ulps": "0.0",
+    "floor_nohook_vs_nohook": {
+     "k": 5,
+     "n_no_hook_evaluations": 6,
+     "what": "the same state, the same code path, no hook at all, evaluated K+1 times in ONE process; each repeat differenced against the first (P0's reading)",
+     "registered": false,
+     "differences_per_item_max": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "differences_loss": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "max_difference_per_item_max": "0.0",
+     "max_difference_loss": "0.0",
+     "all_bitwise_identical": true,
+     "note": "a within-process floor. The across-process floor of README Sec 6 is a different and larger quantity and is measured by --floor-repeat."
+    },
+    "descriptive_hook_diff_le_max_floor": {
+     "registered": false,
+     "replaces_the_verdict": false,
+     "what": "is the with-hook difference no larger than the largest of the K no-hook-vs-no-hook differences of the same state? Descriptive only: it does not enter, soften or override the P1' pass/fail above, which is the registered 1e-6 on the loss.",
+     "k": 5,
+     "loss_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "per_item_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "caveat_at_k_1": "at --floor-k 1 the floor is a sample of size one and this comparison is a coin toss dressed as a bound"
+    },
+    "pass": true,
+    "pass_level": "loss"
+   },
+   "P2prime_the_instrument_sees_something": {
+    "what": "(i) the per-item vectors over the input cell types differ between items; (ii) the 65-vector is not constant",
+    "threshold_source": "the measured floor (README Sec 6); NEVER the data being judged",
+    "threshold_rule": "threshold for P2' = 10 x the measured floor of README Sec 6, taken on the SAME reduction path and the SAME determinism mode as the statistic it judges. A computation, not a judgement.",
+    "threshold_rule_declared": "2026-09-20",
+    "threshold_rule_multiplier": 10,
+    "threshold_rule_applied_by": "--floor-summarize, which writes the products into rowB_floor[_det].json; this block keeps its nulls until that file exists",
+    "i_input_type_vectors_differ_between_items": {
+     "input_type_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "n_item_pairs": 120,
+     "min_pairwise_max_abs_diff": "0.0004215149852171418",
+     "max_pairwise_max_abs_diff": "0.62174731084816",
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    },
+    "ii_the_65_vector_is_not_constant": {
+     "population_sd_over_types": "0.19034860505059956",
+     "range_over_types": "0.924946695581904",
+     "n_distinct_values": 65,
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    }
+   }
+  },
+  "('C:\\\\Users\\\\mikha\\\\Documents\\\\dpc-research\\\\connectome-seed-data\\\\results\\\\flow\\\\9991\\\\003', 8)": {
+   "P0_evaluation_without_recording_reproduces_the_stored_value": {
+    "what": "the same evaluation with NO hook registered, against the val_loss stored inside the checkpoint file",
+    "tolerance": 0.001,
+    "tolerance_source": "results/night2/diagnostics/ablation/README.md Sec 5 (P0)",
+    "stored_checkpoint_val_loss": "1190.0516934394836",
+    "per_item_mean_without_hook": "1190.0516934394836",
+    "rung_hook_path_value": "1190.0516934394836",
+    "abs_diff_per_item_mean_minus_stored": "0.0",
+    "abs_diff_hook_path_minus_stored": "0.0",
+    "pass": true
+   },
+   "P1prime_the_recording_hook_does_not_change_the_loss": {
+    "what": "the loss with the recording hook registered, against P0. The criterion is ON THE LOSS -- the aggregate the rung reports -- and the per-item figures are recorded beside it, at their own separately named level.",
+    "tolerance": 1e-06,
+    "tolerance_status": "REGISTERED and NOT amended on 2026-09-20; the verdicts it produced on the first run stand",
+    "per_item_mean_with_recorder": "1190.0516934394836",
+    "abs_diff": "0.0",
+    "abs_diff_level": "loss (the per-item mean); this is the level `pass` is taken at",
+    "abs_diff_loss_nohook_vs_nohook": "0.0",
+    "abs_diff_loss_nohook_vs_nohook_what": "the floor AT THE JUDGED LEVEL: the largest loss-level difference among the K no-hook repeats of the same state (A2, Johnny; confirmed by Ark and Zcode)",
+    "bitwise_identical_per_item": true,
+    "per_item_max_abs_diff": "0.0",
+    "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": "0.0",
+    "per_item_max_abs_diff_in_float32_ulps": "0.0",
+    "ulps_level": "the ULP figure above is the PER-ITEM level; the loss-level difference is a different and larger number of ULPs and is not the same statistic",
+    "abs_diff_loss_in_float32_ulps": "0.0",
+    "floor_nohook_vs_nohook": {
+     "k": 5,
+     "n_no_hook_evaluations": 6,
+     "what": "the same state, the same code path, no hook at all, evaluated K+1 times in ONE process; each repeat differenced against the first (P0's reading)",
+     "registered": false,
+     "differences_per_item_max": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "differences_loss": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "max_difference_per_item_max": "0.0",
+     "max_difference_loss": "0.0",
+     "all_bitwise_identical": true,
+     "note": "a within-process floor. The across-process floor of README Sec 6 is a different and larger quantity and is measured by --floor-repeat."
+    },
+    "descriptive_hook_diff_le_max_floor": {
+     "registered": false,
+     "replaces_the_verdict": false,
+     "what": "is the with-hook difference no larger than the largest of the K no-hook-vs-no-hook differences of the same state? Descriptive only: it does not enter, soften or override the P1' pass/fail above, which is the registered 1e-6 on the loss.",
+     "k": 5,
+     "loss_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "per_item_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "caveat_at_k_1": "at --floor-k 1 the floor is a sample of size one and this comparison is a coin toss dressed as a bound"
+    },
+    "pass": true,
+    "pass_level": "loss"
+   },
+   "P2prime_the_instrument_sees_something": {
+    "what": "(i) the per-item vectors over the input cell types differ between items; (ii) the 65-vector is not constant",
+    "threshold_source": "the measured floor (README Sec 6); NEVER the data being judged",
+    "threshold_rule": "threshold for P2' = 10 x the measured floor of README Sec 6, taken on the SAME reduction path and the SAME determinism mode as the statistic it judges. A computation, not a judgement.",
+    "threshold_rule_declared": "2026-09-20",
+    "threshold_rule_multiplier": 10,
+    "threshold_rule_applied_by": "--floor-summarize, which writes the products into rowB_floor[_det].json; this block keeps its nulls until that file exists",
+    "i_input_type_vectors_differ_between_items": {
+     "input_type_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "n_item_pairs": 120,
+     "min_pairwise_max_abs_diff": "0.0011066965536303264",
+     "max_pairwise_max_abs_diff": "0.6500073637343147",
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    },
+    "ii_the_65_vector_is_not_constant": {
+     "population_sd_over_types": "10.719471977233614",
+     "range_over_types": "53.904219217816625",
+     "n_distinct_values": 65,
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    }
+   }
+  },
+  "('C:\\\\Users\\\\mikha\\\\Documents\\\\dpc-research\\\\connectome-seed-data\\\\results\\\\flow\\\\9991\\\\003', 71)": {
+   "P0_evaluation_without_recording_reproduces_the_stored_value": {
+    "what": "the same evaluation with NO hook registered, against the val_loss stored inside the checkpoint file",
+    "tolerance": 0.001,
+    "tolerance_source": "results/night2/diagnostics/ablation/README.md Sec 5 (P0)",
+    "stored_checkpoint_val_loss": "1155.7706489562988",
+    "per_item_mean_without_hook": "1155.7706241607666",
+    "rung_hook_path_value": "1155.7706241607666",
+    "abs_diff_per_item_mean_minus_stored": "2.47955322265625e-05",
+    "abs_diff_hook_path_minus_stored": "2.47955322265625e-05",
+    "pass": true
+   },
+   "P1prime_the_recording_hook_does_not_change_the_loss": {
+    "what": "the loss with the recording hook registered, against P0. The criterion is ON THE LOSS -- the aggregate the rung reports -- and the per-item figures are recorded beside it, at their own separately named level.",
+    "tolerance": 1e-06,
+    "tolerance_status": "REGISTERED and NOT amended on 2026-09-20; the verdicts it produced on the first run stand",
+    "per_item_mean_with_recorder": "1155.7706241607666",
+    "abs_diff": "0.0",
+    "abs_diff_level": "loss (the per-item mean); this is the level `pass` is taken at",
+    "abs_diff_loss_nohook_vs_nohook": "0.0",
+    "abs_diff_loss_nohook_vs_nohook_what": "the floor AT THE JUDGED LEVEL: the largest loss-level difference among the K no-hook repeats of the same state (A2, Johnny; confirmed by Ark and Zcode)",
+    "bitwise_identical_per_item": true,
+    "per_item_max_abs_diff": "0.0",
+    "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": "0.0",
+    "per_item_max_abs_diff_in_float32_ulps": "0.0",
+    "ulps_level": "the ULP figure above is the PER-ITEM level; the loss-level difference is a different and larger number of ULPs and is not the same statistic",
+    "abs_diff_loss_in_float32_ulps": "0.0",
+    "floor_nohook_vs_nohook": {
+     "k": 5,
+     "n_no_hook_evaluations": 6,
+     "what": "the same state, the same code path, no hook at all, evaluated K+1 times in ONE process; each repeat differenced against the first (P0's reading)",
+     "registered": false,
+     "differences_per_item_max": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "differences_loss": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "max_difference_per_item_max": "0.0",
+     "max_difference_loss": "0.0",
+     "all_bitwise_identical": true,
+     "note": "a within-process floor. The across-process floor of README Sec 6 is a different and larger quantity and is measured by --floor-repeat."
+    },
+    "descriptive_hook_diff_le_max_floor": {
+     "registered": false,
+     "replaces_the_verdict": false,
+     "what": "is the with-hook difference no larger than the largest of the K no-hook-vs-no-hook differences of the same state? Descriptive only: it does not enter, soften or override the P1' pass/fail above, which is the registered 1e-6 on the loss.",
+     "k": 5,
+     "loss_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "per_item_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "caveat_at_k_1": "at --floor-k 1 the floor is a sample of size one and this comparison is a coin toss dressed as a bound"
+    },
+    "pass": true,
+    "pass_level": "loss"
+   },
+   "P2prime_the_instrument_sees_something": {
+    "what": "(i) the per-item vectors over the input cell types differ between items; (ii) the 65-vector is not constant",
+    "threshold_source": "the measured floor (README Sec 6); NEVER the data being judged",
+    "threshold_rule": "threshold for P2' = 10 x the measured floor of README Sec 6, taken on the SAME reduction path and the SAME determinism mode as the statistic it judges. A computation, not a judgement.",
+    "threshold_rule_declared": "2026-09-20",
+    "threshold_rule_multiplier": 10,
+    "threshold_rule_applied_by": "--floor-summarize, which writes the products into rowB_floor[_det].json; this block keeps its nulls until that file exists",
+    "i_input_type_vectors_differ_between_items": {
+     "input_type_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "n_item_pairs": 120,
+     "min_pairwise_max_abs_diff": "0.0028860657208507057",
+     "max_pairwise_max_abs_diff": "0.8396698945347897",
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    },
+    "ii_the_65_vector_is_not_constant": {
+     "population_sd_over_types": "2.1976919023101864",
+     "range_over_types": "13.714732329027907",
+     "n_distinct_values": 65,
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    }
+   }
+  },
+  "('C:\\\\Users\\\\mikha\\\\Documents\\\\dpc-research\\\\connectome-seed-data\\\\results\\\\flow\\\\9991\\\\903', 0)": {
+   "P0_evaluation_without_recording_reproduces_the_stored_value": {
+    "what": "the same evaluation with NO hook registered, against the val_loss stored inside the checkpoint file",
+    "tolerance": 0.001,
+    "tolerance_source": "results/night2/diagnostics/ablation/README.md Sec 5 (P0)",
+    "stored_checkpoint_val_loss": "1212.549735546112",
+    "per_item_mean_without_hook": "1212.549735546112",
+    "rung_hook_path_value": "1212.549735546112",
+    "abs_diff_per_item_mean_minus_stored": "0.0",
+    "abs_diff_hook_path_minus_stored": "0.0",
+    "pass": true
+   },
+   "P1prime_the_recording_hook_does_not_change_the_loss": {
+    "what": "the loss with the recording hook registered, against P0. The criterion is ON THE LOSS -- the aggregate the rung reports -- and the per-item figures are recorded beside it, at their own separately named level.",
+    "tolerance": 1e-06,
+    "tolerance_status": "REGISTERED and NOT amended on 2026-09-20; the verdicts it produced on the first run stand",
+    "per_item_mean_with_recorder": "1212.549735546112",
+    "abs_diff": "0.0",
+    "abs_diff_level": "loss (the per-item mean); this is the level `pass` is taken at",
+    "abs_diff_loss_nohook_vs_nohook": "0.0",
+    "abs_diff_loss_nohook_vs_nohook_what": "the floor AT THE JUDGED LEVEL: the largest loss-level difference among the K no-hook repeats of the same state (A2, Johnny; confirmed by Ark and Zcode)",
+    "bitwise_identical_per_item": true,
+    "per_item_max_abs_diff": "0.0",
+    "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": "0.0",
+    "per_item_max_abs_diff_in_float32_ulps": "0.0",
+    "ulps_level": "the ULP figure above is the PER-ITEM level; the loss-level difference is a different and larger number of ULPs and is not the same statistic",
+    "abs_diff_loss_in_float32_ulps": "0.0",
+    "floor_nohook_vs_nohook": {
+     "k": 5,
+     "n_no_hook_evaluations": 6,
+     "what": "the same state, the same code path, no hook at all, evaluated K+1 times in ONE process; each repeat differenced against the first (P0's reading)",
+     "registered": false,
+     "differences_per_item_max": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "differences_loss": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "max_difference_per_item_max": "0.0",
+     "max_difference_loss": "0.0",
+     "all_bitwise_identical": true,
+     "note": "a within-process floor. The across-process floor of README Sec 6 is a different and larger quantity and is measured by --floor-repeat."
+    },
+    "descriptive_hook_diff_le_max_floor": {
+     "registered": false,
+     "replaces_the_verdict": false,
+     "what": "is the with-hook difference no larger than the largest of the K no-hook-vs-no-hook differences of the same state? Descriptive only: it does not enter, soften or override the P1' pass/fail above, which is the registered 1e-6 on the loss.",
+     "k": 5,
+     "loss_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "per_item_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "caveat_at_k_1": "at --floor-k 1 the floor is a sample of size one and this comparison is a coin toss dressed as a bound"
+    },
+    "pass": true,
+    "pass_level": "loss"
+   },
+   "P2prime_the_instrument_sees_something": {
+    "what": "(i) the per-item vectors over the input cell types differ between items; (ii) the 65-vector is not constant",
+    "threshold_source": "the measured floor (README Sec 6); NEVER the data being judged",
+    "threshold_rule": "threshold for P2' = 10 x the measured floor of README Sec 6, taken on the SAME reduction path and the SAME determinism mode as the statistic it judges. A computation, not a judgement.",
+    "threshold_rule_declared": "2026-09-20",
+    "threshold_rule_multiplier": 10,
+    "threshold_rule_applied_by": "--floor-summarize, which writes the products into rowB_floor[_det].json; this block keeps its nulls until that file exists",
+    "i_input_type_vectors_differ_between_items": {
+     "input_type_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "n_item_pairs": 120,
+     "min_pairwise_max_abs_diff": "0.0004215149852171418",
+     "max_pairwise_max_abs_diff": "0.62174731084816",
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    },
+    "ii_the_65_vector_is_not_constant": {
+     "population_sd_over_types": "0.19034860505059956",
+     "range_over_types": "0.924946695581904",
+     "n_distinct_values": 65,
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    }
+   }
+  },
+  "('C:\\\\Users\\\\mikha\\\\Documents\\\\dpc-research\\\\connectome-seed-data\\\\results\\\\flow\\\\9991\\\\903', 8)": {
+   "P0_evaluation_without_recording_reproduces_the_stored_value": {
+    "what": "the same evaluation with NO hook registered, against the val_loss stored inside the checkpoint file",
+    "tolerance": 0.001,
+    "tolerance_source": "results/night2/diagnostics/ablation/README.md Sec 5 (P0)",
+    "stored_checkpoint_val_loss": "1187.1360335350037",
+    "per_item_mean_without_hook": "1187.136037826538",
+    "rung_hook_path_value": "1187.136037826538",
+    "abs_diff_per_item_mean_minus_stored": "4.291534423828125e-06",
+    "abs_diff_hook_path_minus_stored": "4.291534423828125e-06",
+    "pass": true
+   },
+   "P1prime_the_recording_hook_does_not_change_the_loss": {
+    "what": "the loss with the recording hook registered, against P0. The criterion is ON THE LOSS -- the aggregate the rung reports -- and the per-item figures are recorded beside it, at their own separately named level.",
+    "tolerance": 1e-06,
+    "tolerance_status": "REGISTERED and NOT amended on 2026-09-20; the verdicts it produced on the first run stand",
+    "per_item_mean_with_recorder": "1187.136037826538",
+    "abs_diff": "0.0",
+    "abs_diff_level": "loss (the per-item mean); this is the level `pass` is taken at",
+    "abs_diff_loss_nohook_vs_nohook": "0.0",
+    "abs_diff_loss_nohook_vs_nohook_what": "the floor AT THE JUDGED LEVEL: the largest loss-level difference among the K no-hook repeats of the same state (A2, Johnny; confirmed by Ark and Zcode)",
+    "bitwise_identical_per_item": true,
+    "per_item_max_abs_diff": "0.0",
+    "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": "0.0",
+    "per_item_max_abs_diff_in_float32_ulps": "0.0",
+    "ulps_level": "the ULP figure above is the PER-ITEM level; the loss-level difference is a different and larger number of ULPs and is not the same statistic",
+    "abs_diff_loss_in_float32_ulps": "0.0",
+    "floor_nohook_vs_nohook": {
+     "k": 5,
+     "n_no_hook_evaluations": 6,
+     "what": "the same state, the same code path, no hook at all, evaluated K+1 times in ONE process; each repeat differenced against the first (P0's reading)",
+     "registered": false,
+     "differences_per_item_max": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "differences_loss": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "max_difference_per_item_max": "0.0",
+     "max_difference_loss": "0.0",
+     "all_bitwise_identical": true,
+     "note": "a within-process floor. The across-process floor of README Sec 6 is a different and larger quantity and is measured by --floor-repeat."
+    },
+    "descriptive_hook_diff_le_max_floor": {
+     "registered": false,
+     "replaces_the_verdict": false,
+     "what": "is the with-hook difference no larger than the largest of the K no-hook-vs-no-hook differences of the same state? Descriptive only: it does not enter, soften or override the P1' pass/fail above, which is the registered 1e-6 on the loss.",
+     "k": 5,
+     "loss_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "per_item_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "caveat_at_k_1": "at --floor-k 1 the floor is a sample of size one and this comparison is a coin toss dressed as a bound"
+    },
+    "pass": true,
+    "pass_level": "loss"
+   },
+   "P2prime_the_instrument_sees_something": {
+    "what": "(i) the per-item vectors over the input cell types differ between items; (ii) the 65-vector is not constant",
+    "threshold_source": "the measured floor (README Sec 6); NEVER the data being judged",
+    "threshold_rule": "threshold for P2' = 10 x the measured floor of README Sec 6, taken on the SAME reduction path and the SAME determinism mode as the statistic it judges. A computation, not a judgement.",
+    "threshold_rule_declared": "2026-09-20",
+    "threshold_rule_multiplier": 10,
+    "threshold_rule_applied_by": "--floor-summarize, which writes the products into rowB_floor[_det].json; this block keeps its nulls until that file exists",
+    "i_input_type_vectors_differ_between_items": {
+     "input_type_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "n_item_pairs": 120,
+     "min_pairwise_max_abs_diff": "0.0005306690478576181",
+     "max_pairwise_max_abs_diff": "0.6641502977998271",
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    },
+    "ii_the_65_vector_is_not_constant": {
+     "population_sd_over_types": "12.128558088601517",
+     "range_over_types": "62.59857935999567",
+     "n_distinct_values": 65,
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    }
+   }
+  },
+  "('C:\\\\Users\\\\mikha\\\\Documents\\\\dpc-research\\\\connectome-seed-data\\\\results\\\\flow\\\\9991\\\\903', 71)": {
+   "P0_evaluation_without_recording_reproduces_the_stored_value": {
+    "what": "the same evaluation with NO hook registered, against the val_loss stored inside the checkpoint file",
+    "tolerance": 0.001,
+    "tolerance_source": "results/night2/diagnostics/ablation/README.md Sec 5 (P0)",
+    "stored_checkpoint_val_loss": "1163.376554965973",
+    "per_item_mean_without_hook": "1163.376552581787",
+    "rung_hook_path_value": "1163.376552581787",
+    "abs_diff_per_item_mean_minus_stored": "2.384185791015625e-06",
+    "abs_diff_hook_path_minus_stored": "2.384185791015625e-06",
+    "pass": true
+   },
+   "P1prime_the_recording_hook_does_not_change_the_loss": {
+    "what": "the loss with the recording hook registered, against P0. The criterion is ON THE LOSS -- the aggregate the rung reports -- and the per-item figures are recorded beside it, at their own separately named level.",
+    "tolerance": 1e-06,
+    "tolerance_status": "REGISTERED and NOT amended on 2026-09-20; the verdicts it produced on the first run stand",
+    "per_item_mean_with_recorder": "1163.376552581787",
+    "abs_diff": "0.0",
+    "abs_diff_level": "loss (the per-item mean); this is the level `pass` is taken at",
+    "abs_diff_loss_nohook_vs_nohook": "0.0",
+    "abs_diff_loss_nohook_vs_nohook_what": "the floor AT THE JUDGED LEVEL: the largest loss-level difference among the K no-hook repeats of the same state (A2, Johnny; confirmed by Ark and Zcode)",
+    "bitwise_identical_per_item": true,
+    "per_item_max_abs_diff": "0.0",
+    "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": "0.0",
+    "per_item_max_abs_diff_in_float32_ulps": "0.0",
+    "ulps_level": "the ULP figure above is the PER-ITEM level; the loss-level difference is a different and larger number of ULPs and is not the same statistic",
+    "abs_diff_loss_in_float32_ulps": "0.0",
+    "floor_nohook_vs_nohook": {
+     "k": 5,
+     "n_no_hook_evaluations": 6,
+     "what": "the same state, the same code path, no hook at all, evaluated K+1 times in ONE process; each repeat differenced against the first (P0's reading)",
+     "registered": false,
+     "differences_per_item_max": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "differences_loss": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "max_difference_per_item_max": "0.0",
+     "max_difference_loss": "0.0",
+     "all_bitwise_identical": true,
+     "note": "a within-process floor. The across-process floor of README Sec 6 is a different and larger quantity and is measured by --floor-repeat."
+    },
+    "descriptive_hook_diff_le_max_floor": {
+     "registered": false,
+     "replaces_the_verdict": false,
+     "what": "is the with-hook difference no larger than the largest of the K no-hook-vs-no-hook differences of the same state? Descriptive only: it does not enter, soften or override the P1' pass/fail above, which is the registered 1e-6 on the loss.",
+     "k": 5,
+     "loss_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "per_item_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "caveat_at_k_1": "at --floor-k 1 the floor is a sample of size one and this comparison is a coin toss dressed as a bound"
+    },
+    "pass": true,
+    "pass_level": "loss"
+   },
+   "P2prime_the_instrument_sees_something": {
+    "what": "(i) the per-item vectors over the input cell types differ between items; (ii) the 65-vector is not constant",
+    "threshold_source": "the measured floor (README Sec 6); NEVER the data being judged",
+    "threshold_rule": "threshold for P2' = 10 x the measured floor of README Sec 6, taken on the SAME reduction path and the SAME determinism mode as the statistic it judges. A computation, not a judgement.",
+    "threshold_rule_declared": "2026-09-20",
+    "threshold_rule_multiplier": 10,
+    "threshold_rule_applied_by": "--floor-summarize, which writes the products into rowB_floor[_det].json; this block keeps its nulls until that file exists",
+    "i_input_type_vectors_differ_between_items": {
+     "input_type_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "n_item_pairs": 120,
+     "min_pairwise_max_abs_diff": "0.0024543030991576176",
+     "max_pairwise_max_abs_diff": "0.6585941519958952",
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    },
+    "ii_the_65_vector_is_not_constant": {
+     "population_sd_over_types": "1.3338477508757494",
+     "range_over_types": "7.228528734179751",
+     "n_distinct_values": 65,
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    }
+   }
+  },
+  "('C:\\\\Users\\\\mikha\\\\Documents\\\\dpc-research\\\\connectome-seed-data\\\\results\\\\flow\\\\9991\\\\004', 0)": {
+   "P0_evaluation_without_recording_reproduces_the_stored_value": {
+    "what": "the same evaluation with NO hook registered, against the val_loss stored inside the checkpoint file",
+    "tolerance": 0.001,
+    "tolerance_source": "results/night2/diagnostics/ablation/README.md Sec 5 (P0)",
+    "stored_checkpoint_val_loss": "1212.5379438400269",
+    "per_item_mean_without_hook": "1212.5379438400269",
+    "rung_hook_path_value": "1212.5379438400269",
+    "abs_diff_per_item_mean_minus_stored": "0.0",
+    "abs_diff_hook_path_minus_stored": "0.0",
+    "pass": true
+   },
+   "P1prime_the_recording_hook_does_not_change_the_loss": {
+    "what": "the loss with the recording hook registered, against P0. The criterion is ON THE LOSS -- the aggregate the rung reports -- and the per-item figures are recorded beside it, at their own separately named level.",
+    "tolerance": 1e-06,
+    "tolerance_status": "REGISTERED and NOT amended on 2026-09-20; the verdicts it produced on the first run stand",
+    "per_item_mean_with_recorder": "1212.5379438400269",
+    "abs_diff": "0.0",
+    "abs_diff_level": "loss (the per-item mean); this is the level `pass` is taken at",
+    "abs_diff_loss_nohook_vs_nohook": "0.0",
+    "abs_diff_loss_nohook_vs_nohook_what": "the floor AT THE JUDGED LEVEL: the largest loss-level difference among the K no-hook repeats of the same state (A2, Johnny; confirmed by Ark and Zcode)",
+    "bitwise_identical_per_item": true,
+    "per_item_max_abs_diff": "0.0",
+    "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": "0.0",
+    "per_item_max_abs_diff_in_float32_ulps": "0.0",
+    "ulps_level": "the ULP figure above is the PER-ITEM level; the loss-level difference is a different and larger number of ULPs and is not the same statistic",
+    "abs_diff_loss_in_float32_ulps": "0.0",
+    "floor_nohook_vs_nohook": {
+     "k": 5,
+     "n_no_hook_evaluations": 6,
+     "what": "the same state, the same code path, no hook at all, evaluated K+1 times in ONE process; each repeat differenced against the first (P0's reading)",
+     "registered": false,
+     "differences_per_item_max": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "differences_loss": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "max_difference_per_item_max": "0.0",
+     "max_difference_loss": "0.0",
+     "all_bitwise_identical": true,
+     "note": "a within-process floor. The across-process floor of README Sec 6 is a different and larger quantity and is measured by --floor-repeat."
+    },
+    "descriptive_hook_diff_le_max_floor": {
+     "registered": false,
+     "replaces_the_verdict": false,
+     "what": "is the with-hook difference no larger than the largest of the K no-hook-vs-no-hook differences of the same state? Descriptive only: it does not enter, soften or override the P1' pass/fail above, which is the registered 1e-6 on the loss.",
+     "k": 5,
+     "loss_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "per_item_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "caveat_at_k_1": "at --floor-k 1 the floor is a sample of size one and this comparison is a coin toss dressed as a bound"
+    },
+    "pass": true,
+    "pass_level": "loss"
+   },
+   "P2prime_the_instrument_sees_something": {
+    "what": "(i) the per-item vectors over the input cell types differ between items; (ii) the 65-vector is not constant",
+    "threshold_source": "the measured floor (README Sec 6); NEVER the data being judged",
+    "threshold_rule": "threshold for P2' = 10 x the measured floor of README Sec 6, taken on the SAME reduction path and the SAME determinism mode as the statistic it judges. A computation, not a judgement.",
+    "threshold_rule_declared": "2026-09-20",
+    "threshold_rule_multiplier": 10,
+    "threshold_rule_applied_by": "--floor-summarize, which writes the products into rowB_floor[_det].json; this block keeps its nulls until that file exists",
+    "i_input_type_vectors_differ_between_items": {
+     "input_type_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "n_item_pairs": 120,
+     "min_pairwise_max_abs_diff": "0.00042151549776769937",
+     "max_pairwise_max_abs_diff": "0.6217472828976327",
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    },
+    "ii_the_65_vector_is_not_constant": {
+     "population_sd_over_types": "0.2024366735041516",
+     "range_over_types": "1.0370448199498639",
+     "n_distinct_values": 65,
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    }
+   }
+  },
+  "('C:\\\\Users\\\\mikha\\\\Documents\\\\dpc-research\\\\connectome-seed-data\\\\results\\\\flow\\\\9991\\\\004', 8)": {
+   "P0_evaluation_without_recording_reproduces_the_stored_value": {
+    "what": "the same evaluation with NO hook registered, against the val_loss stored inside the checkpoint file",
+    "tolerance": 0.001,
+    "tolerance_source": "results/night2/diagnostics/ablation/README.md Sec 5 (P0)",
+    "stored_checkpoint_val_loss": "1203.28493309021",
+    "per_item_mean_without_hook": "1203.2849316596985",
+    "rung_hook_path_value": "1203.2849316596985",
+    "abs_diff_per_item_mean_minus_stored": "1.430511474609375e-06",
+    "abs_diff_hook_path_minus_stored": "1.430511474609375e-06",
+    "pass": true
+   },
+   "P1prime_the_recording_hook_does_not_change_the_loss": {
+    "what": "the loss with the recording hook registered, against P0. The criterion is ON THE LOSS -- the aggregate the rung reports -- and the per-item figures are recorded beside it, at their own separately named level.",
+    "tolerance": 1e-06,
+    "tolerance_status": "REGISTERED and NOT amended on 2026-09-20; the verdicts it produced on the first run stand",
+    "per_item_mean_with_recorder": "1203.2849316596985",
+    "abs_diff": "0.0",
+    "abs_diff_level": "loss (the per-item mean); this is the level `pass` is taken at",
+    "abs_diff_loss_nohook_vs_nohook": "0.0",
+    "abs_diff_loss_nohook_vs_nohook_what": "the floor AT THE JUDGED LEVEL: the largest loss-level difference among the K no-hook repeats of the same state (A2, Johnny; confirmed by Ark and Zcode)",
+    "bitwise_identical_per_item": true,
+    "per_item_max_abs_diff": "0.0",
+    "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": "0.0",
+    "per_item_max_abs_diff_in_float32_ulps": "0.0",
+    "ulps_level": "the ULP figure above is the PER-ITEM level; the loss-level difference is a different and larger number of ULPs and is not the same statistic",
+    "abs_diff_loss_in_float32_ulps": "0.0",
+    "floor_nohook_vs_nohook": {
+     "k": 5,
+     "n_no_hook_evaluations": 6,
+     "what": "the same state, the same code path, no hook at all, evaluated K+1 times in ONE process; each repeat differenced against the first (P0's reading)",
+     "registered": false,
+     "differences_per_item_max": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "differences_loss": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "max_difference_per_item_max": "0.0",
+     "max_difference_loss": "0.0",
+     "all_bitwise_identical": true,
+     "note": "a within-process floor. The across-process floor of README Sec 6 is a different and larger quantity and is measured by --floor-repeat."
+    },
+    "descriptive_hook_diff_le_max_floor": {
+     "registered": false,
+     "replaces_the_verdict": false,
+     "what": "is the with-hook difference no larger than the largest of the K no-hook-vs-no-hook differences of the same state? Descriptive only: it does not enter, soften or override the P1' pass/fail above, which is the registered 1e-6 on the loss.",
+     "k": 5,
+     "loss_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "per_item_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "caveat_at_k_1": "at --floor-k 1 the floor is a sample of size one and this comparison is a coin toss dressed as a bound"
+    },
+    "pass": true,
+    "pass_level": "loss"
+   },
+   "P2prime_the_instrument_sees_something": {
+    "what": "(i) the per-item vectors over the input cell types differ between items; (ii) the 65-vector is not constant",
+    "threshold_source": "the measured floor (README Sec 6); NEVER the data being judged",
+    "threshold_rule": "threshold for P2' = 10 x the measured floor of README Sec 6, taken on the SAME reduction path and the SAME determinism mode as the statistic it judges. A computation, not a judgement.",
+    "threshold_rule_declared": "2026-09-20",
+    "threshold_rule_multiplier": 10,
+    "threshold_rule_applied_by": "--floor-summarize, which writes the products into rowB_floor[_det].json; this block keeps its nulls until that file exists",
+    "i_input_type_vectors_differ_between_items": {
+     "input_type_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "n_item_pairs": 120,
+     "min_pairwise_max_abs_diff": "0.00045527405055112435",
+     "max_pairwise_max_abs_diff": "0.6471101546461147",
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    },
+    "ii_the_65_vector_is_not_constant": {
+     "population_sd_over_types": "0.45872293623353283",
+     "range_over_types": "2.2589014090002317",
+     "n_distinct_values": 65,
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    }
+   }
+  },
+  "('C:\\\\Users\\\\mikha\\\\Documents\\\\dpc-research\\\\connectome-seed-data\\\\results\\\\flow\\\\9991\\\\004', 71)": {
+   "P0_evaluation_without_recording_reproduces_the_stored_value": {
+    "what": "the same evaluation with NO hook registered, against the val_loss stored inside the checkpoint file",
+    "tolerance": 0.001,
+    "tolerance_source": "results/night2/diagnostics/ablation/README.md Sec 5 (P0)",
+    "stored_checkpoint_val_loss": "1156.8284645080566",
+    "per_item_mean_without_hook": "1156.8284187316895",
+    "rung_hook_path_value": "1156.8284187316895",
+    "abs_diff_per_item_mean_minus_stored": "4.57763671875e-05",
+    "abs_diff_hook_path_minus_stored": "4.57763671875e-05",
+    "pass": true
+   },
+   "P1prime_the_recording_hook_does_not_change_the_loss": {
+    "what": "the loss with the recording hook registered, against P0. The criterion is ON THE LOSS -- the aggregate the rung reports -- and the per-item figures are recorded beside it, at their own separately named level.",
+    "tolerance": 1e-06,
+    "tolerance_status": "REGISTERED and NOT amended on 2026-09-20; the verdicts it produced on the first run stand",
+    "per_item_mean_with_recorder": "1156.8284187316895",
+    "abs_diff": "0.0",
+    "abs_diff_level": "loss (the per-item mean); this is the level `pass` is taken at",
+    "abs_diff_loss_nohook_vs_nohook": "0.0",
+    "abs_diff_loss_nohook_vs_nohook_what": "the floor AT THE JUDGED LEVEL: the largest loss-level difference among the K no-hook repeats of the same state (A2, Johnny; confirmed by Ark and Zcode)",
+    "bitwise_identical_per_item": true,
+    "per_item_max_abs_diff": "0.0",
+    "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": "0.0",
+    "per_item_max_abs_diff_in_float32_ulps": "0.0",
+    "ulps_level": "the ULP figure above is the PER-ITEM level; the loss-level difference is a different and larger number of ULPs and is not the same statistic",
+    "abs_diff_loss_in_float32_ulps": "0.0",
+    "floor_nohook_vs_nohook": {
+     "k": 5,
+     "n_no_hook_evaluations": 6,
+     "what": "the same state, the same code path, no hook at all, evaluated K+1 times in ONE process; each repeat differenced against the first (P0's reading)",
+     "registered": false,
+     "differences_per_item_max": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "differences_loss": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "max_difference_per_item_max": "0.0",
+     "max_difference_loss": "0.0",
+     "all_bitwise_identical": true,
+     "note": "a within-process floor. The across-process floor of README Sec 6 is a different and larger quantity and is measured by --floor-repeat."
+    },
+    "descriptive_hook_diff_le_max_floor": {
+     "registered": false,
+     "replaces_the_verdict": false,
+     "what": "is the with-hook difference no larger than the largest of the K no-hook-vs-no-hook differences of the same state? Descriptive only: it does not enter, soften or override the P1' pass/fail above, which is the registered 1e-6 on the loss.",
+     "k": 5,
+     "loss_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "per_item_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "caveat_at_k_1": "at --floor-k 1 the floor is a sample of size one and this comparison is a coin toss dressed as a bound"
+    },
+    "pass": true,
+    "pass_level": "loss"
+   },
+   "P2prime_the_instrument_sees_something": {
+    "what": "(i) the per-item vectors over the input cell types differ between items; (ii) the 65-vector is not constant",
+    "threshold_source": "the measured floor (README Sec 6); NEVER the data being judged",
+    "threshold_rule": "threshold for P2' = 10 x the measured floor of README Sec 6, taken on the SAME reduction path and the SAME determinism mode as the statistic it judges. A computation, not a judgement.",
+    "threshold_rule_declared": "2026-09-20",
+    "threshold_rule_multiplier": 10,
+    "threshold_rule_applied_by": "--floor-summarize, which writes the products into rowB_floor[_det].json; this block keeps its nulls until that file exists",
+    "i_input_type_vectors_differ_between_items": {
+     "input_type_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "n_item_pairs": 120,
+     "min_pairwise_max_abs_diff": "0.0005359297941200936",
+     "max_pairwise_max_abs_diff": "0.6471294800034013",
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    },
+    "ii_the_65_vector_is_not_constant": {
+     "population_sd_over_types": "5.759436308608037",
+     "range_over_types": "34.57404344397985",
+     "n_distinct_values": 65,
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    }
+   }
+  },
+  "('C:\\\\Users\\\\mikha\\\\Documents\\\\dpc-research\\\\connectome-seed-data\\\\results\\\\flow\\\\9991\\\\005', 0)": {
+   "P0_evaluation_without_recording_reproduces_the_stored_value": {
+    "what": "the same evaluation with NO hook registered, against the val_loss stored inside the checkpoint file",
+    "tolerance": 0.001,
+    "tolerance_source": "results/night2/diagnostics/ablation/README.md Sec 5 (P0)",
+    "stored_checkpoint_val_loss": "1212.5467114448547",
+    "per_item_mean_without_hook": "1212.5467114448547",
+    "rung_hook_path_value": "1212.5467114448547",
+    "abs_diff_per_item_mean_minus_stored": "0.0",
+    "abs_diff_hook_path_minus_stored": "0.0",
+    "pass": true
+   },
+   "P1prime_the_recording_hook_does_not_change_the_loss": {
+    "what": "the loss with the recording hook registered, against P0. The criterion is ON THE LOSS -- the aggregate the rung reports -- and the per-item figures are recorded beside it, at their own separately named level.",
+    "tolerance": 1e-06,
+    "tolerance_status": "REGISTERED and NOT amended on 2026-09-20; the verdicts it produced on the first run stand",
+    "per_item_mean_with_recorder": "1212.5467114448547",
+    "abs_diff": "0.0",
+    "abs_diff_level": "loss (the per-item mean); this is the level `pass` is taken at",
+    "abs_diff_loss_nohook_vs_nohook": "0.0",
+    "abs_diff_loss_nohook_vs_nohook_what": "the floor AT THE JUDGED LEVEL: the largest loss-level difference among the K no-hook repeats of the same state (A2, Johnny; confirmed by Ark and Zcode)",
+    "bitwise_identical_per_item": true,
+    "per_item_max_abs_diff": "0.0",
+    "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": "0.0",
+    "per_item_max_abs_diff_in_float32_ulps": "0.0",
+    "ulps_level": "the ULP figure above is the PER-ITEM level; the loss-level difference is a different and larger number of ULPs and is not the same statistic",
+    "abs_diff_loss_in_float32_ulps": "0.0",
+    "floor_nohook_vs_nohook": {
+     "k": 5,
+     "n_no_hook_evaluations": 6,
+     "what": "the same state, the same code path, no hook at all, evaluated K+1 times in ONE process; each repeat differenced against the first (P0's reading)",
+     "registered": false,
+     "differences_per_item_max": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "differences_loss": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "max_difference_per_item_max": "0.0",
+     "max_difference_loss": "0.0",
+     "all_bitwise_identical": true,
+     "note": "a within-process floor. The across-process floor of README Sec 6 is a different and larger quantity and is measured by --floor-repeat."
+    },
+    "descriptive_hook_diff_le_max_floor": {
+     "registered": false,
+     "replaces_the_verdict": false,
+     "what": "is the with-hook difference no larger than the largest of the K no-hook-vs-no-hook differences of the same state? Descriptive only: it does not enter, soften or override the P1' pass/fail above, which is the registered 1e-6 on the loss.",
+     "k": 5,
+     "loss_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "per_item_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "caveat_at_k_1": "at --floor-k 1 the floor is a sample of size one and this comparison is a coin toss dressed as a bound"
+    },
+    "pass": true,
+    "pass_level": "loss"
+   },
+   "P2prime_the_instrument_sees_something": {
+    "what": "(i) the per-item vectors over the input cell types differ between items; (ii) the 65-vector is not constant",
+    "threshold_source": "the measured floor (README Sec 6); NEVER the data being judged",
+    "threshold_rule": "threshold for P2' = 10 x the measured floor of README Sec 6, taken on the SAME reduction path and the SAME determinism mode as the statistic it judges. A computation, not a judgement.",
+    "threshold_rule_declared": "2026-09-20",
+    "threshold_rule_multiplier": 10,
+    "threshold_rule_applied_by": "--floor-summarize, which writes the products into rowB_floor[_det].json; this block keeps its nulls until that file exists",
+    "i_input_type_vectors_differ_between_items": {
+     "input_type_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "n_item_pairs": 120,
+     "min_pairwise_max_abs_diff": "0.0004215149108148797",
+     "max_pairwise_max_abs_diff": "0.6217473109225627",
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    },
+    "ii_the_65_vector_is_not_constant": {
+     "population_sd_over_types": "0.20487065202034888",
+     "range_over_types": "1.0132775630129904",
+     "n_distinct_values": 65,
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    }
+   }
+  },
+  "('C:\\\\Users\\\\mikha\\\\Documents\\\\dpc-research\\\\connectome-seed-data\\\\results\\\\flow\\\\9991\\\\005', 8)": {
+   "P0_evaluation_without_recording_reproduces_the_stored_value": {
+    "what": "the same evaluation with NO hook registered, against the val_loss stored inside the checkpoint file",
+    "tolerance": 0.001,
+    "tolerance_source": "results/night2/diagnostics/ablation/README.md Sec 5 (P0)",
+    "stored_checkpoint_val_loss": "1213.5255398750305",
+    "per_item_mean_without_hook": "1213.5255398750305",
+    "rung_hook_path_value": "1213.5255398750305",
+    "abs_diff_per_item_mean_minus_stored": "0.0",
+    "abs_diff_hook_path_minus_stored": "0.0",
+    "pass": true
+   },
+   "P1prime_the_recording_hook_does_not_change_the_loss": {
+    "what": "the loss with the recording hook registered, against P0. The criterion is ON THE LOSS -- the aggregate the rung reports -- and the per-item figures are recorded beside it, at their own separately named level.",
+    "tolerance": 1e-06,
+    "tolerance_status": "REGISTERED and NOT amended on 2026-09-20; the verdicts it produced on the first run stand",
+    "per_item_mean_with_recorder": "1213.5255398750305",
+    "abs_diff": "0.0",
+    "abs_diff_level": "loss (the per-item mean); this is the level `pass` is taken at",
+    "abs_diff_loss_nohook_vs_nohook": "0.0",
+    "abs_diff_loss_nohook_vs_nohook_what": "the floor AT THE JUDGED LEVEL: the largest loss-level difference among the K no-hook repeats of the same state (A2, Johnny; confirmed by Ark and Zcode)",
+    "bitwise_identical_per_item": true,
+    "per_item_max_abs_diff": "0.0",
+    "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": "0.0",
+    "per_item_max_abs_diff_in_float32_ulps": "0.0",
+    "ulps_level": "the ULP figure above is the PER-ITEM level; the loss-level difference is a different and larger number of ULPs and is not the same statistic",
+    "abs_diff_loss_in_float32_ulps": "0.0",
+    "floor_nohook_vs_nohook": {
+     "k": 5,
+     "n_no_hook_evaluations": 6,
+     "what": "the same state, the same code path, no hook at all, evaluated K+1 times in ONE process; each repeat differenced against the first (P0's reading)",
+     "registered": false,
+     "differences_per_item_max": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "differences_loss": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "max_difference_per_item_max": "0.0",
+     "max_difference_loss": "0.0",
+     "all_bitwise_identical": true,
+     "note": "a within-process floor. The across-process floor of README Sec 6 is a different and larger quantity and is measured by --floor-repeat."
+    },
+    "descriptive_hook_diff_le_max_floor": {
+     "registered": false,
+     "replaces_the_verdict": false,
+     "what": "is the with-hook difference no larger than the largest of the K no-hook-vs-no-hook differences of the same state? Descriptive only: it does not enter, soften or override the P1' pass/fail above, which is the registered 1e-6 on the loss.",
+     "k": 5,
+     "loss_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "per_item_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "caveat_at_k_1": "at --floor-k 1 the floor is a sample of size one and this comparison is a coin toss dressed as a bound"
+    },
+    "pass": true,
+    "pass_level": "loss"
+   },
+   "P2prime_the_instrument_sees_something": {
+    "what": "(i) the per-item vectors over the input cell types differ between items; (ii) the 65-vector is not constant",
+    "threshold_source": "the measured floor (README Sec 6); NEVER the data being judged",
+    "threshold_rule": "threshold for P2' = 10 x the measured floor of README Sec 6, taken on the SAME reduction path and the SAME determinism mode as the statistic it judges. A computation, not a judgement.",
+    "threshold_rule_declared": "2026-09-20",
+    "threshold_rule_multiplier": 10,
+    "threshold_rule_applied_by": "--floor-summarize, which writes the products into rowB_floor[_det].json; this block keeps its nulls until that file exists",
+    "i_input_type_vectors_differ_between_items": {
+     "input_type_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "n_item_pairs": 120,
+     "min_pairwise_max_abs_diff": "0.0005043276966690824",
+     "max_pairwise_max_abs_diff": "0.6467076363122077",
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    },
+    "ii_the_65_vector_is_not_constant": {
+     "population_sd_over_types": "0.4959280779680409",
+     "range_over_types": "2.9178410343609373",
+     "n_distinct_values": 65,
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    }
+   }
+  },
+  "('C:\\\\Users\\\\mikha\\\\Documents\\\\dpc-research\\\\connectome-seed-data\\\\results\\\\flow\\\\9991\\\\005', 71)": {
+   "P0_evaluation_without_recording_reproduces_the_stored_value": {
+    "what": "the same evaluation with NO hook registered, against the val_loss stored inside the checkpoint file",
+    "tolerance": 0.001,
+    "tolerance_source": "results/night2/diagnostics/ablation/README.md Sec 5 (P0)",
+    "stored_checkpoint_val_loss": "1156.3865871429443",
+    "per_item_mean_without_hook": "1156.3865718841553",
+    "rung_hook_path_value": "1156.3865718841553",
+    "abs_diff_per_item_mean_minus_stored": "1.52587890625e-05",
+    "abs_diff_hook_path_minus_stored": "1.52587890625e-05",
+    "pass": true
+   },
+   "P1prime_the_recording_hook_does_not_change_the_loss": {
+    "what": "the loss with the recording hook registered, against P0. The criterion is ON THE LOSS -- the aggregate the rung reports -- and the per-item figures are recorded beside it, at their own separately named level.",
+    "tolerance": 1e-06,
+    "tolerance_status": "REGISTERED and NOT amended on 2026-09-20; the verdicts it produced on the first run stand",
+    "per_item_mean_with_recorder": "1156.3865718841553",
+    "abs_diff": "0.0",
+    "abs_diff_level": "loss (the per-item mean); this is the level `pass` is taken at",
+    "abs_diff_loss_nohook_vs_nohook": "0.0",
+    "abs_diff_loss_nohook_vs_nohook_what": "the floor AT THE JUDGED LEVEL: the largest loss-level difference among the K no-hook repeats of the same state (A2, Johnny; confirmed by Ark and Zcode)",
+    "bitwise_identical_per_item": true,
+    "per_item_max_abs_diff": "0.0",
+    "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": "0.0",
+    "per_item_max_abs_diff_in_float32_ulps": "0.0",
+    "ulps_level": "the ULP figure above is the PER-ITEM level; the loss-level difference is a different and larger number of ULPs and is not the same statistic",
+    "abs_diff_loss_in_float32_ulps": "0.0",
+    "floor_nohook_vs_nohook": {
+     "k": 5,
+     "n_no_hook_evaluations": 6,
+     "what": "the same state, the same code path, no hook at all, evaluated K+1 times in ONE process; each repeat differenced against the first (P0's reading)",
+     "registered": false,
+     "differences_per_item_max": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "differences_loss": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "max_difference_per_item_max": "0.0",
+     "max_difference_loss": "0.0",
+     "all_bitwise_identical": true,
+     "note": "a within-process floor. The across-process floor of README Sec 6 is a different and larger quantity and is measured by --floor-repeat."
+    },
+    "descriptive_hook_diff_le_max_floor": {
+     "registered": false,
+     "replaces_the_verdict": false,
+     "what": "is the with-hook difference no larger than the largest of the K no-hook-vs-no-hook differences of the same state? Descriptive only: it does not enter, soften or override the P1' pass/fail above, which is the registered 1e-6 on the loss.",
+     "k": 5,
+     "loss_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "per_item_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "caveat_at_k_1": "at --floor-k 1 the floor is a sample of size one and this comparison is a coin toss dressed as a bound"
+    },
+    "pass": true,
+    "pass_level": "loss"
+   },
+   "P2prime_the_instrument_sees_something": {
+    "what": "(i) the per-item vectors over the input cell types differ between items; (ii) the 65-vector is not constant",
+    "threshold_source": "the measured floor (README Sec 6); NEVER the data being judged",
+    "threshold_rule": "threshold for P2' = 10 x the measured floor of README Sec 6, taken on the SAME reduction path and the SAME determinism mode as the statistic it judges. A computation, not a judgement.",
+    "threshold_rule_declared": "2026-09-20",
+    "threshold_rule_multiplier": 10,
+    "threshold_rule_applied_by": "--floor-summarize, which writes the products into rowB_floor[_det].json; this block keeps its nulls until that file exists",
+    "i_input_type_vectors_differ_between_items": {
+     "input_type_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "n_item_pairs": 120,
+     "min_pairwise_max_abs_diff": "0.001417763334868205",
+     "max_pairwise_max_abs_diff": "0.6471294663774962",
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    },
+    "ii_the_65_vector_is_not_constant": {
+     "population_sd_over_types": "3.5702882117356944",
+     "range_over_types": "27.20339802356008",
+     "n_distinct_values": 65,
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    }
+   }
+  },
+  "('C:\\\\Users\\\\mikha\\\\Documents\\\\dpc-research\\\\connectome-seed-data\\\\results\\\\flow\\\\9992\\\\000', 0)": {
+   "P0_evaluation_without_recording_reproduces_the_stored_value": {
+    "what": "the same evaluation with NO hook registered, against the val_loss stored inside the checkpoint file",
+    "tolerance": 0.001,
+    "tolerance_source": "results/night2/diagnostics/ablation/README.md Sec 5 (P0)",
+    "stored_checkpoint_val_loss": "1212.5555891990662",
+    "per_item_mean_without_hook": "1212.5555891990662",
+    "rung_hook_path_value": "1212.5555891990662",
+    "abs_diff_per_item_mean_minus_stored": "0.0",
+    "abs_diff_hook_path_minus_stored": "0.0",
+    "pass": true
+   },
+   "P1prime_the_recording_hook_does_not_change_the_loss": {
+    "what": "the loss with the recording hook registered, against P0. The criterion is ON THE LOSS -- the aggregate the rung reports -- and the per-item figures are recorded beside it, at their own separately named level.",
+    "tolerance": 1e-06,
+    "tolerance_status": "REGISTERED and NOT amended on 2026-09-20; the verdicts it produced on the first run stand",
+    "per_item_mean_with_recorder": "1212.5555891990662",
+    "abs_diff": "0.0",
+    "abs_diff_level": "loss (the per-item mean); this is the level `pass` is taken at",
+    "abs_diff_loss_nohook_vs_nohook": "0.0",
+    "abs_diff_loss_nohook_vs_nohook_what": "the floor AT THE JUDGED LEVEL: the largest loss-level difference among the K no-hook repeats of the same state (A2, Johnny; confirmed by Ark and Zcode)",
+    "bitwise_identical_per_item": true,
+    "per_item_max_abs_diff": "0.0",
+    "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": "0.0",
+    "per_item_max_abs_diff_in_float32_ulps": "0.0",
+    "ulps_level": "the ULP figure above is the PER-ITEM level; the loss-level difference is a different and larger number of ULPs and is not the same statistic",
+    "abs_diff_loss_in_float32_ulps": "0.0",
+    "floor_nohook_vs_nohook": {
+     "k": 5,
+     "n_no_hook_evaluations": 6,
+     "what": "the same state, the same code path, no hook at all, evaluated K+1 times in ONE process; each repeat differenced against the first (P0's reading)",
+     "registered": false,
+     "differences_per_item_max": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "differences_loss": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "max_difference_per_item_max": "0.0",
+     "max_difference_loss": "0.0",
+     "all_bitwise_identical": true,
+     "note": "a within-process floor. The across-process floor of README Sec 6 is a different and larger quantity and is measured by --floor-repeat."
+    },
+    "descriptive_hook_diff_le_max_floor": {
+     "registered": false,
+     "replaces_the_verdict": false,
+     "what": "is the with-hook difference no larger than the largest of the K no-hook-vs-no-hook differences of the same state? Descriptive only: it does not enter, soften or override the P1' pass/fail above, which is the registered 1e-6 on the loss.",
+     "k": 5,
+     "loss_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "per_item_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "caveat_at_k_1": "at --floor-k 1 the floor is a sample of size one and this comparison is a coin toss dressed as a bound"
+    },
+    "pass": true,
+    "pass_level": "loss"
+   },
+   "P2prime_the_instrument_sees_something": {
+    "what": "(i) the per-item vectors over the input cell types differ between items; (ii) the 65-vector is not constant",
+    "threshold_source": "the measured floor (README Sec 6); NEVER the data being judged",
+    "threshold_rule": "threshold for P2' = 10 x the measured floor of README Sec 6, taken on the SAME reduction path and the SAME determinism mode as the statistic it judges. A computation, not a judgement.",
+    "threshold_rule_declared": "2026-09-20",
+    "threshold_rule_multiplier": 10,
+    "threshold_rule_applied_by": "--floor-summarize, which writes the products into rowB_floor[_det].json; this block keeps its nulls until that file exists",
+    "i_input_type_vectors_differ_between_items": {
+     "input_type_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "n_item_pairs": 120,
+     "min_pairwise_max_abs_diff": "0.00042151572717563646",
+     "max_pairwise_max_abs_diff": "0.62174730934151",
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    },
+    "ii_the_65_vector_is_not_constant": {
+     "population_sd_over_types": "0.1855666804478323",
+     "range_over_types": "0.9229317210873992",
+     "n_distinct_values": 65,
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    }
+   }
+  },
+  "('C:\\\\Users\\\\mikha\\\\Documents\\\\dpc-research\\\\connectome-seed-data\\\\results\\\\flow\\\\9992\\\\000', 8)": {
+   "P0_evaluation_without_recording_reproduces_the_stored_value": {
+    "what": "the same evaluation with NO hook registered, against the val_loss stored inside the checkpoint file",
+    "tolerance": 0.001,
+    "tolerance_source": "results/night2/diagnostics/ablation/README.md Sec 5 (P0)",
+    "stored_checkpoint_val_loss": "1191.1639351844788",
+    "per_item_mean_without_hook": "1191.1639294624329",
+    "rung_hook_path_value": "1191.1639294624329",
+    "abs_diff_per_item_mean_minus_stored": "5.7220458984375e-06",
+    "abs_diff_hook_path_minus_stored": "5.7220458984375e-06",
+    "pass": true
+   },
+   "P1prime_the_recording_hook_does_not_change_the_loss": {
+    "what": "the loss with the recording hook registered, against P0. The criterion is ON THE LOSS -- the aggregate the rung reports -- and the per-item figures are recorded beside it, at their own separately named level.",
+    "tolerance": 1e-06,
+    "tolerance_status": "REGISTERED and NOT amended on 2026-09-20; the verdicts it produced on the first run stand",
+    "per_item_mean_with_recorder": "1191.1639294624329",
+    "abs_diff": "0.0",
+    "abs_diff_level": "loss (the per-item mean); this is the level `pass` is taken at",
+    "abs_diff_loss_nohook_vs_nohook": "0.0",
+    "abs_diff_loss_nohook_vs_nohook_what": "the floor AT THE JUDGED LEVEL: the largest loss-level difference among the K no-hook repeats of the same state (A2, Johnny; confirmed by Ark and Zcode)",
+    "bitwise_identical_per_item": true,
+    "per_item_max_abs_diff": "0.0",
+    "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": "0.0",
+    "per_item_max_abs_diff_in_float32_ulps": "0.0",
+    "ulps_level": "the ULP figure above is the PER-ITEM level; the loss-level difference is a different and larger number of ULPs and is not the same statistic",
+    "abs_diff_loss_in_float32_ulps": "0.0",
+    "floor_nohook_vs_nohook": {
+     "k": 5,
+     "n_no_hook_evaluations": 6,
+     "what": "the same state, the same code path, no hook at all, evaluated K+1 times in ONE process; each repeat differenced against the first (P0's reading)",
+     "registered": false,
+     "differences_per_item_max": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "differences_loss": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "max_difference_per_item_max": "0.0",
+     "max_difference_loss": "0.0",
+     "all_bitwise_identical": true,
+     "note": "a within-process floor. The across-process floor of README Sec 6 is a different and larger quantity and is measured by --floor-repeat."
+    },
+    "descriptive_hook_diff_le_max_floor": {
+     "registered": false,
+     "replaces_the_verdict": false,
+     "what": "is the with-hook difference no larger than the largest of the K no-hook-vs-no-hook differences of the same state? Descriptive only: it does not enter, soften or override the P1' pass/fail above, which is the registered 1e-6 on the loss.",
+     "k": 5,
+     "loss_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "per_item_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "caveat_at_k_1": "at --floor-k 1 the floor is a sample of size one and this comparison is a coin toss dressed as a bound"
+    },
+    "pass": true,
+    "pass_level": "loss"
+   },
+   "P2prime_the_instrument_sees_something": {
+    "what": "(i) the per-item vectors over the input cell types differ between items; (ii) the 65-vector is not constant",
+    "threshold_source": "the measured floor (README Sec 6); NEVER the data being judged",
+    "threshold_rule": "threshold for P2' = 10 x the measured floor of README Sec 6, taken on the SAME reduction path and the SAME determinism mode as the statistic it judges. A computation, not a judgement.",
+    "threshold_rule_declared": "2026-09-20",
+    "threshold_rule_multiplier": 10,
+    "threshold_rule_applied_by": "--floor-summarize, which writes the products into rowB_floor[_det].json; this block keeps its nulls until that file exists",
+    "i_input_type_vectors_differ_between_items": {
+     "input_type_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "n_item_pairs": 120,
+     "min_pairwise_max_abs_diff": "0.0004881207080719152",
+     "max_pairwise_max_abs_diff": "0.6470972693764222",
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    },
+    "ii_the_65_vector_is_not_constant": {
+     "population_sd_over_types": "5.0760199509644",
+     "range_over_types": "30.67932976136092",
+     "n_distinct_values": 65,
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    }
+   }
+  },
+  "('C:\\\\Users\\\\mikha\\\\Documents\\\\dpc-research\\\\connectome-seed-data\\\\results\\\\flow\\\\9992\\\\000', 71)": {
+   "P0_evaluation_without_recording_reproduces_the_stored_value": {
+    "what": "the same evaluation with NO hook registered, against the val_loss stored inside the checkpoint file",
+    "tolerance": 0.001,
+    "tolerance_source": "results/night2/diagnostics/ablation/README.md Sec 5 (P0)",
+    "stored_checkpoint_val_loss": "1147.410159111023",
+    "per_item_mean_without_hook": "1147.4101357460022",
+    "rung_hook_path_value": "1147.4101357460022",
+    "abs_diff_per_item_mean_minus_stored": "2.3365020751953125e-05",
+    "abs_diff_hook_path_minus_stored": "2.3365020751953125e-05",
+    "pass": true
+   },
+   "P1prime_the_recording_hook_does_not_change_the_loss": {
+    "what": "the loss with the recording hook registered, against P0. The criterion is ON THE LOSS -- the aggregate the rung reports -- and the per-item figures are recorded beside it, at their own separately named level.",
+    "tolerance": 1e-06,
+    "tolerance_status": "REGISTERED and NOT amended on 2026-09-20; the verdicts it produced on the first run stand",
+    "per_item_mean_with_recorder": "1147.4101357460022",
+    "abs_diff": "0.0",
+    "abs_diff_level": "loss (the per-item mean); this is the level `pass` is taken at",
+    "abs_diff_loss_nohook_vs_nohook": "0.0",
+    "abs_diff_loss_nohook_vs_nohook_what": "the floor AT THE JUDGED LEVEL: the largest loss-level difference among the K no-hook repeats of the same state (A2, Johnny; confirmed by Ark and Zcode)",
+    "bitwise_identical_per_item": true,
+    "per_item_max_abs_diff": "0.0",
+    "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": "0.0",
+    "per_item_max_abs_diff_in_float32_ulps": "0.0",
+    "ulps_level": "the ULP figure above is the PER-ITEM level; the loss-level difference is a different and larger number of ULPs and is not the same statistic",
+    "abs_diff_loss_in_float32_ulps": "0.0",
+    "floor_nohook_vs_nohook": {
+     "k": 5,
+     "n_no_hook_evaluations": 6,
+     "what": "the same state, the same code path, no hook at all, evaluated K+1 times in ONE process; each repeat differenced against the first (P0's reading)",
+     "registered": false,
+     "differences_per_item_max": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "differences_loss": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "max_difference_per_item_max": "0.0",
+     "max_difference_loss": "0.0",
+     "all_bitwise_identical": true,
+     "note": "a within-process floor. The across-process floor of README Sec 6 is a different and larger quantity and is measured by --floor-repeat."
+    },
+    "descriptive_hook_diff_le_max_floor": {
+     "registered": false,
+     "replaces_the_verdict": false,
+     "what": "is the with-hook difference no larger than the largest of the K no-hook-vs-no-hook differences of the same state? Descriptive only: it does not enter, soften or override the P1' pass/fail above, which is the registered 1e-6 on the loss.",
+     "k": 5,
+     "loss_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "per_item_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "caveat_at_k_1": "at --floor-k 1 the floor is a sample of size one and this comparison is a coin toss dressed as a bound"
+    },
+    "pass": true,
+    "pass_level": "loss"
+   },
+   "P2prime_the_instrument_sees_something": {
+    "what": "(i) the per-item vectors over the input cell types differ between items; (ii) the 65-vector is not constant",
+    "threshold_source": "the measured floor (README Sec 6); NEVER the data being judged",
+    "threshold_rule": "threshold for P2' = 10 x the measured floor of README Sec 6, taken on the SAME reduction path and the SAME determinism mode as the statistic it judges. A computation, not a judgement.",
+    "threshold_rule_declared": "2026-09-20",
+    "threshold_rule_multiplier": 10,
+    "threshold_rule_applied_by": "--floor-summarize, which writes the products into rowB_floor[_det].json; this block keeps its nulls until that file exists",
+    "i_input_type_vectors_differ_between_items": {
+     "input_type_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "n_item_pairs": 120,
+     "min_pairwise_max_abs_diff": "0.0011376220880828236",
+     "max_pairwise_max_abs_diff": "0.7085922874506735",
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    },
+    "ii_the_65_vector_is_not_constant": {
+     "population_sd_over_types": "9.549578098596244",
+     "range_over_types": "61.47585523560934",
+     "n_distinct_values": 65,
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    }
+   }
+  },
+  "('C:\\\\Users\\\\mikha\\\\Documents\\\\dpc-research\\\\connectome-seed-data\\\\results\\\\flow\\\\9992\\\\003', 0)": {
+   "P0_evaluation_without_recording_reproduces_the_stored_value": {
+    "what": "the same evaluation with NO hook registered, against the val_loss stored inside the checkpoint file",
+    "tolerance": 0.001,
+    "tolerance_source": "results/night2/diagnostics/ablation/README.md Sec 5 (P0)",
+    "stored_checkpoint_val_loss": "1212.5497364997864",
+    "per_item_mean_without_hook": "1212.549735546112",
+    "rung_hook_path_value": "1212.549735546112",
+    "abs_diff_per_item_mean_minus_stored": "9.5367431640625e-07",
+    "abs_diff_hook_path_minus_stored": "9.5367431640625e-07",
+    "pass": true
+   },
+   "P1prime_the_recording_hook_does_not_change_the_loss": {
+    "what": "the loss with the recording hook registered, against P0. The criterion is ON THE LOSS -- the aggregate the rung reports -- and the per-item figures are recorded beside it, at their own separately named level.",
+    "tolerance": 1e-06,
+    "tolerance_status": "REGISTERED and NOT amended on 2026-09-20; the verdicts it produced on the first run stand",
+    "per_item_mean_with_recorder": "1212.549735546112",
+    "abs_diff": "0.0",
+    "abs_diff_level": "loss (the per-item mean); this is the level `pass` is taken at",
+    "abs_diff_loss_nohook_vs_nohook": "0.0",
+    "abs_diff_loss_nohook_vs_nohook_what": "the floor AT THE JUDGED LEVEL: the largest loss-level difference among the K no-hook repeats of the same state (A2, Johnny; confirmed by Ark and Zcode)",
+    "bitwise_identical_per_item": true,
+    "per_item_max_abs_diff": "0.0",
+    "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": "0.0",
+    "per_item_max_abs_diff_in_float32_ulps": "0.0",
+    "ulps_level": "the ULP figure above is the PER-ITEM level; the loss-level difference is a different and larger number of ULPs and is not the same statistic",
+    "abs_diff_loss_in_float32_ulps": "0.0",
+    "floor_nohook_vs_nohook": {
+     "k": 5,
+     "n_no_hook_evaluations": 6,
+     "what": "the same state, the same code path, no hook at all, evaluated K+1 times in ONE process; each repeat differenced against the first (P0's reading)",
+     "registered": false,
+     "differences_per_item_max": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "differences_loss": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "max_difference_per_item_max": "0.0",
+     "max_difference_loss": "0.0",
+     "all_bitwise_identical": true,
+     "note": "a within-process floor. The across-process floor of README Sec 6 is a different and larger quantity and is measured by --floor-repeat."
+    },
+    "descriptive_hook_diff_le_max_floor": {
+     "registered": false,
+     "replaces_the_verdict": false,
+     "what": "is the with-hook difference no larger than the largest of the K no-hook-vs-no-hook differences of the same state? Descriptive only: it does not enter, soften or override the P1' pass/fail above, which is the registered 1e-6 on the loss.",
+     "k": 5,
+     "loss_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "per_item_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "caveat_at_k_1": "at --floor-k 1 the floor is a sample of size one and this comparison is a coin toss dressed as a bound"
+    },
+    "pass": true,
+    "pass_level": "loss"
+   },
+   "P2prime_the_instrument_sees_something": {
+    "what": "(i) the per-item vectors over the input cell types differ between items; (ii) the 65-vector is not constant",
+    "threshold_source": "the measured floor (README Sec 6); NEVER the data being judged",
+    "threshold_rule": "threshold for P2' = 10 x the measured floor of README Sec 6, taken on the SAME reduction path and the SAME determinism mode as the statistic it judges. A computation, not a judgement.",
+    "threshold_rule_declared": "2026-09-20",
+    "threshold_rule_multiplier": 10,
+    "threshold_rule_applied_by": "--floor-summarize, which writes the products into rowB_floor[_det].json; this block keeps its nulls until that file exists",
+    "i_input_type_vectors_differ_between_items": {
+     "input_type_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "n_item_pairs": 120,
+     "min_pairwise_max_abs_diff": "0.0004215149852171418",
+     "max_pairwise_max_abs_diff": "0.62174731084816",
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    },
+    "ii_the_65_vector_is_not_constant": {
+     "population_sd_over_types": "0.19034860505059956",
+     "range_over_types": "0.924946695581904",
+     "n_distinct_values": 65,
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    }
+   }
+  },
+  "('C:\\\\Users\\\\mikha\\\\Documents\\\\dpc-research\\\\connectome-seed-data\\\\results\\\\flow\\\\9992\\\\003', 8)": {
+   "P0_evaluation_without_recording_reproduces_the_stored_value": {
+    "what": "the same evaluation with NO hook registered, against the val_loss stored inside the checkpoint file",
+    "tolerance": 0.001,
+    "tolerance_source": "results/night2/diagnostics/ablation/README.md Sec 5 (P0)",
+    "stored_checkpoint_val_loss": "1187.8080883026123",
+    "per_item_mean_without_hook": "1187.8080921173096",
+    "rung_hook_path_value": "1187.8080921173096",
+    "abs_diff_per_item_mean_minus_stored": "3.814697265625e-06",
+    "abs_diff_hook_path_minus_stored": "3.814697265625e-06",
+    "pass": true
+   },
+   "P1prime_the_recording_hook_does_not_change_the_loss": {
+    "what": "the loss with the recording hook registered, against P0. The criterion is ON THE LOSS -- the aggregate the rung reports -- and the per-item figures are recorded beside it, at their own separately named level.",
+    "tolerance": 1e-06,
+    "tolerance_status": "REGISTERED and NOT amended on 2026-09-20; the verdicts it produced on the first run stand",
+    "per_item_mean_with_recorder": "1187.8080921173096",
+    "abs_diff": "0.0",
+    "abs_diff_level": "loss (the per-item mean); this is the level `pass` is taken at",
+    "abs_diff_loss_nohook_vs_nohook": "0.0",
+    "abs_diff_loss_nohook_vs_nohook_what": "the floor AT THE JUDGED LEVEL: the largest loss-level difference among the K no-hook repeats of the same state (A2, Johnny; confirmed by Ark and Zcode)",
+    "bitwise_identical_per_item": true,
+    "per_item_max_abs_diff": "0.0",
+    "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": "0.0",
+    "per_item_max_abs_diff_in_float32_ulps": "0.0",
+    "ulps_level": "the ULP figure above is the PER-ITEM level; the loss-level difference is a different and larger number of ULPs and is not the same statistic",
+    "abs_diff_loss_in_float32_ulps": "0.0",
+    "floor_nohook_vs_nohook": {
+     "k": 5,
+     "n_no_hook_evaluations": 6,
+     "what": "the same state, the same code path, no hook at all, evaluated K+1 times in ONE process; each repeat differenced against the first (P0's reading)",
+     "registered": false,
+     "differences_per_item_max": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "differences_loss": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "max_difference_per_item_max": "0.0",
+     "max_difference_loss": "0.0",
+     "all_bitwise_identical": true,
+     "note": "a within-process floor. The across-process floor of README Sec 6 is a different and larger quantity and is measured by --floor-repeat."
+    },
+    "descriptive_hook_diff_le_max_floor": {
+     "registered": false,
+     "replaces_the_verdict": false,
+     "what": "is the with-hook difference no larger than the largest of the K no-hook-vs-no-hook differences of the same state? Descriptive only: it does not enter, soften or override the P1' pass/fail above, which is the registered 1e-6 on the loss.",
+     "k": 5,
+     "loss_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "per_item_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "caveat_at_k_1": "at --floor-k 1 the floor is a sample of size one and this comparison is a coin toss dressed as a bound"
+    },
+    "pass": true,
+    "pass_level": "loss"
+   },
+   "P2prime_the_instrument_sees_something": {
+    "what": "(i) the per-item vectors over the input cell types differ between items; (ii) the 65-vector is not constant",
+    "threshold_source": "the measured floor (README Sec 6); NEVER the data being judged",
+    "threshold_rule": "threshold for P2' = 10 x the measured floor of README Sec 6, taken on the SAME reduction path and the SAME determinism mode as the statistic it judges. A computation, not a judgement.",
+    "threshold_rule_declared": "2026-09-20",
+    "threshold_rule_multiplier": 10,
+    "threshold_rule_applied_by": "--floor-summarize, which writes the products into rowB_floor[_det].json; this block keeps its nulls until that file exists",
+    "i_input_type_vectors_differ_between_items": {
+     "input_type_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "n_item_pairs": 120,
+     "min_pairwise_max_abs_diff": "0.00048811434976070434",
+     "max_pairwise_max_abs_diff": "0.6563389540481707",
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    },
+    "ii_the_65_vector_is_not_constant": {
+     "population_sd_over_types": "13.743653618261018",
+     "range_over_types": "69.5330275955938",
+     "n_distinct_values": 65,
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    }
+   }
+  },
+  "('C:\\\\Users\\\\mikha\\\\Documents\\\\dpc-research\\\\connectome-seed-data\\\\results\\\\flow\\\\9992\\\\003', 71)": {
+   "P0_evaluation_without_recording_reproduces_the_stored_value": {
+    "what": "the same evaluation with NO hook registered, against the val_loss stored inside the checkpoint file",
+    "tolerance": 0.001,
+    "tolerance_source": "results/night2/diagnostics/ablation/README.md Sec 5 (P0)",
+    "stored_checkpoint_val_loss": "1158.8484101295471",
+    "per_item_mean_without_hook": "1158.8483996391296",
+    "rung_hook_path_value": "1158.8483996391296",
+    "abs_diff_per_item_mean_minus_stored": "1.049041748046875e-05",
+    "abs_diff_hook_path_minus_stored": "1.049041748046875e-05",
+    "pass": true
+   },
+   "P1prime_the_recording_hook_does_not_change_the_loss": {
+    "what": "the loss with the recording hook registered, against P0. The criterion is ON THE LOSS -- the aggregate the rung reports -- and the per-item figures are recorded beside it, at their own separately named level.",
+    "tolerance": 1e-06,
+    "tolerance_status": "REGISTERED and NOT amended on 2026-09-20; the verdicts it produced on the first run stand",
+    "per_item_mean_with_recorder": "1158.8483996391296",
+    "abs_diff": "0.0",
+    "abs_diff_level": "loss (the per-item mean); this is the level `pass` is taken at",
+    "abs_diff_loss_nohook_vs_nohook": "0.0",
+    "abs_diff_loss_nohook_vs_nohook_what": "the floor AT THE JUDGED LEVEL: the largest loss-level difference among the K no-hook repeats of the same state (A2, Johnny; confirmed by Ark and Zcode)",
+    "bitwise_identical_per_item": true,
+    "per_item_max_abs_diff": "0.0",
+    "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": "0.0",
+    "per_item_max_abs_diff_in_float32_ulps": "0.0",
+    "ulps_level": "the ULP figure above is the PER-ITEM level; the loss-level difference is a different and larger number of ULPs and is not the same statistic",
+    "abs_diff_loss_in_float32_ulps": "0.0",
+    "floor_nohook_vs_nohook": {
+     "k": 5,
+     "n_no_hook_evaluations": 6,
+     "what": "the same state, the same code path, no hook at all, evaluated K+1 times in ONE process; each repeat differenced against the first (P0's reading)",
+     "registered": false,
+     "differences_per_item_max": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "differences_loss": [
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0",
+      "0.0"
+     ],
+     "max_difference_per_item_max": "0.0",
+     "max_difference_loss": "0.0",
+     "all_bitwise_identical": true,
+     "note": "a within-process floor. The across-process floor of README Sec 6 is a different and larger quantity and is measured by --floor-repeat."
+    },
+    "descriptive_hook_diff_le_max_floor": {
+     "registered": false,
+     "replaces_the_verdict": false,
+     "what": "is the with-hook difference no larger than the largest of the K no-hook-vs-no-hook differences of the same state? Descriptive only: it does not enter, soften or override the P1' pass/fail above, which is the registered 1e-6 on the loss.",
+     "k": 5,
+     "loss_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "per_item_level": {
+      "hook_diff": "0.0",
+      "max_floor": "0.0",
+      "hook_diff_le_max_floor": true
+     },
+     "caveat_at_k_1": "at --floor-k 1 the floor is a sample of size one and this comparison is a coin toss dressed as a bound"
+    },
+    "pass": true,
+    "pass_level": "loss"
+   },
+   "P2prime_the_instrument_sees_something": {
+    "what": "(i) the per-item vectors over the input cell types differ between items; (ii) the 65-vector is not constant",
+    "threshold_source": "the measured floor (README Sec 6); NEVER the data being judged",
+    "threshold_rule": "threshold for P2' = 10 x the measured floor of README Sec 6, taken on the SAME reduction path and the SAME determinism mode as the statistic it judges. A computation, not a judgement.",
+    "threshold_rule_declared": "2026-09-20",
+    "threshold_rule_multiplier": 10,
+    "threshold_rule_applied_by": "--floor-summarize, which writes the products into rowB_floor[_det].json; this block keeps its nulls until that file exists",
+    "i_input_type_vectors_differ_between_items": {
+     "input_type_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "n_item_pairs": 120,
+     "min_pairwise_max_abs_diff": "0.007731140951332094",
+     "max_pairwise_max_abs_diff": "0.6478242007385159",
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    },
+    "ii_the_65_vector_is_not_constant": {
+     "population_sd_over_types": "6.65046987197988",
+     "range_over_types": "59.11900624131042",
+     "n_distinct_values": 65,
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    }
+   }
+  }
+ }
+}

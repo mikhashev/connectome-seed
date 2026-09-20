@@ -103,6 +103,14 @@ Excluded regardless of the scan, because they *are* the values or are untracked:
 which the first list did not cover (Zcode) — `tools/night/night5_*`, the repository history
 for 2026-09-18 and 2026-09-19, and the group chat from 2026-09-18 onward.
 
+Added 2026-09-20, on Mike's word: `atlas.html` at the repository root, and `tools/atlas/` with
+it. The page is a generated view of the whole project for its owner — every curve, every
+control, every verdict in one file — which makes it the densest leak in the working tree. It is
+ignored by git, so no scan of tracked files will ever list it, and a session working in this
+directory can still open it: that is why it is named here rather than left to the scan. The
+repository history for 2026-09-20 belongs to the same exclusion, for the reason the two days
+above do.
+
 **And a style template that is safe to copy.** The most natural model for a v2 registration is
 the v1 file, and it is one of the worst leaks in the repository: it carries every curve
 minimum and every iteration-12 value by name (Zcode). So the sighted side owes the blind

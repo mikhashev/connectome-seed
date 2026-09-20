@@ -1,0 +1,58 @@
+{
+  "_comment": "Per-netdir reading_rule_branch/reading_rule_note, mirroring the same-named columns added to penalised_quantity_by_checkpoint.csv. Classification is copied from PENALISED-QUANTITY-READING.md section 4, not recomputed. 2026-09-20, CC, requested by Johnny.",
+  "outlier_flag": {
+    "9992/003": "run 9992/003 (seed 3, third replicate, seed3-triple-prime) is an outlier on the central-cell activity axis (this reading, sections 3a/6/4) but NOT on held-out loss (results/night5/night_report_checkpoints.csv). Whoever opens the activity profiles next must NOT silently pool it as \"a twin like the others\" and must NOT silently drop it -- both choices must be stated before the profiles are opened."
+  },
+  "runs": {
+    "9991/000": {
+      "reading_rule_branch": "SMOOTH",
+      "reading_rule_note": "",
+      "source": "PENALISED-QUANTITY-READING.md section 4 (per-run branch table), read 2026-09-20 by CC; not reclassified"
+    },
+    "9991/900": {
+      "reading_rule_branch": "AMBIGUOUS",
+      "reading_rule_note": "jump +0.026, 0.28 of local step at the boundary; then 26/29 post-boundary checkpoints settle below its pre-150k floor, moving toward baseline -- a direction the DRIFT branch does not describe",
+      "source": "PENALISED-QUANTITY-READING.md section 4 (per-run branch table), read 2026-09-20 by CC; not reclassified"
+    },
+    "9992/000": {
+      "reading_rule_branch": "SMOOTH",
+      "reading_rule_note": "",
+      "source": "PENALISED-QUANTITY-READING.md section 4 (per-run branch table), read 2026-09-20 by CC; not reclassified"
+    },
+    "9991/001": {
+      "reading_rule_branch": "AMBIGUOUS",
+      "reading_rule_note": "jump +0.019, 0.13 of local step; only run with a sustained positive slope on both sides (+0.14/+0.11 per 10k) and +3.7% end vs firstA -- a slow rise crossing the boundary unchanged, not movement caused at 150,000",
+      "source": "PENALISED-QUANTITY-READING.md section 4 (per-run branch table), read 2026-09-20 by CC; not reclassified"
+    },
+    "9991/002": {
+      "reading_rule_branch": "AMBIGUOUS",
+      "reading_rule_note": "jump +0.012, 0.16 of local step; then 27/29 post-boundary checkpoints below its pre-150k floor, moving toward baseline",
+      "source": "PENALISED-QUANTITY-READING.md section 4 (per-run branch table), read 2026-09-20 by CC; not reclassified"
+    },
+    "9991/003": {
+      "reading_rule_branch": "SMOOTH",
+      "reading_rule_note": "",
+      "source": "PENALISED-QUANTITY-READING.md section 4 (per-run branch table), read 2026-09-20 by CC; not reclassified"
+    },
+    "9991/903": {
+      "reading_rule_branch": "AMBIGUOUS",
+      "reading_rule_note": "the only run whose jump (-0.166) exceeds its own local step (x1.83), but it is negative (toward baseline) -- neither DRIFT nor cleanly SMOOTH; the rule as written gives no threshold to call it a step",
+      "source": "PENALISED-QUANTITY-READING.md section 4 (per-run branch table), read 2026-09-20 by CC; not reclassified"
+    },
+    "9992/003": {
+      "reading_rule_branch": "AMBIGUOUS",
+      "reading_rule_note": "rise begins ~15,600 iterations after the boundary; not an effect the rule classifies; on held-out loss this run is the calmest of its three replicates",
+      "source": "PENALISED-QUANTITY-READING.md section 4 (per-run branch table), read 2026-09-20 by CC; not reclassified"
+    },
+    "9991/004": {
+      "reading_rule_branch": "SMOOTH",
+      "reading_rule_note": "",
+      "source": "PENALISED-QUANTITY-READING.md section 4 (per-run branch table), read 2026-09-20 by CC; not reclassified"
+    },
+    "9991/005": {
+      "reading_rule_branch": "AMBIGUOUS",
+      "reading_rule_note": "jump -0.036, 0.47 of local step; then 28/29 post-boundary checkpoints below its pre-150k floor, moving toward baseline; steepest pre-boundary slope of the ten",
+      "source": "PENALISED-QUANTITY-READING.md section 4 (per-run branch table), read 2026-09-20 by CC; not reclassified"
+    }
+  }
+}

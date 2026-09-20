@@ -1,0 +1,674 @@
+{
+ "status": "unregistered_diagnostic",
+ "readable_as_verdict": false,
+ "hook_kind": "record",
+ "activity_mutated": false,
+ "recording_detached": true,
+ "note": "recording_detached means the hook calls .detach() and moves the tensor to CPU before any reduction; activity_mutated=false is asserted in the hook (`state.nodes.activity is x` after the read), not assumed",
+ "env": {
+  "git_head": "effaff28c07c1e0c6462d7bfd3c2dbf993e2e000",
+  "script_sha256": "317677e6ba6bb6c7182e2dd106e378c96ab34d6839b760c7d365b258c35b60ac",
+  "torch": "2.9.1+cu128",
+  "flyvis": "1.2.0",
+  "numpy": "2.2.6",
+  "python": "3.10.20",
+  "CUBLAS_WORKSPACE_CONFIG": ":4096:8",
+  "FLYVIS_ROOT_DIR": "C:/Users/mikha/Documents/dpc-research/connectome-seed-data",
+  "device": "cuda",
+  "gpu": "NVIDIA RTX PRO 4500 Blackwell",
+  "cudnn_deterministic": false,
+  "cudnn_benchmark": false,
+  "determinism_note": "set by diag1_eval_paths.build_solver:90-93, which reproduces run_individual.py:284-286 under --no-determinism, the flag every night wave ran under (wave_night4.json / wave_night5.json \"no_determinism\": true)",
+  "scratch_netdir": "C:\\Users\\mikha\\AppData\\Local\\Temp\\claude\\c--Users-mikha-Documents-dpc-research-connectome-seed\\869ddc8e-67d1-4c2a-a0b4-05a5cfc8f782\\scratchpad\\rowB5\\netdir\\flow\\9991\\000"
+ },
+ "entries": {
+  "('C:\\\\Users\\\\mikha\\\\Documents\\\\dpc-research\\\\connectome-seed-data\\\\results\\\\flow\\\\9991\\\\005', 0)": {
+   "P0_evaluation_without_recording_reproduces_the_stored_value": {
+    "what": "the same evaluation with NO hook registered, against the val_loss stored inside the checkpoint file",
+    "tolerance": 0.001,
+    "tolerance_source": "results/night2/diagnostics/ablation/README.md Sec 5 (P0)",
+    "stored_checkpoint_val_loss": "1212.5467114448547",
+    "per_item_mean_without_hook": "1212.5467114448547",
+    "rung_hook_path_value": "1212.5467114448547",
+    "abs_diff_per_item_mean_minus_stored": "0.0",
+    "abs_diff_hook_path_minus_stored": "0.0",
+    "pass": true
+   },
+   "P1prime_the_recording_hook_does_not_change_the_loss": {
+    "what": "the loss with the recording hook registered, against P0",
+    "tolerance": 1e-06,
+    "per_item_mean_with_recorder": "1212.5467114448547",
+    "abs_diff": "0.0",
+    "bitwise_identical_per_item": true,
+    "per_item_max_abs_diff": "0.0",
+    "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": "0.0",
+    "per_item_max_abs_diff_in_float32_ulps": "0.0",
+    "pass": true
+   },
+   "P2prime_the_instrument_sees_something": {
+    "what": "(i) the per-item vectors over the input cell types differ between items; (ii) the 65-vector is not constant",
+    "threshold_source": "the measured floor (README Sec 6); NEVER the data being judged",
+    "i_input_type_vectors_differ_between_items": {
+     "input_type_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "n_item_pairs": 120,
+     "min_pairwise_max_abs_diff": "0.0004215149686835895",
+     "max_pairwise_max_abs_diff": "0.6217473108874274",
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    },
+    "ii_the_65_vector_is_not_constant": {
+     "population_sd_over_types": "0.2048706520317068",
+     "range_over_types": "1.0132775633482216",
+     "n_distinct_values": 65,
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    }
+   }
+  },
+  "('C:\\\\Users\\\\mikha\\\\Documents\\\\dpc-research\\\\connectome-seed-data\\\\results\\\\flow\\\\9991\\\\005', 8)": {
+   "P0_evaluation_without_recording_reproduces_the_stored_value": {
+    "what": "the same evaluation with NO hook registered, against the val_loss stored inside the checkpoint file",
+    "tolerance": 0.001,
+    "tolerance_source": "results/night2/diagnostics/ablation/README.md Sec 5 (P0)",
+    "stored_checkpoint_val_loss": "1213.5255398750305",
+    "per_item_mean_without_hook": "1213.5255389213562",
+    "rung_hook_path_value": "1213.5255398750305",
+    "abs_diff_per_item_mean_minus_stored": "9.5367431640625e-07",
+    "abs_diff_hook_path_minus_stored": "0.0",
+    "pass": true
+   },
+   "P1prime_the_recording_hook_does_not_change_the_loss": {
+    "what": "the loss with the recording hook registered, against P0",
+    "tolerance": 1e-06,
+    "per_item_mean_with_recorder": "1213.5255408287048",
+    "abs_diff": "1.9073486328125e-06",
+    "bitwise_identical_per_item": false,
+    "per_item_max_abs_diff": "1.52587890625e-05",
+    "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": "1.52587890625e-05",
+    "per_item_max_abs_diff_in_float32_ulps": "0.03125",
+    "pass": false
+   },
+   "P2prime_the_instrument_sees_something": {
+    "what": "(i) the per-item vectors over the input cell types differ between items; (ii) the 65-vector is not constant",
+    "threshold_source": "the measured floor (README Sec 6); NEVER the data being judged",
+    "i_input_type_vectors_differ_between_items": {
+     "input_type_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "n_item_pairs": 120,
+     "min_pairwise_max_abs_diff": "0.0005043277256036038",
+     "max_pairwise_max_abs_diff": "0.6467076363122077",
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    },
+    "ii_the_65_vector_is_not_constant": {
+     "population_sd_over_types": "0.49592807684474327",
+     "range_over_types": "2.917841023299708",
+     "n_distinct_values": 65,
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    }
+   }
+  },
+  "('C:\\\\Users\\\\mikha\\\\Documents\\\\dpc-research\\\\connectome-seed-data\\\\results\\\\flow\\\\9991\\\\005', 71)": {
+   "P0_evaluation_without_recording_reproduces_the_stored_value": {
+    "what": "the same evaluation with NO hook registered, against the val_loss stored inside the checkpoint file",
+    "tolerance": 0.001,
+    "tolerance_source": "results/night2/diagnostics/ablation/README.md Sec 5 (P0)",
+    "stored_checkpoint_val_loss": "1156.3865871429443",
+    "per_item_mean_without_hook": "1156.3865694999695",
+    "rung_hook_path_value": "1156.3865880966187",
+    "abs_diff_per_item_mean_minus_stored": "1.7642974853515625e-05",
+    "abs_diff_hook_path_minus_stored": "9.5367431640625e-07",
+    "pass": true
+   },
+   "P1prime_the_recording_hook_does_not_change_the_loss": {
+    "what": "the loss with the recording hook registered, against P0",
+    "tolerance": 1e-06,
+    "per_item_mean_with_recorder": "1156.3866086006165",
+    "abs_diff": "3.910064697265625e-05",
+    "bitwise_identical_per_item": false,
+    "per_item_max_abs_diff": "0.0009765625",
+    "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": "0.00048828125",
+    "per_item_max_abs_diff_in_float32_ulps": "2.0",
+    "pass": false
+   },
+   "P2prime_the_instrument_sees_something": {
+    "what": "(i) the per-item vectors over the input cell types differ between items; (ii) the 65-vector is not constant",
+    "threshold_source": "the measured floor (README Sec 6); NEVER the data being judged",
+    "i_input_type_vectors_differ_between_items": {
+     "input_type_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "n_item_pairs": 120,
+     "min_pairwise_max_abs_diff": "0.001417764070625438",
+     "max_pairwise_max_abs_diff": "0.6471294663774962",
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    },
+    "ii_the_65_vector_is_not_constant": {
+     "population_sd_over_types": "3.5702881763937717",
+     "range_over_types": "27.203397702216986",
+     "n_distinct_values": 65,
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    }
+   }
+  },
+  "('C:\\\\Users\\\\mikha\\\\Documents\\\\dpc-research\\\\connectome-seed-data\\\\results\\\\flow\\\\9991\\\\903', 0)": {
+   "P0_evaluation_without_recording_reproduces_the_stored_value": {
+    "what": "the same evaluation with NO hook registered, against the val_loss stored inside the checkpoint file",
+    "tolerance": 0.001,
+    "tolerance_source": "results/night2/diagnostics/ablation/README.md Sec 5 (P0)",
+    "stored_checkpoint_val_loss": "1212.549735546112",
+    "per_item_mean_without_hook": "1212.549735546112",
+    "rung_hook_path_value": "1212.549735546112",
+    "abs_diff_per_item_mean_minus_stored": "0.0",
+    "abs_diff_hook_path_minus_stored": "0.0",
+    "pass": true
+   },
+   "P1prime_the_recording_hook_does_not_change_the_loss": {
+    "what": "the loss with the recording hook registered, against P0",
+    "tolerance": 1e-06,
+    "per_item_mean_with_recorder": "1212.549735546112",
+    "abs_diff": "0.0",
+    "bitwise_identical_per_item": true,
+    "per_item_max_abs_diff": "0.0",
+    "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": "0.0",
+    "per_item_max_abs_diff_in_float32_ulps": "0.0",
+    "pass": true
+   },
+   "P2prime_the_instrument_sees_something": {
+    "what": "(i) the per-item vectors over the input cell types differ between items; (ii) the 65-vector is not constant",
+    "threshold_source": "the measured floor (README Sec 6); NEVER the data being judged",
+    "i_input_type_vectors_differ_between_items": {
+     "input_type_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "n_item_pairs": 120,
+     "min_pairwise_max_abs_diff": "0.0004215150058849426",
+     "max_pairwise_max_abs_diff": "0.6217473108605602",
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    },
+    "ii_the_65_vector_is_not_constant": {
+     "population_sd_over_types": "0.1903486050561347",
+     "range_over_types": "0.9249466955290087",
+     "n_distinct_values": 65,
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    }
+   }
+  },
+  "('C:\\\\Users\\\\mikha\\\\Documents\\\\dpc-research\\\\connectome-seed-data\\\\results\\\\flow\\\\9991\\\\903', 8)": {
+   "P0_evaluation_without_recording_reproduces_the_stored_value": {
+    "what": "the same evaluation with NO hook registered, against the val_loss stored inside the checkpoint file",
+    "tolerance": 0.001,
+    "tolerance_source": "results/night2/diagnostics/ablation/README.md Sec 5 (P0)",
+    "stored_checkpoint_val_loss": "1187.1360335350037",
+    "per_item_mean_without_hook": "1187.1360569000244",
+    "rung_hook_path_value": "1187.1360325813293",
+    "abs_diff_per_item_mean_minus_stored": "2.3365020751953125e-05",
+    "abs_diff_hook_path_minus_stored": "9.5367431640625e-07",
+    "pass": true
+   },
+   "P1prime_the_recording_hook_does_not_change_the_loss": {
+    "what": "the loss with the recording hook registered, against P0",
+    "tolerance": 1e-06,
+    "per_item_mean_with_recorder": "1187.1360592842102",
+    "abs_diff": "2.384185791015625e-06",
+    "bitwise_identical_per_item": false,
+    "per_item_max_abs_diff": "6.103515625e-05",
+    "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": "0.00048828125",
+    "per_item_max_abs_diff_in_float32_ulps": "0.125",
+    "pass": false
+   },
+   "P2prime_the_instrument_sees_something": {
+    "what": "(i) the per-item vectors over the input cell types differ between items; (ii) the 65-vector is not constant",
+    "threshold_source": "the measured floor (README Sec 6); NEVER the data being judged",
+    "i_input_type_vectors_differ_between_items": {
+     "input_type_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "n_item_pairs": 120,
+     "min_pairwise_max_abs_diff": "0.0005306691270717534",
+     "max_pairwise_max_abs_diff": "0.6641502978612802",
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    },
+    "ii_the_65_vector_is_not_constant": {
+     "population_sd_over_types": "12.12855807624769",
+     "range_over_types": "62.59857927976468",
+     "n_distinct_values": 65,
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    }
+   }
+  },
+  "('C:\\\\Users\\\\mikha\\\\Documents\\\\dpc-research\\\\connectome-seed-data\\\\results\\\\flow\\\\9991\\\\903', 71)": {
+   "P0_evaluation_without_recording_reproduces_the_stored_value": {
+    "what": "the same evaluation with NO hook registered, against the val_loss stored inside the checkpoint file",
+    "tolerance": 0.001,
+    "tolerance_source": "results/night2/diagnostics/ablation/README.md Sec 5 (P0)",
+    "stored_checkpoint_val_loss": "1163.376554965973",
+    "per_item_mean_without_hook": "1163.376522064209",
+    "rung_hook_path_value": "1163.3765487670898",
+    "abs_diff_per_item_mean_minus_stored": "3.2901763916015625e-05",
+    "abs_diff_hook_path_minus_stored": "6.198883056640625e-06",
+    "pass": true
+   },
+   "P1prime_the_recording_hook_does_not_change_the_loss": {
+    "what": "the loss with the recording hook registered, against P0",
+    "tolerance": 1e-06,
+    "per_item_mean_with_recorder": "1163.3765635490417",
+    "abs_diff": "4.1484832763671875e-05",
+    "bitwise_identical_per_item": false,
+    "per_item_max_abs_diff": "0.00048828125",
+    "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": "0.00048828125",
+    "per_item_max_abs_diff_in_float32_ulps": "1.0",
+    "pass": false
+   },
+   "P2prime_the_instrument_sees_something": {
+    "what": "(i) the per-item vectors over the input cell types differ between items; (ii) the 65-vector is not constant",
+    "threshold_source": "the measured floor (README Sec 6); NEVER the data being judged",
+    "i_input_type_vectors_differ_between_items": {
+     "input_type_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "n_item_pairs": 120,
+     "min_pairwise_max_abs_diff": "0.002454300732552095",
+     "max_pairwise_max_abs_diff": "0.6585941501649615",
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    },
+    "ii_the_65_vector_is_not_constant": {
+     "population_sd_over_types": "1.3338477504379578",
+     "range_over_types": "7.228528734689323",
+     "n_distinct_values": 65,
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    }
+   }
+  },
+  "('C:\\\\Users\\\\mikha\\\\Documents\\\\dpc-research\\\\connectome-seed-data\\\\results\\\\flow\\\\9992\\\\000', 0)": {
+   "P0_evaluation_without_recording_reproduces_the_stored_value": {
+    "what": "the same evaluation with NO hook registered, against the val_loss stored inside the checkpoint file",
+    "tolerance": 0.001,
+    "tolerance_source": "results/night2/diagnostics/ablation/README.md Sec 5 (P0)",
+    "stored_checkpoint_val_loss": "1212.5555891990662",
+    "per_item_mean_without_hook": "1212.5555891990662",
+    "rung_hook_path_value": "1212.5555891990662",
+    "abs_diff_per_item_mean_minus_stored": "0.0",
+    "abs_diff_hook_path_minus_stored": "0.0",
+    "pass": true
+   },
+   "P1prime_the_recording_hook_does_not_change_the_loss": {
+    "what": "the loss with the recording hook registered, against P0",
+    "tolerance": 1e-06,
+    "per_item_mean_with_recorder": "1212.5555891990662",
+    "abs_diff": "0.0",
+    "bitwise_identical_per_item": true,
+    "per_item_max_abs_diff": "0.0",
+    "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": "0.0",
+    "per_item_max_abs_diff_in_float32_ulps": "0.0",
+    "pass": true
+   },
+   "P2prime_the_instrument_sees_something": {
+    "what": "(i) the per-item vectors over the input cell types differ between items; (ii) the 65-vector is not constant",
+    "threshold_source": "the measured floor (README Sec 6); NEVER the data being judged",
+    "i_input_type_vectors_differ_between_items": {
+     "input_type_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "n_item_pairs": 120,
+     "min_pairwise_max_abs_diff": "0.0004215155680366012",
+     "max_pairwise_max_abs_diff": "0.621747309320843",
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    },
+    "ii_the_65_vector_is_not_constant": {
+     "population_sd_over_types": "0.185566680414219",
+     "range_over_types": "0.9229317205788209",
+     "n_distinct_values": 65,
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    }
+   }
+  },
+  "('C:\\\\Users\\\\mikha\\\\Documents\\\\dpc-research\\\\connectome-seed-data\\\\results\\\\flow\\\\9992\\\\000', 8)": {
+   "P0_evaluation_without_recording_reproduces_the_stored_value": {
+    "what": "the same evaluation with NO hook registered, against the val_loss stored inside the checkpoint file",
+    "tolerance": 0.001,
+    "tolerance_source": "results/night2/diagnostics/ablation/README.md Sec 5 (P0)",
+    "stored_checkpoint_val_loss": "1191.1639351844788",
+    "per_item_mean_without_hook": "1191.1639289855957",
+    "rung_hook_path_value": "1191.1639308929443",
+    "abs_diff_per_item_mean_minus_stored": "6.198883056640625e-06",
+    "abs_diff_hook_path_minus_stored": "4.291534423828125e-06",
+    "pass": true
+   },
+   "P1prime_the_recording_hook_does_not_change_the_loss": {
+    "what": "the loss with the recording hook registered, against P0",
+    "tolerance": 1e-06,
+    "per_item_mean_with_recorder": "1191.16392993927",
+    "abs_diff": "9.5367431640625e-07",
+    "bitwise_identical_per_item": false,
+    "per_item_max_abs_diff": "1.52587890625e-05",
+    "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": "1.52587890625e-05",
+    "per_item_max_abs_diff_in_float32_ulps": "0.03125",
+    "pass": true
+   },
+   "P2prime_the_instrument_sees_something": {
+    "what": "(i) the per-item vectors over the input cell types differ between items; (ii) the 65-vector is not constant",
+    "threshold_source": "the measured floor (README Sec 6); NEVER the data being judged",
+    "i_input_type_vectors_differ_between_items": {
+     "input_type_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "n_item_pairs": 120,
+     "min_pairwise_max_abs_diff": "0.0004881207080719152",
+     "max_pairwise_max_abs_diff": "0.6470972693764222",
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    },
+    "ii_the_65_vector_is_not_constant": {
+     "population_sd_over_types": "5.076019991686655",
+     "range_over_types": "30.679330173298528",
+     "n_distinct_values": 65,
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    }
+   }
+  },
+  "('C:\\\\Users\\\\mikha\\\\Documents\\\\dpc-research\\\\connectome-seed-data\\\\results\\\\flow\\\\9992\\\\000', 71)": {
+   "P0_evaluation_without_recording_reproduces_the_stored_value": {
+    "what": "the same evaluation with NO hook registered, against the val_loss stored inside the checkpoint file",
+    "tolerance": 0.001,
+    "tolerance_source": "results/night2/diagnostics/ablation/README.md Sec 5 (P0)",
+    "stored_checkpoint_val_loss": "1147.410159111023",
+    "per_item_mean_without_hook": "1147.4101204872131",
+    "rung_hook_path_value": "1147.410129070282",
+    "abs_diff_per_item_mean_minus_stored": "3.8623809814453125e-05",
+    "abs_diff_hook_path_minus_stored": "3.0040740966796875e-05",
+    "pass": true
+   },
+   "P1prime_the_recording_hook_does_not_change_the_loss": {
+    "what": "the loss with the recording hook registered, against P0",
+    "tolerance": 1e-06,
+    "per_item_mean_with_recorder": "1147.4101452827454",
+    "abs_diff": "2.47955322265625e-05",
+    "bitwise_identical_per_item": false,
+    "per_item_max_abs_diff": "0.000244140625",
+    "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": "0.000244140625",
+    "per_item_max_abs_diff_in_float32_ulps": "0.5",
+    "pass": false
+   },
+   "P2prime_the_instrument_sees_something": {
+    "what": "(i) the per-item vectors over the input cell types differ between items; (ii) the 65-vector is not constant",
+    "threshold_source": "the measured floor (README Sec 6); NEVER the data being judged",
+    "i_input_type_vectors_differ_between_items": {
+     "input_type_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "n_item_pairs": 120,
+     "min_pairwise_max_abs_diff": "0.0011376223497830684",
+     "max_pairwise_max_abs_diff": "0.70859228750851",
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    },
+    "ii_the_65_vector_is_not_constant": {
+     "population_sd_over_types": "9.549578096039244",
+     "range_over_types": "61.47585534252081",
+     "n_distinct_values": 65,
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    }
+   }
+  },
+  "('C:\\\\Users\\\\mikha\\\\Documents\\\\dpc-research\\\\connectome-seed-data\\\\results\\\\flow\\\\9992\\\\003', 0)": {
+   "P0_evaluation_without_recording_reproduces_the_stored_value": {
+    "what": "the same evaluation with NO hook registered, against the val_loss stored inside the checkpoint file",
+    "tolerance": 0.001,
+    "tolerance_source": "results/night2/diagnostics/ablation/README.md Sec 5 (P0)",
+    "stored_checkpoint_val_loss": "1212.5497364997864",
+    "per_item_mean_without_hook": "1212.549735546112",
+    "rung_hook_path_value": "1212.549735546112",
+    "abs_diff_per_item_mean_minus_stored": "9.5367431640625e-07",
+    "abs_diff_hook_path_minus_stored": "9.5367431640625e-07",
+    "pass": true
+   },
+   "P1prime_the_recording_hook_does_not_change_the_loss": {
+    "what": "the loss with the recording hook registered, against P0",
+    "tolerance": 1e-06,
+    "per_item_mean_with_recorder": "1212.549735546112",
+    "abs_diff": "0.0",
+    "bitwise_identical_per_item": true,
+    "per_item_max_abs_diff": "0.0",
+    "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": "0.0",
+    "per_item_max_abs_diff_in_float32_ulps": "0.0",
+    "pass": true
+   },
+   "P2prime_the_instrument_sees_something": {
+    "what": "(i) the per-item vectors over the input cell types differ between items; (ii) the 65-vector is not constant",
+    "threshold_source": "the measured floor (README Sec 6); NEVER the data being judged",
+    "i_input_type_vectors_differ_between_items": {
+     "input_type_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "n_item_pairs": 120,
+     "min_pairwise_max_abs_diff": "0.0004215150141519963",
+     "max_pairwise_max_abs_diff": "0.6217473108688273",
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    },
+    "ii_the_65_vector_is_not_constant": {
+     "population_sd_over_types": "0.19034860505822893",
+     "range_over_types": "0.9249466955790623",
+     "n_distinct_values": 65,
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    }
+   }
+  },
+  "('C:\\\\Users\\\\mikha\\\\Documents\\\\dpc-research\\\\connectome-seed-data\\\\results\\\\flow\\\\9992\\\\003', 8)": {
+   "P0_evaluation_without_recording_reproduces_the_stored_value": {
+    "what": "the same evaluation with NO hook registered, against the val_loss stored inside the checkpoint file",
+    "tolerance": 0.001,
+    "tolerance_source": "results/night2/diagnostics/ablation/README.md Sec 5 (P0)",
+    "stored_checkpoint_val_loss": "1187.8080883026123",
+    "per_item_mean_without_hook": "1187.8080949783325",
+    "rung_hook_path_value": "1187.8080859184265",
+    "abs_diff_per_item_mean_minus_stored": "6.67572021484375e-06",
+    "abs_diff_hook_path_minus_stored": "2.384185791015625e-06",
+    "pass": true
+   },
+   "P1prime_the_recording_hook_does_not_change_the_loss": {
+    "what": "the loss with the recording hook registered, against P0",
+    "tolerance": 1e-06,
+    "per_item_mean_with_recorder": "1187.8080921173096",
+    "abs_diff": "2.86102294921875e-06",
+    "bitwise_identical_per_item": false,
+    "per_item_max_abs_diff": "6.103515625e-05",
+    "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": "6.103515625e-05",
+    "per_item_max_abs_diff_in_float32_ulps": "0.125",
+    "pass": false
+   },
+   "P2prime_the_instrument_sees_something": {
+    "what": "(i) the per-item vectors over the input cell types differ between items; (ii) the 65-vector is not constant",
+    "threshold_source": "the measured floor (README Sec 6); NEVER the data being judged",
+    "i_input_type_vectors_differ_between_items": {
+     "input_type_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "n_item_pairs": 120,
+     "min_pairwise_max_abs_diff": "0.00048811434976070434",
+     "max_pairwise_max_abs_diff": "0.6563389535321004",
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    },
+    "ii_the_65_vector_is_not_constant": {
+     "population_sd_over_types": "13.743653612303712",
+     "range_over_types": "69.533027536123",
+     "n_distinct_values": 65,
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    }
+   }
+  },
+  "('C:\\\\Users\\\\mikha\\\\Documents\\\\dpc-research\\\\connectome-seed-data\\\\results\\\\flow\\\\9992\\\\003', 71)": {
+   "P0_evaluation_without_recording_reproduces_the_stored_value": {
+    "what": "the same evaluation with NO hook registered, against the val_loss stored inside the checkpoint file",
+    "tolerance": 0.001,
+    "tolerance_source": "results/night2/diagnostics/ablation/README.md Sec 5 (P0)",
+    "stored_checkpoint_val_loss": "1158.8484101295471",
+    "per_item_mean_without_hook": "1158.848382949829",
+    "rung_hook_path_value": "1158.8484086990356",
+    "abs_diff_per_item_mean_minus_stored": "2.7179718017578125e-05",
+    "abs_diff_hook_path_minus_stored": "1.430511474609375e-06",
+    "pass": true
+   },
+   "P1prime_the_recording_hook_does_not_change_the_loss": {
+    "what": "the loss with the recording hook registered, against P0",
+    "tolerance": 1e-06,
+    "per_item_mean_with_recorder": "1158.8484182357788",
+    "abs_diff": "3.528594970703125e-05",
+    "bitwise_identical_per_item": false,
+    "per_item_max_abs_diff": "0.00048828125",
+    "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": "0.00048828125",
+    "per_item_max_abs_diff_in_float32_ulps": "1.0",
+    "pass": false
+   },
+   "P2prime_the_instrument_sees_something": {
+    "what": "(i) the per-item vectors over the input cell types differ between items; (ii) the 65-vector is not constant",
+    "threshold_source": "the measured floor (README Sec 6); NEVER the data being judged",
+    "i_input_type_vectors_differ_between_items": {
+     "input_type_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "n_item_pairs": 120,
+     "min_pairwise_max_abs_diff": "0.007731124891249053",
+     "max_pairwise_max_abs_diff": "0.6478242007385159",
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    },
+    "ii_the_65_vector_is_not_constant": {
+     "population_sd_over_types": "6.650469881587114",
+     "range_over_types": "59.11900636266397",
+     "n_distinct_values": 65,
+     "threshold": null,
+     "verdict": null,
+     "verdict_status": "pending_floor"
+    }
+   }
+  }
+ }
+}

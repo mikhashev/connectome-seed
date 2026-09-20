@@ -1,4 +1,4 @@
-"""Row B -- passive per-cell-type activity recording on the checkpoints of nights 4 and 5.
+"""Row B -- passive per-cell-type activity recording on the complete runs of nights 1-5.
 
 UNREGISTERED DIAGNOSTIC -- NOT A TEST.  Every output record carries
 `"status": "unregistered_diagnostic"` and `"readable_as_verdict": false`.  No number this
@@ -31,7 +31,12 @@ first run):
       which `diag1_eval_paths.FLOW_DIR` (hard-wired to 9991) cannot address; `chkpt_table` is
       therefore re-expressed as `chkpt_table_netdir(netdir)` -- the same two h5 reads and the
       same off-by-one, parameterised by directory.
-  N2  the hook detaches AND moves to CPU before any reduction (Ark: `recording_detached`).
+  N2  the hook detaches before any reduction (Ark: `recording_detached`) and reduces ON THE
+      DEVICE the activity already lives on; only the reduced per-type vectors (65) and the
+      central-cell vector (65) are moved to CPU, in `_flush`, not per Euler step.  A float64
+      index_add_ on the GPU may sum in a different order than the same reduction on the CPU,
+      so the last bits can differ; the outputs written before 2026-09-20 21:00 (the
+      three-checkpoint run in this directory) were reduced on the CPU.
   N3  the central cell of each type is recorded beside the all-nodes mean, because the
       penalty reads one central cell per type and discards the first quarter of the frames
       (`flyvis/solver.py:869-872`) while the ablation silences all nodes of a type
@@ -40,6 +45,90 @@ first run):
       checkpoint from the central cells with the run's own resolved baseline and weights.
   N5  P1/P2 are reformulated for a passive recording (P1', P2'), and P2's thresholds are left
       null until a floor exists.  A threshold is never derived from the data it judges.
+
+AMENDMENTS OF 2026-09-20, after the first three-checkpoint run of this script and the review
+it drew (Johnny, Ark, Zcode).  Each says what prompted it.  NONE of them touches the
+registered P1' tolerance: 1e-6 stays exactly as it was registered, and the FAIL verdicts the
+first run produced under it stand.  Training flags are not touched anywhere in this file.
+
+  A1  SCOPE: ten runs, not four.  Prompted by the owner ("10"): nights 4 and 5 are four runs
+      but the substrate has ten complete runs across nights 1-5, and a preview taken on four
+      of them is a preview of the nights, not of the substrate.  `--night all10` resolves all
+      ten from the committed results/night5/run_columns.csv, keyed by netdir, and REFUSES
+      (exit 3) on any run whose chkpts directory does not hold exactly 72 checkpoints or whose
+      netdir label is ambiguous on disk -- `9991/002_killed_by_reboot` sits beside `9991/002`
+      and must never be picked by a prefix.  N IS COUNTED IN INDIVIDUALS, NOT RUNS: the ten
+      runs are six seeds, so every record carries `individual` and `replicate_of` and the plan
+      prints `n_individuals` beside `n_runs`.
+
+  A2  LOSS-LEVEL FLOOR.  Prompted by Johnny, confirmed by Ark and Zcode: P1' is registered ON
+      THE LOSS (README Sec 5), but the no-hook-vs-no-hook floor was recorded only for the
+      per-item maximum -- the judged level had a criterion and no floor, the unjudged level had
+      a floor and no criterion.  `abs_diff_loss_nohook_vs_nohook` is now recorded beside
+      `abs_diff`, at the same level the verdict is taken at.
+
+  A3  THE FLOOR IS NO LONGER A SAMPLE OF SIZE ONE.  Prompted by Ark: two evaluations give one
+      difference, and one difference is not a bound.  `--floor-k K` (default 1, so the old
+      behaviour is reproducible byte for byte) evaluates the same state with no hook K+1 times
+      and records ALL K differences at BOTH levels plus their maxima.  The hook difference is
+      compared against the maximum of the K in `descriptive_hook_diff_le_max_floor`, which
+      carries `registered: false` and is DESCRIPTIVE ONLY -- it does not replace, soften or
+      override the P1' pass/fail, which is still the registered 1e-6 on the loss.
+
+  A4  DETERMINISTIC DIAGNOSTIC MODE.  Prompted by Ark; Zcode verified that
+      `torch.use_deterministic_algorithms` is called nowhere in flyvis or in these scripts, and
+      only at tools/night/run_individual.py:295, in the else-branch that `--no-determinism`
+      never takes.  `--deterministic` sets `torch.use_deterministic_algorithms(True)`,
+      `cudnn.deterministic = True`, `cudnn.benchmark = False` before any CUDA work (and
+      re-applies the two cudnn flags after `build_solver`, which deliberately sets them to the
+      --no-determinism values, diag1_eval_paths.py:90-93).  It writes `deterministic` into
+      every record, the controls file and the h5 attrs, and writes ALL outputs under `_det`
+      names so that the two instruments can never be mixed in one file.  If PyTorch refuses an
+      operator, the script writes a small json naming the operator and the innermost
+      flyvis/project frame of the traceback and exits 4: THAT OUTCOME IS A FINDING, NOT A
+      CRASH.  The recording hook's own reduction uses `index_add_`, which is on PyTorch's
+      nondeterministic list on CUDA, so A5 exists to test the forward without it.
+
+  A5  `--reduce-on cpu|gpu` (default gpu, the owner's GPU-first instruction).  If `index_add_`
+      is the operator that refuses under A4, the reduction can be moved off the GPU while the
+      forward stays deterministic.  `reduction_device` already existed; `reduction_path`
+      ("gpu"/"cpu") is now written into every record, csv header, controls file and h5 attrs.
+
+  A6  THE P2' MULTIPLIER IS DECLARED BEFORE THE FLOOR EXISTS (Ark).  `P2_FLOOR_MULTIPLIER = 10`
+      and the rule "threshold = 10 x the measured floor, same path, same mode" are constants in
+      this file, declared 2026-09-20, before any floor has been measured.  `--floor-summarize`
+      applies the rule and records its text and date; it computes, it does not judge.
+
+AMENDMENTS OF 2026-09-20 (second round), after Ark's reading of rowB_floor_det.json, confirmed
+by CC.  These fix how `--floor-summarize` computes and labels, not what it measures; the
+outputs any earlier run of this script wrote keep their own `script_sha256` and were written by
+the earlier revision -- see README.md for which files that applies to.
+
+  B1  THE SIGMA GUARD.  `M.std(axis=0, ddof=1)` over three BITWISE-IDENTICAL float64 rows can
+      return ~2e-15 instead of exactly 0 -- numpy's mean of identical values is not always
+      exactly that value, so the variance computed from it is not always exactly zero either.
+      `--floor-summarize` now guards both `sigma_by_type` and `max_sigma_by_type`: where the
+      range (max - min) across the three processes is exactly 0 for a type, sigma for that type
+      is written as exactly `0.0`, not numpy's rounding residue.
+
+  B2  `floor_k` IN THE SUMMARY MEANT NOTHING.  Inside one process, `floor_k` is the number of
+      no-hook floor repeats (K) -- a real setting of that run.  In `rowB_floor[_det].json` it
+      was `service_fields()`'s `RUNTIME["floor_k"]`, i.e. `--floor-summarize`'s own (unused)
+      default, disconnected from the K the three summarized processes actually ran under.  The
+      summary now reads `floor_k_inside_each_process` FROM the three per-process record files
+      and refuses (exit 3) if they disagree; the misleading top-level `floor_k` is dropped from
+      the summary's output.
+
+  B3  INSTRUMENT LABELS.  The provenance block written into every record and controls file now
+      carries `cuda_runtime_version` (`torch.version.cuda`) and `driver_version` (read via
+      `torch.cuda` where available, else parsed from `nvidia-smi --query-gpu=driver_version
+      --format=csv,noheader`; "unavailable" if neither works -- this never fails the run).
+      Reason: the `--deterministic` promise "recomputes to the bit" holds only for the same
+      driver/library stack, and that stack was not being written down.
+
+  B4  P2' THRESHOLD MODE, INLINE.  `--floor-summarize` now writes `reduction_path` and
+      `deterministic` inside EACH threshold object of `p2prime_thresholds`, beside the number,
+      not only in the file's header -- the mode is part of the threshold.
 """
 
 import os
@@ -76,8 +165,27 @@ FLOW = Path(os.environ["FLYVIS_ROOT_DIR"]) / "results" / "flow"
 
 STATUS = "unregistered_diagnostic"
 P0_TOL = 1e-3          # the tolerance the ablation README uses (ablation/README.md Sec 5, P0)
-P1_TOL = 1e-6          # Ark's field list: bitwise, or within 1e-6
+P1_TOL = 1e-6          # Ark's field list: bitwise, or within 1e-6.  REGISTERED; NOT AMENDED.
 T_PRE = 0.25           # diag1_eval_paths.per_item_eval default; the rung hook's value
+
+# A6: declared 2026-09-20, BEFORE any floor for this metric exists.  A computation, not a
+# judgement: --floor-summarize multiplies the measured floor by this and writes the product.
+P2_FLOOR_MULTIPLIER = 10
+P2_THRESHOLD_RULE = ("threshold for P2' = %d x the measured floor of README Sec 6, taken on "
+                     "the SAME reduction path and the SAME determinism mode as the statistic "
+                     "it judges. A computation, not a judgement." % P2_FLOOR_MULTIPLIER)
+P2_THRESHOLD_RULE_DECLARED = "2026-09-20"
+
+# A1: the ten complete runs.  Written here so that a run silently added to or dropped from
+# run_columns.csv is a refusal rather than a different N.  The mapping itself is still READ
+# from the csv; this list is only the count and the identity check.
+TEN_RUN_IDS = ("9991/000", "9991/900", "9991/001", "9991/002", "9991/003",
+               "9991/903", "9991/004", "9991/005", "9992/000", "9992/003")
+CHKPTS_PER_COMPLETE_RUN = 72
+
+# Set once in main() from the parsed arguments; read by service_fields() so that every writer
+# stamps the same mode without threading three more parameters through every call site.
+RUNTIME = {"deterministic": False, "reduction_path": "gpu", "floor_k": 1}
 
 sys.path.insert(0, str(N2_DIAG))
 sys.path.insert(0, str(N2_DIAG / "ablation"))
@@ -98,13 +206,86 @@ def _load_night2_rowB():
     return mod
 
 
-def _gpu_imports():
-    """Everything that pulls torch / flyvis in.  Never called by --dry-run."""
+def _gpu_imports(deterministic=False):
+    """Everything that pulls torch / flyvis in.  Never called by --dry-run.
+
+    A4: the determinism switches are thrown HERE -- after `import torch`, which allocates
+    nothing on the device, and before any project module that can touch CUDA is imported.
+    `CUBLAS_WORKSPACE_CONFIG=:4096:8` is already in the environment (set at the top of this
+    file, before any import, exactly as run_individual.py:46-49 sets it), which is the
+    precondition `torch.use_deterministic_algorithms(True)` needs for cuBLAS.
+    """
     import torch  # noqa: F401
+    det = apply_determinism(torch, deterministic, "before_any_cuda_work")
     import diag1_eval_paths as D
     import ablation as ABL
     RB = _load_night2_rowB()
-    return torch, D, ABL, RB
+    return torch, D, ABL, RB, det
+
+
+def apply_determinism(torch, deterministic, when):
+    """A4.  Returns what was actually set, so the record states the machine's answer.
+
+    `torch.use_deterministic_algorithms(True)` is called WITHOUT `warn_only`: a refused
+    operator must raise, be caught at top level and be written down as a finding (exit 4).
+    run_individual.py:295 uses `warn_only=True` for training; this diagnostic wants the
+    refusal, not a warning, because the refusal is the information.
+
+    NOTHING about training is touched: this function is only ever called from this script's
+    own process, and the only global state it writes is the three torch switches below.
+    """
+    rec = {"requested": bool(deterministic), "when": when,
+           "CUBLAS_WORKSPACE_CONFIG": os.environ.get("CUBLAS_WORKSPACE_CONFIG")}
+    if deterministic:
+        torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.benchmark = False
+        torch.use_deterministic_algorithms(True)
+        rec["use_deterministic_algorithms"] = True
+        rec["warn_only"] = False
+    else:
+        rec["use_deterministic_algorithms"] = False
+        rec["note"] = ("not set -- the nights ran under --no-determinism and this is the "
+                       "instrument that mirrors them")
+    rec["cudnn_deterministic"] = bool(torch.backends.cudnn.deterministic)
+    rec["cudnn_benchmark"] = bool(torch.backends.cudnn.benchmark)
+    return rec
+
+
+def gpu_instrument_labels(torch):
+    """B3 (2026-09-20, Ark / CC): the CUDA runtime and driver version behind this run.
+
+    The `--deterministic` promise "recomputes to the bit" holds only for the same
+    driver/library stack; without these two fields a later re-run on a moved stack could look
+    like a disagreement in the hook when it is really a disagreement in the substrate under it.
+
+    `cuda_runtime_version` is `torch.version.cuda`.  `driver_version` is read via `torch.cuda`
+    when it exposes one; otherwise by parsing `nvidia-smi --query-gpu=driver_version
+    --format=csv,noheader`.  NEVER fails the run: any error here is swallowed and the field is
+    written as the string "unavailable", not raised.
+    """
+    cuda_runtime = getattr(getattr(torch, "version", None), "cuda", None) or "unavailable"
+    driver, source = "unavailable", "unavailable"
+    try:
+        if torch.cuda.is_available():
+            v = getattr(torch.cuda, "driver_version", None)
+            v = v() if callable(v) else v
+            if v:
+                driver, source = str(v), "torch.cuda"
+    except Exception:  # noqa: BLE001 -- never fail the run over a label
+        pass
+    if driver == "unavailable":
+        try:
+            out = subprocess.run(
+                ["nvidia-smi", "--query-gpu=driver_version", "--format=csv,noheader"],
+                capture_output=True, text=True, timeout=10)
+            v = out.stdout.strip().splitlines()[0].strip() if out.stdout.strip() else ""
+            if out.returncode == 0 and v:
+                driver = v
+                source = "nvidia-smi --query-gpu=driver_version --format=csv,noheader"
+        except Exception:  # noqa: BLE001 -- never fail the run over a label
+            pass
+    return {"cuda_runtime_version": cuda_runtime, "driver_version": driver,
+            "driver_version_source": source}
 
 
 # ---------------------------------------------------------------- small helpers
@@ -138,6 +319,69 @@ class Refusal(SystemExit):
         super().__init__(3)
 
 
+def out_name(a, stem, ext):
+    """Output file name, with the `_det` suffix of A4 applied to EVERY writer.
+
+    The deterministic and the non-deterministic instrument must never write into one file:
+    a records file that holds both is a file nobody can later split.  The suffix is derived
+    from the flag, in one place, so no writer can forget it.
+    """
+    return f"{stem}{'_det' if a.deterministic else ''}.{ext}"
+
+
+class NondeterministicOperator(SystemExit):
+    """A4: PyTorch refused an operator under --deterministic.  A FINDING, not a crash.
+
+    Exit code 4, distinct from the refusals (3), because it says something about the
+    substrate -- which operator in this forward has no deterministic CUDA implementation --
+    rather than about this script's inputs.  The operator name and the innermost flyvis /
+    project frame are written to a json so the finding survives the terminal.
+    """
+
+    def __init__(self, path, payload):
+        print("NONDETERMINISTIC_OPERATOR " + json.dumps(
+            {k: payload[k] for k in ("operator", "innermost_frame")}), flush=True)
+        print(f"WROTE {path}", flush=True)
+        super().__init__(4)
+
+
+def nondeterministic_finding(exc, a):
+    """Name the operator and the innermost flyvis/project frame of a determinism refusal."""
+    import traceback
+    msg = str(exc)
+    marker = "does not have a deterministic implementation"
+    op = None
+    if marker in msg:
+        head = msg.split(marker)[0].strip()
+        op = head.split()[-1].strip("'\"`,") if head.split() else None
+    frames = traceback.extract_tb(exc.__traceback__)
+    innermost, ours = None, None
+    for fr in frames:                      # outermost -> innermost; keep the last match
+        f = fr.filename.replace("\\", "/")
+        innermost = f"{fr.filename}:{fr.lineno} in {fr.name}"
+        if "/flyvis" in f or str(REPO).replace("\\", "/") in f:
+            ours = f"{fr.filename}:{fr.lineno} in {fr.name}"
+    return {
+        "finding": "an operator on this forward has no deterministic implementation",
+        "status": STATUS,
+        "readable_as_verdict": False,
+        "exit_code": 4,
+        "deterministic": True,
+        "reduction_path": a.reduce_on,
+        "operator": op,
+        "innermost_frame": ours or innermost,
+        "innermost_frame_any": innermost,
+        "innermost_frame_source": "the last traceback frame whose file is under flyvis or "
+                                  "under this repository; the raw innermost frame is beside it",
+        "message": msg,
+        "traceback": traceback.format_exception(type(exc), exc, exc.__traceback__),
+        "what_to_do": "if the operator is index_add_ (the recording hook's own reduction, on "
+                      "PyTorch's nondeterministic CUDA list), re-run with --reduce-on cpu: the "
+                      "forward is then tested deterministically with the reduction off the GPU",
+        "utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+    }
+
+
 # ---------------------------------------------------------------- the run registry
 def read_run_columns():
     """results/night5/run_columns.csv -- the committed, EXPLICIT run -> column mapping.
@@ -169,13 +413,40 @@ def read_run_columns():
         }
     # twin_of: every other run of the same seed, canonical first.  Ark's field is singular;
     # a list is written because seed 3 has three runs and "the twin" is ambiguous for it.
+    #
+    # A1: `individual` and `replicate_of` are written beside them so that N is counted in
+    # INDIVIDUALS and not in runs.  Ten runs are six seeds; a replicate is the same individual
+    # measured again, and it does not enter N.  `is_individual_representative` marks the one
+    # run per seed (the canonical, run_index_for_seed == 1) that stands for the individual.
     for rid, e in reg.items():
         sibs = [o for o in reg.values() if o["seed"] == e["seed"] and o["run_id"] != rid]
         sibs.sort(key=lambda o: o["run_index_for_seed"])
         e["twin_of"] = [o["run_id"] for o in sibs]
         can = [o["run_id"] for o in sibs if o["run_index_for_seed"] == 1]
         e["twin_of_canonical"] = can[0] if can else None
+        e["individual"] = int(e["seed"])
+        e["individual_label"] = f"seed{e['seed']}"
+        own = [o["run_id"] for o in reg.values()
+               if o["seed"] == e["seed"] and o["run_index_for_seed"] == 1]
+        e["replicate_of"] = (own[0] if own and own[0] != rid else None) \
+            if e["role"] == "replicate" else None
+        e["is_individual_representative"] = bool(e["run_index_for_seed"] == 1)
+        e["n_runs_of_this_individual"] = len(sibs) + 1
     return reg
+
+
+def individuals_of(runs):
+    """The N that may be quoted for a set of runs: distinct individuals, replicates folded in."""
+    seeds = sorted({int(e["seed"]) for e in runs})
+    return {
+        "n_runs": len(runs),
+        "n_individuals": len(seeds),
+        "individuals": seeds,
+        "n_replicate_runs": sum(1 for e in runs if e["role"] == "replicate"),
+        "runs_per_individual": {str(s): sorted(e["run_id"] for e in runs
+                                               if int(e["seed"]) == s) for s in seeds},
+        "N_is_counted_in": "individuals; replicate runs of the same seed do NOT enter N",
+    }
 
 
 def cross_check_waves(reg):
@@ -207,9 +478,76 @@ def select_runs(reg, nights, netdirs):
                 raise Refusal(f"--netdir {n!r} is not in {RUN_COLUMNS.name}")
             out.append(e)
         return out
+    if nights == "all10":
+        return select_ten(reg)
     want = {4, 5} if nights == "all" else {int(nights)}
     return [e for e in sorted(reg.values(), key=lambda x: (x["night"], x["run_id"]))
             if e["night"] in want]
+
+
+def select_ten(reg):
+    """A1: the ten complete runs of nights 1-5, in the order run_columns.csv lists them.
+
+    Two refusals, both exit 3, both BEFORE any checkpoint is opened:
+      * the csv's run set must be exactly TEN_RUN_IDS -- a run added or dropped changes N and
+        must be a stop, not a different answer;
+      * every selected netdir must be UNAMBIGUOUS on disk (see check_netdir_unambiguous).
+    The 72-checkpoint requirement is enforced in check_run_complete, which needs the run
+    directory's own chkpt tables and so runs once per run in both --dry-run and the real run.
+    """
+    have = set(reg)
+    want = set(TEN_RUN_IDS)
+    if have != want:
+        raise Refusal(f"{RUN_COLUMNS.name} lists {sorted(have)}; the ten complete runs are "
+                      f"{sorted(want)}; missing {sorted(want - have)}, "
+                      f"unexpected {sorted(have - want)}")
+    runs = [reg[rid] for rid in TEN_RUN_IDS]
+    for e in runs:
+        check_netdir_unambiguous(e)
+    return runs
+
+
+def check_netdir_unambiguous(e):
+    """A run label must name exactly one directory on disk, by equality and never by prefix.
+
+    `9991/002_killed_by_reboot` sits beside `9991/002` and holds a partial run.  Siblings that
+    start with the label are listed as rejected candidates with their checkpoint counts; the
+    label is a refusal only when it no longer picks one run -- the exact directory is missing,
+    or a prefix sibling is complete too.
+    """
+    d = Path(e["netdir"])
+    leaf = e["run_id"].split("/")[-1]
+    if d.name != leaf:
+        raise Refusal(f"{e['run_id']}: resolved netdir {d} does not end in {leaf!r}")
+    if not d.is_dir():
+        raise Refusal(f"{e['run_id']}: {d} is not a directory on disk")
+    sibs = []
+    for p in sorted(d.parent.iterdir()):
+        if not p.is_dir() or p.name == leaf or not p.name.startswith(leaf):
+            continue
+        n = len(list((p / "chkpts").glob("chkpt_*"))) if (p / "chkpts").is_dir() else 0
+        sibs.append({"name": p.name, "n_checkpoint_files": n, "picked": False,
+                     "why_not": "its name is not equal to the run label; resolution is by "
+                                "equality against run_columns.csv, never by prefix"})
+    complete = [s["name"] for s in sibs if s["n_checkpoint_files"] >= CHKPTS_PER_COMPLETE_RUN]
+    if complete:
+        raise Refusal(f"{e['run_id']}: the label {leaf!r} is ambiguous under {d.parent} -- "
+                      f"{complete} start with it and also hold >= "
+                      f"{CHKPTS_PER_COMPLETE_RUN} checkpoints, so the label no longer names "
+                      f"one run; this scope refuses rather than choose")
+    return {"netdir": str(d), "leaf": leaf, "resolution": "exact directory-name equality",
+            "rejected_prefix_siblings": sibs}
+
+
+def check_run_complete(e, tab):
+    """A1: a run in the ten-run scope holds exactly 72 checkpoints, or the script refuses."""
+    on_disk = sorted((Path(e["netdir"]) / "chkpts").glob("chkpt_*"))
+    if len(tab) != CHKPTS_PER_COMPLETE_RUN or len(on_disk) != CHKPTS_PER_COMPLETE_RUN:
+        raise Refusal(
+            f"{e['run_id']}: {len(tab)} entries in chkpt_index.h5 and {len(on_disk)} files in "
+            f"{Path(e['netdir']) / 'chkpts'}; a complete run has exactly "
+            f"{CHKPTS_PER_COMPLETE_RUN}. An incomplete run is not a tenth of this scope.")
+    return len(on_disk)
 
 
 # ---------------------------------------------------------------- run-dir facts, from disk
@@ -411,7 +749,7 @@ def check_axis_against_rowA(axis):
 
 
 # ---------------------------------------------------------------- the recorder (GPU path)
-def make_recorder_class(torch, RB):
+def make_recorder_class(torch, RB, reduce_on="gpu"):
     class RecorderB(RB.Recorder):
         """`rowB_night2.Recorder` with N2 and N3 applied, and nothing else changed.
 
@@ -424,13 +762,40 @@ def make_recorder_class(torch, RB):
         Phases are marked by a forward pre-hook on the Network module: `per_item_eval`
         (diag1_eval_paths.py:176-201) calls `network.steady_state()` once (phase 0) and then
         `network(...)` once per item (phases 1..n_items).
+
+        N2: the reduction runs on the activity's OWN device (the GPU, in every run so far).
+        Only the two reduced 65-vectors per Euler step leave it, and they leave in `_flush`.
+        A float64 `index_add_` over 45,669 nodes accumulates in a hardware-dependent order, so
+        the GPU sum and the CPU sum of the same activity can differ in the last bits; that is
+        accepted here and recorded, not silently absorbed.
+
+        A5 (`--reduce-on cpu`): the detached activity is moved to the host BEFORE the
+        reduction, so the forward keeps running on the GPU while `index_add_` -- which is on
+        PyTorch's nondeterministic CUDA list -- runs where it has a deterministic
+        implementation.  That is the slower path (one 45,669-value copy per Euler step) and it
+        exists for A4, not for speed; `reduction_path` records which one produced a file.
         """
 
         def __init__(self, type_index, counts, n_types, central_index):
-            super().__init__(type_index, counts, n_types)   # tensors are CPU here (N2)
+            super().__init__(type_index, counts, n_types)   # tensors arrive on CPU
             self.central_index = central_index
             self.phases_central = []
             self.cur_central = None
+            self._reduce_device = None                      # set by _align_to, once
+
+        def _align_to(self, device):
+            """Put type_index / counts / central_index on `device` ONCE, not per call.
+
+            The hook runs once per Euler step (~650 per evaluation); a `.to()` inside it would
+            re-copy the 45,669-long index every step, which is the cost this change removes.
+            """
+            if self._reduce_device == device:
+                return
+            self.type_index = self.type_index.to(device)
+            self.counts = self.counts.to(device)
+            if torch.is_tensor(self.central_index):
+                self.central_index = self.central_index.to(device)
+            self._reduce_device = device
 
         def new_phase(self, *a, **kw):
             self._flush()
@@ -439,6 +804,8 @@ def make_recorder_class(torch, RB):
             self.cur_central = []
 
         def _flush(self):
+            # The per-step 65-vectors stay on the reduction device until here; this is the
+            # ONE host copy per phase, of (n_steps, 65) doubles rather than of (n_steps, 45669).
             if self.cur is not None:
                 self.phases.append(torch.stack(self.cur[0]).double().cpu().numpy())
                 self.phases_std.append(torch.stack(self.cur[1]).double().cpu().numpy())
@@ -454,10 +821,16 @@ def make_recorder_class(torch, RB):
         def hook(self, state):
             x = state.nodes.activity
             assert x.shape[0] == 1, x.shape                 # batch 1
-            # N2: detach AND move to CPU inside the hook, before any reduction.
-            v = x[0].detach().to(device="cpu", dtype=torch.float64)
-            s1 = torch.zeros(self.n_types, dtype=torch.float64)
-            s2 = torch.zeros(self.n_types, dtype=torch.float64)
+            # N2: detach inside the hook, before any reduction -- the recording never holds
+            # the autograd graph.  The reduction stays on the activity's own device (the
+            # owner's instruction: what can run on the GPU runs on the GPU), so the 45,669-node
+            # tensor is never copied to the host; the accumulators are created there too.
+            v = x[0].detach().to(dtype=torch.float64)
+            if reduce_on == "cpu":                          # A5, off by default
+                v = v.cpu()
+            self._align_to(v.device)                        # once per device, not per call
+            s1 = torch.zeros(self.n_types, dtype=torch.float64, device=v.device)
+            s2 = torch.zeros(self.n_types, dtype=torch.float64, device=v.device)
             s1.index_add_(0, self.type_index, v)
             s2.index_add_(0, self.type_index, v * v)
             mean = s1 / self.counts
@@ -576,11 +949,42 @@ def penalised_quantity(central_skip, ap):
     }
 
 
-def controls_block(red, li, plain, plain2, hook_val, stored_val, input_type_idx):
+def floor_block(plains):
+    """A3: the no-hook-vs-no-hook floor from K+1 evaluations of the SAME state.
+
+    `plains[0]` is P0's reading; each of the other K is differenced against it, at BOTH
+    levels -- the per-item maximum and the loss, the level P1' is registered on (A2).  ALL K
+    differences are written, not only their maximum, because a maximum over K hides whether
+    the K agreed; and the maximum is written beside them because that is what the descriptive
+    comparison in `controls_block` uses.
+    """
+    k = len(plains) - 1
+    per_item = [float(np.max(np.abs(p - plains[0]))) for p in plains[1:]]
+    loss = [abs(float(p.mean()) - float(plains[0].mean())) for p in plains[1:]]
+    return {
+        "k": k,
+        "n_no_hook_evaluations": len(plains),
+        "what": "the same state, the same code path, no hook at all, evaluated K+1 times in "
+                "ONE process; each repeat differenced against the first (P0's reading)",
+        "registered": False,
+        "differences_per_item_max": [repr(x) for x in per_item],
+        "differences_loss": [repr(x) for x in loss],
+        "max_difference_per_item_max": repr(max(per_item)) if per_item else None,
+        "max_difference_loss": repr(max(loss)) if loss else None,
+        "all_bitwise_identical": bool(all(np.array_equal(p, plains[0]) for p in plains[1:])),
+        "note": "a within-process floor. The across-process floor of README Sec 6 is a "
+                "different and larger quantity and is measured by --floor-repeat.",
+    }
+
+
+def controls_block(red, li, plains, hook_val, stored_val, input_type_idx):
     """P0, P1', P2' -- Ark's three, reformulated for a passive recording."""
+    plain = plains[0]
+    fl = floor_block(plains)
     p0 = float(plain.mean())
     p1 = float(li.mean())
     d1 = abs(p1 - p0)
+    d1_item = float(np.max(np.abs(li - plain)))
     V = red["mean_by_type"]                                   # (n_items, n_types)
     inp = V[:, input_type_idx]                                # (n_items, n_input_types)
     pair = [float(np.max(np.abs(inp[i] - inp[j])))
@@ -600,23 +1004,71 @@ def controls_block(red, li, plain, plain2, hook_val, stored_val, input_type_idx)
             "pass": bool(abs(p0 - stored_val) < P0_TOL),
         },
         "P1prime_the_recording_hook_does_not_change_the_loss": {
-            "what": "the loss with the recording hook registered, against P0",
+            "what": "the loss with the recording hook registered, against P0. The criterion is "
+                    "ON THE LOSS -- the aggregate the rung reports -- and the per-item figures "
+                    "are recorded beside it, at their own separately named level.",
             "tolerance": P1_TOL,
+            "tolerance_status": "REGISTERED and NOT amended on 2026-09-20; the verdicts it "
+                                "produced on the first run stand",
             "per_item_mean_with_recorder": repr(p1),
+            # --- the judged level: the loss ---
             "abs_diff": repr(d1),
+            "abs_diff_level": "loss (the per-item mean); this is the level `pass` is taken at",
+            "abs_diff_loss_nohook_vs_nohook": fl["max_difference_loss"],   # A2
+            "abs_diff_loss_nohook_vs_nohook_what":
+                "the floor AT THE JUDGED LEVEL: the largest loss-level difference among the "
+                "K no-hook repeats of the same state (A2, Johnny; confirmed by Ark and Zcode)",
+            # --- the other level: per item ---
             "bitwise_identical_per_item": bool(np.array_equal(li, plain)),
-            "per_item_max_abs_diff": repr(float(np.max(np.abs(li - plain)))),
-            "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": repr(
-                float(np.max(np.abs(plain2 - plain)))),
+            "per_item_max_abs_diff": repr(d1_item),
+            "per_item_max_abs_diff_nohook_vs_nohook_FLOOR": fl["max_difference_per_item_max"],
             "per_item_max_abs_diff_in_float32_ulps": repr(
-                float(np.max(np.abs(li - plain))
-                      / float(np.spacing(np.float32(np.max(np.abs(plain))))))),
+                float(d1_item / float(np.spacing(np.float32(np.max(np.abs(plain))))))),
+            "ulps_level": "the ULP figure above is the PER-ITEM level; the loss-level "
+                          "difference is a different and larger number of ULPs and is not "
+                          "the same statistic",
+            "abs_diff_loss_in_float32_ulps": repr(
+                float(d1 / float(np.spacing(np.float32(abs(p0)))))),
+            "floor_nohook_vs_nohook": fl,                                  # A3
+            "descriptive_hook_diff_le_max_floor": {                        # A3, UNREGISTERED
+                "registered": False,
+                "replaces_the_verdict": False,
+                "what": "is the with-hook difference no larger than the largest of the K "
+                        "no-hook-vs-no-hook differences of the same state? Descriptive only: "
+                        "it does not enter, soften or override the P1' pass/fail above, which "
+                        "is the registered 1e-6 on the loss.",
+                "k": fl["k"],
+                "loss_level": {
+                    "hook_diff": repr(d1),
+                    "max_floor": fl["max_difference_loss"],
+                    "hook_diff_le_max_floor":
+                        (bool(d1 <= max(float(x) for x in fl["differences_loss"]))
+                         if fl["differences_loss"] else None),
+                },
+                "per_item_level": {
+                    "hook_diff": repr(d1_item),
+                    "max_floor": fl["max_difference_per_item_max"],
+                    "hook_diff_le_max_floor":
+                        (bool(d1_item <= max(float(x)
+                                             for x in fl["differences_per_item_max"]))
+                         if fl["differences_per_item_max"] else None),
+                },
+                "caveat_at_k_1": "at --floor-k 1 the floor is a sample of size one and this "
+                                 "comparison is a coin toss dressed as a bound",
+            },
             "pass": bool(np.array_equal(li, plain) or d1 <= P1_TOL),
+            "pass_level": "loss",
         },
         "P2prime_the_instrument_sees_something": {
             "what": "(i) the per-item vectors over the input cell types differ between items; "
                     "(ii) the 65-vector is not constant",
             "threshold_source": "the measured floor (README Sec 6); NEVER the data being judged",
+            "threshold_rule": P2_THRESHOLD_RULE,                       # A6
+            "threshold_rule_declared": P2_THRESHOLD_RULE_DECLARED,
+            "threshold_rule_multiplier": P2_FLOOR_MULTIPLIER,
+            "threshold_rule_applied_by": "--floor-summarize, which writes the products into "
+                                         "rowB_floor[_det].json; this block keeps its nulls "
+                                         "until that file exists",
             "i_input_type_vectors_differ_between_items": {
                 "input_type_indices": [int(i) for i in input_type_idx],
                 "n_item_pairs": len(pair),
@@ -645,9 +1097,26 @@ def service_fields():
         "hook_kind": "record",
         "activity_mutated": False,
         "recording_detached": True,
-        "note": "recording_detached means the hook calls .detach() and moves the tensor to "
-                "CPU before any reduction; activity_mutated=false is asserted in the hook "
-                "(`state.nodes.activity is x` after the read), not assumed",
+        "note": "recording_detached means the hook calls .detach() inside the hook; the "
+                "reduction runs on the GPU and only the reduced per-type vectors (65) and the "
+                "central-cell vector (65) are moved to CPU; activity_mutated=false is asserted "
+                "in the hook (`state.nodes.activity is x` after the read), not assumed",
+        "reduction_path": RUNTIME["reduction_path"],
+        "reduction_device": (
+            "the activity's own device (GPU)" if RUNTIME["reduction_path"] == "gpu"
+            else "the host (CPU): the detached activity is moved off the GPU before the "
+                 "reduction (A5, --reduce-on cpu)") +
+            "; float64 index_add_ on the GPU may sum in a different order than on the CPU, so "
+            "the last bits can differ. The three-checkpoint outputs of 2026-09-20 in this "
+            "directory were produced on the CPU path and are SUPERSEDED, not mixed.",
+        "deterministic": bool(RUNTIME["deterministic"]),
+        "determinism_mode": (
+            "torch.use_deterministic_algorithms(True), cudnn.deterministic=True, "
+            "cudnn.benchmark=False (A4, --deterministic); outputs carry the _det suffix"
+            if RUNTIME["deterministic"] else
+            "as the nights ran: --no-determinism (diag1_eval_paths.build_solver:90-93, "
+            "run_individual.py:284-286); use_deterministic_algorithms is NOT set"),
+        "floor_k": int(RUNTIME["floor_k"]),
     }
 
 
@@ -655,17 +1124,21 @@ def service_fields():
 def write_profile_csv(path, entry, axis, item_names):
     keys = ["mean_by_type", "std_by_type", "last_frame_by_type", "central_cell_mean",
             "mean_by_type_skip_first_quarter", "central_cell_mean_skip_first_quarter"]
-    hdr = (["netdir", "run_label", "chkpt_index", "chkpt_iter", "type"]
+    hdr = (["netdir", "run_label", "individual", "replicate_of", "chkpt_index", "chkpt_iter",
+            "type"]
            + [f"agg_{k}" for k in keys]
            + [f"mean_by_type_item_{n}" for n in item_names]
            + [f"central_skip_item_{n}" for n in item_names])
     lines = [f"# {STATUS}; readable_as_verdict=false",
              f"# axis_sha256={axis['axis_sha256']} script_sha256={sha256_file(__file__)}",
              f"# agg_* = mean over the {len(item_names)} held-out items",
+             f"# reduction_path={RUNTIME['reduction_path']} "
+             f"deterministic={str(bool(RUNTIME['deterministic'])).lower()}",
              ",".join(hdr)]
     V = entry["_arrays"]
     for i, T in enumerate(axis["type_labels"]):
         row = [entry["run"]["netdir"], entry["run"]["run_label"],
+               str(entry["run"]["individual"]), str(entry["run"]["replicate_of"]),
                str(entry["run"]["chkpt_index"]), str(entry["run"]["chkpt_iter"]), T]
         row += [repr(float(V[k][:, i].mean())) for k in keys]
         row += [repr(float(x)) for x in V["mean_by_type"][:, i]]
@@ -680,12 +1153,19 @@ def dry_run(a, reg, runs):
         "%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "git_head": git_head(),
         "script_sha256": sha256_file(__file__), "out_dir": str(Path(a.out_dir).resolve()),
         "run_registry_source": str(RUN_COLUMNS),
+        "scope": ("the ten complete runs of nights 1-5 (--night all10)"
+                  if a.night == "all10" else
+                  (f"--night {a.night}" if a.night else f"--netdir {a.netdir}")),
+        "N": individuals_of(runs),
         "wave_witnesses": cross_check_waves(reg), "runs": []}
     axis = None
     total_pairs = 0
     for e in runs:
         act = announce_activity_h5(e["netdir"])          # FIRST, always
         tab = chkpt_table_netdir(e["netdir"])
+        label_check = check_netdir_unambiguous(e)
+        n_files = check_run_complete(e, tab) if a.night == "all10" else len(
+            list((Path(e["netdir"]) / "chkpts").glob("chkpt_*")))
         meta = run_meta(e["netdir"])
         if axis is None:
             cdir = find_connectome_dir(meta["connectome"])
@@ -706,8 +1186,14 @@ def dry_run(a, reg, runs):
         plan["runs"].append({
             "netdir": e["netdir"], "run_label": e["run_label"], "run_id": e["run_id"],
             "seed": e["seed"], "role": e["role"], "night": e["night"],
+            "individual": e["individual"], "individual_label": e["individual_label"],
+            "replicate_of": e["replicate_of"],
+            "is_individual_representative": e["is_individual_representative"],
+            "n_runs_of_this_individual": e["n_runs_of_this_individual"],
             "twin_of": e["twin_of"], "twin_of_canonical": e["twin_of_canonical"],
+            "label_unambiguous_on_disk": label_check,
             "activity_h5": act,
+            "n_checkpoint_files_on_disk": n_files,
             "n_checkpoints_on_disk": len(tab),
             "chkpt_index_range": [tab[0][0], tab[-1][0]],
             "chkpt_iter_first_last": [tab[0][1], tab[-1][1]],
@@ -731,13 +1217,23 @@ def dry_run(a, reg, runs):
     nf_assumed, ni_assumed = 40, 16
     per_pair = (2 * ni_assumed * (n_types or 0) * nf_assumed
                 + 6 * ni_assumed * (n_types or 0)) * 8
+    per_pair_evals = a.floor_k + 3
     plan["plan"] = {
+        "n_runs": len(runs),
+        "n_individuals": plan["N"]["n_individuals"],
         "n_run_checkpoint_pairs": total_pairs,
-        "evaluations_per_pair": 4,
-        "evaluations_total": 4 * total_pairs,
-        "evaluations_breakdown": "2 no-hook per-item evaluations (P0, and its own "
-                                 "no-hook-vs-no-hook floor for P1') + 1 rung-hook path (P0's "
-                                 "second reading) + 1 with the recorder",
+        "floor_k": a.floor_k,
+        "evaluations_per_pair": per_pair_evals,
+        "evaluations_total": per_pair_evals * total_pairs,
+        "evaluations_breakdown": f"{a.floor_k + 1} no-hook per-item evaluations (P0, plus its "
+                                 f"own no-hook-vs-no-hook floor of K={a.floor_k} differences "
+                                 f"at both levels) + 1 rung-hook path (P0's second reading) "
+                                 f"+ 1 with the recorder",
+        "evaluations_total_at_floor_k_1": 4 * total_pairs,
+        "evaluations_total_at_floor_k_5": 8 * total_pairs,
+        "deterministic": bool(a.deterministic),
+        "reduction_path": a.reduce_on,
+        "output_suffix": "_det" if a.deterministic else "(none)",
         "projected_steps_h5_bytes_uncompressed": per_pair * total_pairs,
         "projected_steps_h5_note": f"at n_items={ni_assumed}, n_frames={nf_assumed}; gzip-4 is "
                                    f"applied, so the file on disk is smaller. Decide before "
@@ -752,14 +1248,18 @@ def dry_run(a, reg, runs):
                               "central_cell_mean_skip_first_quarter"],
         "matrix_shape": ["n_items", n_types],
         "steps_by_type_shape": ["n_items", n_types, "n_frames"],
-        "outputs": ["rowB_records.json", "rowB_axis.json", "rowB_controls.json",
-                    "rowB_profiles_<run_label>_<chkpt_iter>.csv",
-                    "rowB_steps_<run_label>.h5"],
+        "outputs": [out_name(a, "rowB_records", "json"), out_name(a, "rowB_axis", "json"),
+                    out_name(a, "rowB_controls", "json"),
+                    out_name(a, "rowB_profiles_<run_label>_<chkpt_iter>", "csv"),
+                    out_name(a, "rowB_steps_<run_label>", "h5")],
     }
     print(json.dumps(plan, indent=1))
     Path(a.out_dir).mkdir(parents=True, exist_ok=True)
-    (Path(a.out_dir) / "rowB_dryrun.json").write_text(json.dumps(plan, indent=1), encoding="utf-8")
-    print(f"DRY-RUN OK  pairs={total_pairs}  evaluations={4 * total_pairs}  "
+    (Path(a.out_dir) / out_name(a, "rowB_dryrun", "json")).write_text(
+        json.dumps(plan, indent=1), encoding="utf-8")
+    print(f"DRY-RUN OK  runs={len(runs)}  individuals={plan['N']['n_individuals']}  "
+          f"pairs={total_pairs}  floor_k={a.floor_k}  "
+          f"evaluations={per_pair_evals * total_pairs}  "
           f"axis_sha256={axis['axis_sha256'] if axis else None}", flush=True)
     print("NOTHING WAS EVALUATED: no checkpoint was loaded, no network was run.", flush=True)
     return 0
@@ -780,9 +1280,9 @@ def choose_chkpts(spec, tab):
 
 # ---------------------------------------------------------------- the real run
 def real_run(a, reg, runs):
-    torch, D, ABL, RB = _gpu_imports()
+    torch, D, ABL, RB, det_before = _gpu_imports(a.deterministic)
     import flyvis
-    RecorderB = make_recorder_class(torch, RB)
+    RecorderB = make_recorder_class(torch, RB, reduce_on=a.reduce_on)
 
     out = Path(a.out_dir)
     out.mkdir(parents=True, exist_ok=True)
@@ -790,6 +1290,12 @@ def real_run(a, reg, runs):
     t_start = time.perf_counter()
 
     solver = D.build_solver(scratch)
+    # build_solver DELIBERATELY sets cudnn.deterministic = False and benchmark = False
+    # (diag1_eval_paths.py:90-93, reproducing run_individual.py:284-286 under
+    # --no-determinism).  Under --deterministic the two cudnn flags are therefore re-applied
+    # after it, and BOTH applications are recorded, so the record shows the order rather than
+    # a final state that could have come from either.
+    det_after = apply_determinism(torch, a.deterministic, "after_build_solver")
     net = solver.network
     device = flyvis.device
 
@@ -825,15 +1331,26 @@ def real_run(a, reg, runs):
         "FLYVIS_ROOT_DIR": os.environ.get("FLYVIS_ROOT_DIR"),
         "device": str(device),
         "gpu": torch.cuda.get_device_name(0) if torch.cuda.is_available() else None,
+        "gpu_instrument": gpu_instrument_labels(torch),  # B3: driver/CUDA-runtime provenance
         "cudnn_deterministic": bool(torch.backends.cudnn.deterministic),
         "cudnn_benchmark": bool(torch.backends.cudnn.benchmark),
+        "deterministic": bool(a.deterministic),
+        "determinism_applied": {"before_any_cuda_work": det_before,
+                                "after_build_solver": det_after},
         "determinism_note": "set by diag1_eval_paths.build_solver:90-93, which reproduces "
                             "run_individual.py:284-286 under --no-determinism, the flag every "
                             "night wave ran under (wave_night4.json / wave_night5.json "
-                            "\"no_determinism\": true)",
+                            "\"no_determinism\": true)"
+                            + (" -- and then OVERRIDDEN by --deterministic (A4): "
+                               "use_deterministic_algorithms(True), cudnn.deterministic=True, "
+                               "cudnn.benchmark=False. This is a DIFFERENT instrument from the "
+                               "nights' evaluation path and writes under _det names."
+                               if a.deterministic else ""),
+        "reduction_path": a.reduce_on,
+        "floor_k": int(a.floor_k),
         "scratch_netdir": str(solver.dir.path),
     }
-    (out / "rowB_axis.json").write_text(json.dumps(
+    (out / out_name(a, "rowB_axis", "json")).write_text(json.dumps(
         {**service_fields(), "env": env, "axis": axis, "axis_vs_rowA": axis_vs_rowA,
          "input_cell_types": input_types,
          "output_cell_types": [x.decode() if isinstance(x, bytes) else str(x)
@@ -841,12 +1358,20 @@ def real_run(a, reg, runs):
         indent=1), encoding="utf-8")
 
     records = {**service_fields(), "env": env, "axis_sha256": axis["axis_sha256"],
-               "axis_rowA_sha256": axis["axis_rowA_sha256"], "entries": []}
-    controls = {**service_fields(), "env": env, "entries": RB.NoDupDict()}
+               "axis_rowA_sha256": axis["axis_rowA_sha256"],
+               "N": individuals_of(runs), "entries": []}
+    controls = {**service_fields(), "env": env, "N": individuals_of(runs),
+                "p2prime_threshold_rule": {"rule": P2_THRESHOLD_RULE,
+                                           "declared": P2_THRESHOLD_RULE_DECLARED,
+                                           "multiplier": P2_FLOOR_MULTIPLIER},
+                "entries": RB.NoDupDict()}
 
     for e in runs:
         announce_activity_h5(e["netdir"])                         # FIRST, always
         tab = chkpt_table_netdir(e["netdir"])
+        check_netdir_unambiguous(e)
+        if a.night == "all10":
+            check_run_complete(e, tab)
         meta = run_meta(e["netdir"])
         ap = meta["activity_penalty"]
         if int(solver.penalty.activity_penalty_stop_iter) != ap["stop_iter"]:
@@ -855,14 +1380,20 @@ def real_run(a, reg, runs):
                 f"scratch solver's {solver.penalty.activity_penalty_stop_iter}; the penalty "
                 f"constants must come from the run, and the two must not diverge silently")
         chosen = choose_chkpts(a.chkpts, tab)
-        h5path = out / f"rowB_steps_{e['run_label']}.h5"
+        h5path = out / out_name(a, f"rowB_steps_{e['run_label']}", "h5")
         if a.floor_repeat is not None:
-            h5path = out / f"rowB_floor_steps_{e['run_label']}_proc{a.floor_repeat}.h5"
+            h5path = out / out_name(
+                a, f"rowB_floor_steps_{e['run_label']}_proc{a.floor_repeat}", "h5")
         with h5py.File(h5path, "w") as fh:
             fh.attrs["status"] = STATUS
             fh.attrs["readable_as_verdict"] = False
             fh.attrs["axis_sha256"] = axis["axis_sha256"]
             fh.attrs["netdir"] = e["netdir"]
+            fh.attrs["individual"] = int(e["individual"])
+            fh.attrs["replicate_of"] = json.dumps(e["replicate_of"])
+            fh.attrs["deterministic"] = bool(a.deterministic)     # A4
+            fh.attrs["reduction_path"] = a.reduce_on              # A5/G
+            fh.attrs["floor_k"] = int(a.floor_k)
             fh.attrs["type_labels"] = json.dumps(axis["type_labels"])
             fh.attrs["item_names"] = json.dumps(item_names)
             fh.attrs["axes"] = "steps_by_type[item, type, frame]"
@@ -875,8 +1406,10 @@ def real_run(a, reg, runs):
                                   f"file says {info['stored_iteration']}")
 
                 t0 = time.perf_counter()
-                plain = np.array(D.per_item_eval(solver, t_pre=T_PRE)["flow"], dtype=np.float64)
-                plain2 = np.array(D.per_item_eval(solver, t_pre=T_PRE)["flow"], dtype=np.float64)
+                # A3: K+1 no-hook evaluations of the SAME state.  plains[0] is P0's reading;
+                # the other K are the floor, differenced against it at both levels.
+                plains = [np.array(D.per_item_eval(solver, t_pre=T_PRE)["flow"],
+                                   dtype=np.float64) for _ in range(a.floor_k + 1)]
                 hook_val = D.hook_eval(solver)
                 li, means, stds, centrals, inv, ncalls = eval_with_recorder(
                     torch, D, RB, RecorderB, solver, ctx)
@@ -902,6 +1435,13 @@ def real_run(a, reg, runs):
                         "netdir": e["netdir"], "run_id": e["run_id"],
                         "run_label": e["run_label"], "seed": e["seed"], "role": e["role"],
                         "run_index_for_seed": e["run_index_for_seed"], "night": e["night"],
+                        "individual": e["individual"],
+                        "individual_label": e["individual_label"],
+                        "replicate_of": e["replicate_of"],
+                        "is_individual_representative": e["is_individual_representative"],
+                        "n_runs_of_this_individual": e["n_runs_of_this_individual"],
+                        "N_note": "N is counted in individuals, not runs; a replicate run is "
+                                  "the same individual measured again and does not enter N",
                         "twin_of": e["twin_of"], "twin_of_canonical": e["twin_of_canonical"],
                         "chkpt_index": int(ci),
                         "chkpt_iter": int(chkpt_iter),
@@ -947,11 +1487,11 @@ def real_run(a, reg, runs):
                 entry["_arrays"] = red
                 key = (e["netdir"], int(ci))
                 controls["entries"][repr(key)] = controls_block(
-                    red, li, plain, plain2, hook_val, info["stored_val_loss"], input_type_idx)
-                csv_name = (f"rowB_profiles_{e['run_label']}_{chkpt_iter}.csv"
+                    red, li, plains, hook_val, info["stored_val_loss"], input_type_idx)
+                csv_name = (out_name(a, f"rowB_profiles_{e['run_label']}_{chkpt_iter}", "csv")
                             if a.floor_repeat is None else
-                            f"rowB_floor_profiles_{e['run_label']}_{chkpt_iter}"
-                            f"_proc{a.floor_repeat}.csv")
+                            out_name(a, f"rowB_floor_profiles_{e['run_label']}_{chkpt_iter}"
+                                        f"_proc{a.floor_repeat}", "csv"))
                 write_profile_csv(out / csv_name, entry, axis, item_names)
                 del entry["_arrays"]
                 if a.floor_repeat is not None:
@@ -965,8 +1505,10 @@ def real_run(a, reg, runs):
     controls["entries"] = dict(controls["entries"])
     records["wall_s_total"] = round(time.perf_counter() - t_start, 1)
     suffix = "" if a.floor_repeat is None else f"_floor_proc{a.floor_repeat}"
-    (out / f"rowB_records{suffix}.json").write_text(json.dumps(records, indent=1), encoding="utf-8")
-    (out / f"rowB_controls{suffix}.json").write_text(json.dumps(controls, indent=1), encoding="utf-8")
+    (out / out_name(a, f"rowB_records{suffix}", "json")).write_text(
+        json.dumps(records, indent=1), encoding="utf-8")
+    (out / out_name(a, f"rowB_controls{suffix}", "json")).write_text(
+        json.dumps(controls, indent=1), encoding="utf-8")
     print("DONE", records["wall_s_total"], "s", flush=True)
     return 0
 
@@ -979,12 +1521,34 @@ def floor_summarize(a):
     THIS metric at THIS (run, checkpoint), never borrowed from the ablation (README Sec 6).
     """
     out = Path(a.out_dir)
-    procs = sorted(out.glob("rowB_records_floor_proc*.json"))
+    procs = sorted(out.glob(out_name(a, "rowB_records_floor_proc*", "json")))
+    if not RUNTIME["deterministic"]:
+        # `proc*` also matches the `_det` files lying beside them once both modes exist;
+        # the normal-mode summary must not pick up the other instrument's repeats.
+        procs = [p for p in procs if not p.stem.endswith("_det")]
     if len(procs) < 3:
         raise Refusal(f"the floor needs 3 fresh-process repeats; found {len(procs)} in {out}")
     blocks = [json.loads(p.read_text(encoding="utf-8")) for p in procs]
     if any(len(b["entries"]) != 1 for b in blocks):
         raise Refusal("each floor process must hold exactly one (run, checkpoint) entry")
+    # A6: "same path, same mode" is part of the rule, so it is checked and not assumed.
+    modes = {(b.get("reduction_path"), bool(b.get("deterministic"))) for b in blocks}
+    if len(modes) != 1:
+        raise Refusal(f"the floor processes do not share one instrument: {sorted(modes)}; a "
+                      f"threshold may only be built from a floor measured on the same "
+                      f"reduction path and the same determinism mode")
+    mode = sorted(modes)[0]
+    # B2 (2026-09-20): `floor_k` means "K no-hook floor repeats inside one process" in the
+    # per-process records/controls -- it is a real setting there.  In THIS summary it used to
+    # be RUNTIME["floor_k"], i.e. --floor-summarize's own unused default, which meant nothing.
+    # It is now read from the three per-process record files themselves, and a disagreement is
+    # a refusal: a summary may not silently average over floors measured at different K.
+    floor_ks_inside = {int(b["floor_k"]) for b in blocks}
+    if len(floor_ks_inside) != 1:
+        raise Refusal(f"the three floor processes do not share one floor_k (the K of no-hook "
+                      f"repeats inside each process): {sorted(floor_ks_inside)}; a floor may "
+                      f"not be summarized across processes run at different K")
+    floor_k_inside_each_process = sorted(floor_ks_inside)[0]
     keys = ("mean_by_type", "central_cell_mean_skip_first_quarter")
     pairs = set()
     for b in blocks:
@@ -993,7 +1557,13 @@ def floor_summarize(a):
     if len(pairs) != 1:
         raise Refusal(f"the floor must be the SAME (run, checkpoint) in every process; got {pairs}")
     res = {**service_fields(), "n_processes": len(blocks), "source_files": [str(p) for p in procs],
-           "pair": sorted(pairs)[0], "by_quantity": {}}
+           "pair": sorted(pairs)[0],
+           "floor_instrument": {"reduction_path": mode[0], "deterministic": mode[1]},
+           "by_quantity": {}}
+    del res["floor_k"]  # B2: replaced by floor_k_inside_each_process below; see docstring.
+    res["floor_k_inside_each_process"] = floor_k_inside_each_process
+    res["floor_k_inside_each_process_source"] = "read from the three --floor-repeat record " \
+        "files' own top-level floor_k, and refused (exit 3) if they disagree"
     for k in keys:
         mats = []
         for b in blocks:
@@ -1001,27 +1571,89 @@ def floor_summarize(a):
             d = e["aggregate_over_items"][k]
             mats.append(np.array([float(d[t]) for t in d]))
         M = np.stack(mats)
+        # B1 (2026-09-20, Ark / CC): M.std(axis=0, ddof=1) over three BITWISE-IDENTICAL float64
+        # rows can return ~2e-15 instead of exactly 0 -- numpy's mean of identical values is not
+        # always exactly that value, so the variance computed from it is not always exactly
+        # zero either. Guard: where the range (max - min) across the three processes is exactly
+        # 0 for a type, sigma for that type is exactly 0.0, never the rounding residue.
+        rng = M.max(axis=0) - M.min(axis=0)
+        raw_sigma = M.std(axis=0, ddof=1)
+        sigma_by_type = np.where(rng == 0.0, 0.0, raw_sigma)
         res["by_quantity"][k] = {
-            "sigma_by_type": [repr(float(x)) for x in M.std(axis=0, ddof=1)],
-            "max_sigma_by_type": repr(float(M.std(axis=0, ddof=1).max())),
+            "sigma_by_type": [repr(float(x)) for x in sigma_by_type],
+            "max_sigma_by_type": repr(float(sigma_by_type.max())),
             "max_abs_pairwise_difference": repr(float(np.max(
                 [np.max(np.abs(M[i] - M[j])) for i in range(len(M)) for j in range(i + 1, len(M))]))),
         }
-    (out / "rowB_floor.json").write_text(json.dumps(res, indent=1), encoding="utf-8")
-    print("FLOOR WROTE", out / "rowB_floor.json", flush=True)
+    res["p2prime_thresholds"] = p2prime_thresholds(res)
+    path = out / out_name(a, "rowB_floor", "json")
+    path.write_text(json.dumps(res, indent=1), encoding="utf-8")
+    print("FLOOR WROTE", path, flush=True)
+    print(f"P2' THRESHOLDS = {P2_FLOOR_MULTIPLIER} x the measured floor "
+          f"(rule declared {P2_THRESHOLD_RULE_DECLARED}, before any floor existed)", flush=True)
     return 0
+
+
+def p2prime_thresholds(res):
+    """A6: apply the multiplier declared 2026-09-20 to the floor just measured.
+
+    A COMPUTATION, NOT A JUDGEMENT.  The multiplier and the rule are constants at the top of
+    this file, written down before any floor for this metric existed; this function only
+    multiplies and records which floor it multiplied.
+
+    Both P2' statistics are read off `mean_by_type` -- (i) the largest/smallest pairwise
+    difference between item vectors restricted to the input types, (ii) the spread of the
+    aggregate 65-vector -- so both take the `mean_by_type` floor.  The central-cell threshold
+    is written beside them for the penalised reduction, which has its own scale.
+    """
+    base = res["by_quantity"]
+    instrument = res["floor_instrument"]
+    def scaled(q):
+        f = float(base[q]["max_abs_pairwise_difference"])
+        return {"floor_quantity": q,
+                "floor_max_abs_pairwise_difference": base[q]["max_abs_pairwise_difference"],
+                "floor_max_sigma_by_type": base[q]["max_sigma_by_type"],
+                "multiplier": P2_FLOOR_MULTIPLIER,
+                "threshold": repr(P2_FLOOR_MULTIPLIER * f),
+                # B4 (2026-09-20): the mode is part of the threshold, stated on the same line
+                # as the threshold and not only in this file's header.
+                "reduction_path": instrument["reduction_path"],
+                "deterministic": instrument["deterministic"],
+                "mode_is_part_of_this_threshold": "this number is valid only for the "
+                    "reduction_path and deterministic mode named on this same line; it is not "
+                    "portable to the other mode even at the same multiplier"}
+    return {
+        "rule": P2_THRESHOLD_RULE,
+        "rule_declared": P2_THRESHOLD_RULE_DECLARED,
+        "rule_declared_before_any_floor_existed": True,
+        "honest_note": "the P2' statistics of the three-checkpoint run of 2026-09-20 were "
+                       "already visible to reviewers before this multiplier was declared; the "
+                       "multiplier is a round number chosen for that reason and not tuned",
+        "applies_to_instrument": res["floor_instrument"],
+        "i_input_type_vectors_differ_between_items": scaled("mean_by_type"),
+        "ii_the_65_vector_is_not_constant": scaled("mean_by_type"),
+        "central_cell_mean_skip_first_quarter":
+            scaled("central_cell_mean_skip_first_quarter"),
+        "where_applied": "these thresholds are written HERE, in the floor file. The controls "
+                         "files keep the nulls they were written with; nothing already "
+                         "written is edited after the fact.",
+    }
 
 
 # ---------------------------------------------------------------- cli
 def parse_args(argv=None):
     p = argparse.ArgumentParser(
-        description="Row B passive activity recording for the checkpoints of nights 4 and 5. "
+        description="Row B passive activity recording on the complete runs of nights 1-5. "
                     "UNREGISTERED DIAGNOSTIC -- no number it produces is a verdict.")
     p.add_argument("--netdir", action="append", default=[],
                    help="a run directory (or its run_id, e.g. 9992/003). Repeatable. "
                         "Runs are keyed by netdir, never by label.")
-    p.add_argument("--night", choices=["4", "5", "all"], default=None,
-                   help="select every run of that night from results/night5/run_columns.csv")
+    p.add_argument("--night", choices=["4", "5", "all", "all10"], default=None,
+                   help="select runs from results/night5/run_columns.csv: '4' / '5' one "
+                        "night, 'all' nights 4 and 5 (four runs), 'all10' THE TEN COMPLETE "
+                        "RUNS of nights 1-5 (six individuals; A1). 'all10' refuses (exit 3) "
+                        "any run that does not hold exactly 72 checkpoints and any netdir "
+                        "whose label is ambiguous on disk.")
     p.add_argument("--chkpts", default="all",
                    help="'all' or a comma-separated list of checkpoint INDICES, e.g. 0,8,71")
     p.add_argument("--out-dir", default=str(HERE))
@@ -1034,11 +1666,34 @@ def parse_args(argv=None):
                         "(README Sec 6). Outputs are written under _floor_procN names.")
     p.add_argument("--floor-summarize", action="store_true",
                    help="no GPU: read the three --floor-repeat records already in --out-dir "
-                        "and write rowB_floor.json (sigma by type, sigma of the metric).")
+                        "and write rowB_floor[_det].json (sigma by type, sigma of the metric, "
+                        "and the P2' thresholds from the rule declared 2026-09-20).")
+    p.add_argument("--floor-k", type=int, default=1, metavar="K",
+                   help="A3: evaluate the same state with NO hook K+1 times per (run, "
+                        "checkpoint) and record all K no-hook-vs-no-hook differences at both "
+                        "levels (per-item max and the loss) plus their maxima. Default 1, "
+                        "which reproduces the earlier two-evaluation behaviour exactly. Costs "
+                        "K+3 evaluations per pair instead of 4.")
+    p.add_argument("--deterministic", action="store_true",
+                   help="A4: set torch.use_deterministic_algorithms(True), "
+                        "cudnn.deterministic=True, cudnn.benchmark=False before any CUDA work. "
+                        "A DIFFERENT INSTRUMENT from the nights' path: every output is written "
+                        "under a _det name so the two can never be mixed. If PyTorch refuses "
+                        "an operator, the script names it in rowB_nondeterministic_op_det.json "
+                        "and exits 4 -- that is a finding, not a crash. Training flags are not "
+                        "touched.")
+    p.add_argument("--reduce-on", choices=["gpu", "cpu"], default="gpu",
+                   help="A5: where the hook's float64 index_add_ runs. Default gpu (the "
+                        "owner's GPU-first instruction). 'cpu' moves the detached activity to "
+                        "the host before reducing, so the forward can be tested under "
+                        "--deterministic with index_add_ -- which is on PyTorch's "
+                        "nondeterministic CUDA list -- off the GPU.")
     p.add_argument("--netdir-root", default=None,
                    help="scratch datamate root for the throw-away solver directory "
                         "(must contain 'scratchpad'; diag1_eval_paths.build_solver:116)")
     a = p.parse_args(argv)
+    if a.floor_k < 1:
+        p.error("--floor-k must be at least 1: a floor needs at least one repeat")
     if a.floor_summarize:
         return a
     if not a.netdir and a.night is None:
@@ -1052,6 +1707,9 @@ def parse_args(argv=None):
 
 def main(argv=None):
     a = parse_args(argv)
+    RUNTIME["deterministic"] = bool(a.deterministic)
+    RUNTIME["reduction_path"] = a.reduce_on
+    RUNTIME["floor_k"] = int(a.floor_k)
     if a.floor_summarize:
         return floor_summarize(a)
     reg = read_run_columns()
@@ -1060,9 +1718,27 @@ def main(argv=None):
         raise Refusal("no runs selected")
     if a.floor_repeat is not None and len(runs) != 1:
         raise Refusal("--floor-repeat needs exactly one --netdir")
+    N = individuals_of(runs)
     print(f"# {STATUS}; readable_as_verdict=false; "
-          f"{len(runs)} run(s): {[r['run_label'] for r in runs]}", flush=True)
-    return dry_run(a, reg, runs) if a.dry_run else real_run(a, reg, runs)
+          f"{N['n_runs']} run(s) = {N['n_individuals']} individual(s) "
+          f"(N is counted in individuals): {[r['run_label'] for r in runs]}; "
+          f"reduction_path={a.reduce_on} deterministic={str(bool(a.deterministic)).lower()} "
+          f"floor_k={a.floor_k}", flush=True)
+    if a.dry_run:
+        return dry_run(a, reg, runs)
+    # A4: a refused operator is a FINDING.  It is caught here, at top level, named in a json
+    # beside the other outputs, and exits 4 -- distinct from the refusals' 3.
+    try:
+        return real_run(a, reg, runs)
+    except RuntimeError as exc:
+        if "does not have a deterministic implementation" not in str(exc):
+            raise
+        payload = nondeterministic_finding(exc, a)
+        outp = Path(a.out_dir)
+        outp.mkdir(parents=True, exist_ok=True)
+        path = outp / out_name(a, "rowB_nondeterministic_op", "json")
+        path.write_text(json.dumps(payload, indent=1), encoding="utf-8")
+        raise NondeterministicOperator(path, payload) from None
 
 
 if __name__ == "__main__":
