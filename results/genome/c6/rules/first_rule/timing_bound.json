@@ -1,0 +1,24 @@
+{
+ "what": "An upper bound, not a run of the procedure: the cost of one sweep in the heaviest state\n    the caps allow (40 rules, every label used), times 50 sweeps times k restarts. The\n    primitives are timed on shuffled bank 0's fold-0 split with a random 40-rule state.",
+ "candidate_16_levels_s": 4.773535000276752e-05,
+ "flip_s": 1.68289499997627e-05,
+ "leak_s": 0.0006745134998345747,
+ "worst_sweep_s": 0.022584398900158703,
+ "k10": {
+  "worst_fit_s": 11.292199450079352,
+  "hours_1315_fits_1_core": 4.12478952134843,
+  "hours_1315_fits_16_cores": 0.2577993450842769
+ },
+ "k3": {
+  "worst_fit_s": 3.3876598350238054,
+  "hours_1315_fits_1_core": 1.237436856404529,
+  "hours_1315_fits_16_cores": 0.07733980352528307
+ },
+ "machine": {
+  "platform": "Windows-10-10.0.26200-SP0",
+  "processor": "AMD64 Family 26 Model 68 Stepping 0, AuthenticAMD",
+  "cpu_count_logical": 32,
+  "numpy": "2.2.6",
+  "python": "3.10.20"
+ }
+}

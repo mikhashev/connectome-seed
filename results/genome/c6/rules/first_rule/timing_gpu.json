@@ -1,0 +1,41 @@
+{
+ "device": "NVIDIA RTX PRO 4500 Blackwell",
+ "torch": "2.9.1+cu128",
+ "one_fit_k10": {
+  "cpu_stage1_seconds": 0.25594030000502244,
+  "gpu_stage1_seconds": 3.7666176999919116,
+  "same_final_state_every_restart": true,
+  "same_sweep_count_every_restart": true,
+  "max_abs_J_difference_along_trajectories_bits": 4.547473508864641e-13,
+  "sweeps_per_restart": [
+   4,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   5,
+   1,
+   1
+  ],
+  "cpu_full_fit_seconds": 0.2907350000459701,
+  "gpu_full_fit_seconds": 3.73416079999879,
+  "same_fitted_data": true
+ },
+ "batched_fits": {
+  "n_fits": 32,
+  "chains": 320,
+  "gpu_stage1_seconds_total": 20.025901299959514,
+  "gpu_stage1_seconds_per_fit": 0.6258094156237348,
+  "cpu_stage1_seconds_per_fit_1_core (first 10 fits)": 0.20819267000188119,
+  "first_100_chains_same_final_state_as_cpu": true
+ },
+ "machine": {
+  "platform": "Windows-10-10.0.26200-SP0",
+  "processor": "AMD64 Family 26 Model 68 Stepping 0, AuthenticAMD",
+  "cpu_count_logical": 32,
+  "numpy": "2.2.6",
+  "python": "3.10.20"
+ }
+}
