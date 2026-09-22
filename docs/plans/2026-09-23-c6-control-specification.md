@@ -755,3 +755,20 @@ is reported as such.
   or the acceptance file change. Amendments may only append.
 - **The hub check** (acceptance file §(g)) is computed and reported. It **does not change P3**.
   The acceptance file registered it as report-only.
+
+#### A23. Acceptance, part 2, registered before the A6 object — *adds*
+
+`docs/plans/2026-09-23-c6-amendment-acceptance-2.md`, sha256 (LF-normalised)
+`4b6610e7ed30b6aaeccf6ea33008485fc3ec31a1869b93f74c78b7248f2e97f9`.
+
+It registers the following:
+
+- **The weak object A6** (PR-sh). It must pass P1, P3 and P4 and lose on the budget arm alone.
+- **A6-D.** A check of whether any object can do that within the size limit.
+- **The role of the budget arm.** Ark (genome track, 2026-09-23 21:35 and 21:44 UTC) states
+  it. R1 and the narrow band are one fact.
+- **The naming** of k90 (a component count) as distinct from H18 and U18 (sets of types).
+- **The scope of A1.**
+
+The harness refuses to run if this file changes. The amendment of A17–A22 was accepted (Ark, content review, 2026-09-23
+21:35 and 21:44 UTC; Zcode, owner of record of C6, mechanical check, 2026-09-23 21:43 UTC).

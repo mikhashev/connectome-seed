@@ -23,5 +23,26 @@ run.**
 - So the two artefacts measure different objects. A rule that gets a shape right only up to
   rotation scores as wrong here.
 
+**What the budget arm is for** (Ark, genome track, 2026-09-23 21:35 and 21:44 UTC, translated
+from Russian):
+
+> "The Clune threshold here is defended by P1/P2 against N0/N1/N_EB/BF. The budget arm defends
+> something else: the rule must not be a partial download of the answer. In the 7.7–9.5 kbit
+> band the verdict rests on N1 and the shuffle, not on storage."
+
+R1's recorded failure and that narrow band are one fact: honest storage of this matrix is a weak
+predictor at any length we can afford. Its home is
+`docs/plans/2026-09-23-c6-amendment-acceptance-2.md` §2.
+
+**Three different "18"s.**
+
+- **k90 = 18** is a *component count*: the singular components of L = ln(1 + N) that hold 90 %
+  of its energy.
+- **H18** is a *set of types*: the top 18 types by leverage at rank k90.
+- **U18** is a *set of types*: the top 18 types by the fraction of their cells left unmoved by
+  the shuffles.
+- The set size 18 in H18 and U18 was borrowed from k90.
+- The harness's L equals `regularity.py`'s L exactly: 0 of 4,225 cells differ.
+
 Run (CPU, from the repository root):
 `tools/.venv/Scripts/python.exe results/genome/c6/harness.py --controls`

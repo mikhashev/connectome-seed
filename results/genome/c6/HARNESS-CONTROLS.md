@@ -107,6 +107,10 @@ structure.
 | PR on PL0 (ρ = 0) | offset 0 wins vs N0; "did not run" | fails vs D_k^N1 and N1 | fails | 0.013 > 0.000 | FAIL |
 | PR, scrambled genome, on PL1 | offset 0 wins vs N1 | fails | fails | 0.017 < 0.074 | FAIL |
 
+**Scope of A1 (Ark).** PL1 has 617 non-empty cells and DL(bank) = 133,827 bits, against the real
+bank's 604 cells and 94,812 bits. So A1 speaks to the logic of the exam, not to the real bank's
+budget.
+
 So the exam accepts a small non-additive rule that is really there, at full and at half
 strength. It rejects the same family when the structure is absent (PL0), when the genome is
 wrong (scrambled), and when the rule is run on a bank it was not made for (the real fly, N2).
@@ -115,11 +119,21 @@ wrong (scrambled), and when the rule is run on a bank it was not made for (the r
 
 | quantity | value |
 |---|---|
-| overlap of H (the 18 types with the most leverage in the top 18 SVD components of L) and U (the 18 types whose cells the shuffle most often leaves in place) | **14 of 18**; 5.0 expected by chance; hypergeometric p = 1.1 × 10⁻⁷ |
+| overlap of **H18** (top-18 types by leverage at rank k90) and **U18** (top-18 types by the fraction of their cells left unmoved by the 99 shuffles) | **14 of 18**; 5.0 expected by chance; hypergeometric p = 1.1 × 10⁻⁷ |
 | Spearman correlation, leverage vs unmoved fraction | 0.81 (and 0.92 against total degree) |
-| share of L's energy in cells touching U, and touching H | 75 %, and 78 % |
+| share of L's energy in cells touching U18, and touching H18 | 75 %, and 78 % |
 | unmoved fraction per type | 0.04 to 0.49 |
 | overlap types | C3, L2, L5, Mi1, Mi4, Mi9, T2, Tm1, Tm2, Tm3, Tm4, TmY14, TmY15, TmY4 |
+
+**Naming.**
+
+- **k90 = 18** is a *component count*: the singular components of L = ln(1 + N) that hold 90 %
+  of its energy (`REGULARITY-READING.md` §2). It is not a set of types.
+- **H18** and **U18** are *sets of types*. Their size, 18, was borrowed from k90 by convention.
+- The harness's L equals `regularity.py`'s L exactly: 0 of 4,225 cells differ. `regularity.py`
+  sums the compiled `n_syn` over the `in_json` and `hull_filled` rows, where every hull row has
+  `n_syn = 1.0`. The harness adds 1.0 per hull row to the compiled `in_json` sum.
+- No number in this section changed with the renaming.
 
 Ark's hypothesis holds.
 
