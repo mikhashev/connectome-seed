@@ -138,6 +138,13 @@ Concretely, for the reachability endpoint:
 - It applies to any future instrument, not only to this endpoint — including the tuning
   battery and any genome-side readout.
 
+- **Added 2026-09-23, after the repository was made public.** Every value is now
+  publicly indexable, so an *external* blind author — someone outside this project — can no
+  longer be guaranteed not to have seen the numbers. The blind author this record requires is
+  the *internal* one (a fresh session, a value-free brief, the generated exclusion list), and
+  that remains fully workable. Named by Ark, reviewer, 2026-09-20 11:21 UTC, before publication; recorded by CC as an
+  accepted consequence of publication, subject to the owner's objection.
+
 ## Confirmation
 
 - [ ] v2 exists, and its own header names the session that wrote it and states that the
