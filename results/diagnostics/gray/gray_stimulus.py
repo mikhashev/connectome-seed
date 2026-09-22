@@ -6,7 +6,7 @@ Zcode, v3/v3.1 after the v2 run stopped at the copy-fidelity gate, v4 after the 
 there a second time).  The v2 launch (Mike's word, 2026-09-16 19:50:18Z) stopped at that gate
 (README_v2_gate_stop.md); the v3.1 launch (2026-09-16 20:14:03Z) stopped at it again
 (README_v31_gate_stop.md).  The v4 run was launched on Mike's explicit word in the DPC Research
-chat, 2026-09-17 08:14:48Z: «@CC_windows «запускай шаг 1».
+chat, 2026-09-17 08:14:48Z: «@CC_windows «run step 1» (translated from Russian).
 
 WHAT THIS SCRIPT DOES NOT DO: it never trains, never writes into
 connectome-seed-data/results/flow/9991/*, never calls solver.checkpoint() or
@@ -71,7 +71,7 @@ the readings are untouched):
 v5.1 CHANGES TO THIS SCRIPT (after the v4 run stopped at the 1e-4 mean ceiling; brief v5.1, commit
 fc7239d; conditions, transforms, per_item_eval_transformed, the evaluator reuse, the code gate and
 the readings logic are untouched).  Launched on Mike's explicit word in the DPC Research chat,
-2026-09-17 08:37:30Z: «@CC_windows «запускай шаг 1» (v5)»; v5.1 differs from v5 (b14f69f) only by
+2026-09-17 08:37:30Z: «@CC_windows «run step 1» (v5)» (translated from Russian); v5.1 differs from v5 (b14f69f) only by
 turning two single-call gates into records.
 - Numeric copy/original comparison (brief v5 Sec 6): five copy calls A_1..A_5 (identity transform)
   and five original calls B_1..B_5 on the same checkpoint in the same process; the ONLY gating
@@ -802,7 +802,7 @@ def task_main(a):
                   "differs from v5, b14f69f, only by turning two single-call gates into records: "
                   "per_item_mean - hook_eval() and iteration-0 bitwise equality)"),
         "launch": ("Mike's explicit word in the DPC Research chat, "
-                   "2026-09-17T08:37:30Z: «@CC_windows «запускай шаг 1» (v5)»; reviewer pass on "
+                   "2026-09-17T08:37:30Z: «@CC_windows «run step 1» (v5)» (translated from Russian); reviewer pass on "
                    "v5: Ark 08:27:19Z and 08:36:24Z, Zcode 08:28:59Z"),
         "ceilings": {"copy_vs_original": COPY_CEILING_TEXT, "P0": P0_CEILING_TEXT,
                      "fresh_process": FRESH_CEILING_TEXT},
@@ -1179,3 +1179,14 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
+
+
+# TRANSLATION NOTE, 2026-09-23 (appended at the end so that every line number cited elsewhere
+# stays valid): the Russian launch-word quotes of this file -- two docstring lines and the "launch"
+# string literal written into the output json's meta -- were translated into English on Mike's
+# word.  The Russian original is in git history at commit 2488ecb72d14aa5398149d9a727b58852873a091.
+# The recorded script_sha256 61eb8bf3068b0bc4a89568c144ab1a931c68a0c4a54659a24cd5b631fc067624
+# (gray_* records, README.md) refers to that original revision and reproduces there, not from this
+# revision.  The translated literal changes only outputs written from now on; outputs already on
+# disk keep the original string.  Old and new hashes and the citing records:
+# docs/notes/2026-09-23-translated-pinned-files.md.

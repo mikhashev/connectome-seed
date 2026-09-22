@@ -1,9 +1,9 @@
 # C3: trajectory jitter at 25,000 and the evaluator floor by path
-
+*Translated into English 2026-09-23 on Mike's word (one launch-word line); the Russian original is in git history at commit `2488ecb`, and `4e132696…` in `SHA256SUMS.txt` refers to that revision, not to this one — see [the translation note](../../../docs/notes/2026-09-23-translated-pinned-files.md).*
 **Status: PREVIEW DIAGNOSTIC -- NOT A TEST.** Protocol:
 `docs/briefs/2026-09-17-c3-jitter-and-evaluator-floor.md` **v1.2** (commit `97b48bb`), with its patch
 `docs/briefs/2026-09-17-c3-run_individual.patch`. Launch word: Mike in the DPC Research chat,
-2026-09-17 06:16:45Z («@CC_windows запускай замер C3»). Reviewer pass: Ark 06:31:27Z, Zcode 06:41:05Z.
+2026-09-17 06:16:45Z («@CC_windows run the C3 measurement» (translated from Russian)). Reviewer pass: Ark 06:31:27Z, Zcode 06:41:05Z.
 **Run by:** CC's subagent (Opus), 2026-09-17 06:47-07:31Z. Nothing here is interpreted beyond the
 brief's wording. All numbers are the `repr` strings from the files named; nothing is rounded except
 where this README says "≈".

@@ -1,56 +1,65 @@
-# The idea — verbatim
+# The idea — verbatim, in English translation
+
+*English translation of Mike's text, made 2026-09-13 on Mike's word (until 2026-09-23 it was
+kept as `idea_en.md` beside the Russian original). Placed in this file on 2026-09-23 on Mike's
+word, when the repository became English throughout. The Russian original of 2026-09-12 is in
+git history at commit 2488ecb72d14aa5398149d9a727b58852873a091 (`git show 2488ecb:idea.md`); no
+record elsewhere pins idea.md by hash. Hashes of the original and of this revision:
+[docs/notes/2026-09-23-translated-pinned-files.md](docs/notes/2026-09-23-translated-pinned-files.md).*
 
 Source: Mike Shevchenko, Telegram, 2026-09-12 12:18, quoted into the DPC Research group on
-2026-09-13 05:57 UTC as message 67 ([chat/67](chat/67-mike-055707.md)). Nothing below is edited.
+2026-09-13 05:57 UTC as message 67 ([chat/67](chat/67-mike-055707.md)). Nothing below is edited
+beyond translation.
 
-> идея: USPEX для цифровой эволюции нервных систем. Не «эмулируем муху и называем её слоном»,
-> а выращиваем lineage существ из реального connectome-seed.
+> idea: USPEX for the digital evolution of nervous systems. Not "emulate a fly and call it an elephant",
+> but grow a lineage of creatures from a real connectome-seed.
 >
-> 1. семя — не все веса, а наследуемая грамматика.
->    Из FlyWire берём модули и мотивы: типы нейронов, excitatory/inhibitory баланс,
->    повторяющиеся graph motifs, сенсорные и моторные контуры. Это первый геном, а не
->    зацементированный мозг на 140k узлов.
+> 1. the seed is not all the weights, but a heritable grammar.
+>    From FlyWire we take modules and motifs: neuron types, excitatory/inhibitory balance,
+>    recurring graph motifs, sensory and motor circuits. This is the first genome, not a
+>    cemented brain of 140k nodes.
 >
-> 2. тело и мозг растут вместе.
->    Геном описывает: какие сегменты/суставы/сенсоры есть у тела и как нейромодули
->    дублируются, соединяются, специализируются. Не прыжок «муха → слон», а curriculum:
->    fly → жук → шестиногий грузовик → мелкий четвероногий → тяжёлый четвероногий.
+> 2. body and brain grow together.
+>    The genome describes: which segments/joints/sensors the body has and how neuromodules
+>    are duplicated, connected, specialised. Not a "fly → elephant" jump, but a curriculum:
+>    fly → beetle → six-legged truck → small quadruped → heavy quadruped.
 >
-> 3. операция USPEX, только на живом графе.
->    - heredity: склеиваем рабочие модули мозга и тела двух предков;
->    - softmutation: меняем связи там, где controller нечувствителен/пластичен, а не рубим
->      случайные аксоны;
->    - permutation: меняем роль/тип модулей или сенсорный канал;
->    - random embryos и diversity archive не дают всем превратиться в одного
->      симуляторного таракана.
+> 3. USPEX operations, only on a living graph.
+>    - heredity: we glue together the working brain and body modules of two ancestors;
+>    - softmutation: we change connections where the controller is insensitive/plastic, rather than
+>      chopping random axons;
+>    - permutation: we change the role/type of modules or the sensory channel;
+>    - random embryos and diversity archive keep everyone from turning into the same
+>      simulator cockroach.
 >
-> 4. local relaxation = жизнь потомка.
->    Каждый мутант сначала проходит короткую «юность»: ограниченная plasticity/обучение в
->    нескольких безопасных мирах. Только после этого меряем fitness. Это аналог
->    DFT-relaxation у USPEX: оцениваем не сырой эмбрион, а то, во что он устойчиво
->    складывается.
+> 4. local relaxation = the offspring's life.
+>    Each mutant first goes through a short "youth": limited plasticity/learning in
+>    several safe worlds. Only after that do we measure fitness. This is the analogue of
+>    DFT-relaxation in USPEX: we evaluate not the raw embryo, but what it stably
+>    settles into.
 >
-> 5. fitness не один «не упал».
->    multi-objective: энергия, устойчивость, скорость, восстановление после поломки
->    сенсора/сустава, новизна стратегии, перенос на unseen terrain. Отдельный закрытый набор
->    арен — иначе победит тот, кто нашёл дыру в MuJoCo.
+> 5. fitness is not a single "didn't fall over".
+>    multi-objective: energy, stability, speed, recovery after a broken
+>    sensor/joint, novelty of strategy, transfer to unseen terrain. A separate held-out set
+>    of arenas — otherwise the winner is whoever found a hole in MuJoCo.
 >
-> Главный артефакт проекта — не один слонячий ролик, а эволюционное древо: какая мутация
-> появилась, какой модуль унаследован от мухи, что выросло, где линия сломалась и какие
-> навыки пережили смену тела.
+> The project's main artefact is not a single elephant video, but an evolutionary tree: which mutation
+> appeared, which module was inherited from the fly, what grew, where a line broke and which
+> skills survived the change of body.
 >
-> Это был бы не biological elephant. Это был бы первый честный connectome-seeded artificial
+> This would not be a biological elephant. This would be the first honest connectome-seeded artificial
 > organism.
 
 The author's own named next step, from the same message:
 
-> Если будешь развивать дальше — самый интересный следующий шаг, на мой взгляд, это
-> формализация представления генома (как именно записывается наследуемая грамматика модулей
-> и правил роста). От этого зависит почти всё остальное.
+> If you develop this further — the most interesting next step, in my view, is
+> formalising the representation of the genome (exactly how the heritable grammar of modules
+> and growth rules is written down). Almost everything else depends on it.
 
 Two claims in the text did not survive the thread and are recorded here so the idea is read
-with them: "first" is not true (OpenWorm since 2014, C. elegans whole-body simulators,
-whole-fly-brain emulation on Loihi 2, and a connectome-as-controller fly in 2026 — see
+with them: "first" is not true (OpenWorm since 2011 — corrected 2026-09-23 from "since 2014",
+per [literature.md](literature.md) §I.9; C. elegans whole-body simulators, whole-fly-brain
+emulation on Loihi 2, and a connectome-as-controller fly in 2026 — see
 [literature.md](literature.md)); and the short "youth" of point 4 is exactly the mechanism
 arXiv 2508.17464 measured as the source of mis-ranking. Neither kills the idea; both change
 where it starts.

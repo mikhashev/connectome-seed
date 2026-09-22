@@ -1126,12 +1126,13 @@ Zcode's list, item by item, with what the source says.
   containing 140K neurons and 50M synapses on the Intel Loihi 2 neuromorphic platform"*, fitted
   *"onto 12 Loihi 2 chips"*. §E is right; the lead was wrong.
 - **OpenWorm "since 2011" against this repository's "since 2014"** — **Zcode is right, and both
-  [idea_en.md](idea_en.md) and §E of this file are wrong.** The project's own history page
+  [idea.md](idea.md) (then `idea_en.md`) and §E of this file are wrong.** The project's own history page
   (docs.openworm.org/fullhistory) records the idea as a tweet of **2010-01-01** — *"new year's
   resolution: simulate the whole C. elegans brain (302 neurons)!"* — and the naming in **early
   January 2011**: *"Stephen proposes the name 'OpenWorm' and the name sticks."* Neither
   `idea_en.md` nor §E is edited: `idea_en.md` is the record of what was said, and §A–§H are not
-  rewritten by this pass. The correction lives here and should be carried wherever the date is
+  rewritten by this pass. *(Note 2026-09-23: `idea_en.md` has since become `idea.md`, and its
+  annotation now reads "since 2011", marked as corrected on 2026-09-23.)* The correction lives here and should be carried wherever the date is
   next used.
 
 #### Whether anything already *is* "a connectome-seeded lineage with inheritance"

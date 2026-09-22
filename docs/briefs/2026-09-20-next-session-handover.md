@@ -37,8 +37,8 @@ have done what it says.
 ## 2. The state in one page (2026-09-20)
 
 **The goal** is the five points of [`idea.md`](../../idea.md) plus the evolutionary tree as the
-main artefact (Mike Shevchenko, author, 2026-09-12 12:18), in English in
-[`idea_en.md`](../../idea_en.md). It is quoted by point number and never restated from chat:
+main artefact (Mike Shevchenko, author, 2026-09-12 12:18), in English (the Russian original is in git history
+at `2488ecb`). It is quoted by point number and never restated from chat:
 [ADR-004](../decisions/004-grammar-is-the-main-line.md). **The grammar track is the main line;
 measuring the fly is its instrument** — Mike, owner, 2026-09-20 09:27 UTC. **The measurement line
 is paused, not cancelled** — Mike, owner, 2026-09-20 10:15 UTC: "Pause the fly → grammar (point
@@ -161,8 +161,8 @@ loosens either of them. In order:
 
 **Everyone, first:**
 
-1. [`idea_en.md`](../../idea_en.md) — the goal, verbatim in English, and the two annotations it
-   carries about itself. (`idea.md` is the record.)
+1. [`idea.md`](../../idea.md) — the goal, verbatim in English, and the two annotations it
+   carries about itself. (The Russian original is in git history at `2488ecb`.)
 2. [`README.md`](../../README.md) § "State at 2026-09-20" and § "The goal, in the owner's own
    words".
 3. [`../retrospectives/2026-09-20-session-close.md`](../retrospectives/2026-09-20-session-close.md)

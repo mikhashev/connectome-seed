@@ -5,7 +5,7 @@ PREVIEW DIAGNOSTIC, NOT A TEST.  n = 4 individuals; critical rho at N = 4-5 is 0
 be read as a test, today or later.  The label is written into every output json.
 
 Design: docs/proposals/mi-axis-per-cell-type-design.md (Ark 2026-09-15 08:09 + Addendum 08:13).
-Mike's word «делай ряд B», 2026-09-15 09:56.  The protocol is fixed in README.md Sec 1-8, which
+Mike's word «do row B» (translated from Russian), 2026-09-15 09:56.  The protocol is fixed in README.md Sec 1-8, which
 was written and saved before this script was run for the first time.
 
 WHAT THIS SCRIPT DOES NOT DO: it never trains, never writes into
@@ -689,3 +689,13 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
+
+
+# TRANSLATION NOTE, 2026-09-23 (appended at the end so that every line number cited elsewhere
+# stays valid): the one Russian line of the module docstring (Mike's launch word) was translated
+# into English on Mike's word.  The Russian original is in git history at commit
+# 2488ecb72d14aa5398149d9a727b58852873a091.  The recorded script_sha256
+# 195a89b555bedf3a0ff00a4c4e0542eafa6370243fbf9ed954f5fe8fbf7f4082 (rowB, ablation, gray and c3B
+# records; night3 SHA256.txt; rowB3.py) refers to that original revision as checked out with CRLF
+# line endings and reproduces there, not from this revision.  No executable line changed.  Old and
+# new hashes and the citing records: docs/notes/2026-09-23-translated-pinned-files.md.

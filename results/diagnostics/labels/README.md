@@ -1,7 +1,7 @@
 # Label check in Ark's revised form — coverage first
-
+*Translated into English 2026-09-23 on Mike's word (one launch-word line); the Russian original is in git history at commit `2488ecb`, and `db3e0085…` in `disposition.sha256.json` refers to that revision, not to this one — see [the translation note](../../../docs/notes/2026-09-23-translated-pinned-files.md).*
 **Runner:** CC, 2026-09-20. **Owner's word:** Mike, 2026-09-20 09:27 UTC —
-«чек меток в форме Ark, покрытие первым — да».
+«the label check in Ark's form, coverage first — yes» (translated from Russian).
 **Form:** Ark's REVISED four questions (group chat 2026-09-20 09:16 UTC). Ark's
 `docs/plans/2026-09-20-genome-design-around-s2.md` §4 **as originally written is WITHDRAWN by its
 author**: its input rule "L1 → ON, L2 → OFF" mixed two axes — in flyvis

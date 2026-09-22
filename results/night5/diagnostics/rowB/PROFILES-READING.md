@@ -34,10 +34,13 @@ later section is an append.
 
 ### (a) The registered question, verbatim
 
-> «различает ли ряд B индивидов; где на этой оси лежит `3‴` после границы»
+> «does row B tell individuals apart; where on this axis does `3‴` lie after the boundary»
+> (translated from Russian)
 
-**English rendering (translation, not a second original):** does row B tell individuals apart,
-and where does `3‴` lie on this axis after the boundary.
+*Translated 2026-09-23 on Mike's word: until then this line stood in Ark's Russian, with the
+English rendering "does row B tell individuals apart, and where does `3‴` lie on this axis after
+the boundary" beside it as a translation, not a second original. The Russian original is in git
+history at commit 2488ecb72d14aa5398149d9a727b58852873a091. See the note under §0z about the seal.*
 
 Wording is Ark's, DPC Research group chat 2026-09-20 21:43 local, recorded in `README.md` §8
 under "The question the profiles will be read for". It is quoted here from the repository, not
@@ -264,6 +267,18 @@ sha256 **as saved at that moment — before any profile value was opened** — w
 ```
 a4d10e67f6eafa922f555625569ac5ca11db2de8bb27a01e597acbc0a945583d
 ```
+
+**Note, 2026-09-23 (translation).** §0(a) above was translated into English on Mike's word, so
+this digest cannot reproduce from this revision. It also **does not reproduce from any committed
+revision**: the file has one commit before the translation, 9e101a5 (2026-09-20 17:03 +0700), and
+at 2488ecb72d14aa5398149d9a727b58852873a091 (the last revision with the Russian line) the digest
+was checked on 2026-09-23 against every prefix of the file ending at or just before the
+`### 0z` heading, in LF and in CRLF, with zero, one or two trailing newlines, with and without the
+`OFF LIMITS` header block and the English-rendering paragraph, and against §0 alone — no
+variant gives `a4d10e67…`. The saved-at-09:30:25Z bytes it was taken over were never committed,
+so the order "declaration, then values" rests on this file's own statement and on the commit
+time, not on a digest anyone can recompute. Details:
+[docs/notes/2026-09-23-translated-pinned-files.md](../../../../docs/notes/2026-09-23-translated-pinned-files.md).
 
 That digest covers the file **up to and including the line above this subsection**; this
 subsection and everything below it were appended afterwards, which is why the digest of the

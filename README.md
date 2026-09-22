@@ -69,13 +69,14 @@ controller is plastic, permutation of roles, a diversity archive), give every of
 "youth" of limited plasticity before measuring it, and select on a multi-objective fitness in
 closed arenas. The main artefact is the **evolutionary tree**, not one video. Full text as
 posted in the thread: [chat/67](chat/67-mike-055707.md); a clean copy of the five points:
-[idea.md](idea.md); in English, [idea_en.md](idea_en.md).
+[idea.md](idea.md) (English; the Russian original of 2026-09-12 is in git history at
+`2488ecb`).
 
 ## The goal, in the owner's own words
 
 The goal is not a paraphrase and does not have to be reconstructed from discussion: it is in this
-repository, verbatim and dated, as [idea.md](idea.md) (the record, Russian) and
-[idea_en.md](idea_en.md) (translation). Mike Shevchenko, author, 2026-09-12 12:18. Restated by him
+repository, verbatim and dated, as [idea.md](idea.md) (English; the Russian original of 2026-09-12 is in git history at
+`2488ecb`). Mike Shevchenko, author, 2026-09-12 12:18. Restated by him
 in one line as the project's description on 2026-09-19: **"to learn to make an elephant out of a
 fly"** (translated from Russian). The two say the same thing: the idea opens with **"Not
 'emulate a fly and call it an elephant', but grow a lineage of creatures from a real
@@ -254,8 +255,8 @@ Start here for the rules this repository learned the hard way:
 
 ```
 README.md          this
-idea.md            the five points, verbatim (Russian, the record)
-idea_en.md         English translation of idea.md, 2026-09-13 — not the record
+idea.md            the five points, verbatim, in English translation (the Russian
+                   original of 2026-09-12 is in git history at 2488ecb)
 literature.md      every source, what was verified how, numbers and quotes
 chat/              the thread, one file per message, 67 → 84, UTC timestamps
                    (79–84 = the review round: Johnny 81, Ark 82, Mike's "finish it" 83,

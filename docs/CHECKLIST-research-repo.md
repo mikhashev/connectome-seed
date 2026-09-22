@@ -84,26 +84,22 @@ including profanity; it never changes who said what or what was decided. Where a
 used as a label inside English prose, it is translated and the translation is then used
 consistently everywhere.
 
-**The one Russian original.** `idea.md` is the author's text as written and is the record; it is
-never translated in place. `idea_en.md` is its translation and says so. Both stay byte-identical
-to what they are.
+**No exemptions (since 2026-09-23).** The repository is English throughout, with no exemptions.
+Until 2026-09-23 `idea.md` was kept as the Russian original beside an English `idea_en.md`, and
+seven registered or hash-pinned files kept their Russian lines so that their recorded hashes
+would keep reproducing. On 2026-09-23, on Mike's word, all of them were translated: `idea.md`
+now holds the English text and `idea_en.md` is gone. **The originals are not lost — they live in
+git history** (the last revision with Russian is commit `2488ecb`). A recorded sha256 of a
+translated file refers to that original revision and reproduces from it, not from the current
+file; each translated file carries a dated note saying so, and
+[docs/notes/2026-09-23-translated-pinned-files.md](notes/2026-09-23-translated-pinned-files.md)
+lists every such file, its old and new sha256, the records that cite the old one, and how to
+reproduce it from history.
 
-**Files not edited for language.** A registered document or a file whose bytes are pinned by a
+**Pinned files from here on.** A registered document or a file whose bytes are pinned by a
 sha256 recorded elsewhere must not change silently — a language edit moves the hash just as a
-content edit does. These files keep their Russian until their registration is superseded, and
-they are listed here so the debt is visible rather than forgotten (state as of 2026-09-20):
-
-| file | what pins it | what the Russian is |
-|---|---|---|
-| `docs/preregistration-cheap-vs-expensive.md` | a registered pre-registration under its own timing rule (§5, §7, §9); its Russian lines are the dated authorisation quotes the registration's provenance rests on | Mike's decision words of 2026-09-13 and 2026-09-15 |
-| `results/night2/diagnostics/rowB/rowB.py` | `script_sha256` `195a89b5…` in `rowB_*.json`, `ablation_*.json`, `gray_*.json`, `c3B*.json` | one docstring line |
-| `results/night3/diagnostics/rowB/rowB.py` | the same hash, plus `results/night3/diagnostics/rowB/SHA256.txt` | one docstring line |
-| `results/diagnostics/gray/gray_stimulus.py` | `script_sha256` `61eb8bf3…` in `gray_controls.json`, `gray_readings.json`, `gray_repeat_controls.json` | two docstring lines and one **string literal** written into the output json's `meta` — editing it would change the outputs, not only the hash |
-| `results/diagnostics/c3/README.md` | `results/diagnostics/c3/SHA256SUMS.txt` (`4e132696…`) | one launch-word line |
-| `results/diagnostics/labels/README.md` | `results/diagnostics/labels/disposition.sha256.json` (`db3e0085…`, taken before the check was written) | one launch-word line |
-| `results/night5/diagnostics/rowB/PROFILES-READING.md` | its own §0 — the declaration written and hashed (`a4d10e67…`) before any profile value was opened; the registered question stands there in Russian with an English rendering beside it. The language pass translated it, and CC restored it: a declaration whose hash no longer reproduces is no longer a declaration | the registered question, one line |
-
-A file leaves this table by being superseded, never by being edited quietly.
+content edit does. It is written in English from the start; if it ever has to change, the
+change is dated in the file and listed beside the old hash, as the 2026-09-23 note does.
 
 Related: `docs/tool-hardening-package.md` (the code fixes these rules imply for this
 repository, with falsifiers); `docs/preregistration-cheap-vs-expensive.md` §7 (void

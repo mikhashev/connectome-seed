@@ -358,7 +358,8 @@ one dense diagnostic run, and none of it changes a pre-registration rule.
 
 ## The grammar track — point 1 of the idea, open since 2026-09-19
 
-**Where the goal is stated:** [idea.md](idea.md) / [idea_en.md](idea_en.md), verbatim, Mike
+**Where the goal is stated:** [idea.md](idea.md) (English; the Russian original of 2026-09-12 is in git history at
+`2488ecb`), verbatim, Mike
 Shevchenko, author, 2026-09-12 12:18 — five points, the evolutionary tree as the main artefact, and
 the author's own named first step: *"formalising the representation of the genome … Almost
 everything else depends on it."* Restated as the project's description on 2026-09-19:

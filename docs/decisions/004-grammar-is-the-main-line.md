@@ -17,8 +17,8 @@ axis: knowledge
 
 The project's goal is stated in the group description in the owner's words: **"to learn to
 make an elephant out of a fly"**. The long form was written by the owner on 2026-09-12 and is
-committed in the repository as `idea.md`, with an English rendering `idea_en.md` dated
-2026-09-13. It has five points and names its own principal artifact: **not a video of an
+committed in the repository as `idea.md` (English; the Russian original of 2026-09-12 is in
+git history at `2488ecb`, and the English rendering is dated 2026-09-13). It has five points and names its own principal artifact: **not a video of an
 elephant, but an evolutionary tree** — which mutation appeared, which module was inherited from
 the fly, what grew, where the lineage broke, which skills survived the change of body.
 
@@ -40,8 +40,8 @@ by 2026-09-20 three things had drifted apart:
    summary of it.
 3. **The measurement line's purpose had been lost.** No document answered why the fly must be
    measured at all — and the answer was already in the repository: point 4 of `idea.md`
-   ("local relaxation = the descendant's life") *is* the cheap/expensive pair, and the header
-   of `idea_en.md` records that the literature has measured that very mechanism as a source of
+   ("local relaxation = the descendant's life") *is* the cheap/expensive pair, and the closing
+   annotation of `idea.md` records that the literature has measured that very mechanism as a source of
    mis-ranking.
 
 ## Decision Drivers
@@ -158,5 +158,6 @@ Decision point 4 above said *parallel*. Later the same morning the owner narrowe
 - `docs/decisions/001-publication-shape.md` — the convention this ADR follows (quote carries
   its source; plain attribution into chat)
 - `docs/decisions/003-blind-authorship-after-the-numbers.md` — the deferred registration
-- `idea.md` (2026-09-12), `idea_en.md` (2026-09-13) — the primary source
+- `idea.md` (2026-09-12; English translation of 2026-09-13; the Russian original is in git
+  history at `2488ecb`) — the primary source
 - `docs/notes/2026-09-20-what-is-the-genome-here.md` — what the substrate supplies today

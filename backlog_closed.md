@@ -426,6 +426,8 @@ instruction: do not commit) · closed by CC
 
 **Closed:** S2026-09-11.1 · 2026-09-13 · fixed · commit 30dc626: idea_en.md is in the repository as a marked English translation beside idea.md, and idea.md stays verbatim as the record · closed by CC
 
+*Update 2026-09-23: on Mike's word the repository became English throughout; `idea.md` now holds the English text and `idea_en.md` is gone. The Russian original of 2026-09-12 is in git history at `2488ecb`.*
+
 - **Observed.** Measured 2026-09-13: README 0.5 % Cyrillic, `literature.md` 1.0 %,
   `idea.md` 62.4 %, `chat/` 70–95 %, whole folder 50.5 %.
 - **First step.** Publish `idea.md` as a marked translation with the Russian original kept
