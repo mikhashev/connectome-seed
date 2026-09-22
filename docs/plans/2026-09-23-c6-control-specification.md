@@ -657,3 +657,101 @@ registered **before** the fix (Ark, genome track, 2026-09-23 20:43 UTC; Johnny, 
 any change to the exam. The text above this section, up to and including A15, is unchanged. Its
 first 41,349 bytes (LF-normalised) still hash to the value recorded in
 `results/genome/c6/folds.meta.json`, and every amendment only appends.
+
+### Amendment 2, continued — 2026-09-23: the fix (A17–A22)
+
+**Written by:** CC (subagent, the builder of the harness), who has not read the proposed rule
+(declaration: `docs/plans/2026-09-23-c6-amendment-acceptance.md` §(e)). **Judged against:** the
+acceptance criteria of A16, by code. The results are in `results/genome/c6/harness_controls.json`
+and `HARNESS-CONTROLS.md`. As above, every number here is a registered constant, not a result.
+
+**Monotonicity (acceptance §(b)).**
+
+- A5's bit table, the one-tenth constant and every threshold of A1–A15 are unchanged.
+- The items below only add opponents, or raise thresholds.
+
+#### A17. The budget arm, armed — *adds* an opponent to §5.1 P2 (hole 1; Zcode's fix, Ark's principle)
+
+- **D_k^N0.** It stores the first k cells in A6's order, verbatim in A5's storage format, and
+  answers N0 everywhere else.
+  - Its program is `decoders/n0_decode.py` + `decoders/store_decode.py` +
+    `decoders/dk0_decode.py`, compressed together and charged once. Its data is N0's data plus
+    the k stored cells.
+  - **One basis, one charge:** each predictor pays for its own basis once, and for nothing it
+    does not use. D_k^N0 carries no N1.
+- **k\*_armed(rule)** = the largest k in 0…604 with DL(D_k^N0) ≤ DL(rule). It is written into
+  every record next to k\*.
+- **P2, amended.** A rule passes P2 iff:
+  - DL(rule) ≤ DL(bank) / 10 (unchanged); **and**
+  - in-sample, it beats each of the following on existence and on offset set (A7's tie rule):
+    **D_k^N1 at k\*** (the A6 opponent, kept), **D_k^N0 at k\*_armed** (new), and **N1** (new).
+- The label for failing any of the three is "below threshold for this family".
+- **Convention 2 is folded in here.** The budget arm is defined **in-sample** only: P2, and the
+  dial's margin over the stored table (§5.3). A held-out D_k is not defined, because its stored
+  cells come from training folds only, so on held-out cells it equals its fallback.
+  - The dial reports the in-sample margin over both D_k^N1 at k\* and D_k^N0 at k\*_armed, next
+    to the held-out margin over N1.
+  - The finding that the old arm could not fail (k\* = 0) and this convention were one defect.
+    A17 closes both (Ark, genome track, 2026-09-23 20:43 UTC).
+- **Acceptance test of the arm:** R1–R3 of the acceptance file. A rule no better than N1 must
+  lose to the table of its own size.
+
+#### A18. The offset-set target, strengthened — *adds* opponents to §5.1 P1 (hole 2)
+
+- **N_EB.** A smoothed, per-source, empirical-Bayes distribution over offset sets, shrunk
+  toward the global one. It predicts the observed set with the highest expected Jaccard. Its
+  other fields are N1's.
+  - The definition, and the nested choice of α from {0.5, 1, 2, 4, 8, 16, 32, 64, 128} (ties to
+    the larger α), are those registered in the acceptance file §(b). They are not re-stated here
+    so that there is only one text. The α chosen in each fold is recorded.
+  - Program: `decoders/n1_decode.py`. N_EB is N1's data with the per-source sets replaced.
+- **P1's offset arm, amended.** The rule must beat **each** of N1 (as before), N0 and N_EB, in
+  at least 9 of 10 folds each.
+  - This keeps the old test and adds two, so it cannot become easier.
+  - It also closes the "N1 weaker than N0" finding without re-defining N1.
+- **Registered control number:** N_EB's mean held-out Jaccard on the real bank ≥ 0.4465 (M3).
+
+#### A19. P4, replaced by a trained factorisation — *replaces* A11's threshold by a larger one (hole 3)
+
+- **BF_r.** Existence logit = N1 logit + U_s·V_t, with U and V of size 65 × r, where r is A11's
+  rank of the rule.
+  - Fitted by penalised likelihood, from an SVD initialisation, with 25 alternating Newton
+    sweeps and λ chosen by nested CV from {1, 3, 10, 30, 100} (ties to the larger λ). The
+    definition is exactly that of the acceptance file §(b).
+  - Program: `decoders/n1_decode.py` + `decoders/bf_decode.py`.
+- **P4, amended.** The rule's existence margin over N1 (mean over folds) must be strictly
+  greater than **max(the A11 random-projection threshold, BF_r's margin)**.
+  - A11's random projection is still computed, so the threshold can only rise.
+  - Failure label: unchanged, "ambient, not substantive structure".
+- **Registered control number:** BF_8's mean held-out existence margin over N1 on the real bank
+  > 0 (M4).
+
+#### A20. The planted-rule acceptance suite — *adds* §4.8 (Ark, Johnny)
+
+The generator (PL, seed 4242, K = 4, a cycle pattern, strengths ρ ∈ {1, 0.5, 0}), the planted
+rule (PR), the scrambled genome (seed 99), and criteria R1–R3, A1–A5, N1–N3 and M1–M5 are those
+of the acceptance file. The harness runs them after every change to the exam and prints PASS or
+FAIL for each one against the criterion's text. A failed criterion is a failure of the exam, and
+is reported as such.
+
+#### A21. What "offset set" means — *clarifies* A3
+
+- The exam scores offset sets **exactly**: two sets are equal only if they hold the same
+  `(du, dv)` offsets. There is no canonicalisation under the 12 symmetries of the hex lattice.
+- On the compiled bank that is 225 distinct exact sets, and 327 once counts are included. The
+  regularity measure (`results/genome/bank/REGULARITY-READING.md` §3) canonicalises, to 144
+  shapes.
+- So the exam tests a harder object than the one the regularity reading called compressible. A
+  rule that reproduces a shape only up to rotation is scored as wrong on this field (Ark,
+  2026-09-23 20:43 UTC; Johnny, 2026-09-23 20:53 UTC; Zcode, 2026-09-23 20:58 UTC).
+
+#### A22. Conventions registered, and a report-only check — *adds*
+
+- **Now registered as part of the exam,** from HARNESS-CONTROLS.md § "Harness conventions":
+  - A predicted count below 0 is read as 0 before `log1p`.
+  - Types are given to a rule as indices 0–64 in birth-id order.
+  - The decode import check is static.
+- **The harness refuses to run** if the first 41,349 bytes of this file (its fold-time text)
+  or the acceptance file change. Amendments may only append.
+- **The hub check** (acceptance file §(g)) is computed and reported. It **does not change P3**.
+  The acceptance file registered it as report-only.
