@@ -1,0 +1,123 @@
+{
+  "what": "Generation-zero bank for the genome track: extraction of the flyvis connectome json and its compiled tables. Structural integers and strings only; no training result.",
+  "source": {
+    "package": "flyvis",
+    "version": "1.2.0",
+    "file": "connectome/fib25-fib19_v2.2.json",
+    "sha256": "bfbb0766251ff09e22723d0ebbf7b14793e70b3ae8ad0eea64eac9d28223351a"
+  },
+  "compiled": {
+    "location": "FLYVIS_ROOT_DIR/connectome/ConnectomeFromAvgFilters_0000",
+    "meta_yaml": "config:\n  type: ConnectomeFromAvgFilters\n  file: fib25-fib19_v2.2.json\n  extent: 15\n  n_syn_fill: 1\nstatus: done\n",
+    "n_files": 93,
+    "digest_sha256": "223c6fefff3515160312773a9dd0dd5b7a5929846b3fe31a9ab163afc808f56b",
+    "digest_rule": "sha256 over, per file in sorted relative-path order: '<relative posix path>\\0<sha256 hex>\\n'",
+    "n_edge_instances": 1513231,
+    "n_cells": 45669
+  },
+  "script": {
+    "path": "results/genome/bank/extract_bank.py",
+    "sha256": "fb2303d241ed0966033b63a3d9f9b64ec1e47cea5376932360b8cfb96ae93943",
+    "python": "3.10.20",
+    "numpy": "2.2.6",
+    "pandas": "2.3.3",
+    "h5py": "3.16.0"
+  },
+  "outputs": {
+    "types.csv": "30ab69496b84d4c09001d0ac0fdd60ecefc322e3caede939a46a58dced44ec07",
+    "type_pairs.csv": "209d1dcb8bd8584657696cb3fcce5f30e30dbb3014493007322f25d60b7db923",
+    "offsets.csv": "a4cb2618f5c21359996fb9df4dd1f5a9f5cd1b9749064ed9967dc2c777963adc",
+    "birth_ids.csv": "27443458a0b66442fc790e81e526ac74f36c805bd9ad414140b6fc800f11e977"
+  },
+  "type_axis": {
+    "order": "connectome node order: first appearance in nodes/type.h5",
+    "equals_json_node_order": true
+  },
+  "constant_node_fields": {
+    "activation": "relu",
+    "bias": 3.5,
+    "bias_fixed": false,
+    "time_constant": null,
+    "time_constant_fixed": false
+  },
+  "constant_edge_fields": {
+    "time_constant": null,
+    "time_constant_fixed": false,
+    "edge_type": "chem"
+  },
+  "varying_node_fields": [
+    "name",
+    "pattern"
+  ],
+  "varying_edge_fields": [
+    "src",
+    "tar",
+    "offsets",
+    "alpha",
+    "alpha_fixed",
+    "alpha_references",
+    "lambda_mult"
+  ],
+  "root_sections": {
+    "receptors": [],
+    "n_input_units": 8,
+    "n_output_units": 34
+  },
+  "counts": {
+    "n_types": 65,
+    "n_json_entries": 605,
+    "n_json_offset_rows": 2140,
+    "n_compiled_pairs": 604,
+    "n_compiled_offset_rows": 2355,
+    "provenance": {
+      "in_json": 2117,
+      "hull_filled": 238,
+      "dropped": 23
+    },
+    "n_hull_points_generated": 238,
+    "n_hull_points_not_landing": 0,
+    "pairs_with_dropped_json_rows": [
+      "Lawf1>Lawf1",
+      "Lawf2>Lawf2"
+    ],
+    "not_instantiated": [
+      "Lawf1>Lawf1"
+    ],
+    "max_abs_n_syn_json_minus_compiled_on_matched": 6.539481034906203e-06
+  },
+  "sign_citations": {
+    "reference_key_slots": {
+      "Hardie1989": 40,
+      "Karuppudurai2014": 12,
+      "Lin2016": 12,
+      "NernPC2018": 286,
+      "ReiserPC2017": 82
+    },
+    "personal_communication_keys": [
+      "NernPC2018",
+      "ReiserPC2017"
+    ],
+    "n_citation_slots": 432,
+    "n_slots_personal_communication": 368,
+    "n_entries_with_any_reference": 338,
+    "n_entries_citing_only_personal_communications": 286,
+    "n_entries_citing_at_least_one_publication": 52,
+    "n_entries_alpha_fixed": 272
+  },
+  "birth_ids": {
+    "n_types": 65,
+    "n_pairs": 605,
+    "first": 1,
+    "last": 670,
+    "next_birth_id": 671,
+    "rule": "REGISTRY.md"
+  },
+  "two_readings": {
+    "copy": "outputs are byte files with the sha256 above; copying needs no interpretation",
+    "decode_json_roundtrip_equal": true,
+    "decode_json_roundtrip_note": "nodes and edges equal element for element in json order; input_units/output_units compared as sets (their list order is not carried by the csv)",
+    "decode_compile_extent": 5,
+    "decode_compiled_equals_bank": true,
+    "decode_note": "the json rebuilt from the csvs was compiled with flyvis's own add_nodes/add_edges at extent 5; its (src,tar,du,dv) keys, n_syn and sign equal the extent-15 compiled bank on all 2,355 keys"
+  }
+}

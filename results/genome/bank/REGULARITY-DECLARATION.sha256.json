@@ -1,0 +1,6 @@
+{
+  "file": "results/genome/bank/REGULARITY-DECLARATION.md",
+  "sha256": "80e1b99c0c7a7d019978c395fa308d16c1e1b787ae6e7ecab41e0b6d8dfbabfe",
+  "recorded_utc": "2026-09-22T19:53:03Z",
+  "note": "Hash taken after the declaration was saved and BEFORE regularity.py was written or run. One earlier hash (7b90912a...) was superseded two minutes before this one, before any script existed, to correct the date line only."
+}

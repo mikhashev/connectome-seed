@@ -281,3 +281,95 @@ verification, and §3 above is a paraphrase of a survey of a file I have not ope
    honest answer might be "then we have no external yardstick in this repository, and the S2
    claim must be stated as self-consistency plus the transition". That is a smaller claim, and
    it may be the true one.
+
+---
+
+## Amendment — 2026-09-23
+
+**Written by:** CC, 2026-09-23, on Mike's word (the owner told CC to write the grammar step's
+first pieces himself, including those nominally owned by Ark and Zcode; Mike, owner, 2026-09-23,
+paraphrased from Russian, not quoted). **Owner of record of this design:** Ark. **This amendment
+is to be confirmed by Ark**; until he does, it records what the review established, not his
+endorsement of it. Ark's text above is unchanged. Attribution follows ADR-001: name, role, date,
+UTC where known, no chat links.
+
+### 1. §4's check, as written, is WITHDRAWN by its author
+
+Ark, author of this design, withdrew §4 as originally written (DPC Research group thread,
+2026-09-20 09:16 UTC). Its input rule "L1 → ON pathway, L2 → OFF pathway" mixed two axes:
+**pathway membership** (`on_pathway` / `off_pathway`) and **response polarity** (`polarity`). In
+flyvis they disagree on named types — `polarity["L1"] == -1` while `"L1"` is listed in
+`on_pathway` (likewise `L3` and `Mi9`; `L3` is in both pathway lists). So the dispositions of §4
+("Match / Mismatch / Not recomputable") have no well-defined input and are not to be applied.
+Source: `results/diagnostics/labels/README.md`, section "Disposition, written before the run".
+
+### 2. `L5` in class A is a key, not a field
+
+§3 class A lists `L5` (`:29`) beside `tuning_curves`. `L5` is **one key inside the `polarity`
+dict**, carrying the only per-entry citation in it (`# Drews 2020, Matulis 2020`); it is not a
+module-level field. The field `polarity` as a whole carries no citation and stays in class B.
+Class A at field level is therefore `tuning_curves` alone, plus one cited entry of `polarity`.
+Found by CC in the step-0 source verification, 2026-09-20:
+`docs/plans/2026-09-20-step0-label-inventory-verified.md` §4.
+
+### 3. The check was run in its author's revised form, and answered
+
+Form: Ark's revised four questions (group thread, 2026-09-20 09:16 UTC), coverage first. Word to
+run: Mike, owner, 2026-09-20 09:27 UTC. Run: CC, 2026-09-22 19:43 UTC, disposition hashed before
+the run. Outputs: `results/diagnostics/labels/README.md`, `partition.json`,
+`labels_per_type.csv`, `bank_fields_inventory.csv`.
+
+- **(c) coverage — answered: not in the bank.** No per-type or per-edge field of the json or the
+  compiled tables is polarity-like. Edge `alpha` / `sign` is excitatory/inhibitory, not ON/OFF;
+  `layout` is an anatomical stage, not ON/OFF.
+- **(d) twin markers, (a) literature match, (b) recomputation — not runnable.** (d) and (a) need
+  a second ON/OFF assignment and there is none; (b) needs a written rule that is on one axis and
+  operational, and none exists — the only candidate is the withdrawn §4 sentence. No rule was
+  invented.
+- **`polarity` is a genuine external label on 32 of 65 types** (the other 33 are `0` = unknown),
+  and it is **unattributed**: nothing in the bank can have produced it, and nothing in the source
+  file cites it except one entry. It may be used as an external yardstick only with the mark
+  *unattributed* carried into every table.
+- **`layout` is wholly bank-derived** (`connectome.py:196-221` builds it from the json's input and
+  output units) and **cannot judge a model of the bank** — using it would be circular. It is,
+  however, an admissible *input* to a rule (C6 spec §2).
+- **Sign is not one value per source type** — some source types carry both signs across their
+  outgoing entries — and **most of the sign column's citations are personal communications**, not
+  publications. A rule that makes sign a per-type property cannot reproduce the bank by
+  construction.
+
+§8 question 1 (word to run the check) is answered; §8 question 2 is answered in the direction it
+anticipated: the repository's only ON/OFF label is external but unattributed, so the S2 claim is
+stated as regeneration of the bank (§2) plus, separately and with that mark, comparison with
+`polarity` on 32 types.
+
+### 4. §6, order of work — updated
+
+| # | step | owner | state on 2026-09-23 |
+|---|---|---|---|
+| 0 | Verify A §8's inventory against the source; name the instrument | CC | **done** — `docs/plans/2026-09-20-step0-label-inventory-verified.md` |
+| 1 | Word to run the pre-S2 check | Mike | **given**, 2026-09-20 09:27 UTC, for the revised form |
+| 2 | Run the check; report the partition | CC | **done** in the revised form — `results/diagnostics/labels/` (item 3 above) |
+| 3 | Extract the rule bank and the label array | CC | **in progress** — `results/genome/bank/` (extraction, birth ids, regularity reading) |
+| 4 | Note "what is the genome here" | CC | delivered |
+| 5 | C6 control specification | Zcode (owner of record); written by CC on Mike's word | **drafted** — `docs/plans/2026-09-23-c6-control-specification.md`, awaiting Zcode's review |
+| 6 | Design of a generative rule | — | not yet licensed; must be tested against C6; read `literature.md` §I.1 first |
+
+### 5. Ark's structural point: where a rule should aim
+
+Ark, reviewer and author of this design, in the group thread on 2026-09-20 (UTC not recorded
+in-tree; carried in `docs/retrospectives/2026-09-20-session-close.md` §2 item 11 and
+`ROADMAP.md`):
+
+- **HyperNEAT-style coordinate functions give modules no identity.** A CPPN answers "what is the
+  weight between these two coordinates"; there is no discrete module in it to cut out and pass on.
+  That conflicts with point 3 of `idea.md` (inheriting and splicing the working modules of two
+  ancestors) and with birth ids that are never reused (`literature.md` §I.3 entry 18). A CPPN is a
+  baseline to beat, not the representation to adopt as is.
+- **The geometric layer is already maximally regular and already generated.** The single existing
+  production — tile the column motif over a hex disc of radius *n* — makes the bank identical at
+  extent 5 and extent 15, and `pattern` takes two values. There is nothing left for a rule to
+  compress there.
+- **So a rule should target the 605-row type-pair table** (604 instantiated in the bank): which
+  pairs connect, at which offsets, with which counts and sign. That is where the entropy sits, and
+  it is the object C6 holds out (C6 spec §2, §4.1).
