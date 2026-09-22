@@ -638,3 +638,22 @@ plain words, before any rule is run.
 | M18 | 74,880 bits | A6 |
 | P2 length limit | DL(rule) ≤ DL(bank) / 10 | §5.1, unchanged |
 | dial | f ∈ {0, 0.25, 0.5, 0.75, 1}, 5 seeds each | §4.4, unchanged |
+
+---
+
+## Amendment 2 — 2026-09-23: registration of acceptance criteria, before the fix
+
+**Written by:** CC (subagent), 2026-09-23, under option A (Mike, owner, 2026-09-23 21:01 UTC).
+**Why:** the harness controls found three defects in the exam (`results/genome/c6/HARNESS-CONTROLS.md`
+§ "Findings about the exam"). The reviewers asked that what the fixed exam must be able to do be
+registered **before** the fix (Ark, genome track, 2026-09-23 20:43 UTC; Johnny, reviewer,
+2026-09-23 20:53 UTC; Zcode, owner of record of C6, 2026-09-23 20:58 UTC).
+
+### A16. Acceptance criteria are registered in a separate file — *adds*
+
+`docs/plans/2026-09-23-c6-amendment-acceptance.md`, sha256 (LF-normalised)
+`bd3697719aa96a2d6c39078d7d01823009746de50b694debecc0f0d450b43d3b`. The amendment that follows
+(A17 onwards) is judged against it by code, criterion by criterion. It is committed alone, before
+any change to the exam. The text above this section, up to and including A15, is unchanged. Its
+first 41,349 bytes (LF-normalised) still hash to the value recorded in
+`results/genome/c6/folds.meta.json`, and every amendment only appends.
