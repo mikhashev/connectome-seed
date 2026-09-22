@@ -35,6 +35,7 @@ RIDGE_LAMBDA = 1e-3
 RANDOM_LABEL_SEED = 20260923                # section 4.3
 P_INIT = 0.25
 CLIP = (0.001, 0.999)                       # section 2.2 step 2
+SEARCH = "v2"                               # the search procedure used by fit(); see escape()
 TOL = 1e-9                                  # [R1] "J falls" means falls by more than 1e-9 bits
 
 # ---- quantisation grids (section 2.1) ------------------------------------------------------
@@ -83,8 +84,11 @@ def rule_matrix(P, Q):
     return np.where(P, LOG1M_RHO[Q], 0.0)
 
 
-def stage1(M, Y, E0, fix_labels=False, trace=None):
+def stage1(M, Y, E0, fix_labels=False, trace=None, search="v1"):
     """One restart of section 2.4 stage 1. Returns (E, P, Q, eps_q, J, per-sweep J list, sweeps).
+
+    search="v1" is the procedure as registered (proposal section 2.4). search="v2" adds the escape
+    move of the proposal's appendix (see escape()) where v1 would stop.
 
     E (65, K) bool expression; P (K, K) bool rule present; Q (K, K) int rho level; eps_q int.
     """
@@ -194,8 +198,148 @@ def stage1(M, Y, E0, fix_labels=False, trace=None):
         C = np.where(M, cell_cost(S, EPS[eq], Y), 0.0)
         traj.append(total_J(S, eq, M, Y, n_rules))
         if not changed:
+            if search == "v2" and not fix_labels:
+                new = escape(M, Y, E, P, Q, eq, n_rules, traj[-1])
+                if new is not None:
+                    E, P, Q, n_rules, Jn = new
+                    Ef = E.astype(np.float64)
+                    S = Ef @ rule_matrix(P, Q) @ Ef.T
+                    C = np.where(M, cell_cost(S, EPS[eq], Y), 0.0)
+                    traj[-1] = Jn
+                    if trace is not None:
+                        trace.append(("escape", Jn))
+                    continue
             break
     return E, P, Q, eq, traj[-1], traj, sweeps
+
+
+# ==========================================================================================
+# SEARCH v2: the escape move (proposal appendix, 2026-09-23; criterion file
+# docs/plans/2026-09-23-first-rule-search-criterion.md)
+# ==========================================================================================
+ESCAPE_TRIES = 12
+
+
+def _flip(E, Ef, S, C, M, Y, L, eps, t, l):
+    """Flip e_t[l] if J falls by more than TOL (the arithmetic of stage 1 (b))."""
+    E[t, l] = not E[t, l]
+    Ef[t, l] = 1.0 - Ef[t, l]
+    srow = Ef @ (Ef[t] @ L)
+    scol = Ef @ (L @ Ef[t])
+    scol[t] = srow[t]
+    crow = np.where(M[t], cell_cost(srow, eps, Y[t]), 0.0)
+    ccol = np.where(M[:, t], cell_cost(scol, eps, Y[:, t]), 0.0)
+    d = float(np.sum(crow - C[t]) + np.sum(ccol - C[:, t]) - (ccol[t] - C[t, t]))
+    if d < -TOL:
+        S[t, :], S[:, t] = srow, scol
+        C[t, :], C[:, t] = crow, ccol
+        return True
+    E[t, l] = not E[t, l]
+    Ef[t, l] = 1.0 - Ef[t, l]
+    return False
+
+
+def _best_level(E, S, C, M, Y, eps, i, j, base):
+    """d(q) for putting rule (i, j) at each rho level, on top of S minus `base` in its block."""
+    ix = np.ix_(np.flatnonzero(E[:, i]), np.flatnonzero(E[:, j]))
+    Sn = (S[ix] - base)[None] + LOG1M_RHO[:, None, None]
+    Cn = np.where(M[ix][None], cell_cost(Sn, eps, Y[ix][None]), 0.0)
+    return (Cn - C[ix][None]).sum(axis=(1, 2))
+
+
+def _seed_candidates(M, Y, E, P, fresh):
+    """The v2 escape candidates: a new rule (i, j) plus a data-seeded expression for its fresh
+    label(s). Yields (i, j, {label: new column}) in a fixed order:
+      (1) if two labels are fresh, i, j = the two lowest fresh labels, for each training
+          non-empty cell (s, t) in index order: label i = the sources of t's training non-empty
+          cells, label j = the targets of s's training non-empty cells;
+      (2) for each used label u in index order, u as source and the lowest fresh label f as
+          target: label f = the types t whose training cells from u's types are non-empty in
+          more than half of them;
+      (3) the same with u as target and f as source."""
+    K = E.shape[1]
+    used = [l for l in range(K) if l not in fresh]
+    YM = Y & M
+    if len(fresh) >= 2:
+        i, j = fresh[0], fresh[1]
+        for s, t in zip(*np.nonzero(YM)):
+            yield i, j, {i: YM[:, t].copy(), j: YM[s].copy()}
+    f = fresh[0]
+    for u in used:
+        src = E[:, u]
+        n = M[src].sum(axis=0)
+        k = YM[src].sum(axis=0)
+        yield u, f, {f: (n > 0) & (k > 0.5 * n)}
+    for u in used:
+        tgt = E[:, u]
+        n = M[:, tgt].sum(axis=1)
+        k = YM[:, tgt].sum(axis=1)
+        yield f, u, {f: (n > 0) & (k > 0.5 * n)}
+
+
+def escape(M, Y, E, P, Q, eq, n_rules, J0):
+    """The v2 escape move, tried only where v1 stops (a full sweep changed nothing).
+
+    A compound move: add one absent rule (i, j) with at least one fresh label (a label used by no
+    rule), re-seed the fresh label(s) from the training cells (_seed_candidates), put the rule at
+    its best rho level, then refine the fresh label(s) by greedy flips (types in index order,
+    labels in index order) and re-choose that rule's rho, round after round until a round changes
+    nothing (at most MAX_SWEEPS rounds). Re-seeding a fresh label does not change J, since no
+    rule reads it. Candidates are ranked by the J change after seeding and adding the rule, before
+    refinement (ties to the candidate order); the first ESCAPE_TRIES are refined in that order, and
+    the first whose refined J is lower than J0 by more than TOL is kept. Deterministic.
+    Returns (E, P, Q, n_rules, J) or None."""
+    if n_rules >= R_MAX:
+        return None
+    K = E.shape[1]
+    used = P.any(axis=0) | P.any(axis=1)
+    fresh = [l for l in range(K) if not used[l]]
+    if not fresh:
+        return None
+    eps = EPS[eq]
+    L0 = rule_matrix(P, Q)
+    cands = []
+    for n, (i, j, cols) in enumerate(_seed_candidates(M, Y, E, P, fresh)):
+        if P[i, j]:
+            continue
+        E2 = E.copy()
+        for l, c in cols.items():
+            E2[:, l] = c
+        if not E2[:, i].any() or not E2[:, j].any():
+            continue
+        Ef2 = E2.astype(np.float64)
+        S = Ef2 @ L0 @ Ef2.T
+        C = np.where(M, cell_cost(S, eps, Y), 0.0)
+        d = _best_level(E2, S, C, M, Y, eps, i, j, 0.0) + RULE_BITS
+        q = int(np.argmin(d))
+        cands.append((float(d[q]), n, i, j, q, E2))
+    cands.sort(key=lambda c: (c[0], c[1]))
+    for _, _, i, j, q, E2 in cands[:ESCAPE_TRIES]:
+        E2, P2, Q2 = E2.copy(), P.copy(), Q.copy()
+        P2[i, j], Q2[i, j] = True, q
+        Ef2 = E2.astype(np.float64)
+        S = Ef2 @ rule_matrix(P2, Q2) @ Ef2.T
+        C = np.where(M, cell_cost(S, eps, Y), 0.0)
+        refine = sorted({i, j} & set(fresh))
+        for _ in range(MAX_SWEEPS):
+            ch = False
+            L = rule_matrix(P2, Q2)
+            for t in range(65):
+                for l in refine:
+                    ch |= _flip(E2, Ef2, S, C, M, Y, L, eps, t, l)
+            d = _best_level(E2, S, C, M, Y, eps, i, j, LOG1M_RHO[Q2[i, j]])
+            qn = int(np.argmin(d))
+            if d[qn] < d[Q2[i, j]] - TOL:
+                Q2[i, j] = qn
+                ch = True
+            S = Ef2 @ rule_matrix(P2, Q2) @ Ef2.T
+            C = np.where(M, cell_cost(S, eps, Y), 0.0)
+            if not ch:
+                break
+        J2 = total_J(S, eq, M, Y, n_rules + 1)
+        if J2 < J0 - TOL:
+            return E2, P2, Q2, n_rules + 1, J2
+    return None
 
 
 def rules_list(P, Q):
@@ -378,9 +522,13 @@ def pack(E, rules, lib, pis, m_r, g_r, wq, aq, bq, w0, eq, sign):
             "P__sym16": np.concatenate(pis).astype(np.int64) if pis else np.zeros(0, np.int64)}
 
 
-def fit(view, starts=DEFAULT_STARTS, labels="learned", n_labels=N_LABELS, stage1_fn=None):
+def fit(view, starts=DEFAULT_STARTS, labels="learned", n_labels=N_LABELS, stage1_fn=None,
+        search=None):
     """section 2.4. `starts` restarts use seeds 0 .. starts-1 [R13]; the lowest training J wins,
-    ties to the lower seed. labels="random" is the section 4.3 arm (expression frozen)."""
+    ties to the lower seed. labels="random" is the section 4.3 arm (expression frozen).
+    search: "v1" (as registered) or "v2" (escape move); None means the module's SEARCH."""
+    search = SEARCH if search is None else search
+    assert search in ("v1", "v2")
     M, Y = grid(view)
     runs = []
     if labels == "random":
@@ -388,8 +536,10 @@ def fit(view, starts=DEFAULT_STARTS, labels="learned", n_labels=N_LABELS, stage1
     else:
         E0s = [initial_labels(sd, n_labels) for sd in range(starts)]
     if stage1_fn is None:
-        runs = [stage1(M, Y, E0, fix_labels=(labels == "random")) for E0 in E0s]
+        runs = [stage1(M, Y, E0, fix_labels=(labels == "random"), search=search)
+                for E0 in E0s]
     else:
+        assert search == "v1", "the GPU stage 1 implements v1 only"
         runs = stage1_fn(M, Y, E0s, labels == "random")
     best = min(range(len(runs)), key=lambda x: (runs[x][4], x))
     E, P, Q, eq, J, traj, sweeps = runs[best]
@@ -399,7 +549,7 @@ def fit(view, starts=DEFAULT_STARTS, labels="learned", n_labels=N_LABELS, stage1
     sign = stage4(view.content)
     LAST_FIT.clear()
     LAST_FIT.update({
-        "best_start": best, "J_per_start": [r[4] for r in runs],
+        "search": search, "best_start": best, "J_per_start": [r[4] for r in runs],
         "sweeps_per_start": [r[6] for r in runs], "traj_per_start": [r[5] for r in runs],
         "rules_per_start": [rules_list(r[1], r[2]) for r in runs],
         "E_per_start": [r[0].copy() for r in runs],

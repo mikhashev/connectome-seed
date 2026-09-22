@@ -105,31 +105,47 @@ def test_d6_matches_regularity():
         assert FR.canon(pts) == ns["canon_pattern"]([(p, 1) for p in pts], False, True)
 
 
-def test_planted_recovery(starts=10):
+def test_planted_recovery(starts=10, search="v1"):
     import harness as H
     E_true, rules, eps_q, content = planted()
     bank = H.Bank("synthetic", content)
     train = split_mask()
     view = H.make_view(bank, train)
     t0 = time.time()
-    data = FR.fit(view, starts=starts)
+    data = FR.fit(view, starts=starts, search=search)
     dt = time.time() - t0
     info = dict(FR.LAST_FIT)
     M, Y = FR.grid(view)
     J_fit = min(info["J_per_start"])
     J_true = true_J(np.pad(E_true, ((0, 0), (0, 9))), rules, view, eps_q)
     J_empty = FR.total_J(np.zeros((65, 65)), FR.eps_level_nearest(M, Y), M, Y, 0)
+    P = H.Predictor("first_rule(synthetic)", FR.PROGRAM_FILES, lambda v: data)
     # the fit must reach (about) the planted genome's own code length, far below no rules
     assert J_fit <= J_true + 1e-6, (J_fit, J_true)
     assert J_fit < 0.5 * J_empty, (J_fit, J_empty)
-    # the recovered labels used by rules are the planted ones (up to relabelling)
+    # v1: the recovered labels used by rules are the planted ones (up to relabelling). v2 is held
+    # to the code length and to held-out N1 only: on this instance it reaches a J at or below
+    # the planted one with a different label decomposition (reported, not asserted away).
+    info["rule_label_sets"] = sorted(sorted(np.flatnonzero(data["E"][:, l]).tolist())
+                                     for l in sorted({int(x) for x in
+                                                      data["R__sym16"][:, :2].ravel()}))
+    if search == "v1":
+        _check_labels(data, E_true)
+    return _report(search, dt, starts, J_fit, J_true, J_empty, info, P, data, bank, held=None,
+                   train=train, view=view)
+
+
+def _check_labels(data, E_true):
     E_fit = data["E"]
     used = sorted({int(x) for x in data["R__sym16"][:, :2].ravel()})
     got = sorted(tuple(E_fit[:, l].tolist()) for l in used)
     assert got == sorted(tuple(E_true[:, l].tolist()) for l in range(3)), "labels not recovered"
     assert len(data["R__sym16"]) == 3
+
+
+def _report(search, dt, starts, J_fit, J_true, J_empty, info, P, data, bank, held, train, view):
+    import harness as H
     # held-out: decode through the harness's own machinery and score on the synthetic bank
-    P = H.Predictor("first_rule(synthetic)", FR.PROGRAM_FILES, lambda v: data)
     held = H.ALL_CELLS[~train[H.ALL_CELLS[:, 0], H.ALL_CELLS[:, 1]]]
     s_rule = H.score(P.decode(data, held), bank, held)
     n1 = H.fit_n1(view)
@@ -137,9 +153,11 @@ def test_planted_recovery(starts=10):
     assert s_rule["existence"] < s_n1["existence"], (s_rule, s_n1)
     assert s_rule["offset"] > s_n1["offset"], (s_rule, s_n1)
     dl = P.dl(data)
-    return {"fit_seconds": round(dt, 2), "starts": starts, "J_fit": round(J_fit, 2),
+    return {"search": search, "fit_seconds": round(dt, 2), "starts": starts,
+            "J_fit": round(J_fit, 2),
             "J_planted": round(J_true, 2), "J_no_rules": round(J_empty, 2),
             "n_rules": info["n_rules"], "n_motifs": info["n_motifs"],
+            "rule_label_sets": info["rule_label_sets"],
             "heldout_synthetic": {"rule": {k: s_rule[k] for k in ("existence", "offset",
                                                                    "counts", "sign")},
                                   "N1": {k: s_n1[k] for k in ("existence", "offset",
@@ -147,18 +165,33 @@ def test_planted_recovery(starts=10):
             "DL_bits_synthetic": dl, "data_bits_synthetic": dl - P.prog_bits}
 
 
+def test_planted_recovery_v2():
+    return test_planted_recovery(search="v2")
+
+
+def test_v1_unchanged():
+    """SEARCH v1 is byte-identical to the procedure committed in 05c1a8d (hash of its data on
+    this instance, computed with that commit's fit.py)."""
+    import harness as H
+    import timing
+    _, _, _, content = planted()
+    view = H.make_view(H.Bank("synthetic", content), split_mask())
+    assert timing.data_hash(FR.fit(view, starts=10, search="v1")) == "27e347eff741efbf"
+
+
 def test_determinism(starts=2):
     import harness as H
     _, _, _, content = planted(seed=2)
     view = H.make_view(H.Bank("synthetic2", content), split_mask(5))
-    a = FR.fit(view, starts=starts)
-    ja = list(FR.LAST_FIT["J_per_start"])
-    b = FR.fit(view, starts=starts)
-    jb = list(FR.LAST_FIT["J_per_start"])
-    assert a.keys() == b.keys()
-    for k in a:
-        assert a[k].dtype == b[k].dtype and np.array_equal(a[k], b[k]), k
-    assert ja == jb
+    for search in ("v1", "v2"):
+        a = FR.fit(view, starts=starts, search=search)
+        ja = list(FR.LAST_FIT["J_per_start"])
+        b = FR.fit(view, starts=starts, search=search)
+        jb = list(FR.LAST_FIT["J_per_start"])
+        assert a.keys() == b.keys()
+        for k in a:
+            assert a[k].dtype == b[k].dtype and np.array_equal(a[k], b[k]), (search, k)
+        assert ja == jb
     # a different seed set gives a different first restart
     E0, E1 = FR.initial_labels(0), FR.initial_labels(1)
     assert not np.array_equal(E0, E1)
@@ -178,7 +211,7 @@ def test_data_types():
     R = d["R__sym16"]
     assert [tuple(x) for x in R[:, :2].tolist()] == sorted(tuple(x) for x in R[:, :2].tolist())
     # random-label arm: expression is the frozen seed-20260923 draw
-    dr = FR.fit(view, labels="random")
+    dr = FR.fit(view, labels="random", search="v2")
     assert np.array_equal(dr["E"], np.random.default_rng(20260923).random((65, 12)) < 0.25)
 
 

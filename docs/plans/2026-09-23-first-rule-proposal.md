@@ -624,3 +624,59 @@ The search procedure of §2.4 (stage 1) is to be fixed before any real run: Mike
 `docs/plans/2026-09-23-first-rule-search-criterion.md`. The model, decoder, caps, rule cost and
 accounting stay frozen. The fixed procedure (SEARCH v2) will be declared in a dated appendix below
 before its gates are run. The procedure as written above stays callable as SEARCH v1.
+
+## Appendix — 2026-09-23: SEARCH v2, declared before its gates are run (appended)
+
+**What is added.** Stage 1 of §2.4 gets one extra move, the **escape**, used only where §2.4
+would stop. Everything else is the procedure above, step for step (SEARCH v1). Nothing else
+changes: the model, the decoder (555 bytes), J, the grids, the caps, the 25-bit rule cost, stages
+2–4 and the accounting. The code is `results/genome/c6/rules/first_rule/fit.py`, functions
+`escape` and `_seed_candidates`.
+
+**The escape.** When a full sweep changes nothing, and the restart has fewer than 40 rules and
+at least one fresh label (a label that no rule uses), try a compound move.
+
+1. **Candidates, in this fixed order.**
+   - (1) If at least two labels are fresh, call the two lowest fresh labels i and j. Then, for
+     each training non-empty cell (s, t) in index order: label i = the types with a training
+     non-empty cell into t, and label j = the types with a training non-empty cell from s. The
+     candidate rule is i → j.
+   - (2) For each used label u in index order, with f the lowest fresh label: label f = the types
+     t whose training cells from u's types are non-empty in more than half of them. The candidate
+     rule is u → f.
+   - (3) The same with u as the target: label f = the types s whose training cells into u's types
+     are non-empty in more than half of them. The candidate rule is f → u.
+2. **Seeding does not change J.** Re-seeding a fresh label changes no cell, since no rule reads
+   it.
+3. **Ranking.** Each candidate gets its rule at the best of the 16 ρ levels. Candidates are
+   ranked by the resulting J change (+25 bits), with ties going to the candidate order.
+4. **Refinement.** The first 12 candidates are refined in rank order. Refinement repeats rounds
+   until a round changes nothing, for at most 50 rounds. Each round:
+   - greedy flips of the candidate's fresh label(s), types in index order and labels in index
+     order, each kept if J falls by more than 1e-9 bits;
+   - then the new rule's ρ is re-chosen as in §2.4.
+5. **Acceptance.** The first refined candidate whose J, recomputed from the genome, is lower than
+   the restart's J before the escape (by more than 1e-9 bits) is kept, and the sweeps go on. If
+   none is, the restart stops, as in v1.
+
+**Properties.**
+
+- The escape is deterministic: it has no random draw.
+- Every kept move lowers J, so the search still terminates.
+- The 50-sweep cap still applies.
+- Restarts still use seeds 0 … k − 1 for the Bernoulli(0.25) initial labels.
+
+**How it was designed.** Only the criterion's **development** tables were looked at (planted PG1
+seeds 3000–3009, shuffled banks 1100–1109), under
+`docs/plans/2026-09-23-first-rule-search-criterion.md` §2. Four versions were tried. The table
+shows finds on the development tables, and false finds on the development shuffled banks.
+
+| version | finds | false finds |
+|---|---|---|
+| a best rule on two fresh labels with random bits, then refinement | 3 of 10 | 0 of 10 |
+| the same, also allowing one used label | 5 of 10 | 0 of 10 |
+| + labels seeded from one source row | 5 of 10 | 0 of 10 |
+| **+ labels seeded from one non-empty cell, as above (this v2)** | **10 of 10** | **0 of 10** |
+
+The gate tables (planted 2000–2019, shuffled 1000–1019) had not been run when this was written.
+v2 is committed before they are run, and it is not changed after.
