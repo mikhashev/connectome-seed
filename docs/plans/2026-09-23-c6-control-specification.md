@@ -772,3 +772,18 @@ It registers the following:
 
 The harness refuses to run if this file changes. The amendment of A17–A22 was accepted (Ark, content review, 2026-09-23
 21:35 and 21:44 UTC; Zcode, owner of record of C6, mechanical check, 2026-09-23 21:43 UTC).
+
+#### A24. Search-budget parity, registered before the code — *adds*
+
+`docs/plans/2026-09-23-c6-amendment-acceptance-3.md`, sha256 (LF-normalised)
+`16432647ffc568c2a3cb77bc61459abe8df50902ca945badf97fc20be9e2ac9f`.
+
+- **Parity.** Every trained opponent (BF_r) gets the same number of starts k as the rule under
+  test: the SVD start plus k − 1 seeded perturbations, with the best start chosen on the
+  training objective only (Ark, genome track, 2026-09-23 21:48 UTC).
+- **Recording.** k is a harness parameter, printed next to every verdict and margin.
+- **Timing cap.** The cap (10 or 3 starts) is decided once, before any arm runs, and applies to
+  every fit.
+- **Initialisation.** The scale of BF's SVD start is registered.
+
+The harness refuses to run if this file changes.

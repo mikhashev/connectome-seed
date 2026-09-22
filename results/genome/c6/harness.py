@@ -4,7 +4,7 @@ Specification: docs/plans/2026-09-23-c6-control-specification.md, sections 2-6, 
 (A1-A15) and Amendment 2 (A16-A22), judged against the acceptance criteria registered in
 docs/plans/2026-09-23-c6-amendment-acceptance.md. The harness refuses to run if folds.csv no
 longer matches folds.meta.json, if the spec's fold-time text (its first 41,349 bytes) changed,
-or if either acceptance file changed (A23): amendments may only append.
+or if any acceptance file changed (A23, A24): amendments may only append.
 
 Plug-in interface for a rule (A5). A rule is a Python file defining
     NAME            str
@@ -104,6 +104,10 @@ ACCEPTANCE2 = ROOT / "docs" / "plans" / "2026-09-23-c6-amendment-acceptance-2.md
 ACCEPTANCE2_SHA = "4b6610e7ed30b6aaeccf6ea33008485fc3ec31a1869b93f74c78b7248f2e97f9"
 if sha256_lf(ACCEPTANCE2) != ACCEPTANCE2_SHA:
     sys.exit("REFUSED: the registered acceptance criteria, part 2, changed")
+ACCEPTANCE3 = ROOT / "docs" / "plans" / "2026-09-23-c6-amendment-acceptance-3.md"
+ACCEPTANCE3_SHA = "16432647ffc568c2a3cb77bc61459abe8df50902ca945badf97fc20be9e2ac9f"
+if sha256_lf(ACCEPTANCE3) != ACCEPTANCE3_SHA:
+    sys.exit("REFUSED: the registered acceptance criteria, part 3, changed")
 
 T = read_csv(BANK_DIR / "types.csv")
 T = T.sort_values("birth_id").reset_index(drop=True)          # A1: index by birth id order
