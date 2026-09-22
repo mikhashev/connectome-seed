@@ -1,0 +1,52 @@
+{
+ "what": "one full fit on shuffled bank 0, fold-0 training split, one CPU core",
+ "threads": {
+  "OMP_NUM_THREADS": "1",
+  "OPENBLAS_NUM_THREADS": "1",
+  "MKL_NUM_THREADS": "1"
+ },
+ "k10": {
+  "fold": 0,
+  "starts": 10,
+  "search": "v2",
+  "seconds": 7.065145200002007,
+  "hash": "c502e3c2e2e7fdb8",
+  "sweeps_per_start": [
+   23,
+   24,
+   24,
+   24,
+   24,
+   24,
+   24,
+   27,
+   24,
+   24
+  ],
+  "n_rules": 7,
+  "n_motifs": 16,
+  "projected_hours_1315_fits_1_core": 2.5807405383340667
+ },
+ "k3": {
+  "fold": 0,
+  "starts": 3,
+  "search": "v2",
+  "seconds": 2.3863054000539705,
+  "hash": "c502e3c2e2e7fdb8",
+  "sweeps_per_start": [
+   23,
+   24,
+   24
+  ],
+  "n_rules": 7,
+  "n_motifs": 16,
+  "projected_hours_1315_fits_1_core": 0.8716643336308253
+ },
+ "machine": {
+  "platform": "Windows-10-10.0.26200-SP0",
+  "processor": "AMD64 Family 26 Model 68 Stepping 0, AuthenticAMD",
+  "cpu_count_logical": 32,
+  "numpy": "2.2.6",
+  "python": "3.10.20"
+ }
+}

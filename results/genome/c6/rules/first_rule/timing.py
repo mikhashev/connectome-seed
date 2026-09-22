@@ -11,7 +11,8 @@ Usage (from the repository root):
     tools/.venv/Scripts/python.exe results/genome/c6/rules/first_rule/timing.py parallel N_PROC N_FITS
     tools/.venv/Scripts/python.exe results/genome/c6/rules/first_rule/timing.py gpu
     tools/.venv/Scripts/python.exe results/genome/c6/rules/first_rule/timing.py bound
-Writes timing_<mode>.json next to this file.
+Writes timing_<mode>.json (SEARCH v1, the files of commit 05c1a8d) or timing_v2_<mode>.json
+(SEARCH v2, fit.SEARCH) next to this file. The gpu and bound modes measure v1's stage 1 only.
 """
 
 import os
@@ -65,7 +66,8 @@ def one_fit(args):
     t0 = time.perf_counter()
     d = FR.fit(v, starts=starts)
     dt = time.perf_counter() - t0
-    return {"fold": fold, "starts": starts, "seconds": dt, "hash": data_hash(d),
+    return {"fold": fold, "starts": starts, "search": FR.LAST_FIT["search"], "seconds": dt,
+            "hash": data_hash(d),
             "sweeps_per_start": FR.LAST_FIT["sweeps_per_start"],
             "n_rules": FR.LAST_FIT["n_rules"], "n_motifs": FR.LAST_FIT["n_motifs"]}
 
@@ -189,5 +191,7 @@ if __name__ == "__main__":
     res["machine"] = {"platform": platform.platform(), "processor": platform.processor(),
                       "cpu_count_logical": os.cpu_count(), "numpy": np.__version__,
                       "python": sys.version.split()[0]}
-    (HERE / f"timing_{mode}.json").write_text(json.dumps(res, indent=1, default=str) + "\n",
+    import fit as _FR
+    prefix = "timing_" if _FR.SEARCH == "v1" or mode in ("gpu", "bound") else f"timing_{_FR.SEARCH}_"
+    (HERE / f"{prefix}{mode}.json").write_text(json.dumps(res, indent=1, default=str) + "\n",
                                               encoding="utf-8", newline="\n")

@@ -20,9 +20,78 @@ the rule run.
 | `test_fit.py` | Unit tests on synthetic data only. |
 | `timing.py` | Timing on shuffled bank 0, in four modes: `serial`, `parallel`, `gpu` and `bound`. |
 | `gpu_stage1.py` | Stage 1 in torch. It exists only for the CPU-versus-GPU comparison. |
-| `timing_*.json` | The timing measurements. They contain no score of any kind. |
+| `timing_*.json` | The timing measurements. They contain no score of any kind. `timing_v2_*.json` are the measurements for SEARCH v2. |
+| `planted.py` | Generator PG1 of the search criterion: planted tables from the rule's own model family. |
+| `gates.py` | The search criterion's gates and the v1 measurement. |
+| `gates_dev_*.json`, `gates_gate_*.json` | The development runs, and the single gate run. They hold scores on **synthetic and shuffled tables only**. |
 
 Run everything from the repository root with `tools/.venv/Scripts/python.exe`.
+
+## SEARCH v2: the search fix (option B, Mike, 2026-09-23 22:38 UTC)
+
+**What happened, in order.**
+
+1. The criterion was registered first: `docs/plans/2026-09-23-first-rule-search-criterion.md`,
+   commit `1eca0ac`.
+2. v2 was designed on the development tables only (planted PG1 3000–3009, shuffled 1100–1109).
+3. v2 was declared in the proposal's appendix and committed (`abea719`).
+4. The gate tables were then run once: planted PG1 2000–2019, and `harness.shuffled_bank(REAL,
+   s)` for s = 1000–1019, which is outside the exam's null 0–98.
+
+**v2 in one sentence.** Where v1 stops (a sweep that changes nothing), v2 tries an escape: a new
+rule on fresh label(s), seeded from one training non-empty cell or from an existing label,
+refined by greedy flips, and kept only if J falls. `fit.SEARCH = "v2"` is the default. v1 is
+callable as `search="v1"` and is byte-identical to commit `05c1a8d`, which `test_v1_unchanged`
+checks.
+
+**What is frozen.** The model, the decoder (555 bytes), J, the caps, the 25-bit rule cost and
+stages 2–4.
+
+**Gates (k = 10), expected against what they gave:**
+
+| gate | expected | got | result |
+|---|---|---|---|
+| positive: finds the planted rule (F1: J ≤ 1.01 × J_planted, and F2: held-out existence beats N1) | ≥ 15 of 20 | **18 of 20** (F1 18, F2 20) | PASS |
+| negative: false finds on shuffled banks (held-out existence beats N1) | ≤ 1 of 20 | **0 of 20** | PASS |
+
+**The two misses.** Seeds 2000 and 2013 beat N1 but fail F1: J is 9.8 % and 3.4 % above the
+planted J.
+
+**The same tables under v1 (a measurement, not a verdict):**
+
+| | planted | shuffled |
+|---|---|---|
+| finds (F1 and F2) | 0 of 20 | |
+| beats N1 on held-out existence | 8 of 20 | 0 of 20 (false finds) |
+| restarts that end with zero rules | 82.5 % | 95.5 % |
+| tables whose best restart has zero rules | 10 of 20 | 15 of 20 |
+
+**Timing of v2 (shuffled bank 0, fold-0 split):**
+
+| measurement | k = 10 | k = 3 |
+|---|---|---|
+| one full fit, 1 core | 7.07 s | 2.39 s |
+| 1,315 fits on 1 core, projected | 2.6 h | 0.87 h |
+| 1,315 fits actually run on a 32-process pool | **740 s wall** (0.21 h) | 219 s wall |
+| 320 fits on a 16-process pool | 271 s wall | |
+
+- **Against the 48-hour cap.** Every figure is far below it. The choice between 10 and 3 restarts
+  is Mike's.
+- **Determinism.** Fits run in worker processes are byte-identical to the same fits run serially.
+- **GPU.** `gpu_stage1.py` implements v1 only, and `fit(stage1_fn=...)` refuses v2.
+
+**What v2 does differently (reported, not a gate).**
+
+- **Fewer rules than planted.** v2 fits use 6–8 rules where PG1 plants 12, and they often reach a
+  training J below the planted genome's. The labels are not charged in J, so fewer rules over
+  broader labels, plus some fitting of noise, can cost less. The same happens on the small
+  unit-test instance: J 640 against 692 planted, with 7 rules and a different label decomposition.
+- **Restarts converge.** They now mostly reach the same genome, because the escape is
+  deterministic and data-seeded. The rules of the best and second-best restarts will therefore
+  agree often. That bears on reading proposal §4.4 (ii).
+- **Shuffled banks.** v2 finds 6–7 rules on them, and J falls from about 2,280 to about 1,800
+  bits, but it never beats N1 on held-out existence. Degree-like structure is found, and it does
+  not generalise beyond what N1 already has.
 
 ## The decoder and its budget
 
@@ -188,6 +257,8 @@ does not decide, and the reading taken. **None of them has been checked against 
     restart would be identical.
 
 ## Findings from preparation (the rule's own procedure; nothing adjusted)
+
+(Finding 1 below describes SEARCH v1. It is what led to option B and SEARCH v2, above.)
 
 1. **Restarts that stop at once with no rule.**
    - On shuffled bank 0's fold-0 split, **8 of 10 restarts stop after the first sweep with no
