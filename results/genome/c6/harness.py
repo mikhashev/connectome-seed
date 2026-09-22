@@ -1085,6 +1085,39 @@ def planted_predictor(name, cls):
     return Predictor(name, [DEC / "planted_decode.py"], lambda v: fit_planted(v, cls), rank=4)
 
 
+PRSH_SEED = 7
+
+
+def fit_prsh(view, cls):
+    """A6 (acceptance, part 2): PR's class-pair parameters trained on shuffled training cells.
+    Existence labels permuted among the training cells, then the non-empty contents (sorted
+    (s, t) order) permuted over the new non-empty cells (sorted); PCG64(7) afresh every fit."""
+    rng = np.random.Generator(np.random.PCG64(PRSH_SEED))
+    ex = view.exists[rng.permutation(len(view.cells))]
+    keys = sorted(view.content)
+    perm = rng.permutation(len(keys))
+    new_ne = sorted((int(a), int(b)) for a, b in view.cells[ex].tolist())
+    content = {c: view.content[keys[perm[i]]] for i, c in enumerate(new_ne)}
+    return fit_planted(View(view.type_fields, view.cells, ex, content), cls)
+
+
+def a6d_check(bank):
+    """A6-D: does D_k^N0 beat N1 in-sample on existence or offset set for some affordable k?"""
+    n0_full, _ = insample(N0, bank)
+    _, s_n1 = insample(N1, bank)
+    kmax = k_star_armed(dl_bank(bank) / 10, n0_full, bank.content)
+    rows = []
+    for k in range(kmax + 1):
+        P = Predictor(f"D0_{k}", DK0_FILES, lambda v, k=k: fit_dk0(v, k))
+        d, s_k = insample(P, bank)
+        rows.append({"k": k, "dl_bits": DK0.dl(d), "existence": s_k["existence"],
+                     "offset": s_k["offset"],
+                     "beats_N1": {f: cmp(s_k, s_n1, f) == 1 for f in ("existence", "offset")}})
+    return {"bank": bank.name, "k_max": kmax, "N1_existence": s_n1["existence"],
+            "N1_offset": s_n1["offset"], "rows": rows,
+            "any_k_beats_N1": any(any(r["beats_N1"].values()) for r in rows)}
+
+
 # ==========================================================================================
 # 9. The hub check (acceptance file, section (g); report only)
 # ==========================================================================================
@@ -1186,6 +1219,10 @@ def controls():
     pl1_env, pl1_invs = make_env(pl["PL1"], log)
     for p in (pr, n1_rule, n0_rule, oracle, pr_scr):
         out[f"PL1/{p.name}"] = run_exam(p, pl1_env, log)
+    prsh = Predictor("PR-sh", [DEC / "planted_decode.py"], lambda v: fit_prsh(v, cls), rank=4)
+    out["PL1/PR-sh"] = run_exam(prsh, pl1_env, log)
+    a6d = [a6d_check(REAL), a6d_check(pl["PL1"])]
+    log(f"A6-D: {[(x['bank'], x['k_max'], x['any_k_beats_N1']) for x in a6d]}")
     pl0_env, _ = make_env(pl["PL0"], log)
     out["PL0/PR"] = run_exam(pr, pl0_env, log)
     pl05_env, _ = make_env(pl["PL05"], log)
@@ -1294,6 +1331,32 @@ def controls():
                      f"{nulls['N_EB_alpha_insample']}; BF_8 lambda per fold {bf8['lambdas']}",
          True),
     ]
+    a6 = out["PL1/PR-sh"]
+    p2a6 = a6["P2"]
+    a6_ok = (a6["P1"]["pass"] and a6["P3"]["pass"] and a6["P4"]["pass"]
+             and p2a6["length_ok"] and all(p2a6["beats"]["dk_star"].values())
+             and all(p2a6["beats"]["n1_insample"].values())
+             and not all(p2a6["beats"]["dk_armed"].values())
+             and not a6["did_not_run"]["did_not_run"]
+             and a6["labels"] == ["below threshold for this family"])
+    crit += [
+        ("A6", "PR-sh on PL1 passes P1, P3 and P4, is within P2's length limit, beats D_k^N1 at "
+               "k* and N1 in-sample, and does not beat D_k^N0 at k*_armed on at least one of "
+               "existence and offset set; not 'did not run'. (acceptance, part 2, section 1)",
+         "FAIL with exactly one label: 'below threshold for this family'",
+         f"{a6['verdict']} {a6['labels']}; P1 {a6['P1']['pass']}, P3 {a6['P3']['pass']}, "
+         f"P4 {a6['P4']['pass']}; DL {p2a6['dl_rule_bits']} (limit {p2a6['dl_bank_over_10']:.0f}); "
+         f"k*_armed {p2a6['k_star_armed']}; beats {p2a6['beats']}", a6_ok),
+        ("A6-D", "On the real bank and on PL1, for some k in 0..k*_armed(DL(bank)/10), D_k^N0 "
+                 "beats N1 in-sample on existence or on offset set. (acceptance, part 2, "
+                 "section 1)", "yes, for at least one k on at least one bank",
+         "; ".join(f"{x['bank']}: k_max={x['k_max']}, N1 ex {x['N1_existence']:.4f} / off "
+                   f"{x['N1_offset']:.4f}, best armed ex "
+                   f"{min(r['existence'] for r in x['rows']):.4f} / off "
+                   f"{max(r['offset'] for r in x['rows']):.4f}, any k beats N1: "
+                   f"{x['any_k_beats_N1']}" for x in a6d),
+         any(x["any_k_beats_N1"] for x in a6d)),
+    ]
     acc = [{"id": c[0], "criterion": c[1], "expected": c[2], "got": c[3],
             "result": "PASS" if c[4] else "FAIL"} for c in crit]
     for a in acc:
@@ -1316,7 +1379,8 @@ def controls():
         "checks_against_A14": a14,
         "nulls_real_bank": nulls, "BF_8_real_bank": bf8,
         "R3_k_star_armed_at_limit": r3_k,
-        "planted_banks": pl_desc, "planted_classes": cls.tolist(),
+        "planted_banks": pl_desc, "planted_classes": cls.tolist(), "A6_D": a6d,
+        "acceptance_2_sha256_lf": sha256_lf(ACCEPTANCE2),
         "hub_check": hub,
         "control_d_shuffled_banks": control_d,
         "controls": out,

@@ -10,9 +10,10 @@ I built the harness and corrected it. I have not read the proposed rule (declara
 
 | | file | sha256 (LF-normalised) |
 |---|---|---|
-| harness | `results/genome/c6/harness.py` | `6a1ca2fa077b336e401c25e4b83ed7ed2c756c64590b444925636f7676d7dc1c` |
+| harness | `results/genome/c6/harness.py` | `59af8d25f5e9f5679b7fd396e32bad11ff302a5a90ecbe8b99953b13e668886e` |
 | acceptance criteria | `docs/plans/2026-09-23-c6-amendment-acceptance.md`, committed alone before the fix (`4332d17`) | `bd3697719aa96a2d6c39078d7d01823009746de50b694debecc0f0d450b43d3b` |
-| specification | `docs/plans/2026-09-23-c6-control-specification.md`; Amendment 2 is A16–A22 | `ec4130d0362a4de968c2e854472c78065c0b752dfc397b499a4f0d58d2261e9f` |
+| acceptance criteria, part 2 | `docs/plans/2026-09-23-c6-amendment-acceptance-2.md`, committed before A6 was written (`c75139a`) | `4b6610e7ed30b6aaeccf6ea33008485fc3ec31a1869b93f74c78b7248f2e97f9` |
+| specification | `docs/plans/2026-09-23-c6-control-specification.md`; Amendment 2 is A16–A23 | `e3f1e13ff3cec91d56f4ef9cab6fb436eb104b895edb35dd007bd21909b20032` |
 
 `harness_controls.json` records the sha256 of the harness, the spec, the acceptance file, the
 folds and every decoder.
@@ -54,11 +55,37 @@ the acceptance file.
 | M4 | P4 replaced: BF_8's margin over N1 > 0 | > 0 | **+0.0493 nats**; beats N1 in 10 of 10 folds | PASS |
 | M5 | frozen tuning values recorded | recorded | α per fold 8, 8, 8, 16, 16, 2, 8, 8, 8, 8 (in-sample 16); BF_8 λ = 3 in every fold | PASS |
 
-**15 of 16 pass. R1 fails.** Under the acceptance file §(f), a failed criterion is reported as a
+**15 of 16 pass. R1 fails.** (Part 2 adds A6 and A6-D; both fail, see below.) Under the acceptance file §(f), a failed criterion is reported as a
 failure of the amended exam and is **not re-tuned**.
 
 The A14 checks were re-run: all eight hold (oracle; N1 as a rule; RP_r8 as a rule; 99 shuffled
 banks, invariants exact).
+
+## A6: a weak object that loses on the budget arm alone (acceptance, part 2)
+
+| id | expected | got | result |
+|---|---|---|---|
+| A6 | PR-sh on PL1 passes P1, P3 and P4 and fails only with "below threshold for this family" | FAIL on every arm ("rule did not run", "copy or marginal", "below threshold", "family fits anything", "ambient"). DL 4,532 bits; k\*_armed = 0 | **FAIL** |
+| A6-D | for some affordable k, the armed table D_k^N0 beats N1 in-sample on existence or offset set | **no**, on either bank. Real bank, k = 0…7: best armed existence 0.4071 against N1's 0.3354; best offset 0.4498 against 0.4961. PL1, k = 0…18: 0.4076 against 0.4052; 0.3633 against 0.8690 | **FAIL** |
+
+**Both outcomes match the corrector's prior, which was registered before the run.**
+
+- **A6-D is the decisive result.** Within the size limit, the armed table is worse than N1
+  in-sample on both fields, at every k it can afford, on the real bank and on PL1. P2 requires
+  every rule to beat N1 in-sample (A17).
+- So **no object** can clear the N1 opponent and still lose to the armed table. The budget arm
+  cannot be the sole reason a rule fails. This holds for any object, not only PR-sh.
+- PR-sh itself also failed P1, P3 and P4. Its training cells were shuffled, so it learned
+  nothing, and it is not a "working" object. That is a second, smaller reason why A6 fails,
+  and A6-D makes it moot.
+- As registered, the object was not bent: it was not padded, and neither the bank nor the
+  storage format was changed.
+- **The finding, in one line:** the budget arm has capacity (R2, R3) but, within the size
+  limit, no bite. It is dominated by the N1 opponent. That is the fact of
+  `docs/plans/2026-09-23-c6-amendment-acceptance-2.md` §2: honest storage of this matrix is a
+  weak predictor at any length we can afford. The Clune threshold is defended by P1 and P2
+  against N0, N1, N_EB and BF. The budget arm guards only against a partial download of the
+  answer.
 
 ## What R1's failure means
 
