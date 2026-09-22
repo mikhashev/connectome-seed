@@ -10,16 +10,19 @@ I built the harness and corrected it. I have not read the proposed rule (declara
 
 | | file | sha256 (LF-normalised) |
 |---|---|---|
-| harness | `results/genome/c6/harness.py` | `59af8d25f5e9f5679b7fd396e32bad11ff302a5a90ecbe8b99953b13e668886e` |
+| harness | `results/genome/c6/harness.py` | `071d826a4a3894c6db77ff846f5019efa85a4cb278b18b9892916353f63f90f7` |
 | acceptance criteria | `docs/plans/2026-09-23-c6-amendment-acceptance.md`, committed alone before the fix (`4332d17`) | `bd3697719aa96a2d6c39078d7d01823009746de50b694debecc0f0d450b43d3b` |
 | acceptance criteria, part 2 | `docs/plans/2026-09-23-c6-amendment-acceptance-2.md`, committed before A6 was written (`c75139a`) | `4b6610e7ed30b6aaeccf6ea33008485fc3ec31a1869b93f74c78b7248f2e97f9` |
-| specification | `docs/plans/2026-09-23-c6-control-specification.md`; Amendment 2 is A16–A23 | `e3f1e13ff3cec91d56f4ef9cab6fb436eb104b895edb35dd007bd21909b20032` |
+| acceptance criteria, part 3 | `docs/plans/2026-09-23-c6-amendment-acceptance-3.md`, committed before the code (`2e36a6d`) | `16432647ffc568c2a3cb77bc61459abe8df50902ca945badf97fc20be9e2ac9f` |
+| specification | `docs/plans/2026-09-23-c6-control-specification.md`; Amendment 2 is A16–A24 | `5c58b02a53021f5a9d3ec5090e56dc183fb567568dfc1eda86e74ae8e28e7abd` |
 
 `harness_controls.json` records the sha256 of the harness, the spec, the acceptance file, the
 folds and every decoder.
 
-**Run:** `tools/.venv/Scripts/python.exe results/genome/c6/harness.py --controls` (CPU, about
-10 minutes).
+**Run:** `tools/.venv/Scripts/python.exe results/genome/c6/harness.py --controls --starts 10`
+(CPU, about 37 minutes). **Every verdict and margin below is at k = 10 starts per trained fit**
+(acceptance, part 3). `harness_controls.json` records k next to every verdict and every P1, P2
+and P4 margin.
 
 **The previous version of this page** (commit `d443cf6`) reported three defects and one gap.
 Amendment 2 addresses them:
@@ -60,6 +63,31 @@ failure of the amended exam and is **not re-tuned**.
 
 The A14 checks were re-run: all eight hold (oracle; N1 as a rule; RP_r8 as a rule; 99 shuffled
 banks, invariants exact).
+
+## Search-budget parity (acceptance, part 3)
+
+Each trained opponent (BF_r) now gets the rule's number of starts k: the SVD start, plus k − 1
+seeded perturbations, with the best chosen on the training objective only.
+
+**BF_8's held-out existence margin over N1 on the real bank:**
+
+| k (starts) | margin (nats) | folds beating N1 | λ chosen |
+|---|---|---|---|
+| 1 | +0.04927 | 10 of 10 | 3 in every fold |
+| 3 | +0.04928 | 10 of 10 | 3 in every fold |
+| 10 | +0.04933 | 10 of 10 | 3 in every fold |
+
+| id | criterion | got | result |
+|---|---|---|---|
+| S1 | k recorded, and printed next to every verdict and every P1, P2 and P4 margin | k = 10 on all 13 exam records | PASS |
+| S2 | M4 holds at k = 10 | +0.04933 | PASS |
+| S3 | M4 holds at k = 3 | +0.04928 | PASS |
+| S4 | the best start is never worse than start 0 on the training objective | 5,980 fits, 0 violations | PASS |
+
+The extra starts barely move BF: +0.00006 nats from k = 1 to k = 10. The SVD start already sits
+at, or next to, the best optimum it finds. **Every verdict in this file is the same at k = 10 as
+at k = 1.** The P4 thresholds moved only in the fourth decimal. For example, PR on PL1 still
+passes: its margin is +0.1334 against a threshold of +0.0741.
 
 ## A6: a weak object that loses on the budget arm alone (acceptance, part 2)
 

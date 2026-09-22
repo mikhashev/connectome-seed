@@ -32,6 +32,7 @@ import argparse
 import ast
 import hashlib
 import importlib.util
+import inspect
 import json
 import lzma
 import math
@@ -285,7 +286,13 @@ class Predictor:
 
     def train(self, bank, train_mask):
         view = make_view(bank, train_mask)
-        return self.fit(view, bank) if self.needs_bank else self.fit(view)
+        if self.needs_bank:
+            return self.fit(view, bank)
+        try:
+            takes = "starts" in inspect.signature(self.fit).parameters
+        except (TypeError, ValueError):
+            takes = False
+        return self.fit(view, starts=STARTS) if takes else self.fit(view)
 
     def decode(self, data, cells):
         mod = load_program(self.program_files)
@@ -523,6 +530,9 @@ BF_LAMBDAS = [1, 3, 10, 30, 100]
 BF_SWEEPS = 25
 BF_NEWTON_ITERS = 20
 BF_TOL = 1e-6
+STARTS = 10                  # A24 / acceptance part 3: starts per trained fit; set once by --starts
+PERTURB_SEED_BASE = 30000
+BF_FITS = {"n": 0, "violations": 0}   # S4: best start never worse than start 0 on training
 R3_MIN_CELLS = 5
 A5_MAX_RATIO = 0.25
 M3_CONTROL = 0.4465
@@ -641,15 +651,41 @@ def _newton_rows(O, Y, M, V, U, lam):
     return U
 
 
-def bf_als(O, Y, M, r, lam):
+def _bf_objective(O, Y, M, U, V, lam):
+    P = np.clip(_sig(O + U @ V.T), 1e-300, 1 - 1e-16)
+    ll = -np.sum(M * (Y * np.log(P) + (1 - Y) * np.log(1 - P)))
+    return float(ll + 0.5 * lam * (np.sum(U ** 2) + np.sum(V ** 2)))
+
+
+def bf_als(O, Y, M, r, lam, starts=None):
+    """A19 + acceptance part 3: start 0 is the SVD start (probability-unit residual, factors
+    scaled by sqrt(s)); starts j = 1..k-1 perturb it with PCG64(30000 + j) draws of scale
+    max(0.5 * RMS(U0, V0), 0.05); the best start by the penalised TRAINING objective wins
+    (ties to the lower j)."""
+    k = STARTS if starts is None else starts
     E = np.where(M > 0, Y - _sig(O), 0.0)
     u, sv, vt = np.linalg.svd(E)
-    U = u[:, :r] * np.sqrt(sv[:r])
-    V = vt[:r].T * np.sqrt(sv[:r])
-    for _ in range(BF_SWEEPS):
-        U = _newton_rows(O, Y, M, V, U, lam)
-        V = _newton_rows(O.T, Y.T, M.T, U, V, lam)
-    return U, V
+    U0 = u[:, :r] * np.sqrt(sv[:r])
+    V0 = vt[:r].T * np.sqrt(sv[:r])
+    eps = max(0.5 * float(np.sqrt(np.mean(np.concatenate([U0.ravel(), V0.ravel()]) ** 2))), 0.05)
+    best, objs = None, []
+    for j in range(k):
+        if j == 0:
+            U, V = U0.copy(), V0.copy()
+        else:
+            g = np.random.Generator(np.random.PCG64(PERTURB_SEED_BASE + j))
+            U = U0 + eps * g.standard_normal((65, r))
+            V = V0 + eps * g.standard_normal((65, r))
+        for _ in range(BF_SWEEPS):
+            U = _newton_rows(O, Y, M, V, U, lam)
+            V = _newton_rows(O.T, Y.T, M.T, U, V, lam)
+        obj = _bf_objective(O, Y, M, U, V, lam)
+        objs.append(obj)
+        if best is None or obj < best[0]:
+            best = (obj, U, V)
+    BF_FITS["n"] += 1
+    BF_FITS["violations"] += int(best[0] > objs[0])
+    return best[1], best[2]
 
 
 def _n1_logit_grid(n1data):
@@ -690,7 +726,7 @@ def fit_bf(view, r):
 
 
 def bf_predictor(r):
-    return Predictor(f"BF_r{r}", BF_FILES, lambda v: fit_bf(v, r), rank=r)
+    return Predictor(f"BF_r{r}_k{STARTS}", BF_FILES, lambda v: fit_bf(v, r), rank=r)
 
 
 # ==========================================================================================
@@ -951,8 +987,10 @@ def run_exam(pred, env, log=print):
     rule_s, n1_s, n0_s = cv(pred, bank), cv(N1, bank), cv(N0, bank)
     neb_s = cv(NEB, bank)
     r1 = p1(rule_s, n1_s, n0_s, neb_s)
+    r1["starts"] = STARTS
     dnr = did_not_run(rule_s, n0_s)
     r2 = p2(pred, bank)
+    r2["starts"] = STARTS
     real_m = {f: margin(rule_s, n1_s, f) for f in FIELDS}
     sh_m = {f: [] for f in FIELDS}
     for b in env.shuffled:
@@ -971,7 +1009,8 @@ def run_exam(pred, env, log=print):
     bfm = bf_margin(r, bank)
     thr = max(rp_thr, bfm["margin"])
     r4 = {"rank": r, "rule_margin_existence": real_m["existence"], "rp_threshold": rp_thr,
-          "bf": bfm, "threshold": thr, "pass": bool(real_m["existence"] > thr)}
+          "bf": bfm, "threshold": thr, "pass": bool(real_m["existence"] > thr),
+          "starts": STARTS}
     dial_out = []
     dks = Predictor(f"D_{r2['k_star']}", DK_FILES, lambda v: fit_dk(v, r2["k_star"]))
     dka = Predictor(f"D0_{r2['k_star_armed']}", DK0_FILES,
@@ -1002,13 +1041,16 @@ def run_exam(pred, env, log=print):
     if not r4["pass"]:
         labels.append("ambient, not substantive structure")
     verdict = "PASS" if not labels else "FAIL"
-    log(f"  [{pred.name} on {bank.name}] {verdict} {labels} ({time.time() - t0:.0f}s)")
+    log(f"  [{pred.name} on {bank.name}] k={STARTS} {verdict} {labels} "
+        f"(P1 existence margin {real_m['existence']:+.4f}, P4 threshold {thr:+.4f}; "
+        f"{time.time() - t0:.0f}s)")
     return {"name": pred.name, "bank": bank.name,
             "program_files": [str(Path(f).relative_to(ROOT).as_posix())
                               for f in pred.program_files],
             "per_fold_rule": rule_s, "per_fold_N1": n1_s, "per_fold_N0": n0_s,
             "per_fold_N_EB": neb_s, "P1": r1, "did_not_run": dnr, "P2": r2, "P3": r3, "P4": r4,
-            "dial": dial_out, "loto": lo, "labels": labels, "verdict": verdict}
+            "dial": dial_out, "loto": lo, "labels": labels, "verdict": verdict,
+            "starts": STARTS}
 
 
 # ==========================================================================================
@@ -1201,8 +1243,15 @@ def controls():
     nulls["N_EB_alpha_per_fold"] = [s["eb_alpha"] for s in cv(NEB, REAL)]
     nulls["N_EB_alpha_insample"] = float(insample(NEB, REAL)[0]["eb_alpha"][0])
     log(f"nulls on the real bank: {json.dumps(nulls)}")
-    bf8 = bf_margin(8, REAL)
-    log(f"BF_8 on the real bank: {bf8}")
+    global STARTS
+    run_k = STARTS
+    bf_by_k = {}
+    for kk in sorted({1, 3, run_k}):
+        STARTS = kk
+        bf_by_k[kk] = bf_margin(8, REAL)
+        log(f"BF_8 on the real bank, k={kk}: {bf_by_k[kk]}")
+    STARTS = run_k
+    bf8 = bf_by_k[run_k]
 
     oracle = Predictor("oracle", STORE_FILES, lambda v, b: fit_oracle(v, b), needs_bank=True)
     n1_rule = Predictor("N1 as a rule", [DEC / "n1_decode.py"], fit_n1)
@@ -1335,6 +1384,23 @@ def controls():
                      f"{nulls['N_EB_alpha_insample']}; BF_8 lambda per fold {bf8['lambdas']}",
          True),
     ]
+    s1_ok = all(c.get("starts") == STARTS and c["P1"].get("starts") == STARTS
+                and c["P2"].get("starts") == STARTS and c["P4"].get("starts") == STARTS
+                for c in out.values())
+    crit += [
+        ("S1", "The run's k is recorded, and printed next to every verdict and every P1, P2 "
+               "and P4 margin. (acceptance, part 3)", "yes",
+         f"k = {STARTS} on all {len(out)} exam records: {s1_ok}", s1_ok),
+        ("S2", "M4 still holds at k = 10: BF_8's mean held-out existence margin over N1 on the "
+               "real bank > 0. (acceptance, part 3)", "> 0",
+         f"{bf_by_k[10]['margin']:+.5f} nats" if 10 in bf_by_k else "not run (k != 10)",
+         10 in bf_by_k and bf_by_k[10]["margin"] > 0),
+        ("S3", "M4 still holds at k = 3. (acceptance, part 3)", "> 0",
+         f"{bf_by_k[3]['margin']:+.5f} nats", bf_by_k[3]["margin"] > 0),
+        ("S4", "With multiple starts, BF's training objective is never worse than at k = 1, in "
+               "every fit. (acceptance, part 3)", "yes",
+         f"{BF_FITS['n']} fits, {BF_FITS['violations']} violations", BF_FITS["violations"] == 0),
+    ]
     a6 = out["PL1/PR-sh"]
     p2a6 = a6["P2"]
     a6_ok = (a6["P1"]["pass"] and a6["P3"]["pass"] and a6["P4"]["pass"]
@@ -1363,6 +1429,7 @@ def controls():
     ]
     acc = [{"id": c[0], "criterion": c[1], "expected": c[2], "got": c[3],
             "result": "PASS" if c[4] else "FAIL"} for c in crit]
+    log(f"acceptance results at k = {STARTS} starts per trained fit:")
     for a in acc:
         log(f"{a['result']:4s} {a['id']}: {a['criterion']}\n       expected: {a['expected']}"
             f"\n       got:      {a['got']}")
@@ -1381,7 +1448,9 @@ def controls():
                          "PR": pr.prog_bits},
         "acceptance": acc,
         "checks_against_A14": a14,
-        "nulls_real_bank": nulls, "BF_8_real_bank": bf8,
+        "starts": STARTS, "nulls_real_bank": nulls, "BF_8_real_bank": bf8,
+        "BF_8_real_bank_by_starts": {str(k): v for k, v in bf_by_k.items()},
+        "BF_fits_S4": dict(BF_FITS), "acceptance_3_sha256_lf": sha256_lf(ACCEPTANCE3),
         "R3_k_star_armed_at_limit": r3_k,
         "planted_banks": pl_desc, "planted_classes": cls.tolist(), "A6_D": a6d,
         "acceptance_2_sha256_lf": sha256_lf(ACCEPTANCE2),
@@ -1409,7 +1478,10 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--controls", action="store_true")
     ap.add_argument("--rule")
+    ap.add_argument("--starts", type=int, choices=[3, 10], default=10,
+                    help="restarts per trained fit, decided once before any arm (A24)")
     a = ap.parse_args()
+    STARTS = a.starts
     if a.controls:
         controls()
     elif a.rule:

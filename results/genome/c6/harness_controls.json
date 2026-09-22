@@ -1,7 +1,7 @@
 {
  "what": "C6 harness controls after Amendment 2: the exam run with no rule, plus the planted-rule acceptance suite.",
- "harness_sha256_lf": "59af8d25f5e9f5679b7fd396e32bad11ff302a5a90ecbe8b99953b13e668886e",
- "spec_sha256_lf": "e3f1e13ff3cec91d56f4ef9cab6fb436eb104b895edb35dd007bd21909b20032",
+ "harness_sha256_lf": "071d826a4a3894c6db77ff846f5019efa85a4cb278b18b9892916353f63f90f7",
+ "spec_sha256_lf": "5c58b02a53021f5a9d3ec5090e56dc183fb567568dfc1eda86e74ae8e28e7abd",
  "acceptance_sha256_lf": "bd3697719aa96a2d6c39078d7d01823009746de50b694debecc0f0d450b43d3b",
  "folds_sha256_lf": "fb6f153b67fe1785a76c3823911e6fbb91cdda57ec952b36c40b4c95f1e213b8",
  "decoder_sha256_lf": {
@@ -129,7 +129,7 @@
    "id": "M4",
    "criterion": "P4 is replaced, not deleted: BF_8's mean held-out existence margin over N1 on the real bank > 0.",
    "expected": "> 0",
-   "got": "+0.04927 nats; beats N1 in 10/10 folds; lambdas [3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0]",
+   "got": "+0.04933 nats; beats N1 in 10/10 folds; lambdas [3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0]",
    "result": "PASS"
   },
   {
@@ -137,6 +137,34 @@
    "criterion": "Smoothing and penalty frozen by the registered rules; chosen values recorded.",
    "expected": "recorded",
    "got": "alpha per fold [8.0, 8.0, 8.0, 16.0, 16.0, 2.0, 8.0, 8.0, 8.0, 8.0], in-sample 16.0; BF_8 lambda per fold [3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0]",
+   "result": "PASS"
+  },
+  {
+   "id": "S1",
+   "criterion": "The run's k is recorded, and printed next to every verdict and every P1, P2 and P4 margin. (acceptance, part 3)",
+   "expected": "yes",
+   "got": "k = 10 on all 13 exam records: True",
+   "result": "PASS"
+  },
+  {
+   "id": "S2",
+   "criterion": "M4 still holds at k = 10: BF_8's mean held-out existence margin over N1 on the real bank > 0. (acceptance, part 3)",
+   "expected": "> 0",
+   "got": "+0.04933 nats",
+   "result": "PASS"
+  },
+  {
+   "id": "S3",
+   "criterion": "M4 still holds at k = 3. (acceptance, part 3)",
+   "expected": "> 0",
+   "got": "+0.04928 nats",
+   "result": "PASS"
+  },
+  {
+   "id": "S4",
+   "criterion": "With multiple starts, BF's training objective is never worse than at k = 1, in every fit. (acceptance, part 3)",
+   "expected": "yes",
+   "got": "5980 fits, 0 violations",
    "result": "PASS"
   },
   {
@@ -164,6 +192,7 @@
   "c_RP_does_not_pass_C6": true,
   "d_shuffle_invariants_hold": true
  },
+ "starts": 10,
  "nulls_real_bank": {
   "N0": {
    "existence": 0.4102965405546688,
@@ -199,7 +228,7 @@
  },
  "BF_8_real_bank": {
   "rank": 8,
-  "margin": 0.04926823262395004,
+  "margin": 0.04933110015583628,
   "lambdas": [
    3.0,
    3.0,
@@ -214,6 +243,64 @@
   ],
   "folds_beating_N1": 10
  },
+ "BF_8_real_bank_by_starts": {
+  "1": {
+   "rank": 8,
+   "margin": 0.04926823262395004,
+   "lambdas": [
+    3.0,
+    3.0,
+    3.0,
+    3.0,
+    3.0,
+    3.0,
+    3.0,
+    3.0,
+    3.0,
+    3.0
+   ],
+   "folds_beating_N1": 10
+  },
+  "3": {
+   "rank": 8,
+   "margin": 0.04927961387835702,
+   "lambdas": [
+    3.0,
+    3.0,
+    3.0,
+    3.0,
+    3.0,
+    3.0,
+    3.0,
+    3.0,
+    3.0,
+    3.0
+   ],
+   "folds_beating_N1": 10
+  },
+  "10": {
+   "rank": 8,
+   "margin": 0.04933110015583628,
+   "lambdas": [
+    3.0,
+    3.0,
+    3.0,
+    3.0,
+    3.0,
+    3.0,
+    3.0,
+    3.0,
+    3.0,
+    3.0
+   ],
+   "folds_beating_N1": 10
+  }
+ },
+ "BF_fits_S4": {
+  "n": 5980,
+  "violations": 0
+ },
+ "acceptance_3_sha256_lf": "16432647ffc568c2a3cb77bc61459abe8df50902ca945badf97fc20be9e2ac9f",
  "R3_k_star_armed_at_limit": 7,
  "planted_banks": {
   "PL1": {
@@ -2037,7 +2124,8 @@
      "mean_not_worse": true,
      "pass": true
     },
-    "pass": true
+    "pass": true,
+    "starts": 10
    },
    "did_not_run": {
     "folds_where_N0_beats_rule": {
@@ -2108,7 +2196,8 @@
     },
     "below_M18": false,
     "all_opponents_beaten": true,
-    "pass": false
+    "pass": false,
+    "starts": 10
    },
    "P3": {
     "existence": {
@@ -2147,7 +2236,7 @@
     "rp_threshold": -0.0030715422099927116,
     "bf": {
      "rank": 16,
-     "margin": 0.04851319698512866,
+     "margin": 0.04851361152058485,
      "lambdas": [
       3.0,
       3.0,
@@ -2162,8 +2251,9 @@
      ],
      "folds_beating_N1": 10
     },
-    "threshold": 0.04851319698512866,
-    "pass": true
+    "threshold": 0.04851361152058485,
+    "pass": true,
+    "starts": 10
    },
    "dial": [
     {
@@ -2739,7 +2829,8 @@
     "not a bottleneck",
     "family fits anything"
    ],
-   "verdict": "FAIL"
+   "verdict": "FAIL",
+   "starts": 10
   },
   "real/N1 as a rule": {
    "name": "N1 as a rule",
@@ -3109,7 +3200,8 @@
      "mean_not_worse": true,
      "pass": true
     },
-    "pass": false
+    "pass": false,
+    "starts": 10
    },
    "did_not_run": {
     "folds_where_N0_beats_rule": {
@@ -3180,7 +3272,8 @@
     },
     "below_M18": true,
     "all_opponents_beaten": false,
-    "pass": false
+    "pass": false,
+    "starts": 10
    },
    "P3": {
     "existence": {
@@ -3219,7 +3312,7 @@
     "rp_threshold": -0.004748634591963291,
     "bf": {
      "rank": 3,
-     "margin": 0.04034713809757127,
+     "margin": 0.04034078611097054,
      "lambdas": [
       3.0,
       3.0,
@@ -3234,8 +3327,9 @@
      ],
      "folds_beating_N1": 10
     },
-    "threshold": 0.04034713809757127,
-    "pass": false
+    "threshold": 0.04034078611097054,
+    "pass": false,
+    "starts": 10
    },
    "dial": [
     {
@@ -3814,7 +3908,8 @@
     "family fits anything",
     "ambient, not substantive structure"
    ],
-   "verdict": "FAIL"
+   "verdict": "FAIL",
+   "starts": 10
   },
   "real/RP_r8 as a rule (seed 999)": {
    "name": "RP_r8 as a rule (seed 999)",
@@ -4185,7 +4280,8 @@
      "mean_not_worse": true,
      "pass": true
     },
-    "pass": false
+    "pass": false,
+    "starts": 10
    },
    "did_not_run": {
     "folds_where_N0_beats_rule": {
@@ -4256,7 +4352,8 @@
     },
     "below_M18": true,
     "all_opponents_beaten": false,
-    "pass": false
+    "pass": false,
+    "starts": 10
    },
    "P3": {
     "existence": {
@@ -4295,7 +4392,7 @@
     "rp_threshold": -0.004390551604176202,
     "bf": {
      "rank": 8,
-     "margin": 0.04926823262395004,
+     "margin": 0.04933110015583628,
      "lambdas": [
       3.0,
       3.0,
@@ -4310,8 +4407,9 @@
      ],
      "folds_beating_N1": 10
     },
-    "threshold": 0.04926823262395004,
-    "pass": false
+    "threshold": 0.04933110015583628,
+    "pass": false,
+    "starts": 10
    },
    "dial": [
     {
@@ -4890,7 +4988,8 @@
     "family fits anything",
     "ambient, not substantive structure"
    ],
-   "verdict": "FAIL"
+   "verdict": "FAIL",
+   "starts": 10
   },
   "real/N0 as a rule": {
    "name": "N0 as a rule",
@@ -5260,7 +5359,8 @@
      "mean_not_worse": false,
      "pass": false
     },
-    "pass": false
+    "pass": false,
+    "starts": 10
    },
    "did_not_run": {
     "folds_where_N0_beats_rule": {
@@ -5331,7 +5431,8 @@
     },
     "below_M18": true,
     "all_opponents_beaten": false,
-    "pass": false
+    "pass": false,
+    "starts": 10
    },
    "P3": {
     "existence": {
@@ -5370,7 +5471,7 @@
     "rp_threshold": 0.001004877075114613,
     "bf": {
      "rank": 1,
-     "margin": 0.028150345003281323,
+     "margin": 0.028150051052145946,
      "lambdas": [
       1.0,
       1.0,
@@ -5385,8 +5486,9 @@
      ],
      "folds_beating_N1": 10
     },
-    "threshold": 0.028150345003281323,
-    "pass": false
+    "threshold": 0.028150051052145946,
+    "pass": false,
+    "starts": 10
    },
    "dial": [
     {
@@ -5964,7 +6066,8 @@
     "family fits anything",
     "ambient, not substantive structure"
    ],
-   "verdict": "FAIL"
+   "verdict": "FAIL",
+   "starts": 10
   },
   "real/PR": {
    "name": "PR",
@@ -6334,7 +6437,8 @@
      "mean_not_worse": false,
      "pass": false
     },
-    "pass": false
+    "pass": false,
+    "starts": 10
    },
    "did_not_run": {
     "folds_where_N0_beats_rule": {
@@ -6405,7 +6509,8 @@
     },
     "below_M18": true,
     "all_opponents_beaten": false,
-    "pass": false
+    "pass": false,
+    "starts": 10
    },
    "P3": {
     "existence": {
@@ -6444,7 +6549,7 @@
     "rp_threshold": 0.001195313299566636,
     "bf": {
      "rank": 4,
-     "margin": 0.03974661437268032,
+     "margin": 0.039723750076924115,
      "lambdas": [
       3.0,
       3.0,
@@ -6459,8 +6564,9 @@
      ],
      "folds_beating_N1": 10
     },
-    "threshold": 0.03974661437268032,
-    "pass": false
+    "threshold": 0.039723750076924115,
+    "pass": false,
+    "starts": 10
    },
    "dial": [
     {
@@ -7039,7 +7145,8 @@
     "family fits anything",
     "ambient, not substantive structure"
    ],
-   "verdict": "FAIL"
+   "verdict": "FAIL",
+   "starts": 10
   },
   "PL1/PR": {
    "name": "PR",
@@ -7409,7 +7516,8 @@
      "mean_not_worse": true,
      "pass": true
     },
-    "pass": true
+    "pass": true,
+    "starts": 10
    },
    "did_not_run": {
     "folds_where_N0_beats_rule": {
@@ -7480,7 +7588,8 @@
     },
     "below_M18": true,
     "all_opponents_beaten": true,
-    "pass": true
+    "pass": true,
+    "starts": 10
    },
    "P3": {
     "existence": {
@@ -7519,7 +7628,7 @@
     "rp_threshold": -0.005409995644213289,
     "bf": {
      "rank": 4,
-     "margin": 0.07400865636213547,
+     "margin": 0.07408245855543999,
      "lambdas": [
       3.0,
       3.0,
@@ -7534,8 +7643,9 @@
      ],
      "folds_beating_N1": 10
     },
-    "threshold": 0.07400865636213547,
-    "pass": true
+    "threshold": 0.07408245855543999,
+    "pass": true,
+    "starts": 10
    },
    "dial": [
     {
@@ -8108,7 +8218,8 @@
     }
    },
    "labels": [],
-   "verdict": "PASS"
+   "verdict": "PASS",
+   "starts": 10
   },
   "PL1/N1 as a rule": {
    "name": "N1 as a rule",
@@ -8478,7 +8589,8 @@
      "mean_not_worse": true,
      "pass": true
     },
-    "pass": false
+    "pass": false,
+    "starts": 10
    },
    "did_not_run": {
     "folds_where_N0_beats_rule": {
@@ -8549,7 +8661,8 @@
     },
     "below_M18": true,
     "all_opponents_beaten": false,
-    "pass": false
+    "pass": false,
+    "starts": 10
    },
    "P3": {
     "existence": {
@@ -8588,7 +8701,7 @@
     "rp_threshold": 0.004353896753108632,
     "bf": {
      "rank": 2,
-     "margin": 0.06913940001134454,
+     "margin": 0.06640388601992128,
      "lambdas": [
       1.0,
       1.0,
@@ -8603,8 +8716,9 @@
      ],
      "folds_beating_N1": 10
     },
-    "threshold": 0.06913940001134454,
-    "pass": false
+    "threshold": 0.06640388601992128,
+    "pass": false,
+    "starts": 10
    },
    "dial": [
     {
@@ -9184,7 +9298,8 @@
     "family fits anything",
     "ambient, not substantive structure"
    ],
-   "verdict": "FAIL"
+   "verdict": "FAIL",
+   "starts": 10
   },
   "PL1/N0 as a rule": {
    "name": "N0 as a rule",
@@ -9554,7 +9669,8 @@
      "mean_not_worse": false,
      "pass": false
     },
-    "pass": false
+    "pass": false,
+    "starts": 10
    },
    "did_not_run": {
     "folds_where_N0_beats_rule": {
@@ -9625,7 +9741,8 @@
     },
     "below_M18": true,
     "all_opponents_beaten": false,
-    "pass": false
+    "pass": false,
+    "starts": 10
    },
    "P3": {
     "existence": {
@@ -9664,7 +9781,7 @@
     "rp_threshold": -0.0018281419679158028,
     "bf": {
      "rank": 1,
-     "margin": 0.03573666633575129,
+     "margin": 0.03713266513477337,
      "lambdas": [
       1.0,
       1.0,
@@ -9679,8 +9796,9 @@
      ],
      "folds_beating_N1": 10
     },
-    "threshold": 0.03573666633575129,
-    "pass": false
+    "threshold": 0.03713266513477337,
+    "pass": false,
+    "starts": 10
    },
    "dial": [
     {
@@ -10258,7 +10376,8 @@
     "family fits anything",
     "ambient, not substantive structure"
    ],
-   "verdict": "FAIL"
+   "verdict": "FAIL",
+   "starts": 10
   },
   "PL1/oracle": {
    "name": "oracle",
@@ -10628,7 +10747,8 @@
      "mean_not_worse": true,
      "pass": true
     },
-    "pass": true
+    "pass": true,
+    "starts": 10
    },
    "did_not_run": {
     "folds_where_N0_beats_rule": {
@@ -10699,7 +10819,8 @@
     },
     "below_M18": false,
     "all_opponents_beaten": true,
-    "pass": false
+    "pass": false,
+    "starts": 10
    },
    "P3": {
     "existence": {
@@ -10738,7 +10859,7 @@
     "rp_threshold": -0.0011754144163587444,
     "bf": {
      "rank": 24,
-     "margin": 0.06721458063049612,
+     "margin": 0.06721374437837331,
      "lambdas": [
       3.0,
       3.0,
@@ -10753,8 +10874,9 @@
      ],
      "folds_beating_N1": 10
     },
-    "threshold": 0.06721458063049612,
-    "pass": true
+    "threshold": 0.06721374437837331,
+    "pass": true,
+    "starts": 10
    },
    "dial": [
     {
@@ -11330,7 +11452,8 @@
     "not a bottleneck",
     "family fits anything"
    ],
-   "verdict": "FAIL"
+   "verdict": "FAIL",
+   "starts": 10
   },
   "PL1/PR, scrambled genome": {
    "name": "PR, scrambled genome",
@@ -11700,7 +11823,8 @@
      "mean_not_worse": false,
      "pass": false
     },
-    "pass": false
+    "pass": false,
+    "starts": 10
    },
    "did_not_run": {
     "folds_where_N0_beats_rule": {
@@ -11771,7 +11895,8 @@
     },
     "below_M18": true,
     "all_opponents_beaten": false,
-    "pass": false
+    "pass": false,
+    "starts": 10
    },
    "P3": {
     "existence": {
@@ -11810,7 +11935,7 @@
     "rp_threshold": -0.005409995644213289,
     "bf": {
      "rank": 4,
-     "margin": 0.07400865636213547,
+     "margin": 0.07408245855543999,
      "lambdas": [
       3.0,
       3.0,
@@ -11825,8 +11950,9 @@
      ],
      "folds_beating_N1": 10
     },
-    "threshold": 0.07400865636213547,
-    "pass": false
+    "threshold": 0.07408245855543999,
+    "pass": false,
+    "starts": 10
    },
    "dial": [
     {
@@ -12405,7 +12531,8 @@
     "family fits anything",
     "ambient, not substantive structure"
    ],
-   "verdict": "FAIL"
+   "verdict": "FAIL",
+   "starts": 10
   },
   "PL1/PR-sh": {
    "name": "PR-sh",
@@ -12775,7 +12902,8 @@
      "mean_not_worse": false,
      "pass": false
     },
-    "pass": false
+    "pass": false,
+    "starts": 10
    },
    "did_not_run": {
     "folds_where_N0_beats_rule": {
@@ -12846,7 +12974,8 @@
     },
     "below_M18": true,
     "all_opponents_beaten": false,
-    "pass": false
+    "pass": false,
+    "starts": 10
    },
    "P3": {
     "existence": {
@@ -12885,7 +13014,7 @@
     "rp_threshold": -0.005409995644213289,
     "bf": {
      "rank": 4,
-     "margin": 0.07400865636213547,
+     "margin": 0.07408245855543999,
      "lambdas": [
       3.0,
       3.0,
@@ -12900,8 +13029,9 @@
      ],
      "folds_beating_N1": 10
     },
-    "threshold": 0.07400865636213547,
-    "pass": false
+    "threshold": 0.07408245855543999,
+    "pass": false,
+    "starts": 10
    },
    "dial": [
     {
@@ -13480,7 +13610,8 @@
     "family fits anything",
     "ambient, not substantive structure"
    ],
-   "verdict": "FAIL"
+   "verdict": "FAIL",
+   "starts": 10
   },
   "PL0/PR": {
    "name": "PR",
@@ -13850,7 +13981,8 @@
      "mean_not_worse": true,
      "pass": true
     },
-    "pass": false
+    "pass": false,
+    "starts": 10
    },
    "did_not_run": {
     "folds_where_N0_beats_rule": {
@@ -13921,7 +14053,8 @@
     },
     "below_M18": true,
     "all_opponents_beaten": false,
-    "pass": false
+    "pass": false,
+    "starts": 10
    },
    "P3": {
     "existence": {
@@ -13976,7 +14109,8 @@
      "folds_beating_N1": 0
     },
     "threshold": 0.0,
-    "pass": true
+    "pass": true,
+    "starts": 10
    },
    "dial": [
     {
@@ -14554,7 +14688,8 @@
     "below threshold for this family",
     "family fits anything"
    ],
-   "verdict": "FAIL"
+   "verdict": "FAIL",
+   "starts": 10
   },
   "PL05/PR": {
    "name": "PR",
@@ -14924,7 +15059,8 @@
      "mean_not_worse": true,
      "pass": true
     },
-    "pass": true
+    "pass": true,
+    "starts": 10
    },
    "did_not_run": {
     "folds_where_N0_beats_rule": {
@@ -14995,7 +15131,8 @@
     },
     "below_M18": true,
     "all_opponents_beaten": true,
-    "pass": true
+    "pass": true,
+    "starts": 10
    },
    "P3": {
     "existence": {
@@ -15034,7 +15171,7 @@
     "rp_threshold": -0.006173100737333131,
     "bf": {
      "rank": 4,
-     "margin": -0.000579034717007737,
+     "margin": -0.0005783663812077511,
      "lambdas": [
       100.0,
       100.0,
@@ -15049,8 +15186,9 @@
      ],
      "folds_beating_N1": 0
     },
-    "threshold": -0.000579034717007737,
-    "pass": true
+    "threshold": -0.0005783663812077511,
+    "pass": true,
+    "starts": 10
    },
    "dial": [
     {
@@ -15623,8 +15761,9 @@
     }
    },
    "labels": [],
-   "verdict": "PASS"
+   "verdict": "PASS",
+   "starts": 10
   }
  },
- "runtime_s": 559.5
+ "runtime_s": 2206.2
 }
