@@ -42,7 +42,8 @@ English rendering "does row B tell individuals apart, and where does `3‴` lie 
 the boundary" beside it as a translation, not a second original. The Russian original is in git
 history at commit 2488ecb72d14aa5398149d9a727b58852873a091. See the note under §0z about the seal.*
 
-Wording is Ark's, DPC Research group chat 2026-09-20 21:43 local, recorded in `README.md` §8
+Wording is Ark's, DPC Research group chat 2026-09-19 21:43 UTC [corrected 2026-09-23: was
+"2026-09-20 21:43 local", a local date with a UTC time], recorded in `README.md` §8
 under "The question the profiles will be read for". It is quoted here from the repository, not
 re-derived.
 
@@ -279,6 +280,11 @@ variant gives `a4d10e67…`. The saved-at-09:30:25Z bytes it was taken over were
 so the order "declaration, then values" rests on this file's own statement and on the commit
 time, not on a digest anyone can recompute. Details:
 [docs/notes/2026-09-23-translated-pinned-files.md](../../../../docs/notes/2026-09-23-translated-pinned-files.md).
+
+**Note, 2026-09-23.** The profile values were produced on 2026-09-19 between 20:43 and 21:31 UTC
+(file modification times of `rowB_profiles_*.csv`); the declaration's hash refers to the opening
+of those values by this reading, not to their production. Only a commit made before the run
+could show that a rule preceded the values themselves.
 
 That digest covers the file **up to and including the line above this subsection**; this
 subsection and everything below it were appended afterwards, which is why the digest of the

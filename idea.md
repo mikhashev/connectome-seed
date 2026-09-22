@@ -7,8 +7,8 @@ git history at commit 2488ecb72d14aa5398149d9a727b58852873a091 (`git show 2488ec
 record elsewhere pins idea.md by hash. Hashes of the original and of this revision:
 [docs/notes/2026-09-23-translated-pinned-files.md](docs/notes/2026-09-23-translated-pinned-files.md).*
 
-Source: Mike Shevchenko, Telegram, 2026-09-12 12:18, quoted into the DPC Research group on
-2026-09-13 05:57 UTC as message 67 ([chat/67](chat/67-mike-055707.md)). Nothing below is edited
+Source: Mike Shevchenko, Telegram, 2026-09-12 12:18, quoted into the DPC Research group as
+message 67 (Mike, owner, DPC Research group, 2026-09-13 05:57 UTC). Nothing below is edited
 beyond translation.
 
 > idea: USPEX for the digital evolution of nervous systems. Not "emulate a fly and call it an elephant",

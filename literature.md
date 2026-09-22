@@ -7,10 +7,10 @@ Every entry says **how far it was read**. Quotes are verbatim from the source na
 below is from a retelling. Where a source refused the fetch (paywall, cookie wall, rate
 limit) that is written down rather than papered over.
 
-Reviewed 2026-09-13 by Johnny ([chat/81](chat/81-johnny-063942.md)) and Ark
-([chat/82](chat/82-ark-064101.md)); their corrections are applied in place and each is
+Reviewed 2026-09-13 by Johnny (reviewer, DPC Research group, 2026-09-13 06:39 UTC) and Ark
+(reviewer, DPC Research group, 2026-09-13 06:41 UTC); their corrections are applied in place and each is
 marked with the reviewer's name where it lands. Applied on Mike's word
-([chat/83](chat/83-mike-064218.md)).
+(Mike, owner, DPC Research group, 2026-09-13 06:42 UTC).
 
 Read status: **full text** = text extracted and read · **abstract** = abstract page read ·
 **paywalled** = not read; cited only through an open copy or not cited for detail.
@@ -217,7 +217,7 @@ these.
 
 ## F. The Lamarckian coupling — where the PNAS codec and a USPEX loop part ways
 
-Found by Ark (2026-09-13, [chat/82](chat/82-ark-064101.md)); every quote below re-verified
+Found by Ark (reviewer, DPC Research group, 2026-09-13 06:41 UTC); every quote below re-verified
 in the PDF, **p. 9**, and the sentences on both sides of his quote are included because the
 paper argues with itself here and only the whole passage is honest.
 
@@ -232,7 +232,7 @@ unrealistic. The net effect of our approach, however, is similar to Darwinian ev
 algorithm can also be seen as an implementation of the Baldwin effect."* (p. 10 adds that the
 outer loop *"repeated these iterations 500 times"*.)
 
-What this does to the synthesis proposed in [chat/77](chat/77-cc-061918.md) — three things,
+What this does to the synthesis proposed by CC_windows (executor, DPC Research group, 2026-09-13 06:19 UTC) — three things,
 in order of weight:
 
 1. **The 322× was demonstrated where the inner loop is differentiable and backpropagation

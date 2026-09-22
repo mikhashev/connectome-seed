@@ -6,9 +6,9 @@ translated from Russian). It is a
 **file under a condition, not a project** — that is the verdict of the three agent readers
 (Johnny, Ark, CC), and the condition is stated below, precisely enough to be tested.
 
-**Reviewed 2026-09-13** by Johnny ([chat/81](chat/81-johnny-063942.md)) and Ark
-([chat/82](chat/82-ark-064101.md)); corrections applied in place on Mike's word
-([chat/83](chat/83-mike-064218.md)). Every change carries the reviewer's name where it lands.
+**Reviewed 2026-09-13** by Johnny (reviewer, DPC Research group, 2026-09-13 06:39 UTC) and Ark
+(reviewer, DPC Research group, 2026-09-13 06:41 UTC); corrections applied in place on Mike's word
+(Mike, owner, DPC Research group, 2026-09-13 06:42 UTC). Every change carries the reviewer's name where it lands.
 
 **Status:** the idea of 2026-09-13 as it was first written; this file has not been rewritten
 since. What happened after it is not here — the pre-registration, the runs and their records
@@ -68,7 +68,7 @@ USPEX-style operators on the living graph (heredity of modules, soft mutation wh
 controller is plastic, permutation of roles, a diversity archive), give every offspring a short
 "youth" of limited plasticity before measuring it, and select on a multi-objective fitness in
 closed arenas. The main artefact is the **evolutionary tree**, not one video. Full text as
-posted in the thread: [chat/67](chat/67-mike-055707.md); a clean copy of the five points:
+posted in the thread (Mike, owner, DPC Research group, 2026-09-13 05:57 UTC); a clean copy of the five points:
 [idea.md](idea.md) (English; the Russian original of 2026-09-12 is in git history at
 `2488ecb`).
 
@@ -142,31 +142,31 @@ The track needs no GPU and is not blocked by the nightly accrual.
 
 ## What the readers found — the shape, not the retelling
 
-Three agent readers, one thread, all in [chat/](chat/). The findings that survived
+Three agent readers, one thread, kept locally under `chat/` (gitignored, never in history). The findings that survived
 cross-check:
 
 - **It is not a project yet, and the author says why himself.** The next step the author names
   — *formalising the genome representation* — is not a next task but the condition of the
-  project's existence. Johnny, [68](chat/68-johnny-060109.md).
+  project's existence. Johnny (reviewer, DPC Research group, 2026-09-13 06:01 UTC).
 - **Why that representation is a hole and not a detail.** Three requirements pull in three
   directions — *compression* (the genome must be orders of magnitude smaller than the
   phenotype), *composability* (a module cut from one parent must mean the same thing in the
   other), *expressivity* (one grammar must grow a fly and, after mutation, a beetle) — and
   under them sit interfaces, the absence of a cheap validity oracle, and pleiotropy. A
   connectome is the *product* of development; the genome is the *process*; inverting one
-  product into a process is underdetermined. Ark, [73](chat/73-ark-061157.md).
+  product into a process is underdetermined. Ark (reviewer, DPC Research group, 2026-09-13 06:11 UTC).
 - **The USPEX analogy breaks in three load-bearing places** — DFT enthalpy is a physical
   quantity nobody chooses, fitness here is written by the author; DFT relaxation converges to
   something physical, "youth" minimises a training loss; and the paper both critics cite
-  measures exactly the failure a *short* youth would produce. Ark, [69](chat/69-ark-060236.md).
+  measures exactly the failure a *short* youth would produce. Ark (reviewer, DPC Research group, 2026-09-13 06:02 UTC).
 - **Two claims in the thread did not survive checking.** The compute estimate ("this is an HPC
   project") was off by two orders of magnitude on its own inputs and counted the wrong cost
   (neuron ODEs instead of body physics and the youth phase); on this card it fits. And the
   paper cited as the counterexample, arXiv 2508.17464, is **two-sided**: its second half shows
   brain–body co-optimisation reaching morphology–controller pairs a fixed body cannot. Only one
-  half had entered the thread. CC, [70](chat/70-cc-060556.md).
+  half had entered the thread. CC_windows (executor, DPC Research group, 2026-09-13 06:05 UTC).
 - **The data are not the blocker.** The male fly CNS (brain + ventral nerve cord, Cell,
-  2026-09-03) pairs with FlyWire (female); zebrafish adds structure + activity. Ark, [73].
+  2026-09-03) pairs with FlyWire (female); zebrafish adds structure + activity. Ark (reviewer, DPC Research group, 2026-09-13 06:11 UTC, same message as above).
 
 ## The condition, stated so it can be tested
 
