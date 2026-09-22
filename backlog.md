@@ -25,6 +25,7 @@ language_cutoff: 2026-09-13
 - **Observed — and the mechanism is that the phases move separately.** Both night-5 runs are faster than all eight in the late phase (0.0447, 0.0448 against a previous minimum of 0.0457) while their plateaus go in **opposite** directions (`3'''` below all eight, `0"` above all eight). The ratio is their quotient and so has a wider spread than either component band.
 - **Inferred.** A band set from n = 8 describes a sample, not a property, and writing it to four decimals can make it exclude the very runs it was drawn from. This is the same error as an SD over three seeds presented as the population's, one level down, on the instrument rather than on the science.
 - **First step.** Two candidates, and the choice is a decision rather than a preference: state bands as the observed min/max with the direction of rounding named (outward), or state them as a tolerance around a central value with the tolerance derived (a multiple of the checkpoint step). Either way a derived quantity such as a ratio does not get its own band on top of its components' — it gets one or the other. Not blocking any run; blocking a clean disposition of night 5's gate 4.
+- **2026-09-23, CC:** paused by Mike's word of 2026-09-20 10:15 UTC (ADR-004 amendment); stays open.
 - **axis:** collective
 
 ### THE-CORRESPONDENCE-BETWEEN-A-RUN-AND-ITS-COLUMN-KEEPS-BEING-INFERRED-FROM-A-NAME-INSTEAD-OF-RECORDED: three times now the link has been left derivable, and twice it was wrong (MEDIUM, open, 2026-09-19 — Ark found the third instance in CC's night-5 table; CC recorded it)
@@ -34,6 +35,7 @@ language_cutoff: 2026-09-13
 - **Observed — instance 3, the night-5 table.** Its first version declared a rule about itself: "`val_loss_seed<N>` followed by k `prime` tokens is the (k+1)-th run of seed N". True of `val_loss_seed0primeprime`; **false** of `val_loss_seed3primeprimeprime`, which carries three prime marks and is also a third run. Our own notation counts marks (`0"` two, `3'''` three) while the rule counts order, and they coincided for the first case only. Fixed the same day: `results/night5/run_columns.csv` carries the explicit mapping with `run_index_for_seed`, and the grammar is demoted to a comment explaining why it cannot be trusted.
 - **Inferred.** The pattern is not three accidents; it is a standing preference for a correspondence that looks derivable over one that is written down. Each time the first case validated the rule and a later case broke it.
 - **First step.** A checklist rule in `docs/CHECKLIST-research-repo.md`: a run→column, run→file or run→session correspondence is **recorded as a table beside the artefact**, never encoded in a name and never re-derived by a consumer; a naming convention may accompany it as a comment and may not be the source of truth.
+- **2026-09-23, CC:** paused by Mike's word of 2026-09-20 10:15 UTC (ADR-004 amendment); stays open.
 - **axis:** collective
 
 ### THE-CHEAP-AND-THE-DEAR-ESTIMATE-ARE-TAKEN-UNDER-DIFFERENT-REGULARISATION-SO-TEST-B-HAS-TWO-CLASS-QUESTIONS: the C3 hook at 25,000 lies inside the activity-penalty regime and the top rung at 250,000 lies outside it, so "does the cheap estimate agree with the dear one" was measured as "does it agree with the dear one in another regime" (HIGH, open, 2026-09-18 — Ark, on reviewing CC's night summary: "if C3 and the hook live in different regimes, then (b) has **two** class questions, not one" — translated from Russian; measurement by CC)
@@ -48,6 +50,7 @@ language_cutoff: 2026-09-13
 - **2026-09-20, CC.** (a) The First step above ("before the (c)4 reading, state ... which (b) is registered") was **not** done before the reading. `git log`: commit `031c9e2` ("The question was underspecified, and the file that says so had to be written by someone") is dated `2026-09-18T14:44:41+07:00`; commit `23547f7` ("The reading happened: TEST UNREADABLE, 16 of 23 levels left the test, and every one of them on the twin side") is dated `2026-09-18T16:33:21+07:00` — the reading followed the registration card by about 1h49m the same day, both authored by CC. It cannot be done retroactively; CC's position, recorded here, is to register (b) inside the blind v2 session. (b) `PENALISED-QUANTITY-READING.md` (read 2026-09-20 on Mike's word): the penalised quantity is SMOOTH through the 150,000 boundary in 10 of 10 runs at 3,600-iteration resolution (no run's boundary jump exceeds ~1.8× its own local step, and the one that does, seed 3′, moves toward baseline, not away); one run (seed 3‴, `9992/003`) rises ~15,600 iterations after the boundary — not classified by the SMOOTH/DRIFT rule as written; three runs (seed 0′, seed 2, seed 5) drift toward baseline after the boundary, a direction the rule does not describe either. (c) Recomputed from `results/night5/night_report_checkpoints.csv` myself (not from the prior report): median |Δ| across the ten runs between checkpoints 147,612 and 151,212 (flanking 150,000) is **2.2332** (sorted diffs 0.5868, 1.2760, 1.4809, 1.5864, 2.0577, 2.4087, 3.8470, 4.1292, 6.7006, 7.4939). Comparing the same computation at the other eight 25,000-multiple boundaries in the file: 25,000 → 8.4490; 50,000 → 3.9945; 75,000 → 6.7998; 100,000 → 5.2875; 125,000 → 5.6189; 175,000 → 6.0928; 200,000 → 6.1443; 225,000 → 3.1230. **Correction to what I was told:** the 150,000 median (2.2332) is not merely "of the same size" as the others — it is the **smallest of the nine** boundary medians, below the full [3.12, 8.45] range of the other eight, which is a stronger form of "no step at 150,000" than "same size," not a weaker one. (d) Correction of the group-chat statement (Ark, 2026-09-20): the step at iteration 150,100 "from 0.0625–0.0670 to 0.0445–0.0495" is seconds per iteration, not loss. `docs/briefs/2026-09-17-night5.md` §4.4: "(4a) plateau level, median of `s/iter`... → band **[0.0625, 0.0670]**" and "(4b) late level, median over iterations 150,100–250,008... → band **[0.0445, 0.0495]**" — both explicitly `s/iter` sub-gates on wall-clock timing, replacing a single median because the penalty optimiser being dropped at `stop_iter` changes the per-iteration cost, not the network. **Inferred.** The "two regimes" reading weakens at the 150,000 boundary (per (b)/(c)) but the card does not close: at 25,000, where the cheap probe (C3) sits, the penalised quantity is markedly higher and more variable in most runs (pre-150k maxima 21.9–129.8 vs post-150k maxima 16.3–60.6, `PENALISED-QUANTITY-READING.md` §5), so "the cheap probe sits in an unsettled phase" remains open as its own question. Recommendation recorded, not decided here: leave `stop_iter` untouched; Mike's decision. <!-- no-refs -->
 - **2026-09-20, CC — decided, and the observation renamed.** **Mike, owner, 2026-09-20: `activity_penalty.stop_iter` is left untouched.** The card does not close; it changes name. What weakens is the *boundary* half of it — the penalised quantity is smooth through 150,000 in all ten runs and held-out loss carries no step there either (`results/night5/diagnostics/rowB/PENALISED-QUANTITY-READING.md`), so by the time the penalty is dropped it was no longer holding the network. What stands, and is now the entry's live claim under its own name, is the *phase* half: at 25,000, where the C3 probe sits, the penalised quantity is markedly higher and more variable in most runs — **the cheap probe is taken while the system is unsettled**, which is a statement about the probe's placement rather than about two regularisation regimes. The distinction matters for what a null on (b) would license, which is what this entry was opened to protect. No registered rule changes; no run is needed to decide it further. Restated in `ROADMAP.md` Phase 2 item 3(vi) and in `VISION.md` § "And what it looks like one day later (2026-09-20)". <!-- no-refs -->
 - **First step, replacing the one above (which was not done before the (c)4 reading and cannot be done retroactively).** Register which (b) is meant — the probe-placement question or the regularisation question — inside the blind v2 session, and state whether a rung past 150,000 is the honest cheap anchor instead of C3. The curves that decide it are already on disk.
+- **2026-09-23, CC:** paused by Mike's word of 2026-09-20 10:15 UTC (ADR-004 amendment); stays open.
 - **axis:** collective
 
 ### THE-INSTRUMENTS-WERE-AUDITED-THE-DAY-THEY-WERE-BUILT-AND-NINETEEN-FIXES-WAIT-ON-MIKES-WORD: the code audit of the diagnostics found witnesses that cannot veto, constants never checked against the pre-registration and an undocumented null-draw rule, and nineteen fixes with falsifiers wait on Mike's word to fix the tools (HIGH, open, 2026-09-15 — Ark 08:42/08:45/09:39/09:51, Zcode 09:04, CC; consolidated `docs/tool-hardening-package.md`; Mike's word "fix the instruments", translated from Russian)
@@ -77,6 +80,7 @@ language_cutoff: 2026-09-13
   reading items 5/11 answer) and
   [[WINDOWS-UPDATE-RESTARTS-INSIDE-THE-NIGHT-WINDOW-BECAUSE-ACTIVE-HOURS-END-AT-0600]] (item
   17).
+- **2026-09-23, CC:** paused by Mike's word of 2026-09-20 10:15 UTC (ADR-004 amendment); stays open.
 - **axis:** honesty
 
 ### DATAMATE-UNLINKS-AN-OPEN-HDF5-FILE-AND-WINDOWS-REFUSES: flyvis does not build its connectome on Windows because its storage layer deletes a file while an h5py handle is still open (MEDIUM, open, 2026-09-13 — found by CC while verifying the flow)
@@ -180,6 +184,7 @@ language_cutoff: 2026-09-13
   a test hive → `start_night.ps1` must refuse; today it launches. Execution waits on Mike's word
   "fix the instruments" (translated from Russian) —
   [[THE-INSTRUMENTS-WERE-AUDITED-THE-DAY-THEY-WERE-BUILT-AND-NINETEEN-FIXES-WAIT-ON-MIKES-WORD]].
+- **2026-09-23, CC:** paused by Mike's word of 2026-09-20 10:15 UTC (ADR-004 amendment); stays open.
 - **axis:** collective
 
 ### THE-TUNING-BATTERY-CHECKS-WHETHER-THE-DOMINANT-ABLATION-TYPE-IS-FUNCTIONAL: flash and moving-edge tuning per cell type, compared against Maisak 2013, will show whether seed 2's R2, seed 3's Mi4 and seed 4's CT1 differ in tuning from the same type in the other five runs (HIGH, open, 2026-09-16 — CC, docs/plans/2026-09-16-functional-readout-plan.md step 2)
@@ -202,6 +207,7 @@ language_cutoff: 2026-09-13
   `backlog_closed.md` — so this step's own prerequisite ("waits on step 1",
   `docs/briefs/2026-09-16-step2-tuning-battery.md`) is satisfied. The brief is ready; the launch
   itself still waits on the owner's word.
+- **2026-09-23, CC:** paused by Mike's word of 2026-09-20 10:15 UTC (ADR-004 amendment); stays open.
 - **axis:** knowledge
 
 ### THE-GENOME-DESIGN-AROUND-S2-NEEDS-LABEL-PROVENANCE-BEFORE-EXTRACTION: Ark's design around S2 and CC's two-page "what is the genome here" note are the prerequisite for extracting the label array and rule bank (HIGH, open, 2026-09-16 — CC, docs/plans/2026-09-16-functional-readout-plan.md step 3)
@@ -228,6 +234,7 @@ language_cutoff: 2026-09-13
   this observation.
 - **First step.** Mike + reviewers decide, at the next pre-registration, whether a
   learned-gain-relative tolerance replaces or supplements the current raw-loss one.
+- **2026-09-23, CC:** paused by Mike's word of 2026-09-20 10:15 UTC (ADR-004 amendment); stays open.
 - **axis:** honesty
 
 ### THE-POINT-STATISTICS-RHO-PREVIEW-AT-N-EQUALS-SIX-MUST-NOT-BE-CITED-AS-THE-TEST: the 0.8857 rank correlation between the C3 point statistic and the 250,000 hook at n=6 is a preview of the registered (b) test taken before N is chosen and rests on one pair, and any citation of it must carry that label (MEDIUM, open, 2026-09-17 — CC, from commit a7233dc and Ark/Zcode's confirmation)
@@ -249,6 +256,7 @@ language_cutoff: 2026-09-13
 - **First step.** None scheduled; this entry is a standing caution against citing the number
   bare. It closes only when superseded by the registered N reading itself, or folded verbatim
   into a future registration's own text.
+- **2026-09-23, CC:** paused by Mike's word of 2026-09-20 10:15 UTC (ADR-004 amendment); stays open.
 - **axis:** honesty
 
 ### THE-GENOME-TRACK-HANDOVER-OVERSTATES-WHAT-A-SEED-MOVES: `docs/briefs/2026-09-19-genome-track-handover.md` §3 calls the 65 biases "the whole of individuality" when the same seed also spends itself on the decoder and the data order (MEDIUM, open, 2026-09-20 — CC)
@@ -281,6 +289,7 @@ language_cutoff: 2026-09-13
   - **(2) "Does an individual exist" — OPEN, and it is not answered by more of (1).** Under determinism the replicate spread is not zero, it is **undefined**: there are no replicates, because the same seed gives the same run. So there is nothing for a between-seed spread to be compared *with*, and the authorised night's shape — two deterministic pairs — is vacuous by construction. CC and Ark reached this separately before launch. The question that remains is not "how big is σ_rep under determinism" but "how far can an individual be perturbed and still be itself", which is the perturbation ladder, opened as [[THE-PERTURBATION-LADDER-MEASURES-HOW-FAST-AN-INDIVIDUAL-FORGETS-ITS-INITIAL-CONDITION]].
 - **Mike's word, 2026-09-20 10:02 UTC.** He does not want to spend the night; one full deterministic run is about 13.4 h and the resources can go elsewhere. Night 6 is prepared and **not launched**. Ark's trap above is unchanged by any of this and is the reason nothing follows automatically: switching determinism on in training would drive the replicate spread toward zero and ratify the method rather than test it.
 - **First step.** Nothing on this entry until Mike answers the ladder. When he does, (2) moves there and this entry closes as superseded; if he declines it, this entry is the record that the source is known and the individuality question is not answered.
+- **2026-09-23, CC:** paused by Mike's word of 2026-09-20 10:15 UTC (ADR-004 amendment); stays open.
 - **axis:** honesty
 
 ### BIRTH-IDS-THAT-ARE-NEVER-REUSED-MUST-BE-DECIDED-BEFORE-THE-FIRST-GENOME-EXISTS: a lineage cannot be reconstructed after the fact from labels that were reassigned, so the id scheme has to be fixed and stamped on the bank at generation zero (HIGH, open, 2026-09-20 — Ark, from `literature.md` §I.1 and §I.7; filed by CC)
@@ -352,6 +361,13 @@ language_cutoff: 2026-09-13
 - **First step.** **CC** ticks the confirmation items that are verified, naming the evidence beside each, and leaves unticked any that is not — a dated edit to the ADR's Confirmation section, not a rewrite of the decision. **Mike** answers Q2 if he wants it answered; if he does not, the ADR records that the question stands.
 - **axis:** knowledge
 
+### NEW-RUN-RECORDS-MUST-NAME-THE-CONNECTOME-AS-PACKAGE-VERSION-FILE-NOT-AN-ABSOLUTE-SCRATCHPAD-PATH: 25 of 113 tracked run records carry absolute Windows paths into a scratchpad that Mike deleted on 2026-09-20, and they resolve to nothing for any reader (LOW, open, 2026-09-23 — CC)
+
+- **Observed.** `docs/notes/2026-09-23-scratchpad-paths-in-records.md`: a search of `results/**/*.json` for the scratchpad session id finds it in 25 of 113 files (fields such as `meta.netdir`, `env.scratch_netdir`, `connectome_file`, a launch's `argv`, a wave's `jobs[]`). The scratchpad itself was deleted by Mike on 2026-09-20; the paths now resolve to nothing for anyone. The existing records are left as written — several are pinned by hash — and the note is the reading key.
+- **Inferred.** The defect repeats unless new records are written differently: the connectome is not reproduced in this repository, it ships inside the installed `flyvis` package, so a path into a session's private scratchpad was never the right handle for it.
+- **First step.** New run records name the connectome as **package + version + file** (`flyvis 1.2.0 : connectome/fib25-fib19_v2.2.json`) and run directories relative to `FLYVIS_ROOT_DIR`, not as absolute paths on one machine.
+- **axis:** collective
+
 
 ## IN PROGRESS
 
@@ -364,6 +380,7 @@ language_cutoff: 2026-09-13
 - **The design, as proposed and NOT authorised.** One seed, trained deterministically, with **one parameter nudged by a controlled amount**; the nudge stepped in float32 units of least precision, from one step up to the full difference between two different seeds. The perturbed parameter is an **edge** parameter and **not** `nodes_bias` — Ark's condition, because the activity penalty is a restoring force on the biases for the first 150,000 iterations, so a nudge there is actively pushed back and the ladder would measure the penalty rather than the system. Read **by shape**, the readout the profiles pointed at, against the night's own exact zero.
 - **Inferred.** What it measures is not σ_rep. It is how fast the system forgets its initial condition — how large a perturbation an individual survives and still reads as itself — which is the "does an individual exist" half of [[NON-DETERMINISM-IN-TRAINING-MAY-BE-THE-SOURCE-OF-THE-REPLICATE-GAP]], and is the operational form of the literature's own advice that the fix for noisy selection is to change what counts as the point (`literature.md` §I.5).
 - **First step.** **Mike's word, yes or no.** On yes: the reading rule is written and registered **before launch** — what counts as "still the same individual", at which rung, by which distance, and what each outcome licenses — and reviewed, before a single rung is run; the ladder's cost is then set by how many rungs the rule asks for, not by a night. On no: this entry closes and the individuality question stays answered only descriptively, from checkpoints already on disk.
+- **2026-09-23, CC:** paused by Mike's word of 2026-09-20 10:15 UTC (ADR-004 amendment); stays open.
 - **axis:** honesty
 
 ### ROWB-PY-CANNOT-ADDRESS-A-FUTURE-NIGHTS-RUNS-WITHOUT-AN-ADDITIVE-RUN-COLUMNS-OPTION: the profile instrument selects runs by night, so any night after night 5 needs either a script change or a new script, and the cheap fix is one additive switch (MEDIUM, open, 2026-09-20 — CC, from preparing night 6 against the existing instrument)
@@ -372,6 +389,7 @@ language_cutoff: 2026-09-13
 - **Observed — the defect it would also cure.** The board already carries [[THE-CORRESPONDENCE-BETWEEN-A-RUN-AND-ITS-COLUMN-KEEPS-BEING-INFERRED-FROM-A-NAME-INSTEAD-OF-RECORDED]] with three instances, two of them wrong. A `--run-columns` option that takes the mapping **as a file** is the same cure applied to the instrument: the correspondence is handed in, written down, and never re-derived from a directory name.
 - **Inferred.** Additive means additive: existing invocations must produce byte-identical output, the way the three launcher switches added this session did (legacy dry runs byte-identical, `docs/briefs/2026-09-20-night6-deterministic-pairs.md`). A non-additive change to an instrument that has already produced a committed record would make the record unreproducible by its own script.
 - **First step.** **Mike's word, yes or no.** On yes: **CC** adds `--run-columns <file>` reading an explicit run→column→netdir table, leaves every existing flag and default untouched, and proves additivity by re-running one committed dry run and diffing the bytes — before any new night is launched, not during one. On no: every future night writes its own mapping again, and the correspondence entry above gets its fourth instance.
+- **2026-09-23, CC:** paused by Mike's word of 2026-09-20 10:15 UTC (ADR-004 amendment); stays open.
 - **axis:** collective
 
 ### THE-SPREAD-REPLICATE-RATIO-INVERTS-BETWEEN-C3-AND-THE-TOP-RUNG: the between-seed spread at 250,000 is smaller than the replicate offset while at rung C3 it is larger, so the plan's §3 branch is decidable and waits on Mike + reviewers (HIGH, open, 2026-09-15 — CC, from the night 2 rung SDs and the §7 replicate comparison, 2026-09-15)
@@ -392,6 +410,7 @@ language_cutoff: 2026-09-13
   records is itself measured from a threshold — 0.3365 — that is not stable across replicates of
   the same seed; see `ROADMAP.md` Phase 2 item 3(i). *(Citation de-numbered 2026-09-20, CC: it read `ROADMAP.md:154-160`, which is a position and moves with every edit above it.)*
 - **First step:** Mike + reviewers read docs/experiments/002-night2-seeds-1-and-2.md and choose branch (a) (continue to the floor N, nights 3-5) or (b) (a new pre-registration for the expensive metric before any further N run) per docs/next-session-plan.md §3.
+- **2026-09-23, CC:** paused by Mike's word of 2026-09-20 10:15 UTC (ADR-004 amendment); stays open.
 - **axis:** honesty
 - **filed:** CC · 2026-09-15
 
@@ -401,6 +420,7 @@ language_cutoff: 2026-09-13
 - **Reported.** Ark's calibration (chat 2026-09-15 07:33) and Zcode's bundling it with the splice run (07:43) were both proposed before the registered splice was evaluated; run order verified by the timestamps inside `splice_a/calibration.json` (07:54:06Z) and `splice_a/splice_result.json` (07:55:37Z).
 - **Inferred.** The registered category is recorded as the pre-registration's rule reads it, but the margin above the floor (0.40) is smaller than what a directionless shift of the same size does to the loss on the median draw (46.07) — the floor (3× the replicate difference) was not measured from this operation's own null and may not be the right instrument for it.
 - **First step.** Mike + reviewers decide the reading: stands as the rule reads it / relabelled uninformative by the calibration / the floor is re-registered from the operation's own null distribution — a floor measured from the operation's own null needs its own registration, not a retrofit onto this one. See [[THE-SPREAD-REPLICATE-RATIO-INVERTS-BETWEEN-C3-AND-THE-TOP-RUNG]].
+- **2026-09-23, CC:** paused by Mike's word of 2026-09-20 10:15 UTC (ADR-004 amendment); stays open.
 - **axis:** honesty
 - **filed:** CC · 2026-09-15
 
@@ -418,6 +438,7 @@ language_cutoff: 2026-09-13
   `inconclusive — underpowered` registered as the expected outcome. Parent task
   [[HOW-MANY-FULL-RUNS-THE-TEST-IS-ALLOWED]], closed 2026-09-13; one of the fifteen in
   [[PRE-LAUNCH-EDITS-TO-THE-PRE-REGISTRATION-BEFORE-RUN-0]], closed 2026-09-13.
+- **2026-09-23, CC:** paused by Mike's word of 2026-09-20 10:15 UTC (ADR-004 amendment); stays open.
 - **axis:** honesty
 
 ### THE-REPLICATE-DIFFERS-BY-ONE-POINT-ONE-PERCENT-AT-THE-TOP-RUNG: seed 0 trained twice (run 0, run 0′) lands 1.11 % apart in held-out loss at iteration 250,000, past this file's own 1 % replicate tolerance (HIGH, open, 2026-09-14 — CC, from run 0 / run 0′ per §7)
@@ -491,4 +512,5 @@ language_cutoff: 2026-09-13
     indistinguishable from zero, any cheap-vs-expensive correlation is bounded above by that
     reliability, so the ρ preview cannot be read as a statement about individuals until the top
     rung shows reliability above zero.
+- **2026-09-23, CC:** paused by Mike's word of 2026-09-20 10:15 UTC (ADR-004 amendment); stays open.
 - **axis:** honesty

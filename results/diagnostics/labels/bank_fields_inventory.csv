@@ -1,7 +1,7 @@
 PREVIEW DIAGNOSTIC -- NOT A TEST
 scope,source,field,kind,shape,n_distinct,value_set,note,polarity_like,why
 "per-type","json:nodes","activation","json field","(65,)",1,"['relu']","",False,"constant 'relu' for all 65 -- not a label, no variation"
-"per-type","json:nodes","bias","json field","(65,)",1,"[3.5]","",False,"constant 3.5 for all 65 -- not read by the network (see the genome note ง2); not a contrast preference"
+"per-type","json:nodes","bias","json field","(65,)",1,"[3.5]","",False,"constant 3.5 for all 65 -- not read by the network (see the genome note ยง2); not a contrast preference"
 "per-type","json:nodes","bias_fixed","json field","(65,)",1,"[False]","",False,"constant False for all 65"
 "per-type","json:nodes","name","json field","(65,)",65,"65 distinct, e.g. ['Am', 'C2', 'C3', 'CT1(Lo1)', 'CT1(M10)']","",False,"the type name"
 "per-type","json:nodes","pattern","json field","(65,)",2,"['['stride', [1, 1]]', '['stride', [3, 2]]']","",False,"['stride',[1,1]] / ['stride',[3,2]] -- a tiling production, not a label"

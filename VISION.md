@@ -72,12 +72,15 @@ makes a grammar's result readable, not a detour from it.
 **Which is the main line.** *Ark, reviewer, DPC Research group, 2026-09-19 11:11 UTC:* "if the goal
 is the elephant, then the grammar is the main line and measuring the fly is instrumentation." That
 is Ark's reading, and CC's record of the same day agrees with it. **The owner confirmed it** —
-*Mike, owner, 2026-09-20 09:27 UTC:* the grammar is the main line and the measurement runs in
-parallel as its instrument. The narrower fact that preceded the confirmation: on 2026-09-19 Mike
-chose the grammar track as the one to run next (*Mike, owner, DPC Research group, 2026-09-19
-14:45 UTC*), the track that needs no GPU and is not blocked by the nightly accrual; the
-blind-authored second registration of the reachability endpoint is deferred, not cancelled
-([ADR-003](docs/decisions/003-blind-authorship-after-the-numbers.md)). The two run in parallel.
+*Mike, owner, 2026-09-20 09:27 UTC:* the grammar is the main line and the measurement runs as its
+instrument. The narrower fact that preceded the confirmation: on 2026-09-19 Mike chose the grammar
+track as the one to run next (*Mike, owner, DPC Research group, 2026-09-19 14:45 UTC*), the track
+that needs no GPU and is not blocked by the nightly accrual; the blind-authored second registration
+of the reachability endpoint is deferred, not cancelled
+([ADR-003](docs/decisions/003-blind-authorship-after-the-numbers.md)). **Later the same day, at
+10:15 UTC, the owner paused the measurement line** — "Pause the fly → grammar (point 1)" — so the
+two no longer run together: the grammar track continues, the measurement line is paused, not
+cancelled, until the owner resumes it.
 
 **The order lifts nothing.** Nothing is grown until Phase 2 has a number (`ROADMAP.md`, "Not on this
 roadmap, deliberately"): the grammar of point 1 is *designed* now, and points 2, 3 and 5 — body and

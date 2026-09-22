@@ -25,9 +25,10 @@ that carries the number is named.*
 
 - **Goal and documents.** The goal is the five points of [idea.md](idea.md) plus the evolutionary
   tree, quoted by point number and no longer rebuilt from chat. The grammar track is the main
-  line; measuring the fly is its instrument and runs in parallel —
+  line; measuring the fly is its instrument and is **paused, not cancelled** —
   [ADR-004](docs/decisions/004-grammar-is-the-main-line.md), accepted on the owner's word of
-  2026-09-20.
+  2026-09-20, amended the same day at 10:15 UTC on the owner's word: "Pause the fly → grammar
+  (point 1)".
 - **The measurement track.** Ten runs on disk — six individuals, two of them run three times.
   Nothing beyond that is a test. This session established that evaluation non-repeatability is
   GPU operation order rather than the recording hook, that the same mechanism inside training is
@@ -120,9 +121,11 @@ wiring identical in every individual — not a genome in the generative sense
 short youth is the cheap evaluation, the fitness measured after it is the expensive one. The idea's
 own annotation says so — the short "youth" of point 4 is exactly the mechanism arXiv 2508.17464
 measured as the source of mis-ranking. And the main artefact is a tree, so a selection instrument
-that cannot tell one individual from another would grow a tree of noise. The two lines are
-parallel: the grammar is the main line, the measurement is what makes its result readable, and each
-feeds the other — confirmed by Mike, owner, 2026-09-20 09:27 UTC, and recorded as
+that cannot tell one individual from another would grow a tree of noise. The grammar is the main
+line, and measuring the fly is its instrument — confirmed by Mike, owner, 2026-09-20 09:27 UTC.
+Later the same day the owner paused the measurement line (10:15 UTC: "Pause the fly → grammar
+(point 1)"): no new night runs and no reading of it extends until it is resumed; the instruments
+and records stand as they are. See
 [ADR-004](docs/decisions/004-grammar-is-the-main-line.md).
 
 **Two annotations the idea carries about itself**, recorded on 2026-09-13 and repeated here so this

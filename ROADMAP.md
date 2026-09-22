@@ -371,11 +371,14 @@ fitness on a held-out set of arenas) are part of the goal and are **designed for
 "Not on this roadmap, deliberately" below, which is unchanged by this section.
 
 **Chosen as the track to run next** by Mike, owner, DPC Research group, 2026-09-19 14:45 UTC. It
-needs no GPU and is not blocked by the nightly accrual, so it runs **in parallel** with Phase 2
-rather than in place of it: point 4 of the idea is the cheap-and-expensive pair Phase 2 tests, and
-the tree of point 5 is only worth growing if the instrument that selects for it can tell two
-individuals apart. **The ordering — grammar the main line, measurement its instrument in
-parallel — is the owner's own** (Mike, owner, 2026-09-20 09:27 UTC).
+needs no GPU and is not blocked by the nightly accrual: point 4 of the idea is the
+cheap-and-expensive pair Phase 2 tests, and the tree of point 5 is only worth growing if the
+instrument that selects for it can tell two individuals apart. **The ordering — grammar the main
+line, measurement its instrument — is the owner's own** (Mike, owner, 2026-09-20 09:27 UTC).
+**The measurement line is paused, not cancelled**, on the owner's later word the same day (Mike,
+owner, DPC Research group, 2026-09-20 10:15 UTC: "Pause the fly → grammar (point 1)") — no new
+night is run and no reading of it is extended until the owner resumes it; the grammar track is
+the active line and continues.
 
 **What the elephant means here, so that it is not re-derived a fourth time.** Not a larger fly:
 more cells of the same types is a lattice parameter, the number of parameters on cell types does
@@ -474,7 +477,7 @@ one that can be trusted to be current.
 
 | axis | decisions | board entries | awaiting observation |
 |---|---|---|---|
-| **collective** | — | 6 | 0 |
+| **collective** | — | 7 | 0 |
 | **knowledge** | ADR-004 accepted | 10 | 0 |
 | **network** | — | 0 | 0 |
 | **honesty** | ADR-002 accepted · ADR-003 accepted | 14 | 0 |

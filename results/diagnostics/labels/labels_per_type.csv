@@ -1,5 +1,5 @@
 PREVIEW DIAGNOSTIC -- NOT A TEST
-# script_sha256=44f458ba3b1c14b027dd43e36ffbdfc485be6fd51f6cd4038a537c3fd46df2d9
+# script_sha256=152aa643660cf6ad7eb7706d540ce29ff8cdfc5a23ed14d28c3ac1048b27c96d
 # disposition_sha256=db3e00857ccafda39eeed77a4bb210f16e6d539ad2d6953809458f4679a17085
 # bank_polarity_like_value is empty for every row: see partition.json question (c).
 type_name,node_order_index,polarity_source,in_on_pathway,in_off_pathway,n_out_entries,n_exc,n_inh,n_alpha_fixed,n_alpha_references,bank_polarity_like_value,bank_layout,bank_role,has_direct_L1_input_DESCRIPTIVE,has_direct_L2_input_DESCRIPTIVE

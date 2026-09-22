@@ -1,7 +1,7 @@
 {
   "header": "PREVIEW DIAGNOSTIC -- NOT A TEST",
-  "run_utc": "2026-09-20T09:35:10Z",
-  "script_sha256": "44f458ba3b1c14b027dd43e36ffbdfc485be6fd51f6cd4038a537c3fd46df2d9",
+  "run_utc": "2026-09-22T19:43:08Z",
+  "script_sha256": "152aa643660cf6ad7eb7706d540ce29ff8cdfc5a23ed14d28c3ac1048b27c96d",
   "disposition_sha256": "db3e00857ccafda39eeed77a4bb210f16e6d539ad2d6953809458f4679a17085",
   "sources": {
     "json": "C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed\\tools\\.venv\\Lib\\site-packages\\flyvis\\connectome\\fib25-fib19_v2.2.json",
@@ -137,7 +137,7 @@
     "runnable": false,
     "status": "NOT RUNNABLE: no registered rule.",
     "searched": [
-      "docs/briefs/2026-09-16-step2-tuning-battery.md ง8",
+      "docs/briefs/2026-09-16-step2-tuning-battery.md ยง8",
       "docs/plans/2026-09-16-functional-readout-plan.md",
       "flyvis docs/source (absent: the installed package ships no docs tree)",
       "repo-wide grep for a connectivity->ON/OFF mapping"
@@ -148,7 +148,7 @@
       "restated_at": "docs/plans/2026-09-20-genome-design-around-s2.md:186",
       "axis": "MIXED: its target is response polarity (`polarity`) while its content is pathway membership (`on_pathway`/`off_pathway`). These are the two axes.",
       "withdrawn_by_author": true,
-      "withdrawal": "Ark, group chat 2026-09-20 09:16 UTC, withdrew ง4 as originally written for exactly this axis mix.",
+      "withdrawal": "Ark, group chat 2026-09-20 09:16 UTC, withdrew ยง4 as originally written for exactly this axis mix.",
       "operational": false,
       "why_not_operational": "Even setting the withdrawal aside, the sentence states no operator: no threshold, no weighting by n_syn, no path depth (direct input only or transitive), no tie rule for types receiving both. It names two seed types, not a mapping."
     },

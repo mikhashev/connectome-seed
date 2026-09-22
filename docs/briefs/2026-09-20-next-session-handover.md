@@ -40,8 +40,10 @@ have done what it says.
 main artefact (Mike Shevchenko, author, 2026-09-12 12:18), in English in
 [`idea_en.md`](../../idea_en.md). It is quoted by point number and never restated from chat:
 [ADR-004](../decisions/004-grammar-is-the-main-line.md). **The grammar track is the main line;
-measuring the fly is its instrument and runs in parallel** — Mike, owner, 2026-09-20 09:27 UTC.
-Growing anything stays blocked until Phase 2 has a number; *designing* is not growing, and the
+measuring the fly is its instrument** — Mike, owner, 2026-09-20 09:27 UTC. **The measurement line
+is paused, not cancelled** — Mike, owner, 2026-09-20 10:15 UTC: "Pause the fly → grammar (point
+1)"; no new night is run and no reading of it is extended until the owner resumes it. Growing
+anything stays blocked until Phase 2 has a number; *designing* is not growing, and the
 prohibition is narrowed to the former.
 
 **The measurement track.** Ten runs are on disk — six individuals, two of them run three times —

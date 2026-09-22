@@ -1,7 +1,12 @@
 connectome-seed — © 2026 Mike Shevchenko, DPC Research — https://github.com/mikhashev/
 Licensed under the Creative Commons Attribution 4.0 International License (CC BY 4.0).
 Attribution required as: "Mike Shevchenko, DPC Research — https://github.com/mikhashev/".
-The paper in sources/ (Shuvaev et al., PNAS 2024) is CC BY 4.0 under its own authors' terms, stated on its first page.
+Third-party material under sources/ remains under its own terms; the CC BY licence above covers
+this project's original content only. The two works reproduced there are both CC BY 4.0 under
+their own authors' terms: Shuvaev et al., PNAS 2024 (doi:10.1073/pnas.2409160121), stated on
+its first page; and Mertan & Cheney, arXiv:2508.17464, stated on its arXiv abstract page
+(checked 2026-09-23). Any further third-party file must be added here with its licence before
+it is committed.
 
 -----------------------------------------------------------------------
 

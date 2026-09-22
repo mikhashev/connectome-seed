@@ -342,7 +342,7 @@ for i, t in enumerate(type_axis):
            "", lay_h5.get(t, ""), role_of.get(t, ""),
            str("L1" in direct_in[t]), str("L2" in direct_in[t])]
     lines.append(",".join(row))
-(OUT / "labels_per_type.csv").write_text("\n".join(lines) + "\n")
+(OUT / "labels_per_type.csv").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 # --------------------------------------------------------------------------------------
 # 7. Write the inventory csv
@@ -362,7 +362,7 @@ for r in inventory:
     ilines.append(",".join([q(r["scope"]), q(r["source"]), q(r["field"]), q(r["kind"]),
                             q(r["shape"]), str(r["n_distinct"]), q(r["value_set"]),
                             q(r["note"]), "False", q(why)]))
-(OUT / "bank_fields_inventory.csv").write_text("\n".join(ilines) + "\n")
+(OUT / "bank_fields_inventory.csv").write_text("\n".join(ilines) + "\n", encoding="utf-8")
 
 # --------------------------------------------------------------------------------------
 # 8. Write the partition json
@@ -459,7 +459,7 @@ summary = OrderedDict(
     runner_note="The runner reports the partition and does not write the reading beyond it "
                 "(ADR-003).",
 )
-(OUT / "partition.json").write_text(json.dumps(summary, indent=2, ensure_ascii=False) + "\n")
+(OUT / "partition.json").write_text(json.dumps(summary, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
 print(json.dumps(dict(
     denominator_ok=verify["claim_denominator_32_holds"],

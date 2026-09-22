@@ -93,6 +93,10 @@ alternative — keeping the goal in the thread and in review messages — is wha
 narrowing to point 1 and the loss of point 4: a paraphrase of a paraphrase is not a
 specification.
 
+## Amendment — 2026-09-20 10:15 UTC: the measurement line is paused
+
+Decision point 4 above said *parallel*. Later the same morning the owner narrowed it: "Pause the fly → grammar (point 1)" (Mike, owner, DPC Research group, 2026-09-20 10:15 UTC, translated from Russian). The measurement line — nights, held-out loss, the ADR-002 condition, the perturbation ladder — is **paused, not cancelled**: no new night is run and no reading of it is extended until the owner resumes it. Work goes to point 1 of `idea.md`, the representation of the genome. The instruments and records of the measurement line stay as they are; its open board entries stay open and are marked as paused, not closed. Everything else in this record stands.
+
 ## Consequences
 
 - **Positive:** the road to the goal stops depending on any agent's memory of the chat; a
