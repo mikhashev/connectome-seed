@@ -18,8 +18,8 @@ the type-pair table is.
 | `types.csv` | 65 rows in connectome node order: name, birth id, `pattern` kind and strides, role, layout, in/out entry counts, cells at extent 15 and 5, central cell index (extent 15) |
 | `type_pairs.csv` | 605 rows, one per json edge entry, in json order: birth id, src, tar, `alpha` (sign), `alpha_fixed`, `alpha_references` (joined with `;`), `lambda_mult`, `edge_type`, offset and synapse totals in the json and in the compiled bank, `instantiated` |
 | `offsets.csv` | 2,378 rows: the 2,355 compiled `(src, tar, du, dv)` rows (2,117 `in_json`, 238 `hull_filled`) plus the 23 json rows that never compile (`dropped`); compiled `n_syn`, the json literal `n_syn_json`, sign, pair birth id |
-| `birth_ids.csv` | the generation-zero registry: 65 types + 605 pairs = 670 ids, `next_birth_id=671` |
-| `REGISTRY.md` | the birth-id rule, why offsets inherit their pair's id, and the two-readings test |
+| `birth_ids.csv` | the generation-zero registry: 65 types + 605 pairs = 670 ids, each derived from the element's name (12 hex digits of a sha256); `display_no` 1–670 is a display counter only |
+| `REGISTRY.md` | the birth-id rule (v1: derived from names), collisions and renames, why offsets inherit their pair's id, and the two-readings test |
 | `bank.meta.json` | provenance: package, version, relative source file, sha256 of the json, of the compiled tables and of every output; constant fields; checks |
 | `extract_bank.py` | writes all of the above |
 | `REGULARITY-DECLARATION.md` + `.sha256.json` | the regularity measures and nulls, hashed before the script existed |
@@ -45,7 +45,7 @@ No absolute path on one machine is recorded (`docs/notes/2026-09-23-scratchpad-p
 
 ## The one pair that never instantiates, and the 23 rows that are dropped
 
-`Lawf1 → Lawf1` (birth id 198) is in the json with a single offset `(1, 0)`, 1 synapse. Lawf1 cells
+`Lawf1 → Lawf1` (birth id `16031c360590`, display 198) is in the json with a single offset `(1, 0)`, 1 synapse. Lawf1 cells
 exist only where `u % 3 == 0` and `v % 2 == 0`, so a Lawf1 cell shifted by `(1, 0)` never lands on
 another Lawf1 cell. `connectome.py:497-498` suppresses the resulting `KeyError`, so no edge
 instance is ever made. That leaves **605 json entries and 604 compiled pairs**. The **23 dropped
@@ -67,8 +67,15 @@ tools/.venv/Scripts/python.exe results/genome/bank/regularity.py     # ~6 min, C
 `extract_bank.py` is deterministic and writes UTF-8 with an explicit encoding and `\n` line
 ends. It asserts every count above. It checks that the csvs decode back to the source json and
 that flyvis compiles that rebuilt json at extent 5 to the same 2,355 rows. It will **not**
-overwrite `birth_ids.csv` with a different registry. The script's own sha256 is in each csv
-header, so any edit to the script changes the headers (and only the headers) of the outputs.
+overwrite `birth_ids.csv` with a different registry. The one exception was the audited, one-time
+migration from counter ids to name-derived ids (`--migrate-from-counter-ids`, 2026-09-23,
+`REGISTRY.md` § Revision v1). After that migration every non-id column of the four csvs was
+identical to the file before it. The script's own sha256 is in each csv header, so any edit to
+the script changes the headers (and only the headers) of the outputs.
+
+**Ids in csv readers.** Birth ids are 12 hex digits. Read them as strings (`dtype=str`). A few
+contain only digits, or digits and one `e`, and a default csv reader would turn those into
+numbers.
 
 ## Label provenance: linked, not repeated
 

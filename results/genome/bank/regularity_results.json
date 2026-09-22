@@ -1,13 +1,13 @@
 {
   "header": "DESCRIPTIVE -- no threshold, no verdict (REGULARITY-DECLARATION.md)",
-  "run_utc": "2026-09-22T20:01:44Z",
+  "run_utc": "2026-09-22T20:31:21Z",
   "declaration_sha256": "80e1b99c0c7a7d019978c395fa308d16c1e1b787ae6e7ecab41e0b6d8dfbabfe",
   "declaration_recorded_utc": "2026-09-22T19:53:03Z",
   "script_sha256": "d9764806836fbd28da6e8c2096d5c0de3f176026c3bcf04ad56dc568bb792a00",
   "inputs": {
-    "types.csv": "30ab69496b84d4c09001d0ac0fdd60ecefc322e3caede939a46a58dced44ec07",
-    "type_pairs.csv": "209d1dcb8bd8584657696cb3fcce5f30e30dbb3014493007322f25d60b7db923",
-    "offsets.csv": "a4cb2618f5c21359996fb9df4dd1f5a9f5cd1b9749064ed9967dc2c777963adc"
+    "types.csv": "237a195a36f62ce182fee8486394c27d2beb9825bc029cb215c39c0fa323a477",
+    "type_pairs.csv": "46789610dfe2096bb471e9cc8153af9ef73bbe6715f02c7b19364ec87501d927",
+    "offsets.csv": "8c45e8508d8f6ae45e9ab3f9d95d58e4521894ccfa51954f6d77d41e550fa5f0"
   },
   "rng": "numpy.random.default_rng(20260923)",
   "n_draws_a_d": 2000,

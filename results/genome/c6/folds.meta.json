@@ -1,0 +1,103 @@
+{
+  "what": "C6 fold assignment over the full 65 x 65 ordered type-pair grid, empty cells included. No rule, no score.",
+  "spec": {
+    "path": "docs/plans/2026-09-23-c6-control-specification.md",
+    "sha256_lf_normalised": "32f2e403a30a6669c9d93ffb07acbfa3147d20c1804a853071724440a030f261",
+    "sections": "4.1 Folds; Amendment A1, A2"
+  },
+  "generator": {
+    "path": "results/genome/c6/make_folds.py",
+    "sha256_lf_normalised": "700ce69ee57ca7df661647a77e1aa248d7da962e5eaec39617e37305b1b4779e",
+    "python": "3.10.20",
+    "pandas": "2.3.3"
+  },
+  "inputs": {
+    "types.csv": "237a195a36f62ce182fee8486394c27d2beb9825bc029cb215c39c0fa323a477",
+    "offsets.csv": "8c45e8508d8f6ae45e9ab3f9d95d58e4521894ccfa51954f6d77d41e550fa5f0",
+    "birth_ids.csv": "36b9c6cdbb0c97502e0773ff5ec81a5ec0bccfd9e484ab887608f64ab4eb47aa"
+  },
+  "output": {
+    "path": "results/genome/c6/folds.csv",
+    "sha256_lf_normalised": "fb6f153b67fe1785a76c3823911e6fbb91cdda57ec952b36c40b4c95f1e213b8",
+    "n_rows": 4225,
+    "row_order": "(src, tar) by Unicode code point of the names"
+  },
+  "rule": {
+    "pair_birth_id": "first 12 hex of sha256('cs-birth-v1|pair|<src>-><tar>')",
+    "fold_key": "sha256('C6-v1:' + pair_birth_id), hex",
+    "strata": "nonempty = the 604 pairs of the compiled bank; empty = the other 3,621 cells",
+    "fold": "within each stratum, sort by fold_key ascending; fold = rank mod 10"
+  },
+  "n_folds": 10,
+  "counts_per_fold": {
+    "0": {
+      "nonempty": 61,
+      "empty": 363,
+      "total": 424
+    },
+    "1": {
+      "nonempty": 61,
+      "empty": 362,
+      "total": 423
+    },
+    "2": {
+      "nonempty": 61,
+      "empty": 362,
+      "total": 423
+    },
+    "3": {
+      "nonempty": 61,
+      "empty": 362,
+      "total": 423
+    },
+    "4": {
+      "nonempty": 60,
+      "empty": 362,
+      "total": 422
+    },
+    "5": {
+      "nonempty": 60,
+      "empty": 362,
+      "total": 422
+    },
+    "6": {
+      "nonempty": 60,
+      "empty": 362,
+      "total": 422
+    },
+    "7": {
+      "nonempty": 60,
+      "empty": 362,
+      "total": 422
+    },
+    "8": {
+      "nonempty": 60,
+      "empty": 362,
+      "total": 422
+    },
+    "9": {
+      "nonempty": 60,
+      "empty": 362,
+      "total": 422
+    }
+  },
+  "balance": {
+    "nonempty_min": 60,
+    "nonempty_max": 61,
+    "empty_min": 362,
+    "empty_max": 363,
+    "ok": true,
+    "rule": "each stratum's per-fold counts differ by at most 1"
+  },
+  "flagged": {
+    "cell": "Lawf1->Lawf1",
+    "reason": "json pair that never compiles; an empty cell",
+    "fold": 3
+  },
+  "checks": {
+    "type_ids_rederived": true,
+    "registered_pair_ids_rederived": true,
+    "pair_ids_distinct_over_grid": true,
+    "fold_keys_distinct": true
+  }
+}

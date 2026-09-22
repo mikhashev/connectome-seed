@@ -8,15 +8,16 @@ Outputs (all UTF-8, written with an explicit encoding and "\n" line ends):
     types.csv        65 rows, connectome node order
     type_pairs.csv   605 rows, one per json edge entry, json order
     offsets.csv      2,355 compiled (src, tar, du, dv) rows + the 23 json rows that were dropped
-    birth_ids.csv    the generation-zero registry (see REGISTRY.md)
+    birth_ids.csv    the generation-zero registry; ids derived from names (see REGISTRY.md)
     bank.meta.json   provenance: package, version, relative source file, hashes, checks
 
 Every csv begins with one '#' comment line naming the source (package + version + file, never
 an absolute path), the json sha256 and this script's sha256; the full record is bank.meta.json.
 
 Deterministic: no randomness; every ordering is stated; floats are written with repr().
-birth_ids.csv is never silently renumbered: if it already exists and the regenerated registry
-differs from it byte for byte, the script stops instead of overwriting it.
+birth_ids.csv is never silently changed: if it already exists and the regenerated registry
+differs from it byte for byte, the script stops instead of overwriting it. The one exception is
+the audited, flagged migration from the pre-v1 counter ids (--migrate-from-counter-ids).
 
 Usage (from the repository root):
     tools/.venv/Scripts/python.exe results/genome/bank/extract_bank.py
@@ -263,20 +264,47 @@ for i, t in enumerate(type_axis):
 type_cols = list(type_rows[0].keys())
 
 # ------------------------------------------------------------------------------------------
-# 5. Birth ids (generation zero). Rule in REGISTRY.md.
-#    Order of assignment: types by Unicode code point of the name, then pairs by
-#    (src, tar) code point. Neither depends on the json's row order.
+# 5. Birth ids (generation zero). Rule in REGISTRY.md (version BIRTH_ID_VERSION).
+#    The id is DERIVED FROM THE ENTITY: the first 12 hex digits of the sha256 of a versioned
+#    canonical string built from the element's canonical name (a type: its name; an ordered
+#    pair: "SRC->TAR"). It does not depend on any enumeration order, so a re-extraction from
+#    another flyvis version or another connectome gives a homologue the same id.
+#    display_no is a counter kept for human display only (types by name code point, then pairs
+#    by (src, tar) code point); it is never a key. It equals the pre-v1 integer birth id.
 # ------------------------------------------------------------------------------------------
+BIRTH_ID_VERSION = "cs-birth-v1"
+BIRTH_ID_HEX = 12
+
+
+def type_birth_id(name):
+    return sha256_bytes(f"{BIRTH_ID_VERSION}|type|{name}".encode("utf-8"))[:BIRTH_ID_HEX]
+
+
+def pair_birth_id(src, tar):
+    return sha256_bytes(f"{BIRTH_ID_VERSION}|pair|{src}->{tar}".encode("utf-8"))[:BIRTH_ID_HEX]
+
+
+type_names_sorted = sorted(n["name"] for n in nodes_spec)
+assert all(re.fullmatch(r"[A-Za-z0-9()]+", t) for t in type_names_sorted)  # no - > | : or space
+# Collision check over every element the ids can ever be asked about here: 65 types and the
+# full 65 x 65 ordered-pair grid (4,225 cells, including the 3,621 that are not pairs of the
+# bank). The folds of C6 key on pair ids of empty cells too.
+all_ids = [type_birth_id(t) for t in type_names_sorted] + [
+    pair_birth_id(a, b) for a in type_names_sorted for b in type_names_sorted]
+n_id_domain = len(all_ids)
+assert n_id_domain == 65 + 65 * 65
+assert len(set(all_ids)) == n_id_domain, "birth-id collision: see REGISTRY.md collision policy"
+
 type_bid = {}
 bid_rows = []
 counter = 0
-for name in sorted(n["name"] for n in nodes_spec):
+for name in type_names_sorted:
     counter += 1
-    type_bid[name] = counter
+    type_bid[name] = type_birth_id(name)
     _, n = spec_by_name[name]
     bid_rows.append(dict(
-        birth_id=counter, kind="type", birth_key=f"type:{name}", generation_born=0,
-        parent_ids="", src_birth_id="", tar_birth_id="",
+        birth_id=type_bid[name], display_no=counter, kind="type", birth_key=f"type:{name}",
+        generation_born=0, parent_ids="", src_birth_id="", tar_birth_id="",
         expressed_in_compiled_bank=True,
         content_sha256=sha256_bytes(canon(n).encode("utf-8")),
     ))
@@ -285,12 +313,13 @@ assert len(edge_by_pair) == 605
 for (src, tar) in sorted(edge_by_pair):
     counter += 1
     bid_rows.append(dict(
-        birth_id=counter, kind="pair", birth_key=f"pair:{src}>{tar}", generation_born=0,
+        birth_id=pair_birth_id(src, tar), display_no=counter, kind="pair",
+        birth_key=f"pair:{src}>{tar}", generation_born=0,
         parent_ids="", src_birth_id=type_bid[src], tar_birth_id=type_bid[tar],
         expressed_in_compiled_bank=(src, tar) in bank_pairs,
         content_sha256=sha256_bytes(canon(edge_by_pair[(src, tar)]).encode("utf-8")),
     ))
-next_birth_id = counter + 1
+next_display_no = counter + 1
 pair_bid = {r["birth_key"][5:]: r["birth_id"] for r in bid_rows if r["kind"] == "pair"}
 for r in pair_rows:
     r["birth_id"] = pair_bid[f"{r['src']}>{r['tar']}"]
@@ -317,20 +346,55 @@ off_cols = ["pair_birth_id", "src", "tar", "du", "dv", "n_syn", "n_syn_json", "s
             "provenance", "json_index", "json_offset_order"]
 write_csv(OUT / "offsets.csv", HEADER, off_cols, offset_rows)
 
-bid_cols = ["birth_id", "kind", "birth_key", "generation_born", "parent_ids", "src_birth_id",
-            "tar_birth_id", "expressed_in_compiled_bank", "content_sha256"]
-bid_header = HEADER + f"; next_birth_id={next_birth_id}; rule=REGISTRY.md"
+bid_cols = ["birth_id", "display_no", "kind", "birth_key", "generation_born", "parent_ids",
+            "src_birth_id", "tar_birth_id", "expressed_in_compiled_bank", "content_sha256"]
+bid_header = (HEADER + f"; birth_id=sha256('{BIRTH_ID_VERSION}|type|NAME' or "
+              f"'{BIRTH_ID_VERSION}|pair|SRC->TAR')[:{BIRTH_ID_HEX}]; "
+              f"next_display_no={next_display_no}; rule=REGISTRY.md")
 bid_path = OUT / "birth_ids.csv"
 tmp = OUT / "birth_ids.csv.new"
 write_csv(tmp, bid_header, bid_cols, bid_rows)
 if bid_path.exists():
-    old_body = bid_path.read_bytes().split(b"\n", 1)[1]
+    old_lines = bid_path.read_text(encoding="utf-8").split("\n")
     new_body = tmp.read_bytes().split(b"\n", 1)[1]
-    if old_body != new_body:
+    old_body = bid_path.read_bytes().split(b"\n", 1)[1]
+    if old_lines[1].startswith("birth_id,kind,"):
+        # One-time, audited migration from the pre-v1 counter registry: allowed only with the
+        # explicit flag, and only if every old row maps to exactly one new row by birth_key,
+        # its old integer id equals the new display_no, and nothing else in the row changed.
+        if "--migrate-from-counter-ids" not in sys.argv:
+            tmp.unlink()
+            sys.exit("REFUSED: birth_ids.csv holds pre-v1 counter ids. Re-run with "
+                     "--migrate-from-counter-ids to perform the audited migration.")
+        old = pd.read_csv(bid_path, skiprows=1, dtype=str, keep_default_na=False)
+        new = pd.read_csv(tmp, skiprows=1, dtype=str, keep_default_na=False)
+        old_by_key = {r.birth_key: r for r in old.itertuples(index=False)}
+        new_by_key = {r.birth_key: r for r in new.itertuples(index=False)}
+        assert set(old_by_key) == set(new_by_key) and len(old) == len(new) == 670
+        old_int_to_new = {old_by_key[k].birth_id: new_by_key[k].birth_id for k in old_by_key}
+        for k in old_by_key:
+            o, nw = old_by_key[k], new_by_key[k]
+            assert nw.display_no == o.birth_id, k
+            for c in ("kind", "generation_born", "parent_ids", "expressed_in_compiled_bank",
+                      "content_sha256"):
+                assert getattr(o, c) == getattr(nw, c), (k, c)
+            for c in ("src_birth_id", "tar_birth_id"):
+                assert (getattr(o, c) == "" and getattr(nw, c) == "") or \
+                    old_int_to_new[getattr(o, c)] == getattr(nw, c), (k, c)
+    elif old_body != new_body:
         tmp.unlink()
         sys.exit("REFUSED: birth_ids.csv exists and the regenerated registry differs. Birth ids "
-                 "are never renumbered (REGISTRY.md). Nothing was overwritten.")
+                 "are never reassigned (REGISTRY.md). Nothing was overwritten.")
 os.replace(tmp, bid_path)
+
+# Third check on the ids themselves: re-read the written registry and re-derive every id from
+# its birth_key alone. The id travels with the entity, not with a position in a list.
+_R = pd.read_csv(bid_path, skiprows=1, dtype=str, keep_default_na=False)
+for r in _R.itertuples(index=False):
+    kind, name = r.birth_key.split(":", 1)
+    want = type_birth_id(name) if kind == "type" else pair_birth_id(*name.split(">"))
+    assert r.birth_id == want, r.birth_key
+ids_rederived_from_keys = True
 
 # ------------------------------------------------------------------------------------------
 # 7. The two readings (von Neumann, literature.md §I entry 31)
@@ -455,8 +519,15 @@ meta = OrderedDict(
         n_entries_citing_only_personal_communications=len(entries_pc_only),
         n_entries_citing_at_least_one_publication=len(entries_any_pub),
         n_entries_alpha_fixed=sum(bool(e["alpha_fixed"]) for e in edges_spec)),
-    birth_ids=OrderedDict(n_types=65, n_pairs=605, first=1, last=counter,
-                          next_birth_id=next_birth_id, rule="REGISTRY.md"),
+    birth_ids=OrderedDict(
+        n_types=65, n_pairs=605, rule="REGISTRY.md", version=BIRTH_ID_VERSION,
+        derivation=f"first {BIRTH_ID_HEX} hex of sha256 over UTF-8 "
+                   f"'{BIRTH_ID_VERSION}|type|<name>' or '{BIRTH_ID_VERSION}|pair|<src>-><tar>'",
+        collision_domain=f"65 types + the full 65 x 65 ordered-pair grid = {n_id_domain} strings",
+        n_collisions=0,
+        display_no=OrderedDict(first=1, last=counter, next_display_no=next_display_no,
+                               note="display only; equals the pre-v1 integer birth id"),
+        ids_rederived_from_birth_keys=ids_rederived_from_keys),
     two_readings=OrderedDict(
         copy="outputs are byte files with the sha256 above; copying needs no interpretation",
         decode_json_roundtrip_equal=json_roundtrip_equal,
@@ -474,7 +545,7 @@ meta = OrderedDict(
 print(json.dumps(dict(prov=prov_counts, not_instantiated=not_instantiated,
                       hull_total=n_hull_points_total, hull_dropped=n_hull_points_dropped,
                       max_dn=max_abs_dn_matched, roundtrip=json_roundtrip_equal,
-                      decode=decode_equal, next_id=next_birth_id,
+                      decode=decode_equal, next_display_no=next_display_no,
                       node_constants=node_constants, edge_constants=edge_constants,
                       axis_eq_json=axis_equals_json_order,
                       cites=meta["sign_citations"]), indent=1, default=str))

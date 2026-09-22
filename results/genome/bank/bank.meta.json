@@ -17,17 +17,17 @@
   },
   "script": {
     "path": "results/genome/bank/extract_bank.py",
-    "sha256": "fb2303d241ed0966033b63a3d9f9b64ec1e47cea5376932360b8cfb96ae93943",
+    "sha256": "eea3815e8b0b79290d77b22dc3a5085bd8f3ee8ed4299ea1d449bc02b475f4c6",
     "python": "3.10.20",
     "numpy": "2.2.6",
     "pandas": "2.3.3",
     "h5py": "3.16.0"
   },
   "outputs": {
-    "types.csv": "30ab69496b84d4c09001d0ac0fdd60ecefc322e3caede939a46a58dced44ec07",
-    "type_pairs.csv": "209d1dcb8bd8584657696cb3fcce5f30e30dbb3014493007322f25d60b7db923",
-    "offsets.csv": "a4cb2618f5c21359996fb9df4dd1f5a9f5cd1b9749064ed9967dc2c777963adc",
-    "birth_ids.csv": "27443458a0b66442fc790e81e526ac74f36c805bd9ad414140b6fc800f11e977"
+    "types.csv": "237a195a36f62ce182fee8486394c27d2beb9825bc029cb215c39c0fa323a477",
+    "type_pairs.csv": "46789610dfe2096bb471e9cc8153af9ef73bbe6715f02c7b19364ec87501d927",
+    "offsets.csv": "8c45e8508d8f6ae45e9ab3f9d95d58e4521894ccfa51954f6d77d41e550fa5f0",
+    "birth_ids.csv": "36b9c6cdbb0c97502e0773ff5ec81a5ec0bccfd9e484ab887608f64ab4eb47aa"
   },
   "type_axis": {
     "order": "connectome node order: first appearance in nodes/type.h5",
@@ -107,10 +107,18 @@
   "birth_ids": {
     "n_types": 65,
     "n_pairs": 605,
-    "first": 1,
-    "last": 670,
-    "next_birth_id": 671,
-    "rule": "REGISTRY.md"
+    "rule": "REGISTRY.md",
+    "version": "cs-birth-v1",
+    "derivation": "first 12 hex of sha256 over UTF-8 'cs-birth-v1|type|<name>' or 'cs-birth-v1|pair|<src>-><tar>'",
+    "collision_domain": "65 types + the full 65 x 65 ordered-pair grid = 4290 strings",
+    "n_collisions": 0,
+    "display_no": {
+      "first": 1,
+      "last": 670,
+      "next_display_no": 671,
+      "note": "display only; equals the pre-v1 integer birth id"
+    },
+    "ids_rederived_from_birth_keys": true
   },
   "two_readings": {
     "copy": "outputs are byte files with the sha256 above; copying needs no interpretation",
