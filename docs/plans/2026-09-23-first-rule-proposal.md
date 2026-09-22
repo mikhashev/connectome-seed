@@ -614,3 +614,13 @@ With v1 ids on labels, rules and motifs, the operators of `idea.md` point 3 beco
   `offsets.csv` (read for structural counts only; nothing fitted).
 - `literature.md` §I.1 entries 9–13, §I.3 entry 18, "What this changes for us" items 1–4; §A.1.
 - Local copies and page ranges: §0 above; `sources/local/2026-09-23-first-rule/`.
+
+---
+
+## Amendment pointer — 2026-09-23 (appended; the text above is unchanged)
+
+The search procedure of §2.4 (stage 1) is to be fixed before any real run: Mike, owner,
+2026-09-23 22:38 UTC, option B. The criterion a fix must meet was registered first, in
+`docs/plans/2026-09-23-first-rule-search-criterion.md`. The model, decoder, caps, rule cost and
+accounting stay frozen. The fixed procedure (SEARCH v2) will be declared in a dated appendix below
+before its gates are run. The procedure as written above stays callable as SEARCH v1.
