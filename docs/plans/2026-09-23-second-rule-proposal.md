@@ -506,7 +506,7 @@ mechanism, no latent variables and no fitting details.
 - **Mandatory printing:** under the verdict line, the record prints the margin against BF_1 (the
   decision) and against BF_2, BF_3 and BF_4 (context).
 - **τ:** P3 and P4 now require a margin to exceed its comparison by more than τ = 1e-9. This is a
-  separate harness change that aligns them with spec A7, committed with a `--controls` re-run
+  separate harness change that aligns them with spec A7, committed (`1789aeb`) with a `--controls` re-run
   before this run.
 - **Timing cap:** 10 starts, unless the projected wall time measured on shuffled bank 0 exceeds 12
   hours; then 3 for the whole run. Decided and recorded before any real-bank fit.
@@ -534,7 +534,7 @@ mechanism, no latent variables and no fitting details.
   sensitivity sweep on the rule's own complexity parameter (with BF's margin at each value), a
   k = 3 starts comparison, per-fold opponent scores and per-type leave-one-type-out values. **No
   harness change of its own** is needed. The spread-log check runs after the record is written and
-  does not void the verdict. The A20 `--controls` re-run is under way (handled).
+  does not void the verdict. The A20 `--controls` re-run is done (`8046fa1`, every verdict unchanged).
 - **A finding about the exam's inputs** (structural, blind-safe): the admissible per-type fields
   collapse to four groups of 8, 21, 34 and 2 types, and `role` equals `layout` on every type.
 
