@@ -96,3 +96,9 @@ fit is ridge-penalized).
 Outputs: `per_shuffle.csv` (100 rows: real + 99 shuffles; per-field mean score and per-fold
 existence values), `summary.json` (this table's numbers, git HEAD, file hashes, consistency
 check).
+
+## 2026-09-23 UTC — by-construction limitation (Ark, DPC Research group, 2026-09-23 09:02 UTC)
+
+This check cannot, by construction, distinguish "structure beyond degree exists" from "the bank
+is fully described by degree": the shuffle keeps per-node degree exactly and N1 uses only
+per-node indicators, so N1 not separating is the predicted outcome in both worlds.

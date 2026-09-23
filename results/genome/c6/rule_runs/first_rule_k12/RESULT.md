@@ -85,3 +85,17 @@ Details: `spread_log_validation.json`.
 
 This record's outputs are in `rule_runs/first_rule_k12/`, named after the rule's `NAME`. The
 spread log is in `rule_runs/first_rule/`, where the rule's run command put it.
+
+## 2026-09-23 UTC — multiplicity caveat on P3's existence p-value
+
+P3's existence one-sided p = 0.01 (table above: real margin -0.0045, strictly above all 99
+shuffled margins, shuffled max -0.0436) is one of four fields tested (existence, offset, counts,
+sign) with no correction for multiplicity. With four fields, a Bonferroni-adjusted p would be
+**min(1, 4 x 0.01) = 0.04**. With 99 shuffles, the minimum attainable one-sided p is 1/100 =
+0.01 (a real value strictly beating all 99 shuffles), so no field in this run could have passed
+a corrected 0.01 bar, whatever its true effect: the shuffle count itself puts the floor at 0.01
+per field, and Bonferroni over four fields puts the corrected floor at 0.04.
+
+This does not change the FAIL verdict recorded above (P3 already reads "passes: False", since
+offset and counts do not separate). It bears on how much weight the existence result (p = 0.01
+uncorrected) can carry on its own when read as a single number, ahead of choosing a second rule.
