@@ -8,8 +8,8 @@ continue in a new one", translated from Russian).
 **This file carries no result value.** Where a finding is numerical, the file that holds the number
 is named instead, as in [`2026-09-20-next-session-handover.md`](2026-09-20-next-session-handover.md),
 which this file follows and does not replace. Terms are those of [`GLOSSARY.md`](../../GLOSSARY.md)
-(being written at the time of this handover; if a term here is missing there, the glossary wins
-once it lands).
+(committed at `4f69613`, 94 terms; if a term here is used differently there, the glossary wins
+).
 
 ---
 
@@ -98,6 +98,7 @@ confirmation boxes and its Q2 ("what is the elephant beyond grammar"), which wai
 
 - The group chat: markdown only, sent as a file; **no @-tags** (Mike, 2026-09-23 07:32 UTC).
 - The board is edited only through dpc-messenger `tools/backlog/build.py` verbs (Mike, 2026-09-22).
+- Terms come from `GLOSSARY.md`; a new term is added there before it is used in a record (Mike, 2026-09-23 07:04 UTC).
 - A registration is a commit before the value, never a hash printed beside it: the regularity
   declaration reproduces from git, the profiles seal does not.
 - A positive control for every instrument, and the search is an instrument of its own.
