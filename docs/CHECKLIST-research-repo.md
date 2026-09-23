@@ -84,6 +84,9 @@ including profanity; it never changes who said what or what was decided. Where a
 used as a label inside English prose, it is translated and the translation is then used
 consistently everywhere.
 
+**Terms.** Terms are taken from [GLOSSARY.md](../GLOSSARY.md); a new term is added there before it
+is used in a record.
+
 **No exemptions (since 2026-09-23).** The repository is English throughout, with no exemptions.
 Until 2026-09-23 `idea.md` was kept as the Russian original beside an English `idea_en.md`, and
 seven registered or hash-pinned files kept their Russian lines so that their recorded hashes

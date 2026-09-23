@@ -251,6 +251,9 @@ and its replicate, against the pre-registration); next session:
 Start here for the rules this repository learned the hard way:
 [docs/CHECKLIST-research-repo.md](docs/CHECKLIST-research-repo.md).
 
+The words this repository uses, one meaning each, with the file that defines each one:
+[GLOSSARY.md](GLOSSARY.md).
+
 ## Files
 
 ```
