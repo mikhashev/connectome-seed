@@ -8,11 +8,16 @@ This directory implements the rule registered in `docs/plans/2026-09-23-second-r
 **Status.** Mike approved steps 4–5 (DPC Research group chat, 2026-09-23 14:40 UTC): the rule
 code, the gates and the timing decision. He has **not** approved the C6 run on the real bank.
 
+**The gates were run once, and two of seven FAILED: G-e+ and G-o0** (section "Gates" below).
+Under the proposal's §2.5, a failed gate stops the work: the rule is not run, and any fix goes
+through a new registration. So the timing cap was **not** measured, no attempts file was written,
+and the C6 run must not be started with this rule.
+
 - The rule has **not** been fitted or scored on the real bank or on any real fold.
 - No held-out number exists for it on the real bank.
 - The harness has not been invoked with `--rule` for it.
 - Non-synthetic data this code has touched: **shuffled bank 0** (`harness.shuffled_bank(REAL, 0)`)
-  only, for G-bf (predictions compared, no score) and for the timing (fit time only, no score).
+  only, for G-bf (predictions compared, no score). The timing was not run.
   The gate banks GB1 and GB0, and the self-test bank ST0, are synthetic: existence, signs and
   template choice are drawn, and offset sets and counts are copied from real non-empty cells, as
   the proposal's §2.5 specifies.
@@ -23,7 +28,9 @@ code, the gates and the timing decision. He has **not** approved the C6 run on t
 | `decode.py` | The decoder. It is charged under C6 A5 and has no comments, because comments are charged. |
 | `gate_banks.py` | The gate banks GB1 (signal) and GB0 (null) of §2.5, and the self-test bank ST0. |
 | `gates.py` | The seven gates of §2.5, run once; writes `gates.json`. |
-| `timing.py` | The timing cap of §1 on shuffled bank 0; writes `timing_k10.json`. |
+| `gates.json` | The single gate run (commit `dd4dc92`, k = 10). Scores on the synthetic gate banks only; G-bf holds predictions on shuffled bank 0, no score. |
+| `gate_diagnostics.py`, `gate_diagnostics.json` | Run **after** the gates failed, on GB1/GB0 only, to tell an implementation fault from the registered rule's behaviour. Not a gate; nothing was changed by it. |
+| `timing.py` | The timing cap of §1 on shuffled bank 0; writes `timing_k10.json`. **Not run** (the gates failed). |
 | `post_run.py` | Runs after the record is committed: spread-log check, BF_1–BF_4 and RP_1 refits, per-type leave-one-type-out, the mandatory BF line and the tie-band reading in `RESULT.md`. Not run on the real bank. |
 | `test_fit.py` | Unit tests on synthetic data only. |
 
@@ -63,6 +70,45 @@ Run everything from the repository root with `tools/.venv/Scripts/python.exe`.
   number of moves, α_src and α_tar, the library's size and cost, the data bits, and e and f.
   1,341 fits make 1,341 distinct names (real: 10 + 65 + 1; each of 99 shuffled banks: 10; each
   of 25 dial banks: 11).
+
+## Gates (§2.5; run once at commit `dd4dc92`, k = 10; `gates.json`)
+
+| gate | criterion | expected | got | result |
+|---|---|---|---|---|
+| **G-size** | decode program ≤ 600 bytes under A5's lzma rule; numpy and stdlib only | pass | 494 bytes (3,952 bits); imports ok | **PASS** |
+| **G-det** | two fits of GB1 fold 0 give byte-identical data | pass | identical sha256 (`a8bdf220…`); DL 8,406 bits | **PASS** |
+| **G-bf** | X off (W = 0, one round), no quantisation: (u, v) and existence predictions equal the harness's BF_1 on shuffled bank 0, 10 folds, to 1e-9 | pass | largest difference 0.0 (u, v and held-out p); λ equal in all 10 folds | **PASS** |
+| **G-e+** | GB1: rule's held-out existence beats BF_1's (τ) in ≥ 9 of 10 folds | pass | **8 of 10** (loses folds 2 and 9); mean margin over N1: rule +0.01921, BF_1 +0.01140 | **FAIL** |
+| **G-e0** | GB0: rule's mean existence margin over N1 minus BF_1's ≤ +0.002 | pass | −0.00212 (rule +0.00359, BF_1 +0.00571) | **PASS** |
+| **G-o+** | GB1: rule's held-out offset Jaccard beats N_EB's in ≥ 9 of 10 folds | pass | 10 of 10 (0.6990 vs 0.5722) | **PASS** |
+| **G-o0** | GB0: rule's mean offset Jaccard minus N_EB's in [−0.010, +0.010] | pass | **−0.01996** (0.8376 vs 0.8575) | **FAIL** |
+
+Gate banks: GB1 has 1,071 non-empty cells, GB0 783.
+
+**What the diagnostics say** (`gate_diagnostics.json`; synthetic banks only; after the failure;
+the recorded rule scores reproduce to 1e-12):
+
+- **G-o0: the library cap, not a fault.** On GB0 (means over 10 folds): N_EB 0.8575; the rule's
+  source side with **unrestricted** candidates (at the rule's own α) 0.8595; the same side restricted to the library
+  0.8408; the rule with its side switch 0.8376. With unrestricted candidates, `side_choose`
+  reproduces `harness.eb_choose` exactly in every fold. So about −0.019 of the −0.020 comes from
+  restricting every choice to the library: the 800-bit cap stops it at 23–27 sets, and 13 % of
+  GB0's held-out sets are not in it. The side switch adds about −0.003: 3.6 % of held-out cells
+  take the target side where no target signal is planted. §7 of the proposal named the library
+  cap as a risk; the gate measures it.
+- **G-e+: the model and its λ choice, not quantisation.** Even the **unquantised** float model
+  (O + u·v + W) beats BF_1 in only 8 of 10 GB1 folds: fold 2 by −0.00008 and fold 9 by −0.00449.
+  In fold 9 the nested scheme chose λ = 100, where the rank-1 term shrinks towards zero; BF_1
+  chose λ = 3. Quantisation, the coordinate-descent pass and c's refit together move the GB1 mean
+  by +0.00021 nats (worse), and on GB0 by +0.00140.
+- **Neither failure points to an implementation fault** that makes the code differ from the
+  registered text. They are properties of the registered rule on the registered gate banks.
+
+**Disclosure.** Before the gates ran, `post_run.py --selftest` was run once on **GB0** at k = 1
+(it printed the rule's and BF_1's held-out existence margins over N1 on GB0, +0.00359 and
++0.00571). The self-test was then moved to the separate bank ST0 (seed 61000). No rule logic was
+changed after that run: the only later edits to `fit.py` before commit `dd4dc92` were comments and
+the renumbering of reading tags.
 
 ## Readings (marked [R n] in the code)
 

@@ -1,0 +1,892 @@
+{
+ "what": "Rule #2 gates (proposal section 2.5), run once. Scores are on the synthetic gate banks GB1/GB0 only; G-bf compares predictions on shuffled bank 0 and computes no score.",
+ "proposal_commit": "c3f996d",
+ "k": 10,
+ "git_head": "dd4dc9293ce5c7802d8db86779d64df59684c58c",
+ "harness_sha256_lf": "6fc809527c69ee84aadebfc15c0ba755c189ddc93c80c05c0fa11d969a8d7297",
+ "fit_sha256_lf": "d8dbb33208eea463058edb08b472e7f2054545105a17fea4ecb25fe606eaa3c2",
+ "decode_sha256_lf": "820a66f6f6cccb85d4fb8dfdb4861671084579c5f572352982c07990aa891464",
+ "gate_banks_sha256_lf": "cd12c646eac29ce9f2ee219aa59b0c9f68fb659f546538055b39c3465ad96f76",
+ "gates": {
+  "G-size": {
+   "bytes": 494,
+   "bits": 3952,
+   "cap_bytes": 600,
+   "imports_ok": true,
+   "pass": true
+  },
+  "G-det": {
+   "sha256_fit_1": "a8bdf220bc81128f75385155332ca64e7b0634532012f05d1815d9825ffd6987",
+   "sha256_fit_2": "a8bdf220bc81128f75385155332ca64e7b0634532012f05d1815d9825ffd6987",
+   "pass": true,
+   "seconds_one_fit": 4.67,
+   "dl_bits": 8406,
+   "data_bits": 4454,
+   "program_bits": 3952
+  },
+  "G-bf": {
+   "bank": "harness.shuffled_bank(REAL, 0)",
+   "per_fold": [
+    {
+     "fold": 0,
+     "lambda_rule": 100.0,
+     "lambda_bf": 100.0,
+     "max_abs_diff_u": 0.0,
+     "max_abs_diff_v": 0.0,
+     "max_abs_diff_p_heldout": 0.0,
+     "W_is_zero": true,
+     "seconds_learner": 4.13,
+     "seconds_harness_bf": 4.08
+    },
+    {
+     "fold": 1,
+     "lambda_rule": 100.0,
+     "lambda_bf": 100.0,
+     "max_abs_diff_u": 0.0,
+     "max_abs_diff_v": 0.0,
+     "max_abs_diff_p_heldout": 0.0,
+     "W_is_zero": true,
+     "seconds_learner": 4.2,
+     "seconds_harness_bf": 4.12
+    },
+    {
+     "fold": 2,
+     "lambda_rule": 100.0,
+     "lambda_bf": 100.0,
+     "max_abs_diff_u": 0.0,
+     "max_abs_diff_v": 0.0,
+     "max_abs_diff_p_heldout": 0.0,
+     "W_is_zero": true,
+     "seconds_learner": 4.24,
+     "seconds_harness_bf": 4.1
+    },
+    {
+     "fold": 3,
+     "lambda_rule": 100.0,
+     "lambda_bf": 100.0,
+     "max_abs_diff_u": 0.0,
+     "max_abs_diff_v": 0.0,
+     "max_abs_diff_p_heldout": 0.0,
+     "W_is_zero": true,
+     "seconds_learner": 4.11,
+     "seconds_harness_bf": 4.11
+    },
+    {
+     "fold": 4,
+     "lambda_rule": 100.0,
+     "lambda_bf": 100.0,
+     "max_abs_diff_u": 0.0,
+     "max_abs_diff_v": 0.0,
+     "max_abs_diff_p_heldout": 0.0,
+     "W_is_zero": true,
+     "seconds_learner": 4.19,
+     "seconds_harness_bf": 4.11
+    },
+    {
+     "fold": 5,
+     "lambda_rule": 100.0,
+     "lambda_bf": 100.0,
+     "max_abs_diff_u": 0.0,
+     "max_abs_diff_v": 0.0,
+     "max_abs_diff_p_heldout": 0.0,
+     "W_is_zero": true,
+     "seconds_learner": 4.22,
+     "seconds_harness_bf": 4.16
+    },
+    {
+     "fold": 6,
+     "lambda_rule": 100.0,
+     "lambda_bf": 100.0,
+     "max_abs_diff_u": 0.0,
+     "max_abs_diff_v": 0.0,
+     "max_abs_diff_p_heldout": 0.0,
+     "W_is_zero": true,
+     "seconds_learner": 4.17,
+     "seconds_harness_bf": 4.09
+    },
+    {
+     "fold": 7,
+     "lambda_rule": 100.0,
+     "lambda_bf": 100.0,
+     "max_abs_diff_u": 0.0,
+     "max_abs_diff_v": 0.0,
+     "max_abs_diff_p_heldout": 0.0,
+     "W_is_zero": true,
+     "seconds_learner": 4.22,
+     "seconds_harness_bf": 4.05
+    },
+    {
+     "fold": 8,
+     "lambda_rule": 100.0,
+     "lambda_bf": 100.0,
+     "max_abs_diff_u": 0.0,
+     "max_abs_diff_v": 0.0,
+     "max_abs_diff_p_heldout": 0.0,
+     "W_is_zero": true,
+     "seconds_learner": 4.2,
+     "seconds_harness_bf": 4.02
+    },
+    {
+     "fold": 9,
+     "lambda_rule": 100.0,
+     "lambda_bf": 100.0,
+     "max_abs_diff_u": 0.0,
+     "max_abs_diff_v": 0.0,
+     "max_abs_diff_p_heldout": 0.0,
+     "W_is_zero": true,
+     "seconds_learner": 4.18,
+     "seconds_harness_bf": 4.13
+    }
+   ],
+   "max_abs_diff_any": 0.0,
+   "tolerance": 1e-09,
+   "lambdas_equal": true,
+   "pass": true
+  },
+  "G-e+": {
+   "bank": "GB1",
+   "rule_wins_vs_BF1_existence": 8,
+   "min": 9,
+   "rule_margin_over_N1": 0.01920917785689231,
+   "BF1_margin_over_N1": 0.011401886429250224,
+   "pass": false
+  },
+  "G-e0": {
+   "bank": "GB0",
+   "rule_margin_over_N1": 0.0035889986327027057,
+   "BF1_margin_over_N1": 0.005712767107206462,
+   "difference": -0.0021237684745037564,
+   "max": 0.002,
+   "pass": true
+  },
+  "G-o+": {
+   "bank": "GB1",
+   "rule_wins_vs_N_EB_offset": 10,
+   "min": 9,
+   "rule_offset_mean": 0.6989987498428787,
+   "N_EB_offset_mean": 0.5721980057190661,
+   "pass": true
+  },
+  "G-o0": {
+   "bank": "GB0",
+   "rule_minus_N_EB_offset_mean": -0.019958328345328256,
+   "band": [
+    -0.01,
+    0.01
+   ],
+   "pass": false
+  }
+ },
+ "runtime_s": 24.9,
+ "gate_banks": {
+  "GB1": {
+   "n_nonempty": 1071
+  },
+  "GB0": {
+   "n_nonempty": 783
+  }
+ },
+ "per_fold_scores_gate_banks": {
+  "GB1": {
+   "rule": [
+    {
+     "existence": 0.40829285107950475,
+     "offset": 0.7467252690549903,
+     "counts": 0.5448124680653923,
+     "sign": 1.0,
+     "sign_n": 102,
+     "n_ne": 102
+    },
+    {
+     "existence": 0.405201304775251,
+     "offset": 0.7085050366300366,
+     "counts": 0.6067086106579043,
+     "sign": 1.0,
+     "sign_n": 104,
+     "n_ne": 104
+    },
+    {
+     "existence": 0.4250231772249909,
+     "offset": 0.7600995033455197,
+     "counts": 0.595623225688759,
+     "sign": 1.0,
+     "sign_n": 109,
+     "n_ne": 109
+    },
+    {
+     "existence": 0.4253189870667843,
+     "offset": 0.6429279414704808,
+     "counts": 0.6433750335966737,
+     "sign": 1.0,
+     "sign_n": 101,
+     "n_ne": 101
+    },
+    {
+     "existence": 0.43584014764988704,
+     "offset": 0.6422442764164648,
+     "counts": 0.7105391487426015,
+     "sign": 1.0,
+     "sign_n": 107,
+     "n_ne": 107
+    },
+    {
+     "existence": 0.4454817935946116,
+     "offset": 0.6299607964866293,
+     "counts": 0.7532692263300269,
+     "sign": 0.9908256880733946,
+     "sign_n": 108,
+     "n_ne": 109
+    },
+    {
+     "existence": 0.39695398267278875,
+     "offset": 0.7470268157768158,
+     "counts": 0.6958134739871915,
+     "sign": 1.0,
+     "sign_n": 96,
+     "n_ne": 96
+    },
+    {
+     "existence": 0.45789412256906836,
+     "offset": 0.7233206548732763,
+     "counts": 0.8023133066172243,
+     "sign": 1.0,
+     "sign_n": 113,
+     "n_ne": 113
+    },
+    {
+     "existence": 0.443775134717972,
+     "offset": 0.688617471709577,
+     "counts": 0.8175226139645674,
+     "sign": 1.0,
+     "sign_n": 110,
+     "n_ne": 110
+    },
+    {
+     "existence": 0.4858369374033469,
+     "offset": 0.7005597326649957,
+     "counts": 0.7668549749544462,
+     "sign": 1.0,
+     "sign_n": 120,
+     "n_ne": 120
+    }
+   ],
+   "BF1": [
+    {
+     "existence": 0.4193551291177827,
+     "offset": 0.5563428029372302,
+     "counts": 0.6227670541225078,
+     "sign": 1.0,
+     "sign_n": 102,
+     "n_ne": 102,
+     "bf_lambda": 3.0
+    },
+    {
+     "existence": 0.41831779315031214,
+     "offset": 0.5932805133463028,
+     "counts": 0.7556557107718874,
+     "sign": 1.0,
+     "sign_n": 104,
+     "n_ne": 104,
+     "bf_lambda": 3.0
+    },
+    {
+     "existence": 0.4243472476062444,
+     "offset": 0.5773746205240652,
+     "counts": 0.6899288347011234,
+     "sign": 1.0,
+     "sign_n": 109,
+     "n_ne": 109,
+     "bf_lambda": 3.0
+    },
+    {
+     "existence": 0.44061513835331517,
+     "offset": 0.5194108823752787,
+     "counts": 0.6541700928112084,
+     "sign": 1.0,
+     "sign_n": 101,
+     "n_ne": 101,
+     "bf_lambda": 3.0
+    },
+    {
+     "existence": 0.4539130590662502,
+     "offset": 0.5459078940792432,
+     "counts": 0.6126104304639052,
+     "sign": 1.0,
+     "sign_n": 107,
+     "n_ne": 107,
+     "bf_lambda": 3.0
+    },
+    {
+     "existence": 0.4482064864119855,
+     "offset": 0.5682227357384286,
+     "counts": 0.7772926781417936,
+     "sign": 0.9908256880733946,
+     "sign_n": 108,
+     "n_ne": 109,
+     "bf_lambda": 3.0
+    },
+    {
+     "existence": 0.4083351276718477,
+     "offset": 0.5738158329852409,
+     "counts": 0.7806842368944285,
+     "sign": 1.0,
+     "sign_n": 96,
+     "n_ne": 96,
+     "bf_lambda": 3.0
+    },
+    {
+     "existence": 0.46294752709783965,
+     "offset": 0.5905315219444135,
+     "counts": 0.7279903114318136,
+     "sign": 1.0,
+     "sign_n": 113,
+     "n_ne": 113,
+     "bf_lambda": 3.0
+    },
+    {
+     "existence": 0.4502406817812835,
+     "offset": 0.5969715438734579,
+     "counts": 0.7780508568714384,
+     "sign": 1.0,
+     "sign_n": 110,
+     "n_ne": 110,
+     "bf_lambda": 3.0
+    },
+    {
+     "existence": 0.4814131627737654,
+     "offset": 0.60343671679198,
+     "counts": 0.7848541963573704,
+     "sign": 1.0,
+     "sign_n": 120,
+     "n_ne": 120,
+     "bf_lambda": 3.0
+    }
+   ],
+   "N1": [
+    {
+     "existence": 0.4371720718803668,
+     "offset": 0.5563428029372302,
+     "counts": 0.6227670541225078,
+     "sign": 1.0,
+     "sign_n": 102,
+     "n_ne": 102
+    },
+    {
+     "existence": 0.42305852430914415,
+     "offset": 0.5932805133463028,
+     "counts": 0.7556557107718874,
+     "sign": 1.0,
+     "sign_n": 104,
+     "n_ne": 104
+    },
+    {
+     "existence": 0.4370158822614072,
+     "offset": 0.5773746205240652,
+     "counts": 0.6899288347011234,
+     "sign": 1.0,
+     "sign_n": 109,
+     "n_ne": 109
+    },
+    {
+     "existence": 0.4529593627591328,
+     "offset": 0.5194108823752787,
+     "counts": 0.6541700928112084,
+     "sign": 1.0,
+     "sign_n": 101,
+     "n_ne": 101
+    },
+    {
+     "existence": 0.46519043495429074,
+     "offset": 0.5459078940792432,
+     "counts": 0.6126104304639052,
+     "sign": 1.0,
+     "sign_n": 107,
+     "n_ne": 107
+    },
+    {
+     "existence": 0.4569047716470262,
+     "offset": 0.5682227357384286,
+     "counts": 0.7772926781417936,
+     "sign": 0.9908256880733946,
+     "sign_n": 108,
+     "n_ne": 109
+    },
+    {
+     "existence": 0.426646222932105,
+     "offset": 0.5738158329852409,
+     "counts": 0.7806842368944285,
+     "sign": 1.0,
+     "sign_n": 96,
+     "n_ne": 96
+    },
+    {
+     "existence": 0.47005443518044093,
+     "offset": 0.5905315219444135,
+     "counts": 0.7279903114318136,
+     "sign": 1.0,
+     "sign_n": 113,
+     "n_ne": 113
+    },
+    {
+     "existence": 0.45712348994380564,
+     "offset": 0.5969715438734579,
+     "counts": 0.7780508568714384,
+     "sign": 1.0,
+     "sign_n": 110,
+     "n_ne": 110
+    },
+    {
+     "existence": 0.4955850214554092,
+     "offset": 0.60343671679198,
+     "counts": 0.7848541963573704,
+     "sign": 1.0,
+     "sign_n": 120,
+     "n_ne": 120
+    }
+   ],
+   "N_EB": [
+    {
+     "existence": 0.4371720718803668,
+     "offset": 0.5561794042444197,
+     "counts": 0.6122385898572721,
+     "sign": 1.0,
+     "sign_n": 102,
+     "n_ne": 102,
+     "eb_alpha": 0.5
+    },
+    {
+     "existence": 0.42305852430914415,
+     "offset": 0.5686010261668156,
+     "counts": 0.7463375768252157,
+     "sign": 1.0,
+     "sign_n": 104,
+     "n_ne": 104,
+     "eb_alpha": 0.5
+    },
+    {
+     "existence": 0.4370158822614072,
+     "offset": 0.5830321128788053,
+     "counts": 0.6860233307737329,
+     "sign": 1.0,
+     "sign_n": 109,
+     "n_ne": 109,
+     "eb_alpha": 0.5
+    },
+    {
+     "existence": 0.4529593627591328,
+     "offset": 0.5111993469360205,
+     "counts": 0.650886278116358,
+     "sign": 1.0,
+     "sign_n": 101,
+     "n_ne": 101,
+     "eb_alpha": 1.0
+    },
+    {
+     "existence": 0.46519043495429074,
+     "offset": 0.5541879399884088,
+     "counts": 0.6086959624783582,
+     "sign": 1.0,
+     "sign_n": 107,
+     "n_ne": 107,
+     "eb_alpha": 0.5
+    },
+    {
+     "existence": 0.4569047716470262,
+     "offset": 0.5654704421604471,
+     "counts": 0.7700488244005944,
+     "sign": 0.9908256880733946,
+     "sign_n": 108,
+     "n_ne": 109,
+     "eb_alpha": 2.0
+    },
+    {
+     "existence": 0.426646222932105,
+     "offset": 0.5694755552074631,
+     "counts": 0.7699244774761348,
+     "sign": 1.0,
+     "sign_n": 96,
+     "n_ne": 96,
+     "eb_alpha": 0.5
+    },
+    {
+     "existence": 0.47005443518044093,
+     "offset": 0.5976954494623234,
+     "counts": 0.7095942298238435,
+     "sign": 1.0,
+     "sign_n": 113,
+     "n_ne": 113,
+     "eb_alpha": 0.5
+    },
+    {
+     "existence": 0.45712348994380564,
+     "offset": 0.6195473014492154,
+     "counts": 0.750138201063321,
+     "sign": 1.0,
+     "sign_n": 110,
+     "n_ne": 110,
+     "eb_alpha": 1.0
+    },
+    {
+     "existence": 0.4955850214554092,
+     "offset": 0.5965914786967418,
+     "counts": 0.6839509201291653,
+     "sign": 1.0,
+     "sign_n": 120,
+     "n_ne": 120,
+     "eb_alpha": 1.0
+    }
+   ]
+  },
+  "GB0": {
+   "rule": [
+    {
+     "existence": 0.39140234186825806,
+     "offset": 0.8100175136636775,
+     "counts": 0.4225680675328092,
+     "sign": 1.0,
+     "sign_n": 83,
+     "n_ne": 83
+    },
+    {
+     "existence": 0.39527306310149823,
+     "offset": 0.8473985890652558,
+     "counts": 0.5179301961915382,
+     "sign": 1.0,
+     "sign_n": 81,
+     "n_ne": 81
+    },
+    {
+     "existence": 0.35452590466079853,
+     "offset": 0.8597406765250154,
+     "counts": 0.46000101488555756,
+     "sign": 1.0,
+     "sign_n": 82,
+     "n_ne": 82
+    },
+    {
+     "existence": 0.3836114701086566,
+     "offset": 0.7612263943785683,
+     "counts": 0.39273614653330335,
+     "sign": 1.0,
+     "sign_n": 69,
+     "n_ne": 69
+    },
+    {
+     "existence": 0.3745071226723418,
+     "offset": 0.8124383718133719,
+     "counts": 0.41673734138062596,
+     "sign": 1.0,
+     "sign_n": 72,
+     "n_ne": 72
+    },
+    {
+     "existence": 0.3830305449617022,
+     "offset": 0.7959663865546217,
+     "counts": 0.46813000889313855,
+     "sign": 1.0,
+     "sign_n": 85,
+     "n_ne": 85
+    },
+    {
+     "existence": 0.33511916641956724,
+     "offset": 0.8769268313385962,
+     "counts": 0.43229549924884514,
+     "sign": 1.0,
+     "sign_n": 68,
+     "n_ne": 68
+    },
+    {
+     "existence": 0.39257922374633936,
+     "offset": 0.8234164729091806,
+     "counts": 0.44911807259615694,
+     "sign": 1.0,
+     "sign_n": 83,
+     "n_ne": 83
+    },
+    {
+     "existence": 0.3799999818835838,
+     "offset": 0.9196042053184911,
+     "counts": 0.34905813112851625,
+     "sign": 1.0,
+     "sign_n": 77,
+     "n_ne": 77
+    },
+    {
+     "existence": 0.40523763791699774,
+     "offset": 0.8689041881812967,
+     "counts": 0.5253373916616725,
+     "sign": 1.0,
+     "sign_n": 83,
+     "n_ne": 83
+    }
+   ],
+   "BF1": [
+    {
+     "existence": 0.387367175928385,
+     "offset": 0.8471661080411872,
+     "counts": 0.39276058901420335,
+     "sign": 1.0,
+     "sign_n": 83,
+     "n_ne": 83,
+     "bf_lambda": 3.0
+    },
+    {
+     "existence": 0.3970501435550078,
+     "offset": 0.8892857142857143,
+     "counts": 0.4925132332363852,
+     "sign": 1.0,
+     "sign_n": 81,
+     "n_ne": 81,
+     "bf_lambda": 3.0
+    },
+    {
+     "existence": 0.3520212077298669,
+     "offset": 0.8751297589872685,
+     "counts": 0.45891111266544704,
+     "sign": 1.0,
+     "sign_n": 82,
+     "n_ne": 82,
+     "bf_lambda": 3.0
+    },
+    {
+     "existence": 0.38176582383772095,
+     "offset": 0.7891767049375744,
+     "counts": 0.39194273671330515,
+     "sign": 1.0,
+     "sign_n": 69,
+     "n_ne": 69,
+     "bf_lambda": 3.0
+    },
+    {
+     "existence": 0.37404913840866805,
+     "offset": 0.8253351972101972,
+     "counts": 0.41540897891867234,
+     "sign": 1.0,
+     "sign_n": 72,
+     "n_ne": 72,
+     "bf_lambda": 3.0
+    },
+    {
+     "existence": 0.38232555142704355,
+     "offset": 0.8349019607843138,
+     "counts": 0.4104272299719731,
+     "sign": 1.0,
+     "sign_n": 85,
+     "n_ne": 85,
+     "bf_lambda": 3.0
+    },
+    {
+     "existence": 0.33318365126434496,
+     "offset": 0.8548680078091844,
+     "counts": 0.42747168538661484,
+     "sign": 1.0,
+     "sign_n": 68,
+     "n_ne": 68,
+     "bf_lambda": 3.0
+    },
+    {
+     "existence": 0.3901382626646394,
+     "offset": 0.8461741703656732,
+     "counts": 0.4128397411415101,
+     "sign": 1.0,
+     "sign_n": 83,
+     "n_ne": 83,
+     "bf_lambda": 3.0
+    },
+    {
+     "existence": 0.37630484550520205,
+     "offset": 0.9434137291280148,
+     "counts": 0.29908071180774765,
+     "sign": 1.0,
+     "sign_n": 77,
+     "n_ne": 77,
+     "bf_lambda": 3.0
+    },
+    {
+     "existence": 0.39984297227382737,
+     "offset": 0.8866896156052781,
+     "counts": 0.454793690588014,
+     "sign": 1.0,
+     "sign_n": 83,
+     "n_ne": 83,
+     "bf_lambda": 3.0
+    }
+   ],
+   "N1": [
+    {
+     "existence": 0.38767385200793353,
+     "offset": 0.8471661080411872,
+     "counts": 0.39276058901420335,
+     "sign": 1.0,
+     "sign_n": 83,
+     "n_ne": 83
+    },
+    {
+     "existence": 0.40838572732003453,
+     "offset": 0.8892857142857143,
+     "counts": 0.4925132332363852,
+     "sign": 1.0,
+     "sign_n": 81,
+     "n_ne": 81
+    },
+    {
+     "existence": 0.36590536779931865,
+     "offset": 0.8751297589872685,
+     "counts": 0.45891111266544704,
+     "sign": 1.0,
+     "sign_n": 82,
+     "n_ne": 82
+    },
+    {
+     "existence": 0.38439599191395546,
+     "offset": 0.7891767049375744,
+     "counts": 0.39194273671330515,
+     "sign": 1.0,
+     "sign_n": 69,
+     "n_ne": 69
+    },
+    {
+     "existence": 0.38240935344952615,
+     "offset": 0.8253351972101972,
+     "counts": 0.41540897891867234,
+     "sign": 1.0,
+     "sign_n": 72,
+     "n_ne": 72
+    },
+    {
+     "existence": 0.3892612346425693,
+     "offset": 0.8349019607843138,
+     "counts": 0.4104272299719731,
+     "sign": 1.0,
+     "sign_n": 85,
+     "n_ne": 85
+    },
+    {
+     "existence": 0.3370989267366036,
+     "offset": 0.8548680078091844,
+     "counts": 0.42747168538661484,
+     "sign": 1.0,
+     "sign_n": 68,
+     "n_ne": 68
+    },
+    {
+     "existence": 0.3903717023048948,
+     "offset": 0.8461741703656732,
+     "counts": 0.4128397411415101,
+     "sign": 1.0,
+     "sign_n": 83,
+     "n_ne": 83
+    },
+    {
+     "existence": 0.3799508451933131,
+     "offset": 0.9434137291280148,
+     "counts": 0.29908071180774765,
+     "sign": 1.0,
+     "sign_n": 77,
+     "n_ne": 77
+    },
+    {
+     "existence": 0.4057234422986215,
+     "offset": 0.8866896156052781,
+     "counts": 0.454793690588014,
+     "sign": 1.0,
+     "sign_n": 83,
+     "n_ne": 83
+    }
+   ],
+   "N_EB": [
+    {
+     "existence": 0.38767385200793353,
+     "offset": 0.8471661080411872,
+     "counts": 0.39276058901420335,
+     "sign": 1.0,
+     "sign_n": 83,
+     "n_ne": 83,
+     "eb_alpha": 1.0
+    },
+    {
+     "existence": 0.40838572732003453,
+     "offset": 0.8692239858906525,
+     "counts": 0.4882511783544721,
+     "sign": 1.0,
+     "sign_n": 81,
+     "n_ne": 81,
+     "eb_alpha": 2.0
+    },
+    {
+     "existence": 0.36590536779931865,
+     "offset": 0.8751297589872685,
+     "counts": 0.45891111266544704,
+     "sign": 1.0,
+     "sign_n": 82,
+     "n_ne": 82,
+     "eb_alpha": 1.0
+    },
+    {
+     "existence": 0.38439599191395546,
+     "offset": 0.774683951314386,
+     "counts": 0.39407391445971823,
+     "sign": 1.0,
+     "sign_n": 69,
+     "n_ne": 69,
+     "eb_alpha": 2.0
+    },
+    {
+     "existence": 0.38240935344952615,
+     "offset": 0.8253351972101972,
+     "counts": 0.41540897891867234,
+     "sign": 1.0,
+     "sign_n": 72,
+     "n_ne": 72,
+     "eb_alpha": 1.0
+    },
+    {
+     "existence": 0.3892612346425693,
+     "offset": 0.8257843137254901,
+     "counts": 0.401593968675755,
+     "sign": 1.0,
+     "sign_n": 85,
+     "n_ne": 85,
+     "eb_alpha": 1.0
+    },
+    {
+     "existence": 0.3370989267366036,
+     "offset": 0.8695738901621255,
+     "counts": 0.4280570220919962,
+     "sign": 1.0,
+     "sign_n": 68,
+     "n_ne": 68,
+     "eb_alpha": 1.0
+    },
+    {
+     "existence": 0.3903717023048948,
+     "offset": 0.8461741703656732,
+     "counts": 0.4128397411415101,
+     "sign": 1.0,
+     "sign_n": 83,
+     "n_ne": 83,
+     "eb_alpha": 1.0
+    },
+    {
+     "existence": 0.3799508451933131,
+     "offset": 0.9434137291280148,
+     "counts": 0.29908071180774765,
+     "sign": 1.0,
+     "sign_n": 77,
+     "n_ne": 77,
+     "eb_alpha": 1.0
+    },
+    {
+     "existence": 0.4057234422986215,
+     "offset": 0.8987378083763625,
+     "counts": 0.4546517169631003,
+     "sign": 1.0,
+     "sign_n": 83,
+     "n_ne": 83,
+     "eb_alpha": 1.0
+    }
+   ]
+  }
+ },
+ "all_pass": false
+}
