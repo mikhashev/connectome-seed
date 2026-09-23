@@ -1016,7 +1016,9 @@ def run_exam(pred, env, log=print):
     r3 = {f: {"real_margin": real_m[f], "shuffled_max": float(np.max(sh_m[f])),
               "shuffled_mean": float(np.mean(sh_m[f])),
               "n_shuffled_ge_real": int(sum(m >= real_m[f] for m in sh_m[f])),
-              "strictly_above_all": bool(all(real_m[f] > m for m in sh_m[f]))} for f in FIELDS}
+              # Spec A7: a tie within TAU is not a win, so "above" means by more than TAU.
+              "strictly_above_all": bool(all(real_m[f] - m > TAU for m in sh_m[f]))}
+          for f in FIELDS}
     r3["pass"] = r3["existence"]["strictly_above_all"] and r3["offset"]["strictly_above_all"]
     full_data, _ = insample(pred, bank)
     r = rank_of(pred, full_data)
@@ -1025,7 +1027,8 @@ def run_exam(pred, env, log=print):
     bfm = bf_margin(r, bank)
     thr = max(rp_thr, bfm["margin"])
     r4 = {"rank": r, "rule_margin_existence": real_m["existence"], "rp_threshold": rp_thr,
-          "bf": bfm, "threshold": thr, "pass": bool(real_m["existence"] > thr),
+          # Spec A7: a tie within TAU is not a win; P4 needs the margin above thr by more than TAU.
+          "bf": bfm, "threshold": thr, "pass": bool(real_m["existence"] - thr > TAU),
           "starts": STARTS}
     dial_out = []
     dks = Predictor(f"D_{r2['k_star']}", DK_FILES, lambda v: fit_dk(v, r2["k_star"]))
