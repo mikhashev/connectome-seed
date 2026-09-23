@@ -1,6 +1,6 @@
 # First rule's failure: predictions registered before rule #2
 
-**Status: FINAL, ready to commit (pending CC's check).**
+**Status: FINAL, registered. Committed after CC checked the round-4 fixes against Part E; no rule #2 text or code existed at that commit.**
 
 **History.**
 - **v1** (written by CC, 09:29 UTC), consolidating predictions from Johnny and Ark's first pass
