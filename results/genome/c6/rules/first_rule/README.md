@@ -283,3 +283,20 @@ does not decide, and the reading taken. **None of them has been checked against 
      best and second-best rule sets) lives in `fit.LAST_FIT`. The harness has no hook that saves
      it next to each fit.
    - No such hook was added here.
+
+## The restart spread log (proposal §2.4 and §4.4 (ii))
+
+The harness is not edited for this. If the environment variable `FIRST_RULE_SPREAD_LOG` holds a
+path, every call to `fit()` appends one JSON line to that file. When it is unset, `fit()` writes
+nothing and its data is byte-identical; `test_spread_log` and `test_v1_unchanged` check both.
+
+The line has these keys:
+
+- `view_sha256_16`: the harness hands `fit` no bank name, so the training view is identified by
+  a hash of its cells, existence and contents.
+- `n_train_cells` and `n_train_nonempty`.
+- `search`, `k` and `labels`.
+- `J_per_restart` and `restart_seeds`.
+- `chosen_restart` and `second_restart`.
+- `best_rules` and `second_rules`: each rule is `[i, j, rho_level, source-label member types,
+  target-label member types]`. The member sets are what §4.4 (ii) matches rules by.

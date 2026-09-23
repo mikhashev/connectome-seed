@@ -13,6 +13,9 @@ defines NAME, PROGRAM_FILES, RANK and fit(view, starts=...). The harness passes 
 to `starts`. It imports nothing from the harness and reads nothing but the view.
 """
 
+import hashlib
+import json
+import os
 from collections import Counter
 from pathlib import Path
 
@@ -557,4 +560,44 @@ def fit(view, starts=DEFAULT_STARTS, labels="learned", n_labels=N_LABELS, stage1
         "duplicate_label_sets": int(sum(1 for a in range(E.shape[1]) for b in range(a)
                                         if (E[:, a] == E[:, b]).all())),
     })
+    if os.environ.get(SPREAD_ENV):
+        _log_spread(os.environ[SPREAD_ENV], view, search, starts, labels, runs, best)
     return pack(E, rules, lib, pis, m_r, g_r, wq, aq, bq, w0, eq, sign)
+
+
+SPREAD_ENV = "FIRST_RULE_SPREAD_LOG"
+
+
+def view_hash(view):
+    """sha256 (16 hex) of the training view: cells, existence, and non-empty contents."""
+    h = hashlib.sha256()
+    h.update(np.ascontiguousarray(view.cells, np.int64).tobytes())
+    h.update(np.ascontiguousarray(view.exists, bool).tobytes())
+    h.update(json.dumps(sorted((list(k), sorted((list(o), n) for o, n in c["offsets"].items()),
+                                c["sign"]) for k, c in view.content.items())).encode())
+    return h.hexdigest()[:16]
+
+
+def _rule_set(E, P, Q):
+    """Rules as (i, j, rho level, source-label member types, target-label member types): the
+    member sets are what proposal section 4.4 (ii) matches rules by."""
+    return [[i, j, q, np.flatnonzero(E[:, i]).tolist(), np.flatnonzero(E[:, j]).tolist()]
+            for i, j, q in rules_list(P, Q)]
+
+
+def _log_spread(path, view, search, starts, labels, runs, best):
+    """Append one JSON line per fit (proposal sections 2.4 and 4.4 (ii)). The harness hands
+    fit() no bank name, so the view is identified by its hash. Uncharged; read by nobody here."""
+    order = sorted(range(len(runs)), key=lambda x: (runs[x][4], x))
+    second = order[1] if len(order) > 1 else None
+    line = {"view_sha256_16": view_hash(view), "n_train_cells": int(len(view.cells)),
+            "n_train_nonempty": int(np.sum(view.exists)), "search": search, "k": int(starts),
+            "labels": labels, "J_per_restart": [float(r[4]) for r in runs],
+            "restart_seeds": list(range(len(runs))) if labels != "random"
+            else [RANDOM_LABEL_SEED],
+            "chosen_restart": int(best), "second_restart": second,
+            "best_rules": _rule_set(runs[best][0], runs[best][1], runs[best][2]),
+            "second_rules": None if second is None
+            else _rule_set(runs[second][0], runs[second][1], runs[second][2])}
+    with open(path, "a", encoding="utf-8", newline="\n") as fh:
+        fh.write(json.dumps(line) + "\n")

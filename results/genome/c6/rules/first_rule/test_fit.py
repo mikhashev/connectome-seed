@@ -215,6 +215,36 @@ def test_data_types():
     assert np.array_equal(dr["E"], np.random.default_rng(20260923).random((65, 12)) < 0.25)
 
 
+def test_spread_log(tmp=None):
+    """FIRST_RULE_SPREAD_LOG set: one JSON line per fit call; unset: data unchanged, no file."""
+    import json
+    import os
+    import tempfile
+    import harness as H
+    import timing
+    _, _, _, content = planted()
+    view = H.make_view(H.Bank("synthetic", content), split_mask())
+    os.environ.pop(FR.SPREAD_ENV, None)
+    h0 = timing.data_hash(FR.fit(view, starts=3, search="v1"))
+    with tempfile.TemporaryDirectory() as d:
+        path = os.path.join(d, "spread.jsonl")
+        os.environ[FR.SPREAD_ENV] = path
+        try:
+            h1 = timing.data_hash(FR.fit(view, starts=3, search="v1"))
+            FR.fit(view, starts=2, search="v2")
+        finally:
+            os.environ.pop(FR.SPREAD_ENV, None)
+        lines = [json.loads(x) for x in open(path, encoding="utf-8").read().splitlines()]
+    assert h0 == h1 and len(lines) == 2
+    a, b = lines
+    assert a["search"] == "v1" and a["k"] == 3 and len(a["J_per_restart"]) == 3
+    assert b["search"] == "v2" and b["k"] == 2 and b["second_restart"] is not None
+    assert a["n_train_cells"] == len(view.cells) and a["view_sha256_16"] == FR.view_hash(view)
+    assert a["J_per_restart"][a["chosen_restart"]] == min(a["J_per_restart"])
+    assert all(len(r) == 5 for r in a["best_rules"])
+    assert not os.environ.get(FR.SPREAD_ENV)
+
+
 def test_empty_library_decodes():
     """A genome with no rules and no motifs still decodes (fallback, empty offset sets)."""
     import harness as H
