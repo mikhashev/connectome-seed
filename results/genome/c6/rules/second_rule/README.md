@@ -30,6 +30,7 @@ and the C6 run must not be started with this rule.
 | `gates.py` | The seven gates of §2.5, run once; writes `gates.json`. |
 | `gates.json` | The single gate run (commit `dd4dc92`, k = 10). Scores on the synthetic gate banks only; G-bf holds predictions on shuffled bank 0, no score. |
 | `gate_diagnostics.py`, `gate_diagnostics.json` | Run **after** the gates failed, on GB1/GB0 only, to tell an implementation fault from the registered rule's behaviour. Not a gate; nothing was changed by it. |
+| `DIAGNOSIS.md`, `diagnosis.py`, `diagnosis_summary.py`, `diagnosis_*.json` | Why G-e+ and G-o0 failed (Mike, 2026-09-23 16:41 UTC): the gate or the rule. Synthetic banks only, on diagnostic seeds 70000–70099; 80000–80999 are reserved for a future re-gate. Not a gate and not a fix. |
 | `timing.py` | The timing cap of §1 on shuffled bank 0; writes `timing_k10.json`. **Not run** (the gates failed). |
 | `post_run.py` | Runs after the record is committed: spread-log check, BF_1–BF_4 and RP_1 refits, per-type leave-one-type-out, the mandatory BF line and the tie-band reading in `RESULT.md`. Not run on the real bank. |
 | `test_fit.py` | Unit tests on synthetic data only. |
