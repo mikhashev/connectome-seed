@@ -25,15 +25,21 @@ decode, casts every float array to float32, and hands it copies (A5).
 Usage (from the repository root):
     tools/.venv/Scripts/python.exe results/genome/c6/harness.py --controls
     tools/.venv/Scripts/python.exe results/genome/c6/harness.py --rule path/to/rule.py
-The second form exists for later use; this commit runs only the controls (A14).
+    ... [--starts 10|3] [--workers N] [--out DIR]
+A rule run refuses if results/genome/c6/ or docs/plans/ have uncommitted changes.
 """
 
+import os
+for _v in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS", "NUMEXPR_NUM_THREADS"):
+    os.environ.setdefault(_v, "1")          # one BLAS thread per process: serial == parallel
 import argparse
 import ast
 import hashlib
 import importlib.util
 import inspect
 import json
+import subprocess
+from concurrent.futures import ProcessPoolExecutor
 import lzma
 import math
 import re
@@ -739,18 +745,20 @@ def cv(pred, bank, cache_key=None):
     key = (pred.name, bank.name, cache_key or "primary")
     if key in _CV_CACHE:
         return _CV_CACHE[key]
-    out, datas = [], []
-    for f in range(N_FOLDS):
-        held = FOLD == f
-        cells = ALL_CELLS[held[ALL_CELLS[:, 0], ALL_CELLS[:, 1]]]
-        data = pred.train(bank, ~held)
-        s = score(pred.decode(data, cells), bank, cells)
-        for k in ("eb_alpha", "bf_lambda"):
-            if k in data:
-                s[k] = float(np.asarray(data[k])[0])
-        out.append(s)
+    out = [cv_fold(pred, bank, f) for f in range(N_FOLDS)]
     _CV_CACHE[key] = out
     return out
+
+
+def cv_fold(pred, bank, f):
+    held = FOLD == f
+    cells = ALL_CELLS[held[ALL_CELLS[:, 0], ALL_CELLS[:, 1]]]
+    data = pred.train(bank, ~held)
+    s = score(pred.decode(data, cells), bank, cells)
+    for k in ("eb_alpha", "bf_lambda"):
+        if k in data:
+            s[k] = float(np.asarray(data[k])[0])
+    return s
 
 
 _IS_CACHE = {}
@@ -958,15 +966,23 @@ def bf_margin(r, bank):
 
 
 # ---- secondary split: leave one type out (spec 4.5, descriptive) --------------------------
-def loto(pred, bank):
-    rs, ns = [], []
-    for i in range(65):
+_LOTO_CACHE = {}
+
+
+def loto_fold(P, bank, i):
+    key = (P.name, bank.name, i)
+    if key not in _LOTO_CACHE:
         held = np.zeros((65, 65), bool)
         held[i, :] = held[:, i] = True
         cells = ALL_CELLS[held[ALL_CELLS[:, 0], ALL_CELLS[:, 1]]]
-        for P, acc in ((pred, rs), (N1, ns)):
-            d = P.train(bank, ~held)
-            acc.append(score(P.decode(d, cells), bank, cells))
+        d = P.train(bank, ~held)
+        _LOTO_CACHE[key] = score(P.decode(d, cells), bank, cells)
+    return _LOTO_CACHE[key]
+
+
+def loto(pred, bank):
+    rs = [loto_fold(pred, bank, i) for i in range(65)]
+    ns = [loto_fold(N1, bank, i) for i in range(65)]
     return {f: {"rule_mean": float(np.nanmean([r[f] for r in rs])),
                 "n1_mean": float(np.nanmean([n[f] for n in ns]))} for f in FIELDS}
 
@@ -1466,12 +1482,236 @@ def controls():
     log(f"harness sha256 {harness_sha}; total {time.time() - t0:.0f}s")
 
 
+def _resolve(f, base):
+    q = Path(f)
+    if q.is_absolute():
+        return q
+    for c in (base / q, ROOT / q):
+        if c.exists():
+            return c.resolve()
+    raise FileNotFoundError(f"program file {f} not found next to the rule or under the root")
+
+
 def load_rule(path):
+    """Load a rule through its plug-in interface only: NAME, PROGRAM_FILES, fit, RANK."""
+    path = Path(path).resolve()
+    if str(path.parent) not in sys.path:
+        sys.path.insert(0, str(path.parent))
     spec = importlib.util.spec_from_file_location("c6_rule", path)
     m = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(m)
-    return Predictor(m.NAME, [Path(f) for f in m.PROGRAM_FILES], m.fit,
-                     rank=getattr(m, "RANK", None))
+    P = Predictor(m.NAME, [_resolve(f, path.parent) for f in m.PROGRAM_FILES], m.fit,
+                  rank=getattr(m, "RANK", None))
+    P.rule_path = path
+    return P
+
+
+# ==========================================================================================
+# 11. The rule path: parallel precompute, one exam, stamped outputs
+# ==========================================================================================
+_W = {}
+VERDICT_TEXT = {  # spec section 5.2 and A11, verbatim labels
+    "rule did not run": "rule did not run", "copy or marginal": "copy or marginal",
+    "not a bottleneck": "not a bottleneck",
+    "below threshold for this family": "below threshold for this family",
+    "family fits anything": "family fits anything",
+    "ambient, not substantive structure": "ambient, not substantive structure"}
+
+
+def _w_init(rule_path, starts):
+    global STARTS
+    STARTS = starts
+    _W["rule"] = load_rule(rule_path) if rule_path else None
+    _W["banks"] = {}
+
+
+def _w_pred(key):
+    if key == "rule":
+        return _W["rule"]
+    if key in ("N1", "N0", "N_EB"):
+        return {"N1": N1, "N0": N0, "N_EB": NEB}[key]
+    kind, *a = key.split(":")
+    if kind == "BF":
+        return bf_predictor(int(a[0]))
+    if kind == "RP":
+        return rp_predictor(int(a[0]), int(a[1]), int(a[2]))
+    raise KeyError(key)
+
+
+def _w_bank(name):
+    B = _W["banks"]
+    if name not in B:
+        if name == "real":
+            B[name] = REAL
+        elif name.startswith("real.shuffle"):
+            B[name] = shuffled_bank(REAL, int(name[len("real.shuffle"):]))[0]
+        elif name.startswith("real.dial"):
+            for _, _, b in dial_banks(REAL):
+                B[b.name] = b
+        else:
+            raise KeyError(name)
+    return B[name]
+
+
+def _w_task(task):
+    kind, pk, bn, x = task
+    P, B = _w_pred(pk), _w_bank(bn)
+    if kind == "cv":
+        return cv_fold(P, B, x)
+    if kind == "loto":
+        return loto_fold(P, B, x)
+    if kind == "insample":
+        return insample(P, B)
+    raise KeyError(kind)
+
+
+def precompute(rule, env, workers, log):
+    """Every independent fit of the exam for this rule, run once, in a process pool (or in this
+    process when workers == 1), and stored in the same caches the serial arms read."""
+    r = min(rule.rank, RP_RANK_CAP) if rule.rank else None
+    tasks = []
+    banks = [env.bank] + env.shuffled + [b for _, _, b in env.dial]
+    for b in banks:
+        for pk in ("rule", "N1"):
+            tasks += [("cv", pk, b.name, f) for f in range(N_FOLDS)]
+    for pk in ("N0", "N_EB"):
+        tasks += [("cv", pk, "real", f) for f in range(N_FOLDS)]
+    if r:
+        tasks += [("cv", f"BF:{r}", "real", f) for f in range(N_FOLDS)]
+        for j in RP_SEEDS:
+            for side in (0, 1):
+                tasks += [("cv", f"RP:{r}:{RP_SEED_BASE + j}:{side}", "real", f)
+                          for f in range(N_FOLDS)]
+    for pk in ("rule", "N1"):
+        tasks += [("loto", pk, "real", i) for i in range(65)]
+    tasks += [("insample", "rule", b.name, None) for b in [env.bank] + [b for _, _, b in env.dial]]
+    log(f"precompute: {len(tasks)} independent fits, workers = {workers}, k = {STARTS}")
+    t = time.time()
+    if workers <= 1:
+        _w_init(str(rule.rule_path), STARTS)
+        results = [_w_task(x) for x in tasks]
+    else:
+        with ProcessPoolExecutor(max_workers=workers, initializer=_w_init,
+                                 initargs=(str(rule.rule_path), STARTS)) as ex:
+            results = list(ex.map(_w_task, tasks, chunksize=4))
+    log(f"precompute done in {time.time() - t:.0f}s")
+    names = {"rule": rule.name, "N1": N1.name, "N0": N0.name, "N_EB": NEB.name}
+    cvs = {}
+    for (kind, pk, bn, x), res in zip(tasks, results):
+        nm = names.get(pk) or _w_pred(pk).name
+        if kind == "cv":
+            cvs.setdefault((nm, bn), {})[x] = res
+        elif kind == "loto":
+            _LOTO_CACHE[(nm, bn, x)] = res
+        else:
+            _IS_CACHE[(nm, bn)] = res
+    for (nm, bn), d in cvs.items():
+        _CV_CACHE[(nm, bn, "primary")] = [d[f] for f in range(N_FOLDS)]
+
+
+def _git(*a):
+    return subprocess.run(["git", *a], cwd=ROOT, capture_output=True, text=True).stdout.strip()
+
+
+def rule_run(path, workers, allow_dirty=False, out_dir=None):
+    t0 = time.time()
+    log = lambda m: print(m, flush=True)
+    path = Path(path).resolve()
+    dirty = _git("status", "--porcelain", "--", "results/genome/c6", "docs/plans")
+    standin = "_standin" in path.parts
+    if dirty and not (allow_dirty and standin):
+        sys.exit("REFUSED: uncommitted changes under results/genome/c6/ or docs/plans/; a "
+                 "verdict must be tied to a commit.\n" + dirty)
+    rule = load_rule(path)
+    safe = re.sub(r"[^A-Za-z0-9_.-]+", "_", rule.name)
+    out = Path(out_dir) if out_dir else HERE / "rule_runs" / safe
+    env, invs = make_env(REAL, log)
+    precompute(rule, env, workers, log)
+    res = run_exam(rule, env, log)
+    p3 = {f: dict(res["P3"][f], p_one_sided=(1 + res["P3"][f]["n_shuffled_ge_real"]) /
+                  (N_SHUFFLES + 1)) for f in FIELDS}
+    verdict_line = (f"C6 verdict for {rule.name} (k = {STARTS} starts, r = {res['P4']['rank']}): "
+                    + ("PASS" if res["verdict"] == "PASS" else
+                       "FAIL -- " + "; ".join(VERDICT_TEXT[l] for l in res["labels"])))
+    stamp = {
+        "git_head": _git("rev-parse", "HEAD"), "tree_dirty_under_c6_or_plans": bool(dirty),
+        "harness_sha256_lf": sha256_lf(__file__), "spec_sha256_lf": sha256_lf(SPEC),
+        "acceptance_sha256_lf": [sha256_lf(ACCEPTANCE), sha256_lf(ACCEPTANCE2),
+                                 sha256_lf(ACCEPTANCE3)],
+        "folds_sha256_lf": sha256_lf(HERE / "folds.csv"),
+        "rule_file": str(path.relative_to(ROOT).as_posix()), "rule_file_sha256_lf": sha256_lf(path),
+        "program_files_sha256_lf": {str(Path(f).relative_to(ROOT).as_posix()): sha256_lf(f)
+                                    for f in rule.program_files},
+        "starts_k": STARTS, "rank_r": res["P4"]["rank"],
+    }
+    result = {"verdict_line": verdict_line, "stamp": stamp, "exam": res, "P3_p_values": p3,
+              "shuffle_invariants_hold": all(i["out_degrees_kept"] and i["in_degrees_kept"]
+                                             and i["content_multiset_kept"] for i in invs)}
+    run_info = {"wall_time_s": round(time.time() - t0, 1), "workers": workers}
+    out.mkdir(parents=True, exist_ok=True)
+    body = json.dumps(result, indent=1, default=lambda x: x.item() if hasattr(x, "item")
+                      else str(x))
+    (out / "result.json").write_text(body + "\n", encoding="utf-8", newline="\n")
+    (out / "run_info.json").write_text(json.dumps(run_info, indent=1) + "\n", encoding="utf-8",
+                                       newline="\n")
+    (out / "RESULT.md").write_text(render_md(result, run_info), encoding="utf-8", newline="\n")
+    log(verdict_line)
+    log(f"harness sha256 {stamp['harness_sha256_lf']}; wall time {run_info['wall_time_s']}s; "
+        f"outputs in {out}")
+    return result
+
+
+def render_md(result, run_info):
+    e, st = result["exam"], result["stamp"]
+    mean = lambda xs, f: float(np.mean([x[f] for x in xs]))
+    L = [f"# C6 run: {e['name']}", "", f"**{result['verdict_line']}**", "",
+         "Verdict labels are the spec's (section 5.2, A11), verbatim. "
+         f"Every number below is at k = {st['starts_k']} starts per trained fit and rank "
+         f"r = {st['rank_r']}.", "",
+         "| stamp | value |", "|---|---|"]
+    L += [f"| {k} | `{v}` |" for k, v in st.items() if not isinstance(v, dict)]
+    L += [f"| {k} | `{v}` |" for k, v in st["program_files_sha256_lf"].items()]
+    L += ["", f"Wall time: {run_info['wall_time_s']} s with {run_info['workers']} workers.", "",
+          "## P1 (held-out, mean over 10 folds; k = %d)" % st["starts_k"], "",
+          "| field | rule | N1 | N0 | N_EB | rule's fold wins / losses | pass |",
+          "|---|---|---|---|---|---|---|"]
+    for f in FIELDS:
+        r1 = e["P1"][f]
+        wl = (f"wins vs N1 {r1['wins']}" if f == "existence" else
+              f"wins vs {r1['wins_vs']}" if f == "offset" else
+              f"losses {r1['losses']}, mean not worse {r1['mean_not_worse']}")
+        L.append(f"| {f} | {mean(e['per_fold_rule'], f):.4f} | {mean(e['per_fold_N1'], f):.4f} | "
+                 f"{mean(e['per_fold_N0'], f):.4f} | {mean(e['per_fold_N_EB'], f):.4f} | {wl} | "
+                 f"{r1['pass']} |")
+    p2 = e["P2"]
+    L += ["", "## P2 (in-sample; k = %d)" % st["starts_k"], "",
+          f"DL(rule) = {p2['dl_rule_bits']} bits (program {p2['dl_rule_program_bits']}); "
+          f"limit DL(bank)/10 = {p2['dl_bank_over_10']:.1f}; length ok: {p2['length_ok']}. "
+          f"k* = {p2['k_star']}, k*_armed = {p2['k_star_armed']}.", "",
+          "| field | rule | D_k^N1 at k* | D_k^N0 at k*_armed | N1 | beats all three |",
+          "|---|---|---|---|---|---|"]
+    for f in ("existence", "offset"):
+        L.append(f"| {f} | {p2['insample_rule'][f]:.4f} | {p2['insample_dk_star'][f]:.4f} | "
+                 f"{p2['insample_dk_armed'][f]:.4f} | {p2['insample_n1'][f]:.4f} | "
+                 f"{all(p2['beats'][k][f] for k in p2['beats'])} |")
+    L += ["", "## P3 (margin over N1: real bank vs 99 shuffled banks)", "",
+          "| field | real margin | shuffled mean | shuffled max | shuffled >= real | one-sided p |",
+          "|---|---|---|---|---|---|"]
+    for f in FIELDS:
+        q = result["P3_p_values"][f]
+        L.append(f"| {f} | {q['real_margin']:+.4f} | {q['shuffled_mean']:+.4f} | "
+                 f"{q['shuffled_max']:+.4f} | {q['n_shuffled_ge_real']} | {q['p_one_sided']:.2f} |")
+    L.append(f"\nP3 passes (existence and offset strictly above all 99): {e['P3']['pass']}")
+    p4 = e["P4"]
+    L += ["", "## P4 (existence margin over N1, held-out; k = %d, r = %d)" % (st["starts_k"],
+                                                                            p4["rank"]), "",
+          f"rule {p4['rule_margin_existence']:+.4f}; random-projection threshold "
+          f"{p4['rp_threshold']:+.4f}; BF_r margin {p4['bf']['margin']:+.4f} (lambda per fold "
+          f"{p4['bf']['lambdas']}); threshold {p4['threshold']:+.4f}; pass {p4['pass']}.", "",
+          "## Did not run check", "", f"folds where N0 beats the rule: "
+          f"{e['did_not_run']['folds_where_N0_beats_rule']}; did not run: "
+          f"{e['did_not_run']['did_not_run']}", ""]
+    return "\n".join(L) + "\n"
 
 
 if __name__ == "__main__":
@@ -1480,11 +1720,15 @@ if __name__ == "__main__":
     ap.add_argument("--rule")
     ap.add_argument("--starts", type=int, choices=[3, 10], default=10,
                     help="restarts per trained fit, decided once before any arm (A24)")
+    ap.add_argument("--workers", type=int, default=max(1, (os.cpu_count() or 2) - 2))
+    ap.add_argument("--out", help="output directory (default rule_runs/<NAME>/)")
+    ap.add_argument("--allow-dirty-standin", action="store_true",
+                    help="only for rules under rule_runs/_standin/")
     a = ap.parse_args()
     STARTS = a.starts
     if a.controls:
         controls()
     elif a.rule:
-        sys.exit("A rule run is not enabled in this version: no rule is registered (C6 A14).")
+        rule_run(a.rule, a.workers, a.allow_dirty_standin, a.out)
     else:
         ap.print_help()
