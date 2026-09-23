@@ -1,0 +1,79 @@
+{
+ "what": "Timing cap of the second rule (proposal section 1): the rule's fits of folds 0-9 of shuffled bank 0 at k = 10, ten at once, one per process. No decode and no score of any kind.",
+ "git_head": "fbdb3e94ed43595ec86bcb43796cdc97b68343ac",
+ "fit_sha256_lf": "92eb6ab1524bb22379b2d21184d10f493ff4c803a41918be8ee16f389a58d16c",
+ "harness_sha256_lf": "6fc809527c69ee84aadebfc15c0ba755c189ddc93c80c05c0fa11d969a8d7297",
+ "cpu_count": 32,
+ "k_timed": 10,
+ "per_fit": [
+  {
+   "fold": 0,
+   "seconds": 6.38796680001542,
+   "data_hash16": "2da2e74d51e72ea0",
+   "pid": 15032
+  },
+  {
+   "fold": 1,
+   "seconds": 6.8557051999960095,
+   "data_hash16": "4a471888c028914c",
+   "pid": 35608
+  },
+  {
+   "fold": 2,
+   "seconds": 6.95273720001569,
+   "data_hash16": "9a0ee096c0ec67a3",
+   "pid": 32516
+  },
+  {
+   "fold": 3,
+   "seconds": 6.646154200017918,
+   "data_hash16": "2e7f0323ebd3f0fc",
+   "pid": 25236
+  },
+  {
+   "fold": 4,
+   "seconds": 6.985195400018711,
+   "data_hash16": "1c8bda4fb4268acd",
+   "pid": 33064
+  },
+  {
+   "fold": 5,
+   "seconds": 6.572817099979147,
+   "data_hash16": "a2dbc0ee41af8f6b",
+   "pid": 9284
+  },
+  {
+   "fold": 6,
+   "seconds": 6.846156600047834,
+   "data_hash16": "f1ae1c9e932f6c8c",
+   "pid": 18316
+  },
+  {
+   "fold": 7,
+   "seconds": 6.432171599997673,
+   "data_hash16": "3b6699278b865be3",
+   "pid": 43100
+  },
+  {
+   "fold": 8,
+   "seconds": 6.633738100004848,
+   "data_hash16": "19fd29cf1dc4b385",
+   "pid": 50012
+  },
+  {
+   "fold": 9,
+   "seconds": 6.337758299952839,
+   "data_hash16": "be83a4e78979032f",
+   "pid": 44584
+  }
+ ],
+ "mean_seconds_per_fit": 6.665040050004609,
+ "max_seconds_per_fit": 6.985195400018711,
+ "wall_seconds_10_fits": 7.620482683181763,
+ "rule_fits_in_run": 1341,
+ "run_workers": 30,
+ "projection": "6.665 s x 1341 fits / 30 workers",
+ "projected_hours": 0.08275758062089056,
+ "cap_hours": 12.0,
+ "decision_k": 10
+}
