@@ -37,4 +37,15 @@ Mike's word for the single C6 run: "запускаем 1 и 2" (DPC Research gro
 
 Output directory: the harness's default, `rule_runs/second_rule_v21_r1/`.
 
-No run has been made at the time of this commit.
+### Run 1 (the single run): completed, not a crash
+
+- Started 2026-09-23 19:44:43 UTC (about), at commit `e243a41` on a clean tree
+  (`tree_dirty_under_c6_or_plans: False` in the stamp). Ended 19:54:45 UTC. Harness wall time
+  585.1 s with 30 workers (precompute: 3,086 independent fits in 573 s). Exit code 0.
+- The command above, exactly, with `SECOND_RULE_SPREAD_DIR` set as shown. 1,341 spread files written.
+- No crash, no exception from `harness.py` or from the rule's code. This run is the verdict;
+  no other run of rule #2.1 on C6 is made (registration §4 and §9).
+- Verdict line, verbatim: **C6 verdict for second_rule_v21_r1 (k = 10 starts, r = 1): FAIL -- copy
+  or marginal; below threshold for this family; family fits anything**
+- The record (`result.json`, `run_info.json`, `RESULT.md`, `spread/`) is committed as the harness
+  wrote it, before `post_run.py` runs.
