@@ -1,0 +1,11 @@
+{
+ "spread_log": "results/genome/c6/rule_runs/first_rule/spread.jsonl",
+ "lines": 1340,
+ "lines_not_parsing_as_json": 0,
+ "rule_fit_calls_made_by_harness": 1341,
+ "rule_fit_calls_breakdown": "cv: (1 real + 99 shuffled + 25 dial banks) x 10 folds = 1250; leave-one-type-out: 65; in-sample: 1 real + 25 dial = 26. Every rule call in the parent process after the precompute reads these caches.",
+ "all_lines_parse": true,
+ "line_count_equals_fit_calls": false,
+ "spread_log_reliable": false,
+ "note": "Checked after the run, as the coordinator required. One line fewer than fit calls. The verdict stands; the spread log is marked unreliable. The cause is not investigated: that would need the rule's code, which the corrector has not read."
+}
