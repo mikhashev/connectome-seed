@@ -36,12 +36,24 @@ least as good" means >= real). "separates" = real strictly better than all 99 sh
 existence** (p = 0.57; 56 of 99 shuffles are as good as or better than real; real sits inside the
 shuffled range, close to the shuffled mean).
 
-Per the registration's branches: the structure the first rule touched (what N1 already models
-for existence) is itself marginal/ambient by this test. A second rule of the same family, built
-to beat N1 on existence the way the first one tried and failed to, is pointless -- N1's existence
-model is not distinguishable from a degree/marginal baseline in the first place. The next rule
-should model the residual after a marginal (N1) model, not try to out-score N1 on the raw
-existence field again.
+What this means, per the handover's step 0 (corrected by CC in the commit after `3b65f7d`; the
+registration's branch text swaps the handover's two readings. Its decision rule and its
+prediction are unaffected, and the registration is left as committed):
+
+- N1 is a per-node model and the shuffle preserves per-node degree exactly, so N1 scoring the
+  same on real and shuffled banks is what a degree-only model should do. N1 alone does **not**
+  explain the first run's P3 existence result.
+- That P3 result (the rule's margin over N1: real -0.0045, strictly above all 99 shuffled margins,
+  max -0.0436, p = 0.01) therefore reflects structure in the real bank that is **beyond degree**
+  and that the shuffle destroys: on the real bank the rule comes close to N1, while on shuffled
+  banks it falls well below N1.
+- Handover branch "N1 does not separate": a **non-marginal structure exists**, and the next rule
+  should model the **residual after the marginal (N1) model** rather than compete with N1 on raw
+  existence. This does not make a second rule pointless. It says what the second rule should
+  aim at.
+- Caveats that still apply: the P3 p = 0.01 is one of four fields with no multiplicity
+  correction (handover step 1), and the first rule's margin is still negative on held-out data
+  (P1 existence 0.3670 vs N1 0.3625).
 
 Offset, counts and sign are reported descriptively only, per the registration (the verdict above
 is stated for existence). Counts and sign do separate (p = 0.01 each); offset does not (p = 0.03,
