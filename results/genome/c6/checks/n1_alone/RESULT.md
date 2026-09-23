@@ -41,16 +41,18 @@ registration's branch text swaps the handover's two readings. Its decision rule 
 prediction are unaffected, and the registration is left as committed):
 
 - N1 is a per-node model and the shuffle preserves per-node degree exactly, so N1 scoring the
-  same on real and shuffled banks is what a degree-only model should do. N1 alone does **not**
-  explain the first run's P3 existence result.
-- That P3 result (the rule's margin over N1: real -0.0045, strictly above all 99 shuffled margins,
-  max -0.0436, p = 0.01) therefore reflects structure in the real bank that is **beyond degree**
-  and that the shuffle destroys: on the real bank the rule comes close to N1, while on shuffled
-  banks it falls well below N1.
-- Handover branch "N1 does not separate": a **non-marginal structure exists**, and the next rule
-  should model the **residual after the marginal (N1) model** rather than compete with N1 on raw
-  existence. This does not make a second rule pointless. It says what the second rule should
-  aim at.
+  same on real and shuffled banks is what a degree-only model should do in **either** world (see
+  the by-construction limitation below). The check therefore cannot, by itself, choose between
+  the handover's two branches.
+- What it does establish: N1's score does not move between real and shuffled banks, so the gap in
+  the first run's P3 existence result (the rule's margin over N1: real -0.0045, strictly above all
+  99 shuffled margins, max -0.0436, p = 0.01) comes from the **rule's** side, not N1's.
+- The evidence that the real bank carries existence structure beyond degree comes from elsewhere:
+  control M4 (`results/genome/c6/HARNESS-CONTROLS.md:58`), where BF_8's held-out existence margin
+  over N1 is +0.0493 nats and BF_8 beats N1 in 10 of 10 folds. A next rule should model the
+  **residual after the marginal (N1) model** rather than compete with N1 on raw existence.
+  (The first version of this paragraph, in `9c1fe4f`, drew that conclusion from this check.
+  Ark pointed out, 2026-09-23 09:02 UTC, that the check cannot support it.)
 - Caveats that still apply: the P3 p = 0.01 is one of four fields with no multiplicity
   correction (handover step 1), and the first rule's margin is still negative on held-out data
   (P1 existence 0.3670 vs N1 0.3625).
