@@ -1,0 +1,75 @@
+{
+ "what": "Second rule post-run (proposal sections 1, 4.2, 5.2, 6). Descriptive; no verdict is changed.",
+ "record": "C:/Users/mikha/Documents/dpc-research/connectome-seed/results/genome/c6/rule_runs/second_rule_v21_r1/result.json",
+ "k": 10,
+ "rank": 1,
+ "verdict_line": "C6 verdict for second_rule_v21_r1 (k = 10 starts, r = 1): FAIL -- copy or marginal; below threshold for this family; family fits anything",
+ "git_head": "fb24d175aa1820884ceb4fdbe0b913411690c96b",
+ "spread_log": {
+  "spread_dir": "results/genome/c6/rule_runs/second_rule_v21_r1/spread",
+  "files": 1341,
+  "files_parsing_as_json": 1341,
+  "files_not_parsing": [],
+  "temporary_files_left": [],
+  "rule_fits_made_by_harness": 1341,
+  "per_bank_mismatches_found_vs_expected": {},
+  "file_count_equals_fit_count": true,
+  "spread_log_reliable": true,
+  "note": "Checked after the record was written and committed. A mismatch marks the spread log unreliable and does not void the verdict (Mike, 2026-09-23 14:40 UTC; proposal section 6)."
+ },
+ "bf_line": {
+  "k": 10,
+  "rule_margin": 0.033776150658201,
+  "bf_margin": {
+   "1": 0.028150051052145946,
+   "2": 0.02822676837836125,
+   "3": 0.04034078611097054,
+   "4": 0.039723750076924115
+  },
+  "rule_minus_bf": {
+   "1": 0.005626099606055052,
+   "2": 0.005549382279839747,
+   "3": -0.006564635452769543,
+   "4": -0.0059475994187231165
+  }
+ },
+ "p4_tie_band": {
+  "delta": 0.005626099606055052,
+  "reading": "passed (Delta > +0.002)",
+  "counts_as_pass": true,
+  "harness_P4_pass": true,
+  "note": "",
+  "threshold": 0.028150051052145946
+ },
+ "s2_8": {
+  "delta_mean": 0.0056260996060550515,
+  "per_fold_delta": [
+   0.0010075912914379592,
+   0.006356433232711789,
+   0.008125995366908612,
+   -0.004958568495915361,
+   0.006721372421402527,
+   0.0018884606880762989,
+   0.011707088255567266,
+   0.007340042061695529,
+   0.009793773965533437,
+   0.00827880727313246
+  ],
+  "paired_se": 0.0015621944691647815,
+  "bar": 0.005,
+  "zone": "Delta >= bar: a real amount"
+ },
+ "checks": {
+  "bf1_matches_record": true,
+  "rp_max_matches_record": true,
+  "loto_means_match_record": true,
+  "bf3_reproduces_controls": true,
+  "bf4_reproduces_controls": true
+ },
+ "rp_threshold_argmax": {
+  "seed": 1009,
+  "side": 1,
+  "margin": 0.001004877075114613
+ },
+ "runtime_s": 51.4
+}

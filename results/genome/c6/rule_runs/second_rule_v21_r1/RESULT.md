@@ -2,6 +2,28 @@
 
 **C6 verdict for second_rule_v21_r1 (k = 10 starts, r = 1): FAIL -- copy or marginal; below threshold for this family; family fits anything**
 
+<!-- second-rule post-run: start -->
+
+Spread log: 1341 per-fit files for 1341 rule fits; all parse.
+
+**Margins against BF_1-BF_4 (mandatory; k = 10):** rule margin over N1 +0.03378. rule - BF_1 = +0.00563 (BF_1 +0.02815) **the decision**; rule - BF_2 = +0.00555 (BF_2 +0.02823) context only; rule - BF_3 = -0.00656 (BF_3 +0.04034) context only; rule - BF_4 = -0.00595 (BF_4 +0.03972) context only.
+
+**P4 tie band (registered):** Delta = rule margin - P4 threshold = +0.00563 (threshold +0.02815); reading: **passed (Delta > +0.002)**. Harness P4 pass: True.
+
+**Interpretation lines (registration of rule #2.1, section 6; part of the record, cannot be dropped):**
+
+1. **What the bank is.** The bank is flyvis's **FIB-25/FIB-19 type-level template** (Lappalainen et al. 2024). It holds mean synapse counts per (type pair, offset), **averaged over columns**, and it **merges two female flies by taking the larger of two estimates** (their equation 7). It is not one animal's wiring and holds no per-neuron weight. Source: `docs/notes/2026-09-23-where-our-bank-comes-from.md` sections 2-3. So any outcome answers "is a type-level template compressible?", not "is an individual brain compressible?".
+2. **Column averaging is not between-individual stability.** Averaging removes the variation between columns inside one reconstruction. It does not show that the template is what carries over between flies. That stays plausible but unmeasured, and the bank cannot express between-fly variation (the same note, section 3).
+3. **Many signs rest on personal communications.** 368 of 432 sign-citation slots (85 %) are personal communications, and 232 of the 272 `alpha_fixed` entries rest only on them (`results/genome/bank/README.md`, "Warning: most sign citations are personal communications", from `sign_citations`). The rule's sign is N1's by construction, so this bears on what the sign field means, not on the rule's sign margin.
+4. **The family choice was informed** (the rule #2 proposal's section 3 caveat, carried over). Rule #2's family was chosen by an author who had seen rule #1's real-bank results and whole-bank regularity numbers. That caveat travels with any rule #2.1 result.
+
+S2-8 paired read: Delta = rule - BF_1 = +0.00563, paired SE 0.00156, real-amount bar 0.00500; Delta >= bar: a real amount.
+
+Reproduction checks: bf1_matches_record True; rp_max_matches_record True; loto_means_match_record True; bf3_reproduces_controls True; bf4_reproduces_controls True.
+Written by `rules/second_rule_v21/post_run.py` after the record was committed; details in `post_run.json`.
+
+<!-- second-rule post-run: end -->
+
 Verdict labels are the spec's (section 5.2, A11), verbatim. Every number below is at k = 10 starts per trained fit and rank r = 1.
 
 | stamp | value |

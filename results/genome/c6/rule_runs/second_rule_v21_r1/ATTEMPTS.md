@@ -49,3 +49,12 @@ Output directory: the harness's default, `rule_runs/second_rule_v21_r1/`.
   or marginal; below threshold for this family; family fits anything**
 - The record (`result.json`, `run_info.json`, `RESULT.md`, `spread/`) is committed as the harness
   wrote it, before `post_run.py` runs.
+
+## Post-run (`rules/second_rule_v21/post_run.py`; not a C6 run, no verdict)
+
+- First execution, 2026-09-23 19:55:49 UTC at `6baff38`: the spread-log check ran, then every
+  refit worker failed to load the rule (FileNotFoundError on `results/results/genome/...`), because
+  the script's `ROOT` was `results/`, not the repository root. Nothing it wrote was kept or
+  committed. Fixed in `fb24d17` (one line, no computation changed; self-test passes).
+- Second execution, 19:56:58–19:57:49 UTC at `fb24d17`: completed; every reproduction check holds.
+  Its outputs are committed as written.
