@@ -8,8 +8,7 @@ continue in a new one", translated from Russian).
 **This file carries no result value.** Where a finding is numerical, the file that holds the number
 is named instead, as in [`2026-09-20-next-session-handover.md`](2026-09-20-next-session-handover.md),
 which this file follows and does not replace. Terms are those of [`GLOSSARY.md`](../../GLOSSARY.md)
-(committed at `4f69613`, 94 terms; if a term here is used differently there, the glossary wins
-).
+(committed at `4f69613`, 94 terms; if a term here is used differently there, the glossary wins).
 
 ---
 
