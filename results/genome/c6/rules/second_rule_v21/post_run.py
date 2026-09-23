@@ -53,7 +53,7 @@ import numpy as np
 
 HERE = Path(__file__).resolve().parent
 C6 = HERE.parents[1]
-ROOT = C6.parents[1]
+ROOT = C6.parents[2]         # the repository root, as harness.py defines it (was parents[1]: results/)
 sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(C6))
 
