@@ -10,8 +10,17 @@ the rule run.
 - The rule has **not** been fitted or scored on the real bank or on any real fold.
 - No held-out number exists for it.
 - The harness has not been invoked with `--rule`.
-- The only non-synthetic data this code has touched is **shuffled bank 0**, for timing (§2.4
-  allows this).
+- The only non-synthetic data this code has touched are shuffled banks built by
+  `harness.shuffled_bank(REAL, s)`, and none of them is in the exam's null (s = 0–98) except
+  bank 0:
+  - **shuffled bank 0**, for timing only (§2.4 allows this);
+  - the **gate shuffles**, s = 1000–1019 (the search criterion's negative gate and the v1
+    measurement);
+  - the **dev shuffles**, s = 1100–1109 (designing SEARCH v2).
+- Every one of those fits cut its training and held-out cells with the harness's folds
+  (`folds.csv`, by cell position). For seed s the held-out fold is s mod 10; the timing runs
+  held out folds 0–9 in turn. Fold membership was used only as that cut mask. No real-bank cell
+  was fitted or scored.
 
 | file | what it is |
 |---|---|
