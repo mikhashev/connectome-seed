@@ -1,0 +1,63 @@
+{
+  "question": "Does N1 alone separate the real bank from the 99 shuffled banks on existence? (registered decision field; other fields descriptive only)",
+  "registration": "docs/plans/2026-09-23-n1-alone-check-registration.md",
+  "decision_field": "existence",
+  "verdict_existence": "N1 does not separate",
+  "fields": {
+    "existence": {
+      "lower_is_better": true,
+      "real": 0.36247565612529586,
+      "shuffled_min": 0.35937626202556416,
+      "shuffled_mean": 0.36233564068713664,
+      "shuffled_max": 0.3656418307981909,
+      "n_shuffled_ge_real": 56,
+      "p_one_sided": 0.57,
+      "separates": false
+    },
+    "offset": {
+      "lower_is_better": false,
+      "real": 0.4204030829268882,
+      "shuffled_min": 0.3825386801258301,
+      "shuffled_mean": 0.4036823962751495,
+      "shuffled_max": 0.42209651963817657,
+      "n_shuffled_ge_real": 2,
+      "p_one_sided": 0.03,
+      "separates": false
+    },
+    "counts": {
+      "lower_is_better": true,
+      "real": 0.9861415249958538,
+      "shuffled_min": 1.0153426595167911,
+      "shuffled_mean": 1.0366443362102797,
+      "shuffled_max": 1.0541034407009637,
+      "n_shuffled_ge_real": 0,
+      "p_one_sided": 0.01,
+      "separates": true
+    },
+    "sign": {
+      "lower_is_better": false,
+      "real": 0.976830601092896,
+      "shuffled_min": 0.5195427155286203,
+      "shuffled_mean": 0.5790952401673288,
+      "shuffled_max": 0.6370098425779495,
+      "n_shuffled_ge_real": 0,
+      "p_one_sided": 0.01,
+      "separates": true
+    }
+  },
+  "n_shuffles": 99,
+  "n_folds": 10,
+  "git_head": "ae89705972728c22f9e892abe8b0daee1a8ba07d",
+  "harness_sha256_lf": "c01cd9eb02481132a0d254ffe63e90a655e79979112d620207ce39c75bdfbd86",
+  "folds_sha256_lf": "fb6f153b67fe1785a76c3823911e6fbb91cdda57ec952b36c40b4c95f1e213b8",
+  "consistency_check_vs_harness_controls_json": {
+    "checked": true,
+    "source": "results/genome/c6/harness_controls.json:control_d_shuffled_banks",
+    "existence_real_matches": true,
+    "existence_shuffled_min_mean_max_matches": true,
+    "offset_real_matches": true,
+    "offset_shuffled_min_mean_max_matches": true,
+    "all_match": true
+  },
+  "runtime_s": 24.27134418487549
+}
