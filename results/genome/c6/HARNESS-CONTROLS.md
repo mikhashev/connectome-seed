@@ -19,6 +19,9 @@ I built the harness and corrected it. I have not read the proposed rule (declara
 `harness_controls.json` records the sha256 of the harness, the spec, the acceptance file, the
 folds and every decoder.
 
+**Re-run on 2026-09-23 after the τ alignment** (harness sha256 `6fc80952…`): every verdict
+and every number is unchanged. See the last section, "Re-run after the τ alignment".
+
 **Run:** `tools/.venv/Scripts/python.exe results/genome/c6/harness.py --controls --starts 10`
 (CPU, about 37 minutes). **Every verdict and margin below is at k = 10 starts per trained fit**
 (acceptance, part 3). `harness_controls.json` records k next to every verdict and every P1, P2
@@ -220,3 +223,43 @@ Ark's hypothesis holds.
   degenerate predictors, and a synthetic generator.
 - **Learnability.** PR is given its true class vector (its genome) and fits only the block
   parameters. That a rule of this family could *find* its classes is not tested.
+
+## Re-run after the τ alignment (2026-09-23)
+
+**What changed.** P3's "strictly above all shuffles" and P4's "above the threshold" now need
+the margin to be larger by more than τ = 1e-9, as spec A7 already required. This is code aligned
+to A7, not a new rule. Found by the blind reader (`docs/plans/2026-09-23-blind-reader-report.md`,
+Part E) and ruled by Zcode (group chat, 2026-09-23 13:17 UTC). Record:
+`docs/notes/2026-09-23-c6-harness-tau-in-p3-p4.md`.
+
+**Run:** `tools/.venv/Scripts/python.exe results/genome/c6/harness.py --controls --starts 10`,
+CPU, 2,277 s (38 min).
+
+| | sha256 (LF-normalised) |
+|---|---|
+| harness, before (this page's run above) | `071d826a4a3894c6db77ff846f5019efa85a4cb278b18b9892916353f63f90f7` |
+| harness, now | `6fc809527c69ee84aadebfc15c0ba755c189ddc93c80c05c0fa11d969a8d7297` |
+
+**All verdicts unchanged.** Every leaf of `harness_controls.json` is identical to the previous
+file, bit for bit, except `harness_sha256_lf` and `runtime_s`. The spec, acceptance, folds and
+decoder hashes are the same.
+
+| item | before | now |
+|---|---|---|
+| acceptance: R1, A6, A6-D | FAIL | FAIL |
+| acceptance: the other 19 (R2, R3, A1–A5, N1–N3, M1–M5, S1–S4) | PASS | PASS |
+| A14 checks (8) | all hold | all hold |
+| 13 control exams: P1, P2, P3, P4, "did not run", labels | as before | identical, every one |
+| M4: BF_8 margin over N1, real bank, k = 10 | +0.04933110 | +0.04933110 |
+| BF_8 at k = 1 / 3 | +0.04926823 / +0.04927961 | same |
+| A1: PR on PL1, P3 existence / offset (real vs best shuffle) | 0.1334 vs 0.0214; 0.1341 vs 0.0954 | same |
+| A1: PR on PL1, P4 (margin vs threshold) | 0.1334 vs 0.0741 | same |
+| A6-D, real bank: N1 existence / offset; best armed | 0.3354 / 0.4961; 0.4071 / 0.4498 | same |
+| N1 on the 99 shuffled banks, existence log-loss min / mean / max | 0.35938 / 0.36234 / 0.36564 | same |
+| N1 on the 99 shuffled banks, offset Jaccard min / mean / max | 0.38254 / 0.40368 / 0.42210 | same |
+| R3: k\*_armed at the limit | 7 | 7 |
+
+**Where τ could have bitten.** Nowhere. The smallest positive P3 gap (real margin minus the best
+shuffle) in any control is 0.0249 (PL0.5, existence), and the smallest positive P4 gap is 0.0126
+(PL0). The gaps that are exactly 0 (N1 as a rule, on both fields; RP_r8 on offset) already failed
+under the plain `>`.

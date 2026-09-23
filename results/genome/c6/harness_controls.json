@@ -1,6 +1,6 @@
 {
  "what": "C6 harness controls after Amendment 2: the exam run with no rule, plus the planted-rule acceptance suite.",
- "harness_sha256_lf": "071d826a4a3894c6db77ff846f5019efa85a4cb278b18b9892916353f63f90f7",
+ "harness_sha256_lf": "6fc809527c69ee84aadebfc15c0ba755c189ddc93c80c05c0fa11d969a8d7297",
  "spec_sha256_lf": "5c58b02a53021f5a9d3ec5090e56dc183fb567568dfc1eda86e74ae8e28e7abd",
  "acceptance_sha256_lf": "bd3697719aa96a2d6c39078d7d01823009746de50b694debecc0f0d450b43d3b",
  "folds_sha256_lf": "fb6f153b67fe1785a76c3823911e6fbb91cdda57ec952b36c40b4c95f1e213b8",
@@ -15765,5 +15765,5 @@
    "starts": 10
   }
  },
- "runtime_s": 2206.2
+ "runtime_s": 2276.5
 }
