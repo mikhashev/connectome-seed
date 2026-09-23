@@ -17,10 +17,11 @@ What it does, in order:
     read is void); the RP_1 maximum must equal the record's rp_threshold to 1e-12; at k = 10,
     BF_3 and BF_4 must reproduce harness_controls.json's +0.04034 and +0.03972 (to 1e-12); the
     per-type LOTO means must equal the record's loto means (to 1e-12).
- 3. The mandatory BF_1..BF_4 line, the registered P4 tie-band reading, and S2-8's paired read,
-    inserted into RESULT.md directly under the harness's verdict line (the verdict line itself is
-    printed verbatim and not altered). Also post_run.json, per_fold_opponents.csv and
-    loto_per_type.csv.
+ 3. The mandatory BF_1..BF_4 line, the registered P4 tie-band reading, the four interpretation
+    lines of the rule #2.1 registration (section 6; text only, no number computed), and S2-8's
+    paired read, inserted into RESULT.md directly under the harness's verdict line (the verdict
+    line itself is printed verbatim and not altered). Also post_run.json, per_fold_opponents.csv
+    and loto_per_type.csv.
 
 Usage (from the repository root), after the run's record is committed:
     tools/.venv/Scripts/python.exe results/genome/c6/rules/second_rule_v21/post_run.py [--workers N]
@@ -65,6 +66,33 @@ BF_RANKS = (1, 2, 3, 4)
 # harness_controls.json (harness 6fc80952..., k = 10): "real/N1 as a rule" (r = 3) and
 # "real/PR" (r = 4), P4.bf.margin
 CONTROLS_BF_K10 = {3: 0.04034078611097054, 4: 0.039723750076924115}
+# Registration of rule #2.1 (docs/plans/2026-09-23-rule-2-1-registration.md, section 6): four
+# interpretation lines printed under the verdict line of any C6 RESULT.md of rule #2.1. Text
+# only; no number here is computed by this script.
+INTERPRETATION_LINES = [
+    "**Interpretation lines (registration of rule #2.1, section 6; part of the record, cannot be "
+    "dropped):**",
+    "",
+    "1. **What the bank is.** The bank is flyvis's **FIB-25/FIB-19 type-level template** "
+    "(Lappalainen et al. 2024). It holds mean synapse counts per (type pair, offset), "
+    "**averaged over columns**, and it **merges two female flies by taking the larger of two "
+    "estimates** (their equation 7). It is not one animal's wiring and holds no per-neuron "
+    "weight. Source: `docs/notes/2026-09-23-where-our-bank-comes-from.md` sections 2-3. So any "
+    "outcome answers \"is a type-level template compressible?\", not \"is an individual brain "
+    "compressible?\".",
+    "2. **Column averaging is not between-individual stability.** Averaging removes the "
+    "variation between columns inside one reconstruction. It does not show that the template is "
+    "what carries over between flies. That stays plausible but unmeasured, and the bank cannot "
+    "express between-fly variation (the same note, section 3).",
+    "3. **Many signs rest on personal communications.** 368 of 432 sign-citation slots (85 %) "
+    "are personal communications, and 232 of the 272 `alpha_fixed` entries rest only on them "
+    "(`results/genome/bank/README.md`, \"Warning: most sign citations are personal "
+    "communications\", from `sign_citations`). The rule's sign is N1's by construction, so this "
+    "bears on what the sign field means, not on the rule's sign margin.",
+    "4. **The family choice was informed** (the rule #2 proposal's section 3 caveat, carried "
+    "over). Rule #2's family was chosen by an author who had seen rule #1's real-bank results "
+    "and whole-bank regularity numbers. That caveat travels with any rule #2.1 result.",
+]
 BLOCK_START = "<!-- second-rule post-run: start -->"
 BLOCK_END = "<!-- second-rule post-run: end -->"
 
@@ -210,6 +238,7 @@ def render_block(spread, bfline, tie, s28, checks):
           f"{fmt(tie['delta'])} (threshold {fmt(tie['threshold'])}); reading: "
           f"**{tie['reading']}**. Harness P4 pass: {tie['harness_P4_pass']}. {tie['note']}".rstrip(),
           ""]
+    L += INTERPRETATION_LINES + [""]
     if checks["bf1_matches_record"]:
         L += [f"S2-8 paired read: Delta = rule - BF_1 = {fmt(s28['delta_mean'])}, paired SE "
               f"{s28['paired_se']:.5f}, real-amount bar {s28['bar']:.5f}; {s28['zone']}.", ""]
