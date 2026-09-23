@@ -344,6 +344,20 @@ probability of Δ > 0 would fall from 0.5 to 0.15. Zcode ruled on 2026-09-23 at 
 computed by A11's rule, which gives r = 1 (§1). The r = 4 case is not a branch of this registration.
 It is printed only as context, as the BF_4 row of the mandatory BF_1–BF_4 line.
 
+**Where r = 4 came from, and why it is rejected** (added 2026-09-23 on Zcode's review, 14:36 UTC,
+after Ark noted that A11's arithmetic cannot tell the two readings apart: both round((130 + 16) / 130)
+and round(130 / 130) give 1). The r = 4 reading does not come from a different numerator. It comes
+from a different criterion: treating the field-group term as a bilinear form of rank ≤ 4 over the
+four-group space. That reading is rejected because the group coordinates are fixed one-hot
+indicators taken from the admissible fields, not fitted per-type vectors, and the term's 16 fitted
+numbers are already paid for in DL. A11 counts fitted per-type coordinates, and this term has none.
+
+**The BF values cited here are five reference points, not a profile** (Ark, 14:32 UTC). BF_1, BF_3,
+BF_4, BF_8 and BF_16 each come from a different control exam, at the rank that control had. There
+is no recorded BF value at r = 2, so BF_2 in the mandatory line is fitted at run time (§5.2). The
+P4 threshold itself is always recomputed at the rule's rank (`bf_margin(r)`). See
+`docs/notes/2026-09-23-predictions-addendum-after-tau.md`.
+
 ### 4.4 The registered predictions: which branch applies
 
 Field choices (§1): existence touched, offset sets touched, counts touched (no new per-node counts
@@ -497,7 +511,7 @@ mechanism, no latent variables and no fitting details.
   - The registration carries this arithmetic itself and does not rely on the harness's fallback
     rank count. That fallback would also give 1, but by a degenerate count.
   - At r = 4 the threshold would be +0.03972, and the author's P4 prior would drop from 0.5 to 0.15.
-- **P4 threshold:** +0.02815 at k = 10 (BF_1's margin over N1 from the existing rank profile). The
+- **P4 threshold:** +0.02815 at k = 10 (BF_1's margin over N1, from the existing BF reference points). The
   run's own printed threshold governs.
 - **P4 tie band (registered before the run):** a margin within ±0.002 of the threshold is read as
   a tie, not a pass, because quantisation (about 0.001) and fold noise sit at that scale. P4
