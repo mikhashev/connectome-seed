@@ -9,25 +9,25 @@ chat on 2026-09-23 at 18:36 UTC. Both fixes come from `../second_rule/DIAGNOSIS.
 
 - **W1**, a change to the rule: offset library caps of **64 sets, 1,400 bits and 64 distinct
   offsets**, instead of 32, 800 and 48. It lives here, in the code.
-- **S1**, a change to gate G-e+: judge it on the mean over 10 folds. S1 is not in this
-  directory's code. It belongs to the gate script, which is written only after the rule #2.1
-  registration is committed.
+- **S1**, a change to gate G-e+: judge it on the mean over 10 folds. S1 is not in the rule's
+  code. It is in the gate script `gates.py`, written after the rule #2.1 registration was
+  committed.
 
 **Status.**
 
-- Code, tests and the decoder measurement only.
-- The registration draft is [`docs/plans/2026-09-23-rule-2-1-registration.md`](../../../../../docs/plans/2026-09-23-rule-2-1-registration.md).
-  It is committed **after** this code, because the decoder's measured size (below) is one of its
-  inputs.
-- **No gate has been run for rule #2.1.** No `gates.py` exists here yet. It will implement S1
-  and the reserved seed fixed by the registration, and it is written after that registration is
-  committed.
-- **Not fitted or scored on the real bank, on any real fold, or on shuffled bank 0.** The timing
-  cap was not measured.
-- It was also not run on the gate banks GB1/GB0 (seed 60000), on the diagnostic seeds
-  (70000–70999) or on the reserved seeds (80000–80999).
-- The only bank it has been fitted on is the self-test bank **ST0** (seed 61000), for
-  determinism and DL (`selftest_st0.json`) and for the post-run self-test.
+- The registration is [`docs/plans/2026-09-23-rule-2-1-registration.md`](../../../../../docs/plans/2026-09-23-rule-2-1-registration.md)
+  (commit `15da501`). It was committed **after** this code, because the decoder's measured size
+  (below) is one of its inputs.
+- **The single re-gate has run: all seven gates PASS** (section "Gates" below; `gates.py`
+  committed at `00047d4` before it ran; `gates.json`).
+- **Not fitted or scored on the real bank or on any real fold.** Shuffled bank 0 was used only by
+  G-bf, which compares predictions and computes no score. **The timing cap was not measured**, and
+  **no C6 run has been made**: the registration's §9 steps 5 and 6 are not taken. The C6 run needs
+  Mike's separate word.
+- Banks it has been fitted on: the self-test bank **ST0** (seed 61000; `selftest_st0.json` and the
+  post-run self-test), the re-gate banks GB1/GB0 of **seed 80000**, and shuffled bank 0 (G-bf).
+  Not the gate banks of seed 60000 and not the diagnostic seeds (70000–70999). No other seed of
+  80000–80999 was used.
 
 ## What changed against rule #2, and what did not
 
@@ -38,6 +38,7 @@ chat on 2026-09-23 at 18:36 UTC. Both fixes come from `../second_rule/DIAGNOSIS.
 | `gate_banks.py` | **Byte-identical** (sha256 of the LF text `cd12c646…`, the same value `../second_rule/gates.json` stamps). `test_gate_bank_generator_is_rule_2s` checks this. |
 | `timing.py`, `post_run.py` | Rule #2's scripts. Only their paths, the run-directory name and the self-test's temporary-directory prefix changed. |
 | `test_fit.py` | Adapted: every test runs on **ST0** where rule #2's used GB1 or GB0, and the layout and DL tests follow W1. |
+| `gates.py`, `gates.json` | New: rule #2's `gates.py` with S1 (G-e+ on the fold mean), the gate banks at seed 80000, and two hard asserts before G-size (the pinned decoder; worst-case DL ≤ 9,481.2). Run once; see "Gates" below. |
 | `selftest_st0.py`, `selftest_st0.json` | New: determinism and DL on ST0 at k = 10. No score. |
 
 The proposal's model (§2.2), learner (§2.3) and every other constant are unchanged. That covers
@@ -123,6 +124,37 @@ changed.
 
 The run was made on the uncommitted working tree at `cbf148b`. The file hashes it stamps (fit
 `92eb6ab1…`, decode `39a04901…`) identify the code, and they equal the files of this commit.
+
+## Gates (registration §1.1, §3 and §9; run once at commit `00047d4`, k = 10; `gates.json`)
+
+**All seven gates PASS.** Run once, 2026-09-23 at 19:32:46 UTC, runtime 26.2 s (the script's own
+clock). The two hard asserts held before G-size: `decode.py` is the pinned decoder (LF sha256
+`39a04901…`), and the worst-case DL at the caps is 5,475 + 3,904 = **9,379** bits ≤ 9,481.2.
+
+| gate | criterion | expected | got | result |
+|---|---|---|---|---|
+| **G-size** | decode program ≤ 600 bytes under A5's lzma rule; numpy and stdlib only | pass | 488 bytes (3,904 bits); imports ok | **PASS** |
+| **G-det** | two fits of GB1 fold 0 give byte-identical data | pass | identical sha256 (`96498644…`); DL 9,202 bits (data 5,298) | **PASS** |
+| **G-bf** | X off (W = 0, one round), no quantisation: (u, v) and existence predictions equal the harness's BF_1 on shuffled bank 0, 10 folds, to 1e-9 | pass | largest difference 0.0 (u, v and held-out p); λ equal in all 10 folds (100 in each) | **PASS** |
+| **G-e+** (S1) | GB1: mean over 10 folds of (rule's existence margin over N1 − BF_1's) > +0.002 | pass | **+0.00652** (rule +0.02241, BF_1 +0.01589) | **PASS** |
+| **G-e0** | GB0: rule's mean existence margin over N1 minus BF_1's ≤ +0.002 | pass | −0.00150 (rule −0.00381, BF_1 −0.00231) | **PASS** |
+| **G-o+** | GB1: rule's held-out offset Jaccard beats N_EB's in ≥ 9 of 10 folds | pass | 10 of 10 (0.7189 vs 0.5603) | **PASS** |
+| **G-o0** | GB0: rule's mean offset Jaccard minus N_EB's in [−0.010, +0.010] | pass | −0.00038 | **PASS** |
+
+Gate banks (seed 80000, `gate_banks.py` LF sha256 `cd12c646…`, rule #2's file): GB1 has 1,148
+non-empty cells (content sha256 `50ccc591…`), GB0 853 (`2798a94f…`).
+
+Recorded, not read as a verdict:
+
+- G-e+: the rule beat BF_1 in 9 of 10 folds (it lost fold 2 by 0.00051). Under S1 the fold count
+  is not the criterion; it is stored in `gates.json` as descriptive.
+- G-o0: on GB0 the rule's offset Jaccard equals N_EB's in 9 of 10 folds; fold 1 differs by
+  −0.0038.
+- On GB0 both the rule and BF_1 have a **negative** mean existence margin over N1.
+
+**What a green re-gate buys** (registration §9): only that the rule finds a planted signal on a
+fresh synthetic bank, so a C6 run would be readable. It says nothing about the real bank. The
+timing cap (§9 step 5) and the C6 run (§9 step 6, on Mike's separate word) are **not** done.
 
 ## Readings
 
