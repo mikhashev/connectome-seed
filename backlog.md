@@ -18,6 +18,53 @@ language_cutoff: 2026-09-13
 
 
 
+### SECOND-RULE-POST-RUN-ROOT-RESOLVES-TO-RESULTS-NOT-THE-REPOSITORY-ROOT: results/genome/c6/rules/second_rule/post_run.py sets ROOT = C6.parents[1], which is results/ and not the repository root (LOW, open, 2026-09-25 — listed in docs/briefs/2026-09-24-next-session-handover.md section 4)
+
+- **Observed.** post_run.py:52-54: HERE = the second_rule directory, C6 = HERE.parents[1] = results/genome/c6, ROOT = C6.parents[1] = results/. Rule #2 never ran on C6, so it never mattered.
+- **First step:** change to C6.parents[2] (or derive from the git root) before rule #2 is ever run on C6.
+- **axis:** honesty
+- **filed:** CC · 2026-09-25
+
+### THE-EXTERNAL-REVIEW-PROMPT-NEEDS-THE-EDITS-AGREED-IN-THE-CHAT: the external-review prompt Ark drafted in the chat lacks the bank-origin note, cites an unverified NeurIPS 2025 reference and omits the bf1_p3.py quick check (LOW, open, 2026-09-25 — agreed in the DPC Research group chat; listed in docs/briefs/2026-09-24-next-session-handover.md section 4)
+
+- **Observed.** Handover section 4: add the bank-origin note to the reading route, drop the unverified NeurIPS 2025 reference, add the bf1_p3.py quick check.
+- **First step:** apply the three edits to Ark's draft before the prompt is sent to any outside reviewer.
+- **axis:** reach, honesty
+- **filed:** CC · 2026-09-25
+
+### THE-BACKWARD-LADDER-TO-LARVA-AND-C-ELEGANS-GETS-ITS-OWN-ADR-ONLY-WHEN-A-NUMBER-DEMANDS-IT: the rungs below the adult fly are written down so they are not rediscovered, and stay closed until a forward number needs one (LOW, open, 2026-09-25 — Zcode, Johnny, Ark, DPC Research group, 2026-09-24 17:40-17:51 UTC; recorded in ADR-005 agreed point 7)
+
+- **Observed.** Larva (Winding et al. 2023) after the column test; fly embryo not a step (no public full connectome found by Zcode's search, no vision); C. elegans (Cook 2019; Witvliet 2021, eight individuals L1 to adult, not averaged) needs a separate ADR. Johnny's view that other species are a new project is recorded.
+- **First step:** deferred: none until a number demands the first rung; none of the three sources is read at source in literature.md yet.
+- **2026-09-25, CC:** Correction (2026-09-25, Zcode's review): "no vision" above is ambiguous; the fly embryo is recorded as a vision, not a step, because no public full connectome was found (ADR-005 point 7).
+- **axis:** knowledge
+- **filed:** CC · 2026-09-25
+
+### KNOCK-OUT-AND-REGROW-TESTS-WHETHER-THE-RULE-GENERATES-A-BLOCK-IT-WAS-NOT-SHOWN: removing a biologically chosen block of the flyvis-65 bank, training on the rest and scoring the regrowth against N1, shuffles and a permuted-block null tells generation from smoothing (HIGH, open, 2026-09-25 — Mike, DPC Research group, 2026-09-24 17:53 UTC: knock out and regrow as the next registration, YES; ADR-005)
+
+- **Observed.** Proposed by CC, second null by Zcode (docs/decisions/005-backward-before-forward.md, agreed point 6). Standard: literature.md section 28, Lenski et al. 2003 knockout and reversal.
+- **Inferred.** Known risk: indirect leakage through degrees; a rule that regrows a permuted block as well as the real one is smoothing, not generating.
+- **First step:** draft the registration: name the block (for example a whole pathway) before any data is seen, give the biological reason, state everything removed with it, and say aloud that the generation-zero bank is a synthetic template of at least two flies.
+- **axis:** knowledge, honesty
+- **filed:** CC · 2026-09-25
+
+### THE-COLUMN-TEST-MEASURES-HOW-MUCH-ORDER-AVERAGING-REMOVES-AND-THE-SEPARATE-VOLUMES-READING-MEASURES-THE-MERGE: per-column type-pair tables within one FlyWire fly, read beside whether flyvis exposes the FIB-25 and FIB-19 estimates before its max merge, split agreement made by biology from agreement made by averaging (HIGH, open, 2026-09-25 — Mike, DPC Research group, 2026-09-24 17:53 UTC: column test plus the separate-volumes reading, YES; ADR-005)
+
+- **Observed.** The generation-zero bank is flyvis's column-averaged template of at least two flies, fused by taking the larger of the FIB-25 and FIB-19 estimates (docs/notes/2026-09-23-where-our-bank-comes-from.md sections 1-2, Lappalainen Supplementary Note 1 equation 7).
+- **Inferred.** The column test measures one component, the order averaging removes; it is not a proxy for between-bank overlap (Johnny's objection, Zcode's reconciliation). The separate-volumes reading, if the estimates exist, measures the merge's contribution directly as overlap(one volume vs FlyWire) against overlap(merged vs FlyWire) (Zcode).
+- **First step:** read flyvis 1.2.0 for per-volume estimates (files or code) and record the answer with its location; then register the column test before any value is computed.
+- **2026-09-25, CC:** Correction (2026-09-25, reviews by Ark, Johnny and Zcode in the DPC Research chat): the column test is Ark's proposal; Johnny objected; Zcode reconciled. The test gives a lower bound on the order our processing produces, since column averaging is one of four steps (Zcode). ADR-005 point 4 carries the same wording.
+- **axis:** honesty, knowledge
+- **filed:** CC · 2026-09-25
+
+### QUESTION-II-TRANSFER-IS-PAUSED-UNTIL-THE-COLUMN-TEST-MEASURES-WHAT-AVERAGING-CONTRIBUTES: question (ii), whether the structure found in one brain is the same structure in the other, is paused because agreement between two averaged banks cannot yet be told apart from agreement made by the averaging (MEDIUM, open, 2026-09-25 — Mike, DPC Research group, 2026-09-24 17:53 UTC: question (ii) PAUSED, YES; ADR-005)
+
+- **Observed.** docs/briefs/2026-09-24-next-session-handover.md section 2 named question (ii) as the next task. Mike paused it on 2026-09-24 17:53 UTC pending the column test (docs/decisions/005-backward-before-forward.md, decision 2).
+- **Inferred.** 159 of 165 FlyWire-30 pairs lie inside flyvis-30 (Ark), but both are averages, so a positive transfer could be arithmetic rather than biology.
+- **First step:** none until the column test returns; when (ii) is registered it carries every item of ADR-005 agreed point 5 (two arms, cell-stratified scoring, null 2c, headline r = 2 with Ark's falsifier, lambda by the source's own CV, existence-only scope, the FlyWire typing caveat).
+- **axis:** knowledge, honesty
+- **filed:** CC · 2026-09-25
+
 ### PROFILES-READING-SECTION-0-HASH-DOES-NOT-REPRODUCE-FROM-ANY-COMMITTED-REVISION: the sha256 sealed in section 0 of PROFILES-READING.md as taken before the profiles were opened cannot be recomputed from any revision of the file in this repository's history (MEDIUM, open, 2026-09-23 — recorded in the file's own dated note; filed by CC)
 
 - **Observed.** results/night5/diagnostics/rowB/PROFILES-READING.md section 0z (and docs/notes/2026-09-23-translated-pinned-files.md:46,76) records that the digest a4d10e67f6eafa922f555625569ac5ca11db2de8bb27a01e597acbc0a945583d, declared taken at 2026-09-20T09:31:44Z over the file as saved at 09:30:25Z, does not reproduce from any committed revision, in either line ending; the two hashes that do reproduce from commit 2488ecb are a different pair (d5a75ac9... / b2ca1f0e...).\n- **Observed.** PROFILES-READING.md's own pre-reading declaration states plainly that 'the bytes that were hashed were never committed, so the claim that the rule preceded the values cannot be checked from this repository'
@@ -129,6 +176,7 @@ language_cutoff: 2026-09-13
 - **First step.** Replace each with a plain attribution — name, role, date, UTC — which is what
   the README already carries in prose; the information survives, the link does not. Mechanical;
   done in the same pass as the LICENSE and the translation. Child of [[ADR-001]].
+- **2026-09-25, CC:** Ark's recount, recorded in docs/briefs/2026-09-24-next-session-handover.md section 4: twenty tracked lines mention chat/ by name and none is a link. What remains is the mentions, not links.
 - **axis:** reach
 
 ### EIGHT-PROCESSES-SHARE-THE-CARD-NO-FASTER-THAN-ONE: aggregate throughput saturates near 17.5 it/s whatever the process count, so only fewer kernel launches per iteration can shorten a night (MEDIUM, open, 2026-09-13 — CC, from the concurrency measurement committed in e797f02)
