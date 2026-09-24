@@ -299,6 +299,62 @@ now, before any FlyWire bank exists. Where §3 left a choice open, it is fixed h
    type, the number of distinct right-hemisphere columns, row counts at each step, nonempty type
    pairs, and in and out degrees. These are the counts §6 asks the build to report first.
 
+## 3b. Sensitivity of the bank to the build (diagnostic, before any BF value)
+
+Registered after the primary bank (§3a) was built and before any BF value on it or on flyvis-30,
+on the review of Ark (08:39), Zcode (08:46) and Johnny (08:47 UTC). **The primary bank (§3a) stays
+the registered bank. The variants below are diagnostics; they never replace it without a new
+registration.**
+
+**Why.** Before any BF fit, the two arms' banks already differ in shape. flyvis-30 has 228
+nonempty pairs; the primary FlyWire bank has 165. Ark counted 69 flyvis-30 pairs missing from
+FlyWire-30 and 6 the other way, and almost no FlyWire rows beyond one column of offset, where
+flyvis-30 has many. Part of this difference may come from our pipeline, not from the fly. Two
+candidates were named: (i) the mean divides by every neuron of the target type, so an offset that
+only some target neurons can have (near the edge of the eye) is diluted; (ii) the average runs
+over all 796 columns, and edge columns are incomplete (`docs/notes/2026-09-23-where-our-bank-comes-from.md`
+§4 item 4 had named this choice; §3 did not make it).
+
+**Variants, same code (`flywire_bank_builder.py --variant`):**
+
+- **(a) `primary`:** §3a as built.
+- **(b) `geo`:** the mean for `(s, t, du, dv)` divides by the number of type-`t` neurons that
+  have a type-`s` neuron at column `(p - du, q - dv)`, i.e. the target neurons for which that
+  offset is geometrically possible. This corrects the edge dilution of (i). It is our reading of
+  "average over the postsynaptic cells", not flyvis code: flyvis does no averaging of its own and
+  reads an already averaged json (Ark, `flyvis/connectome/connectome.py` 109-280). A denominator
+  of *connected* neuron pairs was also proposed; it is not used, because with the >= 2 synapse
+  threshold every such mean is at least 2, so the `mean < 1` pruning would never act and every
+  observed offset would survive.
+- **(c) `geo_interior`:** (b), with target neurons restricted to interior columns, those whose
+  six axial neighbours in `(p, q)` all exist. This answers (ii). It assumes `(p, q)` is axial;
+  the build reports the number of interior columns so that the assumption can be seen.
+
+**Reported per bank** (`results/genome/c6/checks/flywire_sensitivity.py`, `RESULT.md` there):
+offset rows, nonempty pairs, rows by `max(|du|, |dv|)` (0, 1, 2, 3 or more; a lower bound on the
+hex distance under any axial convention), the largest offset, how many flyvis-30 pairs are
+present, and how many of the pairs missing from the primary bank each variant recovers.
+
+**Reading rule, fixed now (Johnny's proposal, the numbers are his, not a measurement):** if (b)
+or (c) recovers **at least 50** of the pairs missing from the primary bank **and** has at least one
+row with `max(|du|, |dv|) >= 3`, the primary verdict of §5/§5a is printed with the label
+**"pipeline-contaminated, reading not final"**. Otherwise it is printed with **"support
+difference real, reading stands"**. The label does not change any branch.
+
+**Named before the run, not used as evidence (Ark, Zcode, Johnny):**
+
+- The density difference between the arms (165 against 228 pairs, and the offset spectrum) is
+  measured before any BF value and is a property of the two pipelines. It does not enter the
+  reading of an outcome beyond the label above.
+- **Support.** A rank-1 structure that lives in offsets of 2 or more cannot be expressed on a
+  bank whose rows stop at 1 or 2. So the two arms test rank-r structure on different supports,
+  not one structure on two banks (Johnny).
+- **Nature of the numbers.** The flyvis-30 rows below 1 are hand edits in the flyvis json and
+  fall on T4 targets: Mi1->T4a (5 rows), Mi1->T4c (1), Mi4->T4a (1) (Zcode's count). For these
+  pairs the arms differ by what the numbers are, not only by their value.
+- **Autapse rule.** The build dropped 0 self-offset rows. That is structural: in the right
+  hemisphere no type has two neurons in one column, so no same-type pair has offset (0, 0).
+
 ## 4. Reusing the harness without changing `harness.py`
 
 `harness.py` sha256_lf pinned at `6fc809527c69ee84aadebfc15c0ba755c189ddc93c80c05c0fa11d969a8d7297`

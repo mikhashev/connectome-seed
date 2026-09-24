@@ -289,6 +289,17 @@ def joint_reading(flywire_branch, flyvis_branch):
     raise ValueError(f"unhandled branch pair {flywire_branch!r}, {flyvis_branch!r}")
 
 
+SENSITIVITY = HERE / "flywire_sensitivity" / "summary.json"
+
+
+def sensitivity_label():
+    """Registration section 3b: the label is fixed by the sensitivity builds, before any BF value."""
+    if not SENSITIVITY.exists():
+        sys.exit(f"REFUSED: {SENSITIVITY} is missing; run flywire_sensitivity.py and commit it "
+                 "before this run (registration section 3b).")
+    return json.loads(SENSITIVITY.read_text(encoding="utf-8"))["primary_verdict_label"]
+
+
 def write_result_md(out, summary, arm_results):
     """RESULT.md for a reader who has not opened the registration: every number, both arms,
     every rank, the joint reading and, for any B, which negative reading applies (section 5)."""
@@ -312,6 +323,8 @@ def write_result_md(out, summary, arm_results):
                       f"{q['real_frac_folds_at_max_lambda']:.2f} | "
                       f"{q['shuffle_frac_folds_at_max_lambda']:.2f} | {q['branch']} | "
                       f"{q['negative_reading'] or '-'} |")
+    label = sensitivity_label()
+    md[4] = md[4] + f" **Label (registration section 3b):** {label}."
     full65 = json.loads((HERE / "bf1_p3" / "summary.json").read_text(encoding="utf-8"))["branch"]
     if not summary["headline_r1"]["flyvis30_branch"].startswith("A") and full65.startswith("A"):
         md += ["", "**Also (registration section 5a, printed, not a branch):** the full-65 flyvis "
@@ -343,6 +356,7 @@ def main():
     t0 = time.time()
     log = lambda m: print(m, flush=True)
 
+    log(f"sensitivity label (registration section 3b): {sensitivity_label()}")
     check = machine_check(log)
     if not check["passed"]:
         (out / "summary.json").write_text(json.dumps(

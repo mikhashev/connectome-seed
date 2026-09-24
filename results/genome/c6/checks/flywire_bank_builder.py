@@ -153,6 +153,8 @@ def main():
     ap.add_argument("--out", default=None)
     ap.add_argument("--allow-dirty", action="store_true")
     ap.add_argument("--inspect-only", action="store_true")
+    ap.add_argument("--variant", choices=VARIANTS, default="primary",
+                    help="registration section 3b; only 'primary' is the registered bank")
     a = ap.parse_args()
 
     refuse_if_unsafe(a.allow_dirty)
@@ -175,7 +177,9 @@ def main():
         log("--inspect-only: stopping before any offset table is built.")
         return
 
-    build(out, log)
+    if a.variant != "primary" and not a.out:
+        out = DEFAULT_OUT / f"sensitivity_{a.variant}"
+    build(out, log, a.variant)
 
 
 def git_head():
@@ -183,7 +187,14 @@ def git_head():
                            text=True, check=True).stdout.strip()
 
 
-def build(out, log):
+# Registration section 3b: "primary" is the registered bank (a). The other two are diagnostics
+# that never replace it: (b) divides by the target neurons that have a source neuron of type s at
+# that offset (edge-corrected mean); (c) is (b) with target neurons restricted to interior columns.
+VARIANTS = ("primary", "geo", "geo_interior")
+HEX_NEIGHBOURS = ((1, 0), (-1, 0), (0, 1), (0, -1), (1, -1), (-1, 1))
+
+
+def build(out, log, variant="primary"):
     """Registration section 3, as amended before the build (section 3a). Every step is named
     there; nothing here is chosen after seeing a number."""
     import pandas as pd
@@ -219,17 +230,37 @@ def build(out, log):
     df = df[df.syn_count >= SYNAPSE_THRESHOLD]
     log(f"neuron pairs among them: {n_pairs_all}; at >= {SYNAPSE_THRESHOLD} synapses: {len(df)}")
 
+    # Section 3b (diagnostic variants only): which target neurons count.
+    columns = {xy for xy in pos.values()}
+    interior = {(p, q) for (p, q) in columns
+                if all((p + a, q + b) in columns for a, b in HEX_NEIGHBOURS)}
+    if variant == "geo_interior":
+        targets = {rid for rid, xy in pos.items() if xy in interior}
+    else:
+        targets = set(pos)
+    cols_of_type = {t: set() for t in FLYWIRE_NAME_OF}
+    for rid, t in type_of.items():
+        cols_of_type[t].add(pos[rid])
+    target_cols = {t: [pos[r] for r in targets if type_of[r] == t] for t in FLYWIRE_NAME_OF}
+
+    def denominator(s, t, du, dv):
+        if variant == "primary":
+            return n_of_type[t]
+        return sum(1 for (p, q) in target_cols[t] if (p - du, q - dv) in cols_of_type[s])
+
     # 3.3 Offsets, post minus pre, in the file's own (p, q). 3.4 Column averaging: summed
     # synapses per (s, t, du, dv), divided by the number of column-assigned neurons of type t.
     sums = {}
     for pre, post, n in df.itertuples(index=False):
+        if post not in targets:
+            continue
         s, t = type_of[pre], type_of[post]
         du, dv = pos[post][0] - pos[pre][0], pos[post][1] - pos[pre][1]
         k = (s, t, du, dv)
         sums[k] = sums.get(k, 0) + int(n)
     rows, n_pruned, n_autapse = [], 0, 0
     for (s, t, du, dv), total in sorted(sums.items()):
-        mean = total / n_of_type[t]
+        mean = total / denominator(s, t, du, dv)
         # 3.5 Pruning: the self offset of a type onto itself is dropped; a mean below 1 is dropped.
         if s == t and (du, dv) == (0, 0):
             n_autapse += 1
@@ -260,7 +291,8 @@ def build(out, log):
                        "mean_prune_below": MEAN_PRUNE_BELOW, "hull_fill": APPLY_HULL_FILL,
                        "placeholder_sign": PLACEHOLDER_SIGN},
         "types": sorted(FLYWIRE_NAME_OF), "neurons_per_type": n_of_type,
-        "columns_right_hemisphere": len({(p, q) for p, q in pos.values()}),
+        "columns_right_hemisphere": len(columns), "interior_columns": len(interior),
+        "variant": variant,
         "neuron_pairs_among_types": n_pairs_all, "neuron_pairs_kept": int(len(df)),
         "offset_rows_before_pruning": len(sums), "offset_rows_autapse_dropped": n_autapse,
         "offset_rows_pruned_mean_below_1": n_pruned, "offset_rows_kept": len(rows),
