@@ -591,3 +591,7 @@ Kept for the record; line numbers in this list are for `1ac12b0`.
 - Eye pass of the scene 5 order, from the mp4 itself (CC): at 83.9 s the shuffle bands stand and no
   ring is drawn; at 85.3 s the seal rings round "1" on both stacks and no bright pillar has risen; at
   86.8 s the FlyWire pillars are rising. Seal before pillars: confirmed in pixels.
+- End card reduced to the repository link alone, on Mike's word (DPC Research chat 2026-09-24
+  16:19 UTC). Credits and "Explanatory illustration, not evidence" moved to the video description
+  (`description.md`), whose last line is "Code and script: github.com/mikhashev/connectome-seed"
+  (Mike, 16:20 UTC).

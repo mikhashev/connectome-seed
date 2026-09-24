@@ -186,14 +186,10 @@ def legend_png(path):
     img.save(path)
 
 
+# Mike, DPC Research chat 2026-09-24 16:19 UTC: the end card carries only the repository link.
+# Credits and "Explanatory illustration, not evidence" live in the video description.
 END_LINES = [
     (REPO_URL, 54, FONT_REG, TEXT),
-    ("", 30, FONT_LIGHT, TEXT),
-    ("Made by the DPC Research team:", 36, FONT_LIGHT, TEXT),
-    ("Mike Shevchenko, with AI agents Ark, Johnny, Warren and Zcode, and Claude Code", 36, FONT_LIGHT, TEXT),
-    ("", 30, FONT_LIGHT, TEXT),
-    ("Explanatory illustration, not evidence. Rendered in Blender; synthetic voice (Kyutai pocket-tts).",
-     28, FONT_LIGHT, TEXT2),
 ]
 
 
