@@ -64,6 +64,7 @@ language_cutoff: 2026-09-13
 - **Observed.** docs/briefs/2026-09-24-next-session-handover.md section 2 named question (ii) as the next task. Mike paused it on 2026-09-24 17:53 UTC pending the column test (docs/decisions/005-backward-before-forward.md, decision 2).
 - **Inferred.** 159 of 165 FlyWire-30 pairs lie inside flyvis-30 (Ark), but both are averages, so a positive transfer could be arithmetic rather than biology.
 - **First step:** none until the column test returns; when (ii) is registered it carries every item of ADR-005 agreed point 5 (two arms, cell-stratified scoring, null 2c, headline r = 2 with Ark's falsifier, lambda by the source's own CV, existence-only scope, the FlyWire typing caveat).
+- **2026-09-25, CC:** Column test ran (9705ef1): unclear, Δ +0.073, single-column floor 0.89, X_c 0.54; counts 34/27/0.54 recomputed independently. Mike, DPC Research chat 2026-09-24 20:13 UTC: option A, (ii) stays paused until 'knock out and regrow' is registered. When (ii) resumes, 96.4 % is printed only beside the curve, the S1 quantiles and X_c, with a self-consistency baseline (Johnny).
 - **axis:** knowledge, honesty
 - **filed:** CC · 2026-09-25
 
