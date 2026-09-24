@@ -317,11 +317,10 @@ Durations are the measured voice plus lead and hold (§3.7).
   sealed plate (like the exam's seal in scene 4) lands first. The camera pulls back and holds for
   3 s.
 - **End card (inside the 3 s hold and in the video description):** credits in the wording of
-  `tools/viz/bank_video_script.py:28-35`; "connectome-seed · <commit containing
-  tools/viz/project_video/storyboard.md, filled at render>"; the sources list (file names, P-labels)
-  goes in the description, not on screen mid-film. Note: this storyboard's own `Source` line numbers
-  are pinned to `98d11a8` (content read for this revision), which is an ancestor of the commit shown
-  on the end card.
+  `tools/viz/bank_video_script.py:28-35`; the repository link "github.com/mikhashev/connectome-seed"
+  (Mike, 2026-09-24: the link, not a commit hash); the sources list (file names, P-labels) goes in
+  the description, not on screen mid-film. Note: this storyboard's own `Source` line numbers are
+  pinned to `98d11a8` (content read for this revision).
 - **Voice-over (secondary):** "Grammar: no rule has passed. Youth: paused. Body and brain, operators
   and fitness: designed for, not run. Nothing is grown until the condition on youth has a number.
   Next: do the two brains share one structure? That test will be registered before any number
@@ -585,3 +584,10 @@ Kept for the record; line numbers in this list are for `1ac12b0`.
 12. S4 details moved to on-screen text; returning terms re-shown.
 13. Timing measured, not estimated (3:27.90).
 - A to G: S9 card caption; method sentence in S9; S7 back-reference ("almost everything else depends on it"); slab vocabulary; S10 caption; source-line fixes; header estimates replaced by measured totals.
+
+### After render (2026-09-24)
+- End card shows the repository link instead of a commit hash, on Mike's word (Revision 3.1 item 8
+  superseded). Only the overlay layer was rebuilt; the 3D frames are unchanged.
+- Eye pass of the scene 5 order, from the mp4 itself (CC): at 83.9 s the shuffle bands stand and no
+  ring is drawn; at 85.3 s the seal rings round "1" on both stacks and no bright pillar has risen; at
+  86.8 s the FlyWire pillars are rising. Seal before pillars: confirmed in pixels.
