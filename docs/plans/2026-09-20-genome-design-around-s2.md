@@ -350,10 +350,10 @@ stated as regeneration of the bank (§2) plus, separately and with that mark, co
 | 0 | Verify A §8's inventory against the source; name the instrument | CC | **done** — `docs/plans/2026-09-20-step0-label-inventory-verified.md` |
 | 1 | Word to run the pre-S2 check | Mike | **given**, 2026-09-20 09:27 UTC, for the revised form |
 | 2 | Run the check; report the partition | CC | **done** in the revised form — `results/diagnostics/labels/` (item 3 above) |
-| 3 | Extract the rule bank and the label array | CC | **in progress** — `results/genome/bank/` (extraction, birth ids, regularity reading) |
+| 3 | Extract the rule bank and the label array | CC | **in progress** — `results/genome/bank/` (extraction, birth ids, regularity reading). *Status 2026-09-24: done — `results/genome/bank/README.md`.* |
 | 4 | Note "what is the genome here" | CC | delivered |
-| 5 | C6 control specification | Zcode (owner of record); written by CC on Mike's word | **drafted** — `docs/plans/2026-09-23-c6-control-specification.md`, awaiting Zcode's review |
-| 6 | Design of a generative rule | — | not yet licensed; must be tested against C6; read `literature.md` §I.1 first |
+| 5 | C6 control specification | Zcode (owner of record); written by CC on Mike's word | **drafted** — `docs/plans/2026-09-23-c6-control-specification.md`, awaiting Zcode's review. *Status 2026-09-24: reviewed and amended (`docs/plans/2026-09-23-c6-amendment-acceptance.md`), built and run — `results/genome/c6/README.md`.* |
+| 6 | Design of a generative rule | — | not yet licensed; must be tested against C6; read `literature.md` §I.1 first. *Status 2026-09-24: three rules registered; rule #1 and rule #2.1 ran on C6, rule #2 stopped at its gates — `results/genome/c6/README.md`.* |
 
 ### 5. Ark's structural point: where a rule should aim
 
