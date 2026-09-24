@@ -9,10 +9,10 @@ since the measurement line was paused (Mike, 2026-09-20 10:15 UTC).
 
 | piece | what it is, in one line | where | state |
 |---|---|---|---|
-| **The bank** | The fly's wiring as one table: for each pair of cell types, which offsets connect, with how many synapses and which sign. This is what a genome would have to regenerate. | `results/genome/bank/` | extraction in progress (another agent) |
-| **Birth ids** | A permanent id for each of the 65 cell types and each type pair, never reused — so that later, inherited pieces can be matched between parents and the family tree can be drawn. | `results/genome/bank/` | in progress |
-| **Regularity measurement** | How much repeated structure the type-pair table has. A rule only pays off if there is enough of it (Clune et al. 2011). | `results/genome/bank/REGULARITY-READING.md` | forthcoming |
-| **C6 control** | The exam a candidate rule has to pass, written *before* any rule exists so it cannot be bent to fit one. | `docs/plans/2026-09-23-c6-control-specification.md` | drafted; Zcode to review |
+| **The bank** | The fly's wiring as one table: for each pair of cell types, which offsets connect, with how many synapses and which sign. This is what a genome would have to regenerate. | `results/genome/bank/` | extracted (`results/genome/bank/README.md`) |
+| **Birth ids** | A permanent id for each of the 65 cell types and each type pair, never reused — so that later, inherited pieces can be matched between parents and the family tree can be drawn. | `results/genome/bank/` | assigned (`results/genome/bank/birth_ids.csv`) |
+| **Regularity measurement** | How much repeated structure the type-pair table has. A rule only pays off if there is enough of it (Clune et al. 2011). | `results/genome/bank/REGULARITY-READING.md` | done |
+| **C6 control** | The exam a candidate rule has to pass, written *before* any rule exists so it cannot be bent to fit one. | `docs/plans/2026-09-23-c6-control-specification.md` | built and run; three rules tried (`results/genome/c6/README.md`) |
 | **S2 design, amended** | Ark's design of what the genome track predicts and which labels may judge it, with the review's corrections recorded. | `docs/plans/2026-09-20-genome-design-around-s2.md` (§ Amendment — 2026-09-23) | amended; Ark to confirm |
 
 ## What the first candidate rule will be tested against

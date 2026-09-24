@@ -16,46 +16,32 @@ live in `docs/` and `results/`, and the current state of the condition is in
 [ADR-002](docs/decisions/002-file-under-condition.md) § "Status of the condition". Which part of
 the idea is being worked on now is stated in "The goal, in the owner's own words" below.
 
-## State at 2026-09-20
+## State at 2026-09-24
 
-*Dated block, kept short on purpose. The full account is in the two files it links; the only
-status that is not typed by hand is the generated block at the bottom of
-[ROADMAP.md](ROADMAP.md). No result value appears here — where a finding is numerical, the file
-that carries the number is named.*
+*Dated block, kept short on purpose. The only status that is not typed by hand is the generated
+block at the bottom of [ROADMAP.md](ROADMAP.md). No result value appears here — where a finding
+is numerical, the file that carries the number is named.*
 
 - **Goal and documents.** The goal is the five points of [idea.md](idea.md) plus the evolutionary
-  tree, quoted by point number and no longer rebuilt from chat. The grammar track is the main
-  line; measuring the fly is its instrument and is **paused, not cancelled** —
-  [ADR-004](docs/decisions/004-grammar-is-the-main-line.md), accepted on the owner's word of
-  2026-09-20, amended the same day at 10:15 UTC on the owner's word: "Pause the fly → grammar
-  (point 1)".
-- **The measurement track.** Ten runs on disk — six individuals, two of them run three times.
-  Nothing beyond that is a test. This session established that evaluation non-repeatability is
-  GPU operation order rather than the recording hook, that the same mechanism inside training is
-  where the whole replicate gap is made, and that an individual shows in the rank *shape* of its
-  65-type cell profile rather than in its magnitude or in held-out loss (declared and reported
-  MIXED, with a reviewer's narrowing recorded beside it). Numbers live in
-  `results/night5/diagnostics/rowB/`.
-- **`activity_penalty.stop_iter` is left untouched** (owner's decision, 2026-09-20): the
-  penalised quantity is smooth across its own 150,000 boundary in all ten runs and held-out loss
-  shows no step there. The observation that survives is narrower — the cheap probe at 25,000 sits
-  in an unsettled phase.
-- **Night 6 is prepared and was not launched**
-  ([brief](docs/briefs/2026-09-20-night6-deterministic-pairs.md)); a perturbation ladder is
-  proposed in its place and is **not authorised**.
-- **The grammar track** has its note delivered, its design placed with an amendment owed by its
-  author, its label check done, and `literature.md` §I (digital evolution with inheritance, 24
-  entries read at source) added. The extraction of the rule bank waits only on that amendment;
-  the C6 control specification is not started and is blocked by nothing.
-- **Session close:**
-  [docs/retrospectives/2026-09-20-session-close.md](docs/retrospectives/2026-09-20-session-close.md)
-  — what was done, decided, and by whom; what was not done; and the errors, including this
-  session's own: the goal was first reconstructed from chat paraphrases and narrowed to point 1
-  while `idea.md` sat in this directory.
-- **Next session:**
-  [docs/briefs/2026-09-20-next-session-handover.md](docs/briefs/2026-09-20-next-session-handover.md)
-  — the state in one page, owners, what is blocked on what, the open decisions, and the reading
-  order. Whoever starts must say which of the two jobs they are before reading anything.
+  tree. The grammar track is the main line; measuring the fly is its instrument and stays
+  **paused, not cancelled** — [ADR-004](docs/decisions/004-grammar-is-the-main-line.md).
+- **The C6 exam exists and has been run.** The specification and harness are committed
+  ([docs/plans/2026-09-23-c6-control-specification.md](docs/plans/2026-09-23-c6-control-specification.md),
+  [results/genome/c6/harness.py](results/genome/c6/harness.py)). Rule #1 ran and failed
+  (`results/genome/c6/rule_runs/first_rule_k12/RESULT.md`). Rule #2 stopped at its gates and
+  never reached C6 ([docs/notes/2026-09-23-second-rule-stopped-at-gates.md](docs/notes/2026-09-23-second-rule-stopped-at-gates.md)).
+  Rule #2.1 passed gates and ran once: verdict FAIL, on the offset field only — existence passed
+  P1, P3 and P4
+  ([docs/notes/2026-09-23-rule-2-1-c6-what-it-showed.md](docs/notes/2026-09-23-rule-2-1-c6-what-it-showed.md)).
+- **BF_1 alone, on P3:** the rank-1 term alone separates the real bank from its degree-preserving
+  shuffles on existence (branch A) —
+  [docs/notes/2026-09-24-bf1-p3-what-it-showed.md](docs/notes/2026-09-24-bf1-p3-what-it-showed.md).
+- **The bank** is the flyvis FIB-25/FIB-19 type-level template, not hemibrain —
+  [docs/notes/2026-09-23-where-our-bank-comes-from.md](docs/notes/2026-09-23-where-our-bank-comes-from.md).
+- **Next:** a second brain (FlyWire right optic lobe) is in preparation — registration being
+  drafted, nothing committed, nothing run yet.
+- **The measurement track** has been paused since 2026-09-20 (ADR-004); its state has not changed
+  since. See ROADMAP.md's generated block for the live status.
 
 ---
 
