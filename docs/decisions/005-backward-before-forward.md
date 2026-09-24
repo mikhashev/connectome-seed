@@ -139,6 +139,49 @@ direction from turning into the measurement line again.
   Rejected. It is the failure ADR-004 paused.
 - **Backward under the admission rule, with (ii) paused and knockout next.** Chosen.
 
+## Amendment — 2026-09-24 18:23–21:00 UTC: decision 1 done; Q1, Q2 and Q3 answered; the knockout bank chosen
+
+Recorded on the owner's word "record the consensus" (Mike, DPC Research group, 2026-09-24 20:59 UTC,
+translated from Russian). Everything else in this record stands.
+
+- **Decision 1 is done.**
+  - **Part A, the separate-volumes reading (Q2): NO.** flyvis 1.2.0 ships only the merged
+    `fib25-fib19_v2.2.json`. The max merge cannot be measured from flyvis (CC, 18:23 UTC;
+    confirmed by Zcode, 18:35 UTC).
+  - **The column test** was registered (`f568691`, revision 2.2; `b3f41ed`, revision 2.3, with the
+    script) after three review rounds by Ark, Johnny and Zcode. It was run once, and the result is
+    `9705ef1`, `results/genome/c6/checks/flywire_column_test/RESULT.md`.
+  - **Verdict: unclear.** Δ = +0.073 and k* = 9.3 %, between the registered cuts of 5 % and 20 %.
+    A single FlyWire column holds a median 0.890 of its type pairs inside flyvis-30, against
+    0.964 for the averaged bank, and averaging adds about 7 points.
+  - The extra pairs of a single column lie inside flyvis far more often than uniform noise would
+    (median X_c 0.54 against 0.094). So real columns resemble neither calibration family.
+  - The machine-written numbers were checked against the prose by Zcode (about 620 values, 0
+    differences). 34 / 27 / 0.54 were recomputed independently by a CC subagent without the
+    test's code.
+- **Question (ii) stays paused** until "knock out and regrow" is registered. This was option A of
+  two (Mike, 20:13 UTC). When (ii) resumes, the 96.4 % is printed only beside the curve, the
+  single-column quantiles and X_c, with a self-consistency baseline (Johnny).
+- **Q3, the order:** the column test first, then the knockout registration. This is settled by
+  the sequence above.
+- **Q1, the block: block A**, `{Mi1, Tm3, Mi4, Mi9, Tm1, Tm2, Tm4, Tm9} × {T4a–d, T5a–d}`, 64
+  cells. Chosen by name before any weight was read
+  (`docs/notes/2026-09-25-knockout-block-candidates.md`, `10b704e`).
+  - The board is the perfect ON×T4 / OFF×T5 checkerboard in FlyWire-30, flyvis-30 and flyvis-65:
+    16 + 16 present, no cross cells. This was counted three times, by Ark, Johnny and Zcode.
+  - The rule reads no type names (Johnny, Zcode; a name channel proposed by Ark was declined).
+- **The bank (Mike, 20:39 UTC): flyvis-65 is the primary bank.**
+  - The Janelia male CNS v1.0 (one male, CC-BY) replaces FlyWire-30 as the animal control. Its
+    bank needs its own reviewed builder.
+  - FlyWire-30 is kept as provenance. On it only 14 of 64 block cells are inferable (Johnny):
+    T4d and T5a–d touch nothing outside the block except their self-loops.
+  - On flyvis-65 and on the male CNS all 64 cells are inferable. On the male CNS this holds at
+    every pair threshold tried (Zcode). Whether the male CNS board is perfect depends on the
+    threshold; that threshold is the builder's first open parameter (Zcode, 20:59 UTC).
+- **The knockout registration** is drafted, `docs/plans/2026-09-24-knockout-regrow-registration.md`.
+  It is in review with Ark, Johnny and Zcode. Running its synthetic worlds before commit (its D11)
+  waits for the owner's word.
+
 ## Consequences
 
 - **Positive:** the next transfer result, whichever way it falls, can be told apart from an artefact
@@ -149,10 +192,11 @@ direction from turning into the measurement line again.
 
 ## Confirmation
 
-- [ ] The column-test registration calls itself a measurement of the order averaging removes, and
-      does not call itself a proxy for between-bank overlap.
-- [ ] The separate-volumes reading states whether flyvis 1.2.0 exposes FIB-25 and FIB-19 estimates
-      separately, with the file or code location as evidence either way.
+- [x] The column-test registration calls itself a measurement of the order averaging removes, and
+      does not call itself a proxy for between-bank overlap (`f568691`, §0).
+- [x] The separate-volumes reading states whether flyvis 1.2.0 exposes FIB-25 and FIB-19 estimates
+      separately, with the file or code location as evidence either way (NO; column-test
+      registration §8, Part A).
 - [ ] The knockout registration names the removed block before any data is seen, gives a biological
       reason for it, states everything removed with it, and carries the permuted-block null.
 - [ ] The next registration states that the generation-zero bank is a synthetic template of at least
@@ -162,11 +206,11 @@ direction from turning into the measurement line again.
 ## Open Questions
 
 - **Q1:** Which block is knocked out: which pathway, and how is it fixed before data? CC, in the
-  registration.
+  registration. **Answered 2026-09-24: block A, by name, before data (Amendment).**
 - **Q2:** Does flyvis 1.2.0 ship the per-volume estimates at all, or only the merged json? CC, the
-  reading of decision 1.
+  reading of decision 1. **Answered 2026-09-24: only the merged json (Amendment).**
 - **Q3:** Once the column test and the knockout registration exist, what is the order between them?
-  Mike.
+  Mike. **Answered 2026-09-24: the column test first; it has run (Amendment).**
 
 ## Authors
 
@@ -178,7 +222,7 @@ direction from turning into the measurement line again.
 - **Zcode:** the separate-volumes reading; the two arms; the second null for knockout; the embryo search;
   the λ rule (source cross-validation only); the existence-only scope; the 2c scheme (one consistent
   permutation on both axes); "lower bound"
-- **CC:** knock out and regrow; this record
+- **CC:** knock out and regrow; this record; the amendment of 2026-09-24
 
 ## References
 

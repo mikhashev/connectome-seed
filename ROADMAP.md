@@ -5,8 +5,9 @@ lands on (`docs/decisions/`) and the tasks it consists of (`backlog.md`). Dates 
 local day; chat timestamps quoted anywhere in this repository are UTC (this machine is
 UTC+07).
 
-**Last updated 2026-09-24** (the C6 row of the owners table); the rest was last revised
-2026-09-20. What happened in that session, who decided what, and what was not
+**Last updated 2026-09-25** (the ADR-005 paragraph of the grammar track: the column test ran,
+the knockout block and bank were chosen); the C6 row of the owners table on 2026-09-24; the rest
+was last revised 2026-09-20. What happened in that session, who decided what, and what was not
 done: [docs/retrospectives/2026-09-20-session-close.md](docs/retrospectives/2026-09-20-session-close.md).
 What a fresh session needs — state in one page, owners, blocks, open decisions, reading order:
 [docs/briefs/2026-09-20-next-session-handover.md](docs/briefs/2026-09-20-next-session-handover.md).
@@ -423,6 +424,22 @@ list grows with every commit.
 
 **Decision record:** [ADR-004](docs/decisions/004-grammar-is-the-main-line.md).
 
+**Backward before forward — [ADR-005](docs/decisions/005-backward-before-forward.md), accepted
+2026-09-24, amended the same evening.** Question (ii), transfer between the two brains, is
+**paused** until "knock out and regrow" is registered (Mike, 2026-09-24 20:13 UTC).
+- **Done: the column test.** Run once at `b3f41ed`; the result is `9705ef1`, verdict **unclear**.
+  A single FlyWire column already sits at 0.89 inside flyvis-30, against 0.964 for the averaged
+  bank. flyvis ships only the merged template, so the max merge cannot be measured.
+- **Next: knock out and regrow.** Remove block A, the ON/OFF inputs to T4/T5 (64 cells, a perfect
+  checkerboard in every bank), from **flyvis-65**, and ask whether the rule regrows it (Mike,
+  2026-09-24 20:39 UTC).
+  - The registration is drafted and in review:
+    `docs/plans/2026-09-24-knockout-regrow-registration.md`.
+  - The animal control is the **Janelia male CNS v1.0**. Its bank needs its own registered
+    builder first.
+  - FlyWire-30 stays as provenance: on it the block's targets are cut off from the rest of the
+    bank (14 of 64 cells inferable).
+
 ## Phase 3 — The article (NOT STARTED)
 
 Written for `Documents/articles`, in English. Its size is set by Phase 2: with a result, an
@@ -480,10 +497,10 @@ one that can be trusted to be current.
 | axis | decisions | board entries | awaiting observation |
 |---|---|---|---|
 | **collective** | — | 7 | 0 |
-| **knowledge** | ADR-004 accepted | 14 | 0 |
+| **knowledge** | ADR-004 accepted | 13 | 0 |
 | **network** | — | 0 | 0 |
 | **honesty** | ADR-002 accepted · ADR-003 accepted · ADR-005 accepted | 22 | 0 |
-| **reach** | ADR-001 accepted | 4 | 0 |
+| **reach** | ADR-001 accepted | 5 | 0 |
 
 **Observation debt: 0 under an axis + 0 in entries that carry none = 0.** Work finished and never seen working; per axis it says which direction is running ahead of its evidence.
 

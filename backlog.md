@@ -18,6 +18,13 @@ language_cutoff: 2026-09-13
 
 
 
+### THE-MALE-CNS-BANK-NEEDS-A-REGISTERED-BUILDER-WITH-ITS-PAIR-THRESHOLD-FIXED-BEFORE-DATA: The Janelia male CNS v1.0 can serve as the animal control for knock out and regrow only through a builder whose pair threshold, canonical name column and type map are registered and reviewed before any control number is read (HIGH, open, 2026-09-25 — Mike, DPC Research group, 2026-09-24 20:39 UTC: flyvis-65 primary, male CNS as the animal control instead of FlyWire-30)
+
+- **Observed.** 61 of 65 flyvis types map (49 by name; R1-R6 one type; R7/R8 via flywireType; CT1 one cell per lobe with the side flip; TmY9 -> TmY9q flagged); Mi3, Mi11, Mi12, Tm28 absent from every name column; column assignment absent for T4/T5; block A inferable 64/64 in both lobes at every threshold Zcode tried; the perfect board and 4 mirror cells hold only at total/n_tar >= 1 (about sum >= 850), with 20-21 weak cross cells under other definitions (Zcode 20:59 UTC). 62 % of edges carry weight 1; a full read of the weights was killed at 18.1 GB (Johnny).
+- **First step:** Draft the builder registration: pair threshold as D-question 1 with diagnostic thresholds printed beside it; canonical name column; chunked reads; a self-test that stops on zero name matches; left and right lobes as a within-animal null.
+- **axis:** honesty, reach
+- **filed:** CC · 2026-09-25
+
 ### SECOND-RULE-POST-RUN-ROOT-RESOLVES-TO-RESULTS-NOT-THE-REPOSITORY-ROOT: results/genome/c6/rules/second_rule/post_run.py sets ROOT = C6.parents[1], which is results/ and not the repository root (LOW, open, 2026-09-25 — listed in docs/briefs/2026-09-24-next-session-handover.md section 4)
 
 - **Observed.** post_run.py:52-54: HERE = the second_rule directory, C6 = HERE.parents[1] = results/genome/c6, ROOT = C6.parents[1] = results/. Rule #2 never ran on C6, so it never mattered.
@@ -46,19 +53,10 @@ language_cutoff: 2026-09-13
 - **Inferred.** Known risk: indirect leakage through degrees; a rule that regrows a permuted block as well as the real one is smoothing, not generating.
 - **First step:** draft the registration: name the block (for example a whole pathway) before any data is seen, give the biological reason, state everything removed with it, and say aloud that the generation-zero bank is a synthetic template of at least two flies.
 - **2026-09-25, CC:** Block and bank decided before data. Block A = {Mi1,Tm3,Mi4,Mi9,Tm1,Tm2,Tm4,Tm9} x {T4a-d,T5a-d}, 64 cells, perfect ON/OFF checkerboard in all banks (docs/notes/2026-09-25-knockout-block-candidates.md; reviewed by Ark, Johnny, Zcode 2026-09-24 20:22-20:27 UTC). Mike, DPC Research chat 2026-09-24 20:39 UTC: flyvis-65 is the primary bank; the Janelia male CNS v1.0 (one male, CC-BY) replaces FlyWire-30 as the animal control; its bank needs a reviewed builder. Agreed: learnable rule with no type-name channel; the N1 leg is uninformative on a parity block; three mirror cells printed separately; ceiling = rule trained on the full bank; inferability table printed before data. On FlyWire-30 only 14/64 cells are inferable (Johnny).
+- **2026-09-25, CC:** Registration drafted (docs/plans/2026-09-24-knockout-regrow-registration.md) and reviewed by Ark 20:56, Johnny 20:58 and Zcode 20:59 UTC. Consensus: two ceilings (ceiling_block gates expressivity, ceiling_full routes the orthogonal case to G with its mechanism named); M worlds may read only U or W, a run condition; the No world must read G; degenerate shuffles over 5 are named; R/W separation beyond fit cost; the board is rank 1; the N1 leg decides nothing (AUC not pinned at 0.5). Revision 2 in progress; D11 (--synthetic-only before commit) waits for Mike.
 - **axis:** knowledge, honesty
 - **filed:** CC · 2026-09-25
 
-### THE-COLUMN-TEST-MEASURES-HOW-MUCH-ORDER-AVERAGING-REMOVES-AND-THE-SEPARATE-VOLUMES-READING-MEASURES-THE-MERGE: per-column type-pair tables within one FlyWire fly, read beside whether flyvis exposes the FIB-25 and FIB-19 estimates before its max merge, split agreement made by biology from agreement made by averaging (HIGH, open, 2026-09-25 — Mike, DPC Research group, 2026-09-24 17:53 UTC: column test plus the separate-volumes reading, YES; ADR-005)
-
-- **Observed.** The generation-zero bank is flyvis's column-averaged template of at least two flies, fused by taking the larger of the FIB-25 and FIB-19 estimates (docs/notes/2026-09-23-where-our-bank-comes-from.md sections 1-2, Lappalainen Supplementary Note 1 equation 7).
-- **Inferred.** The column test measures one component, the order averaging removes; it is not a proxy for between-bank overlap (Johnny's objection, Zcode's reconciliation). The separate-volumes reading, if the estimates exist, measures the merge's contribution directly as overlap(one volume vs FlyWire) against overlap(merged vs FlyWire) (Zcode).
-- **First step:** read flyvis 1.2.0 for per-volume estimates (files or code) and record the answer with its location; then register the column test before any value is computed.
-- **2026-09-25, CC:** Correction (2026-09-25, reviews by Ark, Johnny and Zcode in the DPC Research chat): the column test is Ark's proposal; Johnny objected; Zcode reconciled. The test gives a lower bound on the order our processing produces, since column averaging is one of four steps (Zcode). ADR-005 point 4 carries the same wording.
-- **2026-09-25, CC:** Part A done: flyvis 1.2.0 ships only the merged fib25-fib19_v2.2.json, so the merge is unmeasured (CC, confirmed by Zcode 2026-09-24 18:35 UTC). Registration revision 2.2 reviewed by Ark, Johnny and Zcode and committed as f568691 (docs/plans/2026-09-24-column-test-registration.md): the dose-curve rise Δ decides; labels (a)/(b)/unclear/(c) by k* against 5 %/20 % and the thinning floor L. Next: results/genome/c6/checks/flywire_column_test.py, reviewed before its single run.
-- **2026-09-25, CC:** Run once at b3f41ed (registration 2.3); result 9705ef1, results/genome/c6/checks/flywire_column_test/RESULT.md: verdict UNCLEAR, Δ = +0.07346, k* = 9.30 % (Δ_294 +0.0787, also unclear); single column median containment 0.890 vs bank 0.964; curve reaches bank level by k ≈ 32-64; extras lie in F far more than uniform noise (median X_c 0.54 vs 0.094), k*_obs 17.3 %; median extras 34, losses 27. Per §5, (ii) may report 96.4 % only beside the curve and S1; whether (ii) resumes and with which normaliser returns to Mike.
-- **axis:** honesty, knowledge
-- **filed:** CC · 2026-09-25
 
 ### QUESTION-II-TRANSFER-IS-PAUSED-UNTIL-THE-COLUMN-TEST-MEASURES-WHAT-AVERAGING-CONTRIBUTES: question (ii), whether the structure found in one brain is the same structure in the other, is paused because agreement between two averaged banks cannot yet be told apart from agreement made by the averaging (MEDIUM, open, 2026-09-25 — Mike, DPC Research group, 2026-09-24 17:53 UTC: question (ii) PAUSED, YES; ADR-005)
 
