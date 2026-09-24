@@ -123,4 +123,7 @@ correction. Cross-validation kept the term in every fold on the real bank.
    a shuffled source bank). This needs a new registration.
 2. **Write up** the two-brain result as it stands, with the flag and the defects above.
 3. **Fix the two defects** in the run script for future runs: print the named outcome of §5, and
-   print registered rows verbatim. This changes no number of this run.
+   print registered rows verbatim. This changes no number of this run. *Done on Mike's word
+   (2026-09-24 10:04 UTC) in `c55d3e3`, with the gap printed to four significant digits; the
+   committed outputs of this run stay as the previous version wrote them.* Question (ii) is left
+   for a new session: `docs/briefs/2026-09-24-next-session-handover.md`.
