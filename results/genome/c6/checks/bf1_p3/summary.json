@@ -1,0 +1,62 @@
+{
+  "question": "Does the trained rank-1 bilinear term BF_1, alone, separate the real bank from its 99 shuffles on existence? Offset/counts/sign carry no reading (0 by construction; registration section 3).",
+  "registration": "docs/plans/2026-09-24-bf1-p3-registration.md",
+  "decision_field": "existence",
+  "machine_check": {
+    "recorded_P4_bf_margin": 0.028150051052145946,
+    "recorded_starts_k": 10,
+    "this_run_existence_margin": 0.028150051052145946,
+    "difference": 0.0,
+    "tolerance": 1e-09,
+    "passed": true
+  },
+  "branch": "A: BF_1 separates",
+  "gap_real_minus_shuffled_max_existence": 0.028150051052145946,
+  "fields": {
+    "existence": {
+      "real_margin": 0.028150051052145946,
+      "shuffled_min": -0.002343798209038983,
+      "shuffled_mean": -0.0003305432734998241,
+      "shuffled_max": 0.0,
+      "n_shuffled_ge_real": 0,
+      "strictly_above_all": true,
+      "p_one_sided": 0.01
+    },
+    "offset": {
+      "real_margin": 0.0,
+      "shuffled_min": 0.0,
+      "shuffled_mean": 0.0,
+      "shuffled_max": 0.0,
+      "n_shuffled_ge_real": 99,
+      "strictly_above_all": false,
+      "p_one_sided": 1.0
+    },
+    "counts": {
+      "real_margin": 0.0,
+      "shuffled_min": 0.0,
+      "shuffled_mean": 0.0,
+      "shuffled_max": 0.0,
+      "n_shuffled_ge_real": 99,
+      "strictly_above_all": false,
+      "p_one_sided": 1.0
+    },
+    "sign": {
+      "real_margin": 0.0,
+      "shuffled_min": 0.0,
+      "shuffled_mean": 0.0,
+      "shuffled_max": 0.0,
+      "n_shuffled_ge_real": 99,
+      "strictly_above_all": false,
+      "p_one_sided": 1.0
+    }
+  },
+  "n_shuffles": 99,
+  "n_folds": 10,
+  "starts_k": 10,
+  "rank": 1,
+  "predictor_name": "BF_r1_k10",
+  "git_head": "e3f17cbb74d00a2c5bb0156f54dc5bd0d8f42481",
+  "harness_sha256_lf": "6fc809527c69ee84aadebfc15c0ba755c189ddc93c80c05c0fa11d969a8d7297",
+  "folds_sha256_lf": "fb6f153b67fe1785a76c3823911e6fbb91cdda57ec952b36c40b4c95f1e213b8",
+  "runtime_s": 165.27636790275574
+}
