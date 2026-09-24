@@ -1,5 +1,20 @@
 # Closed entries
 
+## 2026-09-25 — closed by CC
+
+### THE-COLUMN-TEST-MEASURES-HOW-MUCH-ORDER-AVERAGING-REMOVES-AND-THE-SEPARATE-VOLUMES-READING-MEASURES-THE-MERGE: per-column type-pair tables within one FlyWire fly, read beside whether flyvis exposes the FIB-25 and FIB-19 estimates before its max merge, split agreement made by biology from agreement made by averaging (HIGH, closed, 2026-09-25 — Mike, DPC Research group, 2026-09-24 17:53 UTC: column test plus the separate-volumes reading, YES; ADR-005)
+
+**Closed:** S-2026-09-24-RESEARCH · 2026-09-25 · fixed · 9705ef1: registered test run once (b3f41ed), verdict unclear, Δ +0.073, k* 9.3 %; Part A NO (merged json only). Recorded in the ADR-005 amendment of 2026-09-24. · closed by CC
+
+- **Observed.** The generation-zero bank is flyvis's column-averaged template of at least two flies, fused by taking the larger of the FIB-25 and FIB-19 estimates (docs/notes/2026-09-23-where-our-bank-comes-from.md sections 1-2, Lappalainen Supplementary Note 1 equation 7).
+- **Inferred.** The column test measures one component, the order averaging removes; it is not a proxy for between-bank overlap (Johnny's objection, Zcode's reconciliation). The separate-volumes reading, if the estimates exist, measures the merge's contribution directly as overlap(one volume vs FlyWire) against overlap(merged vs FlyWire) (Zcode).
+- **First step:** read flyvis 1.2.0 for per-volume estimates (files or code) and record the answer with its location; then register the column test before any value is computed.
+- **2026-09-25, CC:** Correction (2026-09-25, reviews by Ark, Johnny and Zcode in the DPC Research chat): the column test is Ark's proposal; Johnny objected; Zcode reconciled. The test gives a lower bound on the order our processing produces, since column averaging is one of four steps (Zcode). ADR-005 point 4 carries the same wording.
+- **2026-09-25, CC:** Part A done: flyvis 1.2.0 ships only the merged fib25-fib19_v2.2.json, so the merge is unmeasured (CC, confirmed by Zcode 2026-09-24 18:35 UTC). Registration revision 2.2 reviewed by Ark, Johnny and Zcode and committed as f568691 (docs/plans/2026-09-24-column-test-registration.md): the dose-curve rise Δ decides; labels (a)/(b)/unclear/(c) by k* against 5 %/20 % and the thinning floor L. Next: results/genome/c6/checks/flywire_column_test.py, reviewed before its single run.
+- **2026-09-25, CC:** Run once at b3f41ed (registration 2.3); result 9705ef1, results/genome/c6/checks/flywire_column_test/RESULT.md: verdict UNCLEAR, Δ = +0.07346, k* = 9.30 % (Δ_294 +0.0787, also unclear); single column median containment 0.890 vs bank 0.964; curve reaches bank level by k ≈ 32-64; extras lie in F far more than uniform noise (median X_c 0.54 vs 0.094), k*_obs 17.3 %; median extras 34, losses 27. Per §5, (ii) may report 96.4 % only beside the curve and S1; whether (ii) resumes and with which normaliser returns to Mike.
+- **axis:** honesty, knowledge
+- **filed:** CC · 2026-09-25
+
 ## 2026-09-23 — closed by CC
 
 ### THE-REGULARITY-WE-MEASURE-IS-AT-THE-RULE-LEVEL-WHERE-IT-IS-MAXIMAL-AND-NOT-AT-THE-TABLE-THAT-CARRIES-THE-ENTROPY: "a rule instead of weights" is a bet with a measurable threshold, and the thing we have measured is the one place where the answer is trivially yes (HIGH, closed, 2026-09-20 — Ark, from `literature.md` §I.1; filed by CC)
