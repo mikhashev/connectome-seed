@@ -45,6 +45,7 @@ language_cutoff: 2026-09-13
 - **Observed.** Proposed by CC, second null by Zcode (docs/decisions/005-backward-before-forward.md, agreed point 6). Standard: literature.md section 28, Lenski et al. 2003 knockout and reversal.
 - **Inferred.** Known risk: indirect leakage through degrees; a rule that regrows a permuted block as well as the real one is smoothing, not generating.
 - **First step:** draft the registration: name the block (for example a whole pathway) before any data is seen, give the biological reason, state everything removed with it, and say aloud that the generation-zero bank is a synthetic template of at least two flies.
+- **2026-09-25, CC:** Block and bank decided before data. Block A = {Mi1,Tm3,Mi4,Mi9,Tm1,Tm2,Tm4,Tm9} x {T4a-d,T5a-d}, 64 cells, perfect ON/OFF checkerboard in all banks (docs/notes/2026-09-25-knockout-block-candidates.md; reviewed by Ark, Johnny, Zcode 2026-09-24 20:22-20:27 UTC). Mike, DPC Research chat 2026-09-24 20:39 UTC: flyvis-65 is the primary bank; the Janelia male CNS v1.0 (one male, CC-BY) replaces FlyWire-30 as the animal control; its bank needs a reviewed builder. Agreed: learnable rule with no type-name channel; the N1 leg is uninformative on a parity block; three mirror cells printed separately; ceiling = rule trained on the full bank; inferability table printed before data. On FlyWire-30 only 14/64 cells are inferable (Johnny).
 - **axis:** knowledge, honesty
 - **filed:** CC · 2026-09-25
 
