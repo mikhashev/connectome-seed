@@ -208,7 +208,7 @@ Session record: [docs/retrospectives/2026-09-20-session-close.md](docs/retrospec
 
 ## What this is not
 
-- Not a claim of "first": OpenWorm (2014), integrative C. elegans brain–body–environment
+- Not a claim of "first": OpenWorm (2011), integrative C. elegans brain–body–environment
   simulators (2024), whole-fly-brain emulation on neuromorphic hardware (2025) and a
   connectome-as-controller fly (2026) all precede it.
 - Not an answer to the storage-vs-addressing question of the sister track

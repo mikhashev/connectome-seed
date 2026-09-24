@@ -5,7 +5,7 @@ Amendments 1 and 2. The acceptance criteria are in
 `docs/plans/2026-09-23-c6-amendment-acceptance.md`. **Three rules have been registered; two of them have run.**
 Rule #1 (`first_rule_k12`) failed. Rule #2 stopped at its gates and never reached this harness
 (`docs/notes/2026-09-23-second-rule-stopped-at-gates.md`). Rule #2.1 passed gates and ran once:
-verdict FAIL, on the offset field only — existence passed P1, P3 and P4
+verdict FAIL, on the offset field only — existence passed P1, P2, P3 and P4 (P4 against BF_1 only)
 (`docs/notes/2026-09-23-rule-2-1-c6-what-it-showed.md`). See
 `results/genome/c6/rule_runs/first_rule_k12/RESULT.md` for the rule #1 record.
 

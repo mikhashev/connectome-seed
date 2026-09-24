@@ -31,15 +31,21 @@ is numerical, the file that carries the number is named.*
   (`results/genome/c6/rule_runs/first_rule_k12/RESULT.md`). Rule #2 stopped at its gates and
   never reached C6 ([docs/notes/2026-09-23-second-rule-stopped-at-gates.md](docs/notes/2026-09-23-second-rule-stopped-at-gates.md)).
   Rule #2.1 passed gates and ran once: verdict FAIL, on the offset field only — existence passed
-  P1, P3 and P4
+  P1, P2, P3 and P4 (P4 against BF_1 only, the lowest reference point)
   ([docs/notes/2026-09-23-rule-2-1-c6-what-it-showed.md](docs/notes/2026-09-23-rule-2-1-c6-what-it-showed.md)).
 - **BF_1 alone, on P3:** the rank-1 term alone separates the real bank from its degree-preserving
   shuffles on existence (branch A) —
   [docs/notes/2026-09-24-bf1-p3-what-it-showed.md](docs/notes/2026-09-24-bf1-p3-what-it-showed.md).
 - **The bank** is the flyvis FIB-25/FIB-19 type-level template, not hemibrain —
   [docs/notes/2026-09-23-where-our-bank-comes-from.md](docs/notes/2026-09-23-where-our-bank-comes-from.md).
-- **Next:** a second brain (FlyWire right optic lobe) is in preparation — registration being
-  drafted, nothing committed, nothing run yet.
+- **A second brain (FlyWire right optic lobe), on P3:** registered and run once. The registered
+  joint reading at the headline rank (rank 1) is a flag — "read as a flag to re-examine both fits,
+  not as a substantive finding on its own". On the FlyWire-30 arm the rank-r term separates the
+  real bank from all of its degree-preserving shuffles at every rank tested —
+  [docs/notes/2026-09-24-flywire-p3-what-it-showed.md](docs/notes/2026-09-24-flywire-p3-what-it-showed.md).
+- **Next:** question (ii), transfer — is the structure found in one brain the same structure in the
+  other? It was not tested, and it needs its own registration
+  ([docs/briefs/2026-09-24-next-session-handover.md](docs/briefs/2026-09-24-next-session-handover.md)).
 - **The measurement track** has been paused since 2026-09-20 (ADR-004); its state has not changed
   since. See ROADMAP.md's generated block for the live status.
 
@@ -116,7 +122,7 @@ and records stand as they are. See
 [ADR-004](docs/decisions/004-grammar-is-the-main-line.md).
 
 **Two annotations the idea carries about itself**, recorded on 2026-09-13 and repeated here so this
-section cannot be read without them: **"first" is not true** — OpenWorm since 2014, C. elegans
+section cannot be read without them: **"first" is not true** — OpenWorm since 2011, C. elegans
 whole-body simulators, whole-fly-brain emulation on Loihi 2, and a connectome-as-controller fly in
 2026 ([literature.md](literature.md)); and the point-4 note above. Neither kills the idea; both
 change where it starts.

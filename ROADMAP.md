@@ -5,7 +5,8 @@ lands on (`docs/decisions/`) and the tasks it consists of (`backlog.md`). Dates 
 local day; chat timestamps quoted anywhere in this repository are UTC (this machine is
 UTC+07).
 
-**Last updated 2026-09-20.** What happened in that session, who decided what, and what was not
+**Last updated 2026-09-24** (the C6 row of the owners table); the rest was last revised
+2026-09-20. What happened in that session, who decided what, and what was not
 done: [docs/retrospectives/2026-09-20-session-close.md](docs/retrospectives/2026-09-20-session-close.md).
 What a fresh session needs — state in one page, owners, blocks, open decisions, reading order:
 [docs/briefs/2026-09-20-next-session-handover.md](docs/briefs/2026-09-20-next-session-handover.md).
@@ -398,7 +399,7 @@ what"; the states below are current as of 2026-09-20):
 | Step 0 — the design's field inventory verified against source | CC | **done** — `docs/plans/2026-09-20-step0-label-inventory-verified.md`, checked against `groundtruth_utils.py` rather than against the brief it was relayed from |
 | Label provenance check on the bank | Ark (design), CC (execution) | **done 2026-09-20** — `results/diagnostics/labels/`; see the diagnostics section above for what it found |
 | The note "what is the genome here" | CC | **delivered** — `docs/notes/2026-09-20-what-is-the-genome-here.md` |
-| C6 control specification | Zcode | **not started**, blocked by nothing |
+| C6 control specification | Zcode | **written 2026-09-23** — `docs/plans/2026-09-23-c6-control-specification.md`, by CC on Mike's word as a draft of Zcode's piece (its header: Zcode has not reviewed the base text); amended A1–A24 after reviews by Ark, Johnny and Zcode, with Zcode's mechanical check of A17–A22; the exam is `results/genome/c6/harness.py` |
 | Extraction of the rule bank and the label array | CC | **unblocked except for Ark's amendment** — the verified inventory names the fields |
 | `literature.md` §I — digital evolution with inheritance | CC | **added 2026-09-20**, 24 entries read at source; three address fixes owed (search instrument for the negative claim; the paper's address inside the sentence for two quoted figures; the RepliBench model count cited from the paper) |
 
