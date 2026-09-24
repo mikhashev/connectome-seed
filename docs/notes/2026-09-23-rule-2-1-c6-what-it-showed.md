@@ -104,6 +104,14 @@ shuffles, but counts do not enter P3's pass (line 1022).
 Reproduction checks in `PR` `checks` (bf1_matches_record, rp_max_matches_record,
 loto_means_match_record, bf3_reproduces_controls, bf4_reproduces_controls): **all true**.
 
+**BF_2's provenance.** Unlike BF_1, BF_3 and BF_4, which are reproduced against pre-existing
+records (`checks` above), BF_2 is trained at run time by the post-run script itself, as
+registered: `results/genome/c6/rules/second_rule_v21/post_run.py` builds `BF_RANKS` and calls
+`H.bf_predictor(r)` (`harness.py` lines 734–735) under cross-validation for each rank in
+`BF_RANKS`, including r = 2 (`post_run.py` lines 161, 283–284). `REG` registers this BF sweep
+(`docs/plans/2026-09-23-rule-2-1-registration.md` line 454: rule tested "against BF_2, BF_3 and
+BF_4 (context)").
+
 ### Spread-log check (`PR` `spread_log`; also `spread_log_validation.json`)
 
 The check found 1,341 per-fit files for 1,341 rule fits. All 1,341 parse as JSON, no temporary
@@ -124,6 +132,26 @@ The existence ratio rule/N1 is **0.990** (computed here from the two means).
 ## 3. The main finding: three facts added together
 
 This is Johnny's framing from the chat (20:12 UTC). No single fact carries it alone.
+
+**Correction (Ark, review, 2026-09-23 20:46 UTC): P3 existence passing "for the first time" is
+wrong.** Rule #1 also had P3 existence 0 of 99 shuffles ≥ real, `strictly_above_all` true
+(`results/genome/c6/rule_runs/first_rule_k12/result.json` `exam.P3.existence`). What is new for
+rule #2.1 is P1 existence at 10 of 10 folds (rule #1: 5 of 10) and passing P4 (rule #1 did not).
+
+| field (`exam/P3/existence/*`, `exam/P4/*`) | rule #1 (`first_rule_k12/result.json`) | rule #2.1 (`R` = `second_rule_v21_r1/result.json`) |
+|---|---|---|
+| P1 existence | 5/10, **FAIL** | 10/10, **PASS** |
+| P3 real_margin | −0.00451 | +0.03378 |
+| P3 shuffled_mean | −0.06431 | −0.00068 |
+| P3 shuffled_max | −0.04355 | +0.00082 |
+| P3 n_shuffled_ge_real | 0 | 0 |
+| P3 gap (real − shuffled_max) | +0.03904 | +0.03296 |
+| P4 | **FAIL** (rule margin −0.00451 vs threshold = bf margin +0.04851, bf rank 12) | **PASS** (bf margin +0.02815, bf rank 1) |
+
+**Consequence.** The count "0 of 99" does not say which mechanism produced it. Rule #1's gap came
+from the rule degrading on shuffled banks while its own real margin was already negative; rule
+#2.1's gap came from improving on the real bank while staying near zero on shuffles. So the P3 gap
+by itself is not a measure of rule quality — the failed rule #1 has the larger gap of the two.
 
 1. **P1 existence: 10 of 10 fold wins over N1** (`R` `P1.existence.wins` = 10). On held-out cells of the real bank, the rule predicts existence better than N1 in every fold.
 2. **P3 existence: 0 of 99 shuffled banks do at least as well as the real one.** The real margin is +0.0338. The shuffled maximum is +0.0008 and the shuffled mean is −0.0007 (`R` `P3.existence`). The margin exists on the real bank and vanishes on degree-preserving shuffles.
@@ -165,17 +193,35 @@ The rule's existence term is N1 plus a rank-1 bilinear term plus field groups (`
 §2.2). The run cannot say which of the last two parts carries the separation. The committed record
 holds only a **proxy**: the P3 existence rows of the five real-bank controls in `HC` (Zcode, 20:23 UTC).
 
-| control (`HC` `controls["real/…"]`) | what it is | existence margin over N1 | shuffled max | shuffled ≥ real |
-|---|---|---|---|---|
-| RP_r8 as a rule (seed 999) | N1 plus a **random** rank-8 projection (`H` 445–448, 1278–1279) | −0.0123 | −0.0045 | 62 |
-| PR | the planted-class predictor, using the four classes planted in the synthetic banks PL1, PL05 and PL0 (`H` 1086–1088, 1280–1281) | −0.0476 | −0.0448 | 28 |
-| N1 as a rule | N1 itself | 0 | 0 | 99 |
-| N0 as a rule | N0 | −0.0478 | −0.0448 | 33 |
-| oracle | stores the bank's full content (`H` 441–442) | +0.3615 | +0.3646 | 43 |
-| *for comparison: rule #2.1* | | *+0.0338* | *+0.0008* | *0* |
+| control (`HC` `controls["real/…"]`) | what it is | existence margin over N1 | shuffled max | shuffled ≥ real | implied one-sided p |
+|---|---|---|---|---|---|
+| RP_r8 as a rule (seed 999) | N1 plus a **random** rank-8 projection (`H` 445–448, 1278–1279) | −0.0123 | −0.0045 | 62 | 0.63 |
+| PR | the planted-class predictor, using the four classes planted in the synthetic banks PL1, PL05 and PL0 (`H` 1086–1088, 1280–1281) | −0.0476 | −0.0448 | 28 | 0.29 |
+| N1 as a rule | N1 itself | 0 | 0 | 99 | 1.00 |
+| N0 as a rule | N0 | −0.0478 | −0.0448 | 33 | 0.34 |
+| oracle | stores the bank's full content (`H` 441–442) | +0.3615 | +0.3646 | 43 | 0.44 |
+| *for comparison: rule #2.1* | | *+0.0338* | *+0.0008* | *0* | *0.01* |
 
 (Every value in the table is from `HC` `controls["real/<name>"].P3.existence`: `real_margin`,
-`shuffled_max` and `n_shuffled_ge_real`.)
+`shuffled_max` and `n_shuffled_ge_real`. The p column is computed here as (1 + n)/(99 + 1), the
+same formula `R` `P3_p_values` uses (`H` lines 1634–1635), restored per Zcode's review request.)
+
+**What the pre-registration of the BF_1 P3 run must carry.** This run is proposed but **not
+approved or run yet** (§8). The reviewers ask that its pre-registration state, in
+advance:
+
+- **Three numbers, not one band** (Ark): `real_margin`, `shuffled_mean` and `shuffled_max`, not a
+  single pass/fail band.
+- **A machine check** (Ark): P3(BF_1).real_margin must equal `exam/P4/bf/margin` = **+0.028150**
+  from the rule #2.1 record (`R` `P4.bf.margin`). If it does not, the "BF_1" of the new run and the
+  BF_1 inside P4 are different objects, and that mismatch is reported before any reading.
+- **Reading by distance** (Ark): BF_1 does not separate if its shuffled_max lands near its own real
+  margin (+0.028, gap ≈ 0). It separates if shuffled_max lands near the rule's measured shuffle
+  bound (+0.0008, gap ≈ +0.027).
+- **Each outcome paired with what the second brain (FlyWire) then tests** (Johnny): if BF_1
+  separates, the rank-1 part is itself bank-specific and X adds only margin level — the second
+  brain tests "is the rank-1 structure bank-specific?". If BF_1 does not separate, X (the group
+  terms) carries the separation — the second brain tests "is the group structure bank-specific?".
 
 **Zcode's lesson from the oracle row.** The oracle is as accurate as any predictor can be: its
 existence margin over N1 is +0.36. Yet 43 of 99 shuffles match or beat it, because it is equally
@@ -208,7 +254,7 @@ It also needs the band that decides "like the rule's".
   - `rules/second_rule_v21/post_run.py` first ran at 19:55:49 UTC at `6baff38`. It set `ROOT` to `results/` instead of the repository root, so every refit worker failed with a FileNotFoundError on `results/results/genome/...` (`ATT` "Post-run").
   - Nothing it wrote was kept. The fix is `fb24d17` (one line: `ROOT = C6.parents[2]`), and the second execution completed at 19:57:49 UTC.
   - The verdict was written earlier, by the harness, and committed first (`6baff38`). The post-run script changes no verdict (`PR` `what`).
-  - **The same bug is still in rule #2's script:** `results/genome/c6/rules/second_rule/post_run.py` line 55 reads `ROOT = C6.parents[1]`. Rule #2 never ran on C6, so it never mattered. `fb24d17` left it untouched on purpose. Anyone reusing that script inherits the crash.
+  - **The same bug is still in rule #2's script:** `results/genome/c6/rules/second_rule/post_run.py` line 54 reads `ROOT = C6.parents[1]`. Rule #2 never ran on C6, so it never mattered. `fb24d17` left it untouched on purpose. Anyone reusing that script inherits the crash.
 
 ## 6. Registered predictions: mechanical outcomes
 
@@ -258,8 +304,9 @@ calibration record. The same author's refuted items are S2-5 and the quantity ha
 ## 7. Corrections made in the chat
 
 - **"Family fits anything = offset + sign" (Johnny) is wrong.** P3's pass reads only existence and offset (`H` line 1022), and existence passed, so the label comes from offset alone.
-- **"Two independent instruments" is overstated.** The dial at f = 1 and P3 run the same shuffle function on different seeds (§3 above).
+- **"Two independent instruments" is overstated (Ark, withdrawn).** The dial at f = 1 and P3 run the same shuffle function on different seeds (§3 above). Ark confirmed this in code: `shuffled_bank` (`H` lines 907–909) and `dial_banks` (`H` lines 924–932) both call `rewire_and_permute`; at frac = 1.0 all edges are chosen, and the target swap count is `SWAPS_PER_EDGE * len(E)` with `SWAPS_PER_EDGE` = 20 (`H` line 70) — the same procedure, only the seeds differ.
 - **The BF_4 figure.** Rule − BF_4 = −0.0059476 (`PR` `bf_line.rule_minus_bf.4`). That is −0.00595 at five decimals. The chat's −0.0060 rounds the already-rounded −0.00595; the value at four decimals is −0.0059.
+- **Zcode's own mix-up (Zcode, requested for the record).** In the chat Zcode wrote that P-B1 "stayed silent by its +0.040 guard." That was P-A1 (Ark's item, silent because m(0.0) = +0.0338 < the +0.040 guard — see §6 table). P-B1 is a different item: it is **confirmed by its refuters** (neither named refuting outcome occurred); only its secondary +0.040 magnitude was not reached (§6 table).
 
 ## 8. Next steps, as agreed
 
@@ -279,3 +326,17 @@ The chat reached consensus at 20:26 UTC. **Mike has chosen only step 1 so far** 
 (in full); `PROP` §3–§4.4; `docs/notes/2026-09-23-where-our-bank-comes-from.md` (headings and
 §1–§2.2); `rules/second_rule/post_run.py` lines 50–56; `git show fb24d17`; `git diff ae89705 HEAD
 -- results/genome/c6/harness.py`; `GLOSSARY.md` (§6–§7 rows).
+
+## Changes after review
+
+- Johnny, 2026-09-23 20:45 UTC: paired each BF_1-P3 outcome (separates / does not separate) with
+  what the second brain (FlyWire) would then test (§4).
+- Ark, 2026-09-23 20:46 UTC: reworded §3's "for the first time" claim — P3 existence also passed
+  for rule #1; what is new for rule #2.1 is P1 at 10/10 and passing P4 — and added the rule #1 vs
+  rule #2.1 side-by-side table with its consequence paragraph (§3); added the pre-registration
+  requirements for the BF_1 P3 run — three numbers, the machine check against `P4.bf.margin`, and
+  reading by distance (§4); withdrew "two independent instruments" with the `shuffled_bank` /
+  `dial_banks` code citation (§7).
+- Zcode, 2026-09-24 05:50 UTC: restored the implied one-sided p column on the attribution table
+  (§4); asked for the record that Zcode's own chat statement conflated P-B1 with P-A1 (§7); asked
+  for BF_2's provenance (§2); corrected the rule #2 `post_run.py` bug line from 55 to 54 (§5).
