@@ -22,6 +22,12 @@ does not cover (§5a). (3) The two readings of a B are cut at a fixed `f_real >=
 are printed (§5). (4) The script now writes `RESULT.md`. One count was taken on the public
 flyvis bank: 228 of its 604 nonempty pairs lie within the 30 types, above the 100-pair stop rule
 (§6). No BF value on any 30-type bank was computed.
+**Amended before the build, after review (Ark 07:42, Johnny 07:44, Zcode 07:51 UTC):** both
+scripts took `ROOT` as `results/`, and the builder looked for its data inside the repository; both
+now take the repository root (`C6.parents[2]`). The builder only inspected its inputs; the build
+is now implemented, with every choice §3 left open fixed in §3a. The Bonferroni family is named
+(four ranks within one arm, §5), and one informative line is printed when flyvis-30 loses the
+separation that the full-65 bank had (§5a). No FlyWire bank existed when these were written.
 ---
 
 # Registration: BF_r on the FlyWire right optic lobe, P3 against its own shuffles
@@ -266,6 +272,33 @@ Every threshold named in advance, per the task's instruction 3.
    in this test's decision field; a real sign assignment would be needed for a future
    question-(ii) run).
 
+## 3a. The build as implemented (amendment before the build, 2026-09-24)
+
+The review round (Ark 07:42, Johnny 07:44, Zcode 07:51 UTC) found that `flywire_bank_builder.py`
+only inspected its inputs: the build of §3 was specified but not implemented. It is implemented
+now, before any FlyWire bank exists. Where §3 left a choice open, it is fixed here:
+
+1. **Neurons.** Rows of `column_assignment.csv.gz` with `hemisphere == "right"` and `type` among
+   the 30. The type is taken from that file. `neuron_table.csv` is hashed and logged, but it is
+   not used as a filter. A root id with two right-hemisphere rows stops the build.
+2. **Connections.** `proofread_connections_783.feather` has one row per (pre, post, neuropil),
+   with `syn_count` (schema read by `--inspect-only`: `pre_pt_root_id`, `post_pt_root_id`,
+   `neuropil`, `syn_count`, and neurotransmitter columns that are not used). The file is not
+   pre-thresholded: its smallest `syn_count` is 1. Synapses are **summed over neuropil rows for
+   each (pre, post) root pair**, both ends among the neurons of item 1. A pair is kept at
+   **>= 2 synapses** (§3.2).
+3. **Offsets.** `(du, dv) = (p_post - p_pre, q_post - q_pre)` in the file's own `(p, q)`.
+4. **Column averaging.** For each `(s, t, du, dv)`, the kept synapses are summed and divided by
+   the number of column-assigned right-hemisphere neurons of type `t`, including neurons of that
+   type that receive nothing from `s`.
+5. **Pruning.** The self offset `s == t, (du, dv) == (0, 0)` is dropped. Then every row with a
+   mean below 1 is dropped.
+6. **Existence.** As §3.6: a type pair exists iff at least one row survives.
+7. **Output.** `connectome-seed-data/FlyWire/derived/flywire_ol_right_30_offsets.csv` (`src`,
+   `tar`, `du`, `dv`, `n_syn`, `sign`) and `bank.meta.json`: input hashes, thresholds, neurons per
+   type, the number of distinct right-hemisphere columns, row counts at each step, nonempty type
+   pairs, and in and out degrees. These are the counts §6 asks the build to report first.
+
 ## 4. Reusing the harness without changing `harness.py`
 
 `harness.py` sha256_lf pinned at `6fc809527c69ee84aadebfc15c0ba755c189ddc93c80c05c0fa11d969a8d7297`
@@ -374,7 +407,7 @@ FlyWire-native shuffles (task's edit 3c):**
   structure survives where rank-1 does not" -- reported, not smoothed into a single verdict.
   **Multiplicity:** four ranks are tested; the per-rank `p` values are reported unadjusted (as
   `bf1_p3.py` does for its four fields), but the run script additionally reports the
-  **Bonferroni-corrected threshold `alpha/4 = 0.0125`** next to each rank's `p`, so a reader can
+  **Bonferroni-corrected threshold `alpha/4 = 0.0125`** next to each rank's `p` (the family is the four ranks **within one arm**; the eight p-values across the two arms are not one family, because the arms carry different readings, §5a -- named before the run, Johnny and Zcode), so a reader can
   see which branch-A or borderline-C results would survive correction. No single combined p-value
   is computed across ranks (the four fits are not independent draws of one quantity; they are
   four different terms on the same real bank and the same 99 shuffles), so no meta-analytic
@@ -411,6 +444,11 @@ Zcode):**
 | A | C | Weak or partial carry-over: neither "present" nor "did not carry over" is supported. |
 | B or C | B or C | flyvis-30 itself does not separate on the 30-type grid: the substrate is too narrow for this test to show anything. Read as **the test failing**, not as evidence about the hypothesis. |
 | B or C | A | Unexpected direction: FlyWire separates where the flyvis restriction does not -- read as a flag to re-examine both fits, not as a substantive finding on its own. |
+
+**Printed, not a branch (Johnny, Zcode):** if flyvis-30 is not A at `r = 1` while the full-65
+flyvis BF_1 was A (`results/genome/c6/checks/bf1_p3/summary.json`), `RESULT.md` also prints: "the
+separating structure does not live in the 30 column-assigned types alone; some of the 35 dropped
+types carry it." Without this line that outcome would be read only as "the test failed".
 
 Every pair of branch labels lands in exactly one row. The run script's `joint_reading` implements
 this table and raises on any pair it does not cover (revised by CC before commit: the draft

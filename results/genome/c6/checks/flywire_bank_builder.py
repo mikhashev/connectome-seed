@@ -25,13 +25,14 @@ import argparse
 import csv
 import gzip
 import hashlib
+import json
 import subprocess
 import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 C6 = HERE.parent
-ROOT = C6.parents[1]
+ROOT = C6.parents[2]                                   # the repository root
 REGISTRATION = "docs/plans/2026-09-24-flywire-bf-p3-registration.md"
 DATA_ROOT = ROOT.parent / "connectome-seed-data" / "FlyWire"
 DEFAULT_OUT = DATA_ROOT / "derived"
@@ -155,7 +156,7 @@ def main():
     a = ap.parse_args()
 
     refuse_if_unsafe(a.allow_dirty)
-    Path(a.out) if a.out else DEFAULT_OUT
+    out = Path(a.out) if a.out else DEFAULT_OUT
 
     log = lambda m: print(m, flush=True)
     log(f"registration: {REGISTRATION}")
@@ -174,8 +175,100 @@ def main():
         log("--inspect-only: stopping before any offset table is built.")
         return
 
-    sys.exit("REFUSED: the full build (offset averaging, pruning, existence table, manifest "
-              "write) is specified in the registration section 3 but not yet implemented or run.")
+    build(out, log)
+
+
+def git_head():
+    return subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT, capture_output=True,
+                           text=True, check=True).stdout.strip()
+
+
+def build(out, log):
+    """Registration section 3, as amended before the build (section 3a). Every step is named
+    there; nothing here is chosen after seeing a number."""
+    import pandas as pd
+
+    # 3.1 Neurons: right hemisphere of column_assignment.csv.gz, type among the 30. The type is
+    # taken from that file; a neuron without a column row takes no part.
+    col_rows, col_path, col_entry = read_column_assignment(lambda m: None)
+    pos, type_of = {}, {}
+    for r in col_rows:
+        if r["hemisphere"] != "right" or r["type"] not in FLYWIRE_NAME_OF:
+            continue
+        rid = int(r["root_id"])
+        if rid in pos:
+            sys.exit(f"REFUSED: root_id {rid} has two right-hemisphere column rows")
+        pos[rid] = (int(r["p"]), int(r["q"]))
+        type_of[rid] = r["type"]
+    n_of_type = {t: 0 for t in FLYWIRE_NAME_OF}
+    for t in type_of.values():
+        n_of_type[t] += 1
+    missing = sorted(t for t, n in n_of_type.items() if n == 0)
+    if missing:
+        sys.exit(f"REFUSED: types with no right-hemisphere column rows: {missing}")
+    log(f"neurons: {len(pos)} right-hemisphere, column-assigned, in the 30 types")
+
+    # 3.2 Connections: synapses summed over neuropil rows for each (pre, post) root pair, both
+    # ends among the neurons above; a pair is kept at >= SYNAPSE_THRESHOLD synapses.
+    feather = DATA_ROOT / "proofread_connections_783.feather"
+    df = pd.read_feather(feather, columns=["pre_pt_root_id", "post_pt_root_id", "syn_count"])
+    ids = pd.Index(list(pos))
+    df = df[df.pre_pt_root_id.isin(ids) & df.post_pt_root_id.isin(ids)]
+    df = df.groupby(["pre_pt_root_id", "post_pt_root_id"], as_index=False)["syn_count"].sum()
+    n_pairs_all = len(df)
+    df = df[df.syn_count >= SYNAPSE_THRESHOLD]
+    log(f"neuron pairs among them: {n_pairs_all}; at >= {SYNAPSE_THRESHOLD} synapses: {len(df)}")
+
+    # 3.3 Offsets, post minus pre, in the file's own (p, q). 3.4 Column averaging: summed
+    # synapses per (s, t, du, dv), divided by the number of column-assigned neurons of type t.
+    sums = {}
+    for pre, post, n in df.itertuples(index=False):
+        s, t = type_of[pre], type_of[post]
+        du, dv = pos[post][0] - pos[pre][0], pos[post][1] - pos[pre][1]
+        k = (s, t, du, dv)
+        sums[k] = sums.get(k, 0) + int(n)
+    rows, n_pruned, n_autapse = [], 0, 0
+    for (s, t, du, dv), total in sorted(sums.items()):
+        mean = total / n_of_type[t]
+        # 3.5 Pruning: the self offset of a type onto itself is dropped; a mean below 1 is dropped.
+        if s == t and (du, dv) == (0, 0):
+            n_autapse += 1
+            continue
+        if mean < MEAN_PRUNE_BELOW:
+            n_pruned += 1
+            continue
+        rows.append({"src": s, "tar": t, "du": du, "dv": dv, "n_syn": repr(mean),
+                     "sign": PLACEHOLDER_SIGN})
+
+    # 3.6 Existence: a type pair exists iff at least one offset row survives.
+    pairs = sorted({(r["src"], r["tar"]) for r in rows})
+    out.mkdir(parents=True, exist_ok=True)
+    offsets_file = "flywire_ol_right_30_offsets.csv"
+    with open(out / offsets_file, "w", newline="", encoding="utf-8") as fh:
+        w = csv.DictWriter(fh, fieldnames=["src", "tar", "du", "dv", "n_syn", "sign"])
+        w.writeheader()
+        w.writerows(rows)
+    out_deg = {t: sum(1 for s, _ in pairs if s == t) for t in FLYWIRE_NAME_OF}
+    in_deg = {t: sum(1 for _, u in pairs if u == t) for t in FLYWIRE_NAME_OF}
+    manifest = {
+        "registration": REGISTRATION, "git_head": git_head(),
+        "builder_sha256": sha256_file(Path(__file__)),
+        "inputs": {"column_assignment": col_entry,
+                   "proofread_connections_783.feather": {"sha256": sha256_file(feather),
+                                                          "size_bytes": feather.stat().st_size}},
+        "thresholds": {"synapses_per_neuron_pair_min": SYNAPSE_THRESHOLD,
+                       "mean_prune_below": MEAN_PRUNE_BELOW, "hull_fill": APPLY_HULL_FILL,
+                       "placeholder_sign": PLACEHOLDER_SIGN},
+        "types": sorted(FLYWIRE_NAME_OF), "neurons_per_type": n_of_type,
+        "columns_right_hemisphere": len({(p, q) for p, q in pos.values()}),
+        "neuron_pairs_among_types": n_pairs_all, "neuron_pairs_kept": int(len(df)),
+        "offset_rows_before_pruning": len(sums), "offset_rows_autapse_dropped": n_autapse,
+        "offset_rows_pruned_mean_below_1": n_pruned, "offset_rows_kept": len(rows),
+        "nonempty_type_pairs": len(pairs), "out_degree": out_deg, "in_degree": in_deg,
+        "offsets_file": offsets_file, "offsets_sha256": sha256_file(out / offsets_file),
+    }
+    (out / "bank.meta.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+    log(f"bank written to {out}: {len(rows)} offset rows, {len(pairs)} nonempty type pairs")
 
 
 if __name__ == "__main__":

@@ -21,7 +21,7 @@ import numpy as np
 
 HERE = Path(__file__).resolve().parent
 C6 = HERE.parent
-ROOT = C6.parents[1]
+ROOT = C6.parents[2]                                   # the repository root
 DEFAULT_OUT = HERE / "flywire_bf_p3"
 REGISTRATION = "docs/plans/2026-09-24-flywire-bf-p3-registration.md"
 EXPECTED_HARNESS_SHA = "6fc809527c69ee84aadebfc15c0ba755c189ddc93c80c05c0fa11d969a8d7297"
@@ -43,7 +43,7 @@ assert FLYVIS_REAL.name == "real", f"harness REAL is {FLYVIS_REAL.name!r} at imp
 
 FLYWIRE_TYPES = sorted(FLYWIRE_NAME_OF)          # single source of truth for the type set (30)
 FLYWIRE_IDX = sorted(H.IDX[n] for n in FLYWIRE_TYPES)
-MANIFEST_PATH = C6.parents[3] / "connectome-seed-data" / "FlyWire" / "derived" / "bank.meta.json"
+MANIFEST_PATH = ROOT.parent / "connectome-seed-data" / "FlyWire" / "derived" / "bank.meta.json"
 
 ARM_BANK_NAME = {"flywire30": "flywire_ol_right_30", "flyvis30": "flyvis_restricted_30"}
 ARMS = tuple(ARM_BANK_NAME)
@@ -312,6 +312,12 @@ def write_result_md(out, summary, arm_results):
                       f"{q['real_frac_folds_at_max_lambda']:.2f} | "
                       f"{q['shuffle_frac_folds_at_max_lambda']:.2f} | {q['branch']} | "
                       f"{q['negative_reading'] or '-'} |")
+    full65 = json.loads((HERE / "bf1_p3" / "summary.json").read_text(encoding="utf-8"))["branch"]
+    if not summary["headline_r1"]["flyvis30_branch"].startswith("A") and full65.startswith("A"):
+        md += ["", "**Also (registration section 5a, printed, not a branch):** the full-65 flyvis "
+               f"BF_1 was {full65!r}, but flyvis-30 is not A at r = 1: the separating structure "
+               "does not live in the 30 column-assigned types alone; some of the 35 dropped types "
+               "carry it."]
     md += ["", "## Joint reading per rank", "", "| r | FlyWire-30 | flyvis-30 | reading |",
            "|---|---|---|---|"]
     for rank in RANKS:
