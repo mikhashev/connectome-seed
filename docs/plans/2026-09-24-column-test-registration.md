@@ -1,15 +1,19 @@
 ---
-**Status:** DRAFT registration, **revision 2.2**, not yet run, not yet committed. Drafted by a CC
+**Status:** registration, **revision 2.3**, not yet run. Revision 2.2 was committed as `f568691`;
+revision 2.3 applies the third reviews and is not yet committed. Drafted by a CC
 subagent, 2026-09-24 UTC (18:20; 2026-09-25 local, +07:00), on ADR-005 decision 1 (Mike, chat
 2026-09-24 17:53 UTC). Revised by a CC subagent on 2026-09-24 UTC after the reviews of Ark, Johnny
-and Zcode (DPC Research chat, 18:26-18:35 UTC), again after CC's logic check (negative `Δ`), and
-again after the second reviews of Ark, Zcode and Johnny (18:53-18:58 UTC); every change is listed
+and Zcode (DPC Research chat, 18:26-18:35 UTC), again after CC's logic check (negative `Δ`),
+again after the second reviews of Ark, Zcode and Johnny (18:53-18:58 UTC), and again after their
+third reviews of this file and of the script (19:25-19:35 UTC); every change is listed
 in §12. **Dated by its UTC
 day**, as the [glossary's date-time convention](../../GLOSSARY.md) requires; the request named it
 `2026-09-25-…`.
 **No value of the column test exists anywhere at the time this file is written.** No per-column
 table was built and no per-column existence set, agreement, containment, overlap or curve point was
-computed. No synthetic world was run either: §3.8 specifies them for the script. What was read to
+computed. When revision 2.2 was written no synthetic world had been run; revision 2.3 was
+checked by running the script's `--synthetic-only` mode (§3.8 worlds only, no real data), and its
+numbers are quoted in §3.8. What was read to
 design it: the code of `flywire_bank_builder.py`, the headers and the *structure* of
 `column_assignment.csv.gz` (which columns exist, which of the 30 types each column holds, §2.3),
 the committed aggregate files `flywire_sensitivity/RESULT.md` and
@@ -102,7 +106,9 @@ ends among these neurons, kept at `>= SYNAPSE_THRESHOLD` synapses (builder lines
 ### 2.2 What a column is
 
 A **column** is one distinct `(p, q)` among the right-hemisphere rows of `column_assignment.csv.gz`
-(the same key the builder uses, `pos[rid] = (p, q)`, builder line 212). Read at drafting (structure
+whose type is one of the 30 (the same key the builder uses, `pos[rid] = (p, q)`, builder line 212;
+the set of columns is the set of values of the builder's `pos`). The script stops unless there are
+exactly 796 such columns (revision 2.3). Read at drafting (structure
 only): 796 distinct `(p, q)`; `column_id` and `(p, q)` are one-to-one; **no column holds two
 neurons of the same type** among the 30. So a column holds at most one neuron of each type, and the
 number of type-`t` neurons `N_t` equals the number of columns holding type `t` (`bank.meta.json`,
@@ -220,7 +226,8 @@ average iff at least one row survives. Call the resulting pair set `A_K`. A targ
 - **`K` = all 796 columns reproduces the bank exactly** (`n_K(t) = N_t`), so `A_796 = B` and
   `C(A_796) = R_in = 159/165`. This is the §3.6 identity; the script asserts it a second time,
   on the curve's own code path, and stops if it fails ("CURVE ANCHOR FAILED").
-- **`K` = one column gives `A_K = E_c`**, since the pruning is a no-op on one column (§2.5).
+- **`K` = one column gives `A_K = E_c`**, since the pruning is a no-op on one column (§2.5). The
+  script asserts this identity for all 796 columns and stops if it fails (§3.6, revision 2.3).
 
 **The grid of `k`, and the samples.** `k = |K|` runs over **1, 2, 4, 8, 16, 32, 64, 128, 256,
 512, 796** (11 values). Columns are indexed 0-795 in ascending `(p, q)` order.
@@ -330,6 +337,20 @@ sha256 `25c5ff1d8ac9dc29e663d1383754c48ef23efae12b65714c66103cd4384d42eb` must b
 it fails, the script stops and prints "MACHINE CHECK FAILED" and nothing else. Passing proves that
 the per-column tables differ from the bank by the averaging step only.
 
+**Three further checks (Zcode, revision 2.3; the script already makes them):**
+
+- **`N_t` against `bank.meta.json`.** The number of type-`t` neurons counted from the column file
+  must equal `neurons_per_type[t]` in `bank.meta.json` for every one of the 30 types. This is part
+  of the machine check: on failure it prints "MACHINE CHECK FAILED" and stops.
+- **The `k = 1` identity is a hard stop.** On the curve's own code path, the sample average of each
+  single column must equal its existence set, `A_K = E_c` for every one of the 796 columns (§3.2).
+  If not, the script prints "CURVE K=1 PATH DIFFERS FROM E_c" and stops.
+- **The feather file's sha256 is recorded, not a stop.** The sha256 and size of
+  `proofread_connections_783.feather` are written to the manifest and compared with the sha256
+  recorded in `bank.meta.json` (`equals_bank_meta`, true or false). A mismatch does **not** stop the
+  run; it is visible in the manifest, and whether the tables rebuild the bank is decided by the
+  machine check above.
+
 ### 3.7 The Q3/P95 label (secondary, non-monotonic, decides nothing)
 
 The first draft read S1 by `Q3` and `P95` of the column distribution: (a) if `R_in <= Q3`, (b) if
@@ -354,7 +375,12 @@ of such columns is `1 − (1 − p)^6 + (1 − p)^165`. Its minimum over `p` is 
 
 The borders lie near `p` ≈ 1.05 % and 4.7 %: the sequence is (a) → unclear → (a), with no (b). On
 the uniform-extras worlds of §3.8 the rule gives (b) in 100 % of seeds at `r` = 5, 10, 20 and 40 %.
-The rule's defects are therefore: (i) under thinning it can never say (b); (ii) it says "unclear"
+**Measured directly by the script (Ark, revision 2.3):** in the `--synthetic-only` run, all 25
+uniform-extras worlds (20 calibration and 5 validation, `r` = 5 % to 40 %) read (b) under the
+Q3/P95 rule, and in each of them the share of columns with `C_c >= R_in` is exactly 0.000. The
+rule cannot tell a 5 % world from a 40 % world: it registers that there is an addition outside F,
+not how large the effect is. Dropping it as the reading rule therefore rests on a measurement, not
+only on the thinning arithmetic above. The rule's defects are therefore: (i) under thinning it can never say (b); (ii) it says "unclear"
 where there is no effect at all (at `p` = 2 %, `Δ` = +0.0007). It is also **non-monotonic** in `p`
 (two label changes). (An earlier table in review, with (b) at `p` = 0.2 %, is withdrawn; its
 author corrected it.) The rule measures how often a column happens to lose FlyWire-specific pairs,
@@ -389,6 +415,14 @@ they are description only. **The value 2 is the definition, not an idealisation 
 present in fewer than half the columns; a world of value-2 cells present in fewer than half the
 columns is exactly that condition.
 
+**How a world is drawn (revision 2.3, fixed now).** A world with seed `seed` takes one uniform draw
+per (column, cell), `u = numpy.random.default_rng(seed).random((796, 900))`, in a single call.
+Row `c` is synthetic column `c`; column `30 · i(s) + i(t)` is the cell `(s, t)`, where `i` is the
+index of a type in the 30 type names sorted as strings (Python `sorted`). Thinning keeps a B cell
+iff `u >= p` (and holds no non-B cell); uniform extras add a non-B cell iff `u < q`, with
+`q = r · 165 / 735`; in-F extras add a cell of F \ B iff `u < q_F`. Every B cell is present in
+every extras world. The same `u` is never reused across worlds, since every world has its own seed.
+
 **Thinning worlds (should read flat).** Each column is B with each of its 165 pairs dropped
 independently with probability `p` ∈ {0.05 %, 0.1 %, 0.2 %, 0.5 %, 1 %, 2 %, 5 %, 10 %}. Averaging
 adds nothing here by construction: every column is a thinned copy of the average.
@@ -418,32 +452,83 @@ reviewers, revision 2.2).
 **Calibration.** Each family gets its own calibration worlds, on seeds used nowhere else
 (`numpy.random.default_rng`; `i` is the index of the rate in its list, `j` a repeat):
 
-- **Uniform extras:** one world per `r`, seed `250 + i`; its `Δ_cal(r)`. With `Δ_cal(0) = 0` these
+- **Uniform extras:** five worlds per `r`, seeds `250 + 10 i + j`, `j` = 0-4 (20 worlds);
+  **`Δ_cal(r)` is the median of their five `Δ`** (revision 2.3). With `Δ_cal(0) = 0` these
   five points are the uniform calibration curve. The script requires `Δ_cal` strictly increasing in
   `r`, otherwise it stops ("CALIBRATION NOT MONOTONE"). **`k*`**, the equivalent extra-pair rate, is
   the linear interpolation of `r` against `Δ_cal(r)` on those five points, printed as "< 0 %" below
   0 and "> 40 %" above `Δ_cal(40 %)`. `k*` is defined on the uniform family only.
-- **In-F extras:** one world per `q_F`, seed `400 + i`; its `Δ_calF(r_F)`. With `Δ_calF(0) = 0`
+- **In-F extras:** five worlds per `q_F`, seeds `400 + 10 i + j`, `j` = 0-4 (25 worlds);
+  **`Δ_calF(r_F)` is the median of their five `Δ`** (revision 2.3). With `Δ_calF(0) = 0`
   these six points are the in-F calibration curve. The script requires `Δ_calF` strictly decreasing
   in `r_F`, otherwise it stops ("CALIBRATION NOT MONOTONE"). **`k*_F`** is the linear interpolation
   of `r_F` against `Δ_calF(r_F)` on those six points, printed as "> 16.7 %" below `Δ_calF(16.7 %)`.
-  `k*_F` is defined on the in-F family only, and is printed only under label (c).
+  `k*_F` is defined on the in-F family only. It is **printed whatever the label** (§4), and when
+  the label is not (c) it is marked "(read only under (c))" (revision 2.3; revision 2.2 said
+  "printed only under label (c)" here, which contradicted §4).
+- **Medians everywhere downstream (revision 2.3).** The monotonicity stops, `k*`, `k*_F` and the
+  §4 cuts `Δ_cal(5 %)` and `Δ_cal(20 %)` all use the medians. The script prints all five `Δ` of
+  each rate beside its median. **Why five worlds and a median:** with one world per rate the
+  (a)/unclear cut depended on which draw happened to be the anchor: at `r` = 5 % the one world of
+  revision 2.2 (seed 250) gave `Δ` = +0.0434, while most draws give +0.0392, a difference of about
+  10 %. Found by Ark (19:25 UTC); Zcode extended it to the in-F family (19:35 UTC); Johnny agreed;
+  **Mike decided to fix it before the run, 2026-09-25.** No real data had been touched.
+- **What the median leaves (Ark, revision 2.3).** After the median-of-five fix, 3 of the 20
+  uniform calibration worlds read, by the §4 rule, other than the label of their nominal rate: seed
+  250 (`r` = 5 %) reads unclear, and seeds 272 and 274 (`r` = 20 %) read unclear. The median
+  removed the 10 % single-draw error of the anchor, but **one draw-to-draw step of `Δ` remains in
+  each anchor** (at `r` = 5 %, +0.0434 against +0.0392, about 0.004; not the 0.0002 quantization
+  step of a single column): a verdict that lands right at a cut (`Δ_cal(5 %)` or `Δ_cal(20 %)`) carries that
+  step.
+- **The median is a chosen setting (Ark, revision 2.3).** The anchor is the median of the five
+  `Δ`, not their mean. The mean would have put the (a)/unclear cut about 2 % higher at `r` = 5 %
+  (mean +0.04006 against median +0.03922); the difference is about 0.2 % at `r` = 20 % and 0 at
+  `r` = 40 %. The median was chosen, and is fixed now; it is not a neutral default.
 - **Thinning, the lower envelope `L`:** five calibration worlds per `p`, seeds `150 + 10 i + j`,
   `j` = 0-4 (40 worlds), and the eight thinning validation worlds of the two-world check below
   (one per `p`, seed `100 + i`). **`L` = the minimum of `Δ` over all 48 thinning worlds** (40 + 8;
   revision 2.2, Ark, accepted by Zcode), with nothing subtracted. `L` is the most negative rise
   that pure thinning, with no averaging effect, produced on these seeds. It is the floor below
-  which a real `Δ` is read as (c) (§4). Since every thinning world enters `L`, **no thinning world
-  can read (c), by construction.** Ark's measured band: `L` lies in about [−0.0014, 0];
+  which a real `Δ` is read as (c) (§4). Ark's measured band: `L` lies in about [−0.0014, 0];
   `P(L < −0.002) = 0` in 20,000 draws; the in-F worlds at `q_F` = 30 % and 40 % give
   `Δ` = −0.0041 and −0.0051, a two-to-three-fold margin below `L`.
 
-**Seeds, all disjoint (revision 2.2).** World-generating seeds: thinning validation 100-107;
+**What `L` is in practice (Ark, revision 2.3).** On the registered grid `L` is **0**, because the
+thinning worlds at `p` ≤ 0.2 % give `Δ` exactly 0: at those rates more than half the columns lose
+no pair, so the median column equals B. **So in practice (c) ⟺ `Δ < 0`.** `L` depends on the
+grid: dropping `p` ≤ 0.2 % from it would give `L` = +0.00022. Further:
+
+- **Why no thinning world can read (c).** This holds by the arithmetic of thinning, not because `L`
+  is taken over 48 worlds: thinning adds no pair, and the median column loses a pair of F far more
+  often than one of B's six non-F pairs, so a thinning world's median column sits at or below
+  `R_in` and its `Δ` is at or above 0 (on the registered seeds all 48 thinning worlds have
+  `Δ` ≥ 0; only near `p` = 10 %, where about 47 % of columns lose a non-F pair, can the median
+  cross, and Ark's band puts that at no lower than about −0.0014). Revision 2.2's change from 40
+  to 48 worlds was **inert**: the minimum over the 40 calibration worlds was also 0.
+- **`Δ` is quantized.** Near `R_in` a single column's containment moves in steps of one pair; the
+  step is about 0.0002 (`159/165 − 158/164` = 0.00022). So (c) needs `Δ ≤ −0.0002`, **one
+  discrete step** below 0, not a fall of any size. Likewise `k*` near zero takes only a few values
+  and **must be read as a step, not a dose**: on the thinning worlds, 0.00, 0.03, 0.09, 0.17, 0.21,
+  0.27, 0.30 and 0.33 % with the median anchors of revision 2.3 (0.00, 0.03, 0.08, 0.16, 0.19,
+  0.24, 0.27, 0.30 % with the one-world anchors of revision 2.2, as the reviewers read them).
+- **`k*` has a dead zone (Ark, revision 2.3).** The thinning worlds cover `k*` from 0.00 % to
+  0.33 %, and the uniform calibration starts at 5.00 %; no world lies between them. The label does
+  not depend on this band, because every `Δ` below `Δ_cal(5 %)` reads (a) or (c). But a `k*`
+  printed between about 0.33 % and 5 % is a linear interpolation between `Δ_cal(0) = 0` and
+  `Δ_cal(5 %)` where no world stood, and is read as such. Closing the band with extra uniform
+  calibration worlds at `r` = 1 % and 2 % was considered and not taken (CC, 2026-09-25), because it
+  would change no label.
+
+**Seeds, all disjoint (revisions 2.2, 2.3).** World-generating seeds: thinning validation 100-107;
 thinning calibration 150-154, 160-164, …, 220-224 (`150 + 10 i + j`, `i` = 0-7, `j` = 0-4);
-uniform-extras calibration 250-253; uniform-extras validation 305, 310, 320, 330, 340; in-F
-calibration 400-404; in-F validation 530, 540. The largest thinning calibration seed is 224, below
-250, so no two of these ranges meet (revision 2.1 had the uniform calibration at 200-203, inside
-the thinning range 200-204 at `i` = 5). Elsewhere: S4 splits use seeds 0-19 (§3.5), and the curve's
+uniform-extras calibration 250-254, 260-264, 270-274, 280-284 (`250 + 10 i + j`, `i` = 0-3,
+`j` = 0-4); uniform-extras validation 305, 310, 320, 330, 340; in-F calibration 400-404, 410-414,
+…, 440-444 (`400 + 10 i + j`, `i` = 0-4, `j` = 0-4); in-F validation 530, 540. In all, **100
+worlds**: thinning 40 + 8, uniform extras 20 + 5, in-F extras 25 + 2. The ranges are in increasing
+order and do not meet: 100-107 < 150-224 < 250-284 < 305-340 < 400-444 < 530-540. The uniform
+validation seeds 305-340 lie in none of the calibration ranges (the uniform calibration ends at
+284), and every world seed is above 19 (the S4 seeds) and below 2000, the smallest curve seed. (Revision 2.1 had the uniform
+calibration at 200-203, inside the thinning range 200-204 at `i` = 5.) Elsewhere: S4 splits use seeds 0-19 (§3.5), and the curve's
 samples use `1000 k + j` (2000-2049 up to 512000-512049, §3.2), which every synthetic world reuses
 on purpose so that its curve is sampled exactly as the real one. The script asserts that all
 world-generating seeds are unique and distinct from 0-19 and from the curve's sample seeds, and
@@ -452,9 +537,18 @@ stops otherwise.
 **Two-world check (independent seeds; accepted by CC).** Fresh worlds, built with seeds that no
 calibration used, are read by the §4 rule exactly as the real data will be. (The eight thinning
 validation worlds also enter `L`, above; so for them the check tests the upper side only.)
+**The thinning rows are nearly vacuous as checks (Ark, revision 2.3; CC's reconciliation).**
+Since `L` is the minimum over all 48 thinning worlds, the 8 validation ones included, their "not
+(c)" half is met by construction. Their other half, "not unclear and not (b)", is a real check, but
+a weak one: it holds by a wide numerical margin (the largest thinning `Δ`, +0.0026, is about 15
+times below `Δ_cal(5 %)`). The thinning arm's main content is one number, `L` = 0, meaning that no
+thinning world went below zero. **The two-world check has seven real
+rows:** uniform extras at 5, 10, 20, 30 and 40 %, and in-F extras at `q_F` = 30 % and 40 %. The
+eight thinning rows are not to be cited as evidence for the rule.
 
 - every thinning world (one per `p`, seed `100 + i`) must read **(a)**, that is, not (b) and not
-  unclear; (c) is impossible for them by construction (revision 2.2);
+  unclear; (c) does not occur for them, by the arithmetic of thinning (above, "What `L` is in
+  practice");
 - uniform-extras worlds at `r` = 30 % and 40 % (seeds 330, 340) must read **(b)**;
 - the uniform-extras world at `r` = 20 % (seed 320) must **not** read (a);
 - the uniform-extras world at `r` = 10 % (seed 310) must read **unclear**;
@@ -470,11 +564,24 @@ requirement is therefore placed at 30 % and 40 %, clear of the cut, and the worl
 (5 %, 20 %) are only required not to cross to the far label. **Why `L` is taken over all 48
 thinning worlds (revision 2.2):** with `L` over the 40 calibration worlds only, a validation
 thinning world could dip just below it and read (c); revision 2.1 therefore allowed "(a) or (c)".
-Taking `L` over every thinning world removes that case, so the requirement is simply (a). **Why the
+Taking `L` over every thinning world removes that case, so the requirement is simply (a). (As
+revision 2.3 records above, the change was inert on these seeds: the 40-world minimum was also 0.)
+**Why the
 (c) requirement is at `q_F` = 30 % and 40 %** and not at the "30 % and 40 % of `|B|`" first asked for: those rates cannot
 be built as sporadic in-F extras (above); 30 % and 40 % of the 69 cells are the two highest rates
 that can, and the ones farthest below `L`. The in-F rate cap and this placement are **approved by
 CC**.
+
+**What the two-world check can and cannot falsify (Ark, revision 2.3).** The uniform-extras
+requirements (30 % and 40 % read (b), 20 % not (a), 10 % unclear, 5 % not (b)) **cannot falsify the
+(a)/(b) boundary**: the cuts `Δ_cal(5 %)` and `Δ_cal(20 %)` are defined by worlds of the same
+family, so fresh worlds of that family land on the expected side of them almost by definition. The
+check is therefore a **smoke test of the implementation**, not a test of the boundary. The gates
+that can actually fail are: the machine check (§3.6), the `k = 1` identity `A_K = E_c` (§3.2,
+§3.6), the `k = 796` anchor (§3.2), the monotonicity of both calibrations (above), and the
+reachability of (c) on the in-F worlds (a different family from the one that sets `L`). **If the
+real `Δ` lands in (b), `RESULT.md` says that the label rests on the definition of the threshold
+(the uniform-extras calibration), not on a measured boundary.**
 
 **Type coverage: what the worlds do not reproduce.** Every synthetic column holds all 30 types and
 lives in the full 900-cell grid, so in a synthetic sample `n_K(t) = |K|` for every type. Real
@@ -533,7 +640,10 @@ nothing**; no label is read from it. The median of `X_c` over the 796 also enter
 The label is read from the primary statistic `Δ` (§3.2), against two calibrations of §3.8: the
 thinning lower envelope `L` (the minimum `Δ` over all 48 thinning worlds of §3.8, calibration and
 validation, nothing subtracted) and the uniform-extras calibration, on which `Δ` is located as the equivalent
-extra-pair rate `k*`. Under (c) its size is located on the in-F calibration as `k*_F`. The cut
+extra-pair rate `k*`. Under (c) its size is located on the in-F calibration as `k*_F` (printed
+under every label, and marked "(read only under (c))" under the others). On the registered grid
+`L` is 0, so **in practice (c) ⟺ `Δ < 0`**, that is `Δ ≤ −0.0002`, one discrete step (§3.8,
+"What `L` is in practice"). The cut
 points below are **fixed now, before any data**, and are not revised after the real curve is seen.
 The four branches are exhaustive and exclusive: (c) is tested first, and (a), unclear and (b) are
 read only when `Δ >= L`.
@@ -561,8 +671,10 @@ which is not far enough below 0.96 to say that averaging *manufactures* the agre
 would satisfy `k* <= 5 %` and be misread as (a). Pure thinning, where averaging does nothing, can
 itself put the median column a little above `R_in` (§3.8, `p` = 10 %), so 0 would call a thinning
 world (c). `L` is the most negative `Δ` that thinning produced on all 48 thinning worlds (§3.8),
-and a real `Δ` below it is a fall that thinning did not reach; no thinning world can read (c), by
-construction. `L` is taken as it is, with no margin subtracted: a margin would be a number chosen
+and a real `Δ` below it is a fall that thinning did not reach. No thinning world reads (c); this
+holds by the arithmetic of thinning, not because `L` is taken over 48 worlds (§3.8, "What `L` is in
+practice": `L` is 0, set by the worlds at `p` ≤ 0.2 %, and the 40-world minimum was also 0). `L` is
+taken as it is, with no margin subtracted: a margin would be a number chosen
 by eye, and the two-world check (§3.8) already requires in-F worlds at 30-40 % to fall below it and
 every thinning validation world to read (a). Measured by Ark: `L` lies in about [−0.0014, 0], and
 the in-F worlds at `q_F` = 30 % and 40 % (`Δ` = −0.0041, −0.0051) sit two to three times further
@@ -591,7 +703,11 @@ the same on raw and chance-corrected values.
 branches), the in-F share of extras (§3.9), the Q3/P95 labels of S1 and S2 (§3.7), and S2-S4 are
 printed beside it and decide nothing. If the label of `Δ_294` differs from the verdict,
 `RESULT.md` prints "the 796-column and 294-column readings disagree" beside the verdict. Whatever
-the label, `RESULT.md` prints `Δ`, `L`, `k*` and `k*_F` as numbers next to it.
+the label, `RESULT.md` and the script's `VERDICT:` log line print `Δ`, `L`, `k*` and `k*_F` as
+numbers next to it; when the label is not (c), `k*_F` is marked "(read only under (c))". Near zero
+`k*` is a step, not a dose (§3.8). If the label is (b), `RESULT.md` adds that the label rests on
+the definition of the threshold, not on a measured boundary (§3.8, "What the two-world check can
+and cannot falsify").
 
 **Two prints on the verdict line (Ark, revision 2.2; no new cut, they decide nothing).**
 
@@ -609,7 +725,9 @@ the label, `RESULT.md` prints `Δ`, `L`, `k*` and `k*_F` as numbers next to it.
   strips extras. The two medians show which case the columns are in.
 - **`k*_obs`.** Printed next to `k*`: `k*_obs = Δ / (R_in − X)`, with `X` the median of `X_c`
   over the 796 columns (§3.9): the first-order extra-pair rate for the columns' own in-F share of
-  extras. It is a diagnostic and decides nothing. Its measured bounds on the uniform-extras worlds:
+  extras. It is a diagnostic and decides nothing. It is printed as "n/a" (and stored as `null` in
+  `summary.json`) when `X` is undefined (no column has a pair outside B) or when `R_in − X` is
+  zero to rounding (Ark, revision 2.3). Its measured bounds on the uniform-extras worlds:
   accurate at small `r` (`r` = 5 %: measured `Δ` +0.0392 against a first-order +0.0435), and it
   underestimates the rate at large `r` (`r` = 40 %: measured `Δ` +0.2481 against a first-order
   +0.3479). It is printed because `k*`
@@ -635,8 +753,12 @@ under the name of §0, never as "the overlap between banks".
   where averaging adds nothing (thinning, eight rates), where it removes sporadic extras outside F
   (uniform extras) and where it removes sporadic extras inside F (in-F extras), with seeds
   independent of the calibration (the thinning validation worlds also enter `L`, so for them only
-  the upper side is an independent check), and stops if the rule cannot tell them apart. That
-  checks the rule, not the biology.
+  the upper side is an independent check), and stops if the rule cannot tell them apart. The eight
+  thinning rows are met by construction on the (c) side and by a wide margin on the other; the
+check has seven real rows,
+  uniform extras at 5-40 % and in-F extras at `q_F` = 30 % and 40 % (§3.8, Ark, revision 2.3). That
+  checks the rule, not the biology. For the (a)/(b) boundary it is only a smoke test of the
+  implementation, since that boundary is defined by the same uniform family (§3.8, revision 2.3).
 - **The verdict depends on the thresholds for `k*`, 5 % and 20 %** (Johnny, revision 2.2). They
   are fixed before data (§4) and are not revised after it. The script prints `k*` itself, so a
   reader can see how far it sits from each threshold. Johnny's falsifier: if `k*` lands far from
@@ -687,26 +809,41 @@ under the name of §0, never as "the overlap between banks".
 ## 7. Environment, script, outputs, cost
 
 **Environment.** `tools/.venv` is not modified (its digest is pinned by night 6 gate 8). The script
-reads the feather file and so runs as the builder does:
+reads the feather file and so runs as the builder does, with numpy and pandas pinned to the
+versions in `tools/.venv` (revision 2.3, Zcode; as the script's docstring gives it):
 
 ```
-uv run --no-project --with pyarrow --with numpy --with pandas python \
+uv run --no-project --with pyarrow --with numpy==2.2.6 --with pandas==2.3.3 python \
     results/genome/c6/checks/flywire_column_test.py
 ```
 
-**Script (design only; not written yet):** `results/genome/c6/checks/flywire_column_test.py`.
+`tools/.venv` runs **Python 3.10.20** (`tools/.venv/Scripts/python.exe --version`, read
+2026-09-25 UTC); the `uv run` interpreter should be the same version, and the manifest records the
+Python and numpy versions actually used. **Why the pins:** the synthetic worlds are seeded, and the
+worlds of the registered run must be the same as those of the `--synthetic-only` run made on
+`tools/.venv`, which needs no pyarrow:
+
+```
+tools/.venv/Scripts/python.exe results/genome/c6/checks/flywire_column_test.py --synthetic-only
+```
+
+**Script (written, not yet committed):** `results/genome/c6/checks/flywire_column_test.py`.
 Order of work, each step refusing on failure:
 
 1. Refuse on a dirty tree (this registration committed first) or a missing data root.
 2. Check the builder's sha256 (§2.1), the column file's sha256 and size (§1), the bank offsets
-   file's sha256 (§3.6); import the builder's constants.
-3. Build `x_c` for all 796 columns (§2.4) into memory.
-4. Machine check (§3.6).
-5. Synthetic worlds (§3.8): the seed-uniqueness assertion, the three calibrations (uniform
-   `Δ_cal`, in-F `Δ_calF`, and the thinning envelope `L` over all 48 thinning worlds), their
+   file's sha256 (§3.6); import the builder's constants. Record the feather file's sha256 and size
+   and compare it with `bank.meta.json` (recorded, not a stop; §3.6).
+3. Build `x_c` for all 796 columns (§2.4) into memory; stop unless there are exactly 796 columns
+   (§2.2).
+4. Machine check (§3.6), including `N_t` equal to `neurons_per_type` in `bank.meta.json`.
+5. Synthetic worlds (§3.8), 100 in all: the seed-uniqueness assertion, the three calibrations
+   (uniform `Δ_cal` and in-F `Δ_calF`, each point the median of five worlds, and the thinning
+   envelope `L` over all 48 thinning worlds), their
    monotonicity checks, then the two-world check on independent seeds. Stop on any failure. No
    real curve point or S1-S4 value exists yet.
-6. The real curve (§3.2), its anchor check at `k = 796`, `Δ`, `L`, `k*`, `k*_F` and the verdict
+6. The real curve (§3.2), its `k = 1` identity check (`A_K = E_c`, a hard stop, §3.6), its
+   anchor check at `k = 796`, `Δ`, `L`, `k*`, `k*_F` and the verdict
    (§4), with the median `|E_c \ B|`, the median `|B \ E_c|` and `k*_obs` on the verdict line.
 7. Column inclusion (§2.3); stop rule (< 100 columns) for S1-S4 only.
 8. S1 with `Δ_294` and its label, the in-F share of extras (§3.9), S2, S3, S4-294 and S4-796, the
@@ -719,12 +856,19 @@ Order of work, each step refusing on failure:
   holding the manifest (git head, script sha256, builder sha256, every input's sha256 and size,
   column-file download date), the included-column count and the counts the inclusion rule removed,
   the machine check's and the curve anchor's results, every synthetic world's curve summary, `Δ`,
-  label and Q3/P95 label, the calibration points `Δ_cal(r)` and `Δ_calF(r_F)`, the thinning
-  envelope `L` with the 48 `Δ` it is the minimum of, the real curve's per-`k` quantiles, `Δ`, `k*`,
+  label and Q3/P95 label, the calibration points `Δ_cal(r)` and `Δ_calF(r_F)` (medians, each
+  with its five `Δ`), the thinning envelope `L` with the 48 `Δ` it is the minimum of, the real curve's per-`k` quantiles, `Δ`, `k*`,
   `k*_obs`, `k*_F` and the verdict, `Δ_294` and its label, the in-F share of extras (§3.9), every quantile of S1-S4 with its denominator
   (lesson g), the reference numbers of §3.1 **printed verbatim under their names** (lesson f), and
   the registered reading of §4 and §5 quoted, not paraphrased. Also a plot of the real curve with
-  the calibration worlds' curves (aggregate only; no column identifiable).
+  the calibration worlds' curves (aggregate only; no column identifiable). `summary.json` is valid
+  JSON: no `NaN` or `Infinity`; an undefined number is stored as `null` or `"n/a"`.
+- **The plot's curves are not all on one footing (Ark, revision 2.3).** The synthetic curves average
+  with denominator `k` (every synthetic column holds all 30 types, §3.8), the real curve with
+  `n_K(t)` (§3.2). So at intermediate `k` the real and the synthetic curves are **not directly
+  comparable**. `Δ` is unaffected: only `k = 1` and `k = 796` enter it, and there the two rules
+  agree (one column's mean is its own table; the full real average is the bank). The plot carries
+  this as a caption.
 - Not committed, `connectome-seed-data/FlyWire/derived/column_test/`: per-column offset rows,
   per-column existence sets, the included-column list, the sampled column lists, the S4 half-bank
   sets, and a manifest with their hashes.
@@ -736,8 +880,8 @@ set arithmetic and sums of per-column rows:
 - the real curve: 9 sampled values of `k` × 50 samples, plus 796 single columns and one full
   average; the sampled averages sum about 50 × (2 + 4 + … + 512) ≈ 51,000 column tables in all,
   which as a dense columns-by-rows array is one matrix product per `k`;
-- the synthetic worlds: thinning 40 calibration + 8 validation, uniform extras 4 + 5, in-F extras
-  5 + 2, so 64 worlds of 796 columns × 900 cells, each with the same curve (a boolean array; each
+- the synthetic worlds: thinning 40 calibration + 8 validation, uniform extras 20 + 5, in-F extras
+  25 + 2, so 100 worlds of 796 columns × 900 cells, each with the same curve (a boolean array; each
   `k` is one product of a 50 × 796 sample-indicator matrix with the 796 × 900 world);
 - S1-S4: 294 columns, 43,071 column pairs, 2 × 20 splits.
 
@@ -962,3 +1106,58 @@ check).**
   value 2 is the definition, not an idealisation (Ark).
 - §8: Zcode's confirmation of Part A (18:35 UTC) marked final.
 - §10: the second-review votes recorded.
+
+**Revision 2.3 (2026-09-24 and 2026-09-25 UTC): third reviews by Ark (19:25 UTC), Johnny (19:34 UTC) and Zcode
+(19:35 UTC), of revision 2.2 (committed `f568691`) and of the script.** All changes agreed by all
+three; the calibration-anchor change (last item) decided by Mike, 2026-09-25.
+
+- Header: revision 2.2 was committed as `f568691`; the "not yet committed" status corrected.
+- §3.8, §4: `L` is 0 on the registered grid because the thinning worlds at `p` ≤ 0.2 % give `Δ`
+  exactly 0, so in practice (c) ⟺ `Δ < 0`; `L` depends on the grid (without `p` ≤ 0.2 % it would
+  be +0.00022); "no thinning world can read (c)" holds by the arithmetic of thinning, not because
+  `L` is taken over 48 worlds, and the 40-to-48 change of revision 2.2 was inert (the 40-world
+  minimum was also 0) (Ark).
+- §3.8, §4: `Δ` is quantized, step about 0.0002 (`159/165 − 158/164`), so (c) needs
+  `Δ ≤ −0.0002`, one discrete step; `k*` near zero takes only a few values (0.00-0.30 %) and is
+  read as a step, not a dose (Ark).
+- §3.8, §6, §4: the two-world check's uniform-extras requirements cannot falsify the (a)/(b)
+  boundary, which the same family defines; the check is a smoke test of the implementation, and
+  the gates that can fail are listed; a (b) reading is reported as resting on the definition of
+  the threshold, not a measured boundary (Ark).
+- §3.8, §4: `k*_F` contradiction resolved in favour of §4: printed under every label, marked
+  "(read only under (c))" when the label is not (c) (Zcode).
+- §2.2, §3.2, §3.6, §7: the three stops the script adds are registered: exactly 796 columns (the
+  builder's `pos`), `N_t` equal to `neurons_per_type` in `bank.meta.json` (part of the machine
+  check), the `k = 1` identity `A_K = E_c` as a hard stop; the feather file's sha256 recorded and
+  compared with `bank.meta.json`, not a stop (Zcode).
+- §7: the run command pins `numpy==2.2.6` and `pandas==2.3.3` as the script's docstring does;
+  `tools/.venv` is Python 3.10.20; the reason: the seeded worlds must match the `--synthetic-only`
+  run on `tools/.venv` (Zcode). The script is no longer "not written yet".
+- §3.8: how a world is drawn: one draw per (column, cell) from
+  `default_rng(seed).random((796, 900))`, cells ordered by sorted type names; thinning keeps a B
+  cell iff `u >= p`; extras are added iff `u < q` (agreed by all three).
+- §7: the plot's synthetic curves divide by `k`, the real curve by `n_K(t)`; intermediate `k` are
+  not directly comparable; `Δ` is unaffected; the plot carries a caption saying so (Ark).
+- §4, §7: `k*_obs` is "n/a" (`null` in `summary.json`) when `X` is undefined or `R_in − X` is zero
+  to rounding; `summary.json` is valid JSON (Ark).
+- Johnny confirmed the changes (19:34 UTC).
+- §3.8, §4, §7: **calibration anchors are medians of five worlds.** Each point of both extras
+  calibrations is the median `Δ` of five worlds per rate (uniform seeds `250 + 10 i + j`, in-F
+  seeds `400 + 10 i + j`), not one world; the monotonicity stops, `k*`, `k*_F` and the cuts
+  `Δ_cal(5 %)`, `Δ_cal(20 %)` use the medians, and all five `Δ` are printed beside each median.
+  100 worlds instead of 64; the seed ranges stay disjoint. Reason: with one world per rate the
+  (a)/unclear cut depended on which draw was the anchor (+0.0434 against +0.0392 at `r` = 5 %,
+  about 10 %). Found by Ark (19:25 UTC); extended to the in-F family by Zcode (19:35 UTC); Johnny
+  agreed; **decided by Mike, 2026-09-25**, before the run. No real data had been touched. The
+  `k*` step values near zero (§3.8) are updated for the new anchors. Thinning worlds, validation
+  worlds and their seeds are unchanged.
+- §3.7, §3.8, §6: five text points, no rule changes and no new worlds (Ark, DPC Research chat,
+  2026-09-24 19:50 UTC): the script's `--synthetic-only` run reads (b) on all 25 uniform-extras
+  worlds with a share of columns `>= R_in` of exactly 0.000, so dropping the Q3/P95 rule rests on a
+  measurement (§3.7); the eight thinning rows of the two-world check are met by construction and
+  are vacuous, leaving seven real rows (§3.8, §6); after the median fix, 3 of the 20 uniform
+  calibration worlds (seeds 250, 272, 274) read other than their nominal label, so one `Δ` step of
+  uncertainty remains in each anchor (§3.8); `k*` has a dead zone between 0.33 % and 5 %, where a
+  printed value is an interpolation with no world, and extra worlds at `r` = 1 % and 2 % were
+  considered and not taken (CC, 2026-09-25) (§3.8); the median anchor is a chosen setting, the mean
+  would have put the 5 % cut about 2 % higher (§3.8).
