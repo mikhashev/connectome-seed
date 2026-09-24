@@ -54,6 +54,7 @@ language_cutoff: 2026-09-13
 - **Inferred.** The column test measures one component, the order averaging removes; it is not a proxy for between-bank overlap (Johnny's objection, Zcode's reconciliation). The separate-volumes reading, if the estimates exist, measures the merge's contribution directly as overlap(one volume vs FlyWire) against overlap(merged vs FlyWire) (Zcode).
 - **First step:** read flyvis 1.2.0 for per-volume estimates (files or code) and record the answer with its location; then register the column test before any value is computed.
 - **2026-09-25, CC:** Correction (2026-09-25, reviews by Ark, Johnny and Zcode in the DPC Research chat): the column test is Ark's proposal; Johnny objected; Zcode reconciled. The test gives a lower bound on the order our processing produces, since column averaging is one of four steps (Zcode). ADR-005 point 4 carries the same wording.
+- **2026-09-25, CC:** Part A done: flyvis 1.2.0 ships only the merged fib25-fib19_v2.2.json, so the merge is unmeasured (CC, confirmed by Zcode 2026-09-24 18:35 UTC). Registration revision 2.2 reviewed by Ark, Johnny and Zcode and committed as f568691 (docs/plans/2026-09-24-column-test-registration.md): the dose-curve rise Δ decides; labels (a)/(b)/unclear/(c) by k* against 5 %/20 % and the thinning floor L. Next: results/genome/c6/checks/flywire_column_test.py, reviewed before its single run.
 - **axis:** honesty, knowledge
 - **filed:** CC · 2026-09-25
 
