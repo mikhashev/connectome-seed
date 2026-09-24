@@ -1,0 +1,62 @@
+{
+  "registration": "docs/plans/2026-09-24-flywire-bf-p3-registration.md",
+  "flyvis30_json_rows_only": {
+    "offset_rows": 710,
+    "nonempty_pairs": 228,
+    "rows_by_max_abs_offset": {
+      "0": 188,
+      "1": 404,
+      "2": 86,
+      "3+": 32
+    },
+    "rows_at_or_beyond_far": 32,
+    "max_abs_offset": 5
+  },
+  "variants": {
+    "primary": {
+      "offset_rows": 393,
+      "nonempty_pairs": 165,
+      "rows_by_max_abs_offset": {
+        "0": 147,
+        "1": 245,
+        "2": 1
+      },
+      "rows_at_or_beyond_far": 0,
+      "max_abs_offset": 2,
+      "variant_in_manifest": "primary",
+      "recovered_of_missing": 0,
+      "flyvis30_pairs_present": 159
+    },
+    "geo": {
+      "offset_rows": 419,
+      "nonempty_pairs": 171,
+      "rows_by_max_abs_offset": {
+        "0": 151,
+        "1": 267,
+        "2": 1
+      },
+      "rows_at_or_beyond_far": 0,
+      "max_abs_offset": 2,
+      "variant_in_manifest": "geo",
+      "recovered_of_missing": 5,
+      "flyvis30_pairs_present": 164
+    },
+    "geo_interior": {
+      "offset_rows": 422,
+      "nonempty_pairs": 176,
+      "rows_by_max_abs_offset": {
+        "0": 155,
+        "1": 267
+      },
+      "rows_at_or_beyond_far": 0,
+      "max_abs_offset": 1,
+      "variant_in_manifest": "geo_interior",
+      "recovered_of_missing": 8,
+      "flyvis30_pairs_present": 167
+    }
+  },
+  "missing_in_primary": 69,
+  "only_in_primary": 6,
+  "reading_rule": "primary verdict labelled pipeline-contaminated iff a diagnostic variant recovers >= 50 of the pairs missing from the primary bank AND has an offset row with max(|du|,|dv|) >= 3",
+  "primary_verdict_label": "support difference real, reading stands"
+}
