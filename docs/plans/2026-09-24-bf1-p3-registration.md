@@ -176,8 +176,8 @@ after the table.
 
 | branch | formal condition (harness's own P3 criterion, on existence) | distance reading | meaning | what the second brain (FlyWire) then tests |
 |---|---|---|---|---|
-| **A. BF_1 separates** | `n_shuffled_ge_real = 0` and `strictly_above_all` true | `gap` near BF_1's own real margin (≈ +0.027, i.e. `shuffled_max` near the rule's measured shuffle bound of +0.0008) | The rank-1 part **alone suffices** to separate: it finds structure the shuffle destroys. This run does **not** test whether X alone would also separate, so it does not say X contributes no separation; it says the rule's separation does not *need* X. | Is the **rank-1** structure (a low-dimensional per-type interaction) bank-specific — does it survive on a second, independently reconstructed brain? |
-| **B. BF_1 does not separate** | `p_one_sided ≥ 0.05`, i.e. `n_shuffled_ge_real ≥ 4` (cut justified below) | `gap` near 0 or negative, i.e. `shuffled_max` close to or above `real_margin` | The rule's separation **needs X** — X alone, or X together with the rank-1 term; this run cannot tell those two apart. BF_1 alone is not distinguishable from a degree-preserving null on existence. | Is the **group structure** (the field-group terms X, not the rank-1 term alone) bank-specific? |
+| **A. BF_1 separates** | `n_shuffled_ge_real = 0` and `strictly_above_all` true | `shuffled_max` near 0, so `gap` near BF_1's own real margin (≈ +0.028). (For reference only: rule #2.1's own shuffled max was +0.0008; that is a different predictor's number, not an anchor for BF_1.) | The rank-1 part **alone suffices** to separate: it finds structure the shuffle destroys. This run does **not** test whether X alone would also separate, so it does not say X contributes no separation; it says the rule's separation does not *need* X. | Is the **rank-1** structure (a low-dimensional per-type interaction) bank-specific — does it survive on a second, independently reconstructed brain? |
+| **B. BF_1 does not separate** | `p_one_sided ≥ 0.05`, i.e. `n_shuffled_ge_real ≥ 4` (cut justified below) | `gap` near 0 or negative, i.e. `shuffled_max` near +0.028 or above | The rule's separation **needs X** — X alone, or X together with the rank-1 term; this run cannot tell those two apart. BF_1 alone is not distinguishable from a degree-preserving null on existence. | Is the **group structure** (the field-group terms X, not the rank-1 term alone) bank-specific? |
 | **C. in between** | everything else: `1 ≤ n_shuffled_ge_real ≤ 3` (`p_one_sided` 0.02–0.04), or `n_shuffled_ge_real = 0` with `strictly_above_all` false (a tie within `TAU`) | `gap` small but not clearly near either end | Partial: the rank-1 part alone carries weak separation, short of the harness's own bar. Neither "rank-1 alone suffices" nor "rank-1 alone is ambient" is supported. | Both questions stay open; the second brain tests the rule's full existence term, and attributing between BF_1 and X needs a further, not-yet-registered run (e.g. X alone "as a rule"). |
 
 Every possible result lands in exactly one row: A needs `n = 0` and strict; B needs `n ≥ 4`; C takes
@@ -208,6 +208,21 @@ negative by only a little. **The formal branch governs the verdict.** The gap, `
 they do not move a result from one branch to another.
 
 ## 7. Can this test separate both worlds? (item 7)
+
+**What exactly the margin isolates (review, 2026-09-24).** On every bank, real or shuffled, BF_1's
+fit starts from `fit_n1(view)` (`harness.py` line 709), the same function the N1 baseline uses
+(`N1 = Predictor("N1", ..., fit_n1)`, line 478), and its decode adds the rank-1 term to that N1
+logit and changes nothing else (§1). The margin compares BF_1 with N1 **fitted on the same bank**.
+So on each bank the margin is exactly the held-out gain of the rank-1 term over that bank's own
+N1, and the difference between the real margin and a shuffled margin runs **only through the
+rank-1 term**. The question is therefore precise: *does a rank-1 term fitted on the residual
+`Y − sigmoid(N1)` gain something that a degree-preserving shuffle destroys?* Branch A means yes,
+and the separation comes from the rank-1 term alone. Branch B means the rank-1 fit gains about as
+much on a shuffled residual as on the real one. (Ark proposed this; his supporting claim that N1's
+scores are bit-identical on real and shuffled banks is **not** true: step 0 recorded N1 existence
+0.36248 on the real bank and 0.35938–0.36564 across the shuffles, `checks/n1_alone/RESULT.md`.
+The "N1 as a rule" control shows margin 0 because it compares N1 with itself on each bank. The
+conclusion above does not need that claim; it follows from the within-bank margin.)
 
 **Neither branch is guaranteed by the numbers already on record.** The rule #2.1 outcome note
 (§3) records that rule #1's own P3 existence gap (+0.039, from a rule that *failed* C6 overall)
@@ -356,3 +371,17 @@ fits (single process). This also incidentally confirmed §3's construction claim
    the registration).
 5. The script is committed, but **not run**, by the author of this registration. Running it is a
    separate step, on Mike's word, after this file and the script are both reviewed.
+
+## 12. Changes after review, before the run
+
+Reviews in the DPC chat, 2026-09-24 UTC: Ark 06:29, Zcode 06:35, Johnny 06:36. All three passed
+the branches of §6 as exhaustive and non-overlapping and judged the test not degenerate (§7).
+
+- §6 row A: the distance anchor was rule #2.1's shuffled max (+0.0008), a different predictor's
+  number. It is now BF_1's own margin: A means `shuffled_max` near 0 (gap near +0.028), B means
+  `shuffled_max` near +0.028 (gap near 0). +0.0008 stays as a reference only (Ark, Zcode).
+- §7: added what the margin isolates: the rank-1 term's gain over the same bank's N1 (Ark,
+  Zcode; Johnny's reading of the within-bank margin). Ark's supporting claim about N1 being
+  bit-identical across banks is recorded as not true, with the step 0 numbers.
+- Not changed: the redundant `and n == 0` in branch A's code (`strictly_above_all` implies it;
+  Ark and Zcode called it cosmetic). The script is untouched, so its reviewed text is what runs.
