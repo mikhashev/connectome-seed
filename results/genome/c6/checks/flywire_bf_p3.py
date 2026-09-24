@@ -268,25 +268,42 @@ def run_arm(arm, bank, bank_manifest, bank_manifest_sha, out, workers, log):
             "bank_manifest": bank_manifest, "bank_name": bank.name}
 
 
+# Registration section 5a, the joint-reading table, verbatim (row text copied from the
+# registration, markdown emphasis included). Keyed by (flyvis-30 branch, FlyWire-30 branch).
+JOINT_ROWS = {
+    ("A", "A"): "The pattern is present in the second brain.",
+    ("A", "B"): "The pattern did not carry over to the second brain.",
+    ("A", "C"): 'Weak or partial carry-over: neither "present" nor "did not carry over" is '
+                "supported.",
+    ("BC", "BC"): "flyvis-30 itself does not separate on the 30-type grid: the substrate is too "
+                  "narrow for this test to show anything. Read as **the test failing**, not as "
+                  "evidence about the hypothesis.",
+    ("BC", "A"): "Unexpected direction: FlyWire separates where the flyvis restriction does not "
+                 "-- read as a flag to re-examine both fits, not as a substantive finding on its "
+                 "own.",
+}
+
+
 def joint_reading(flywire_branch, flyvis_branch):
-    """Registration section 5a. Branch labels start with "A", "B" or "C"."""
+    """Registration section 5a. Branch labels start with "A", "B" or "C". Returns the registered
+    row verbatim."""
     fw, fv = flywire_branch[0], flyvis_branch[0]
-    if fv == "A" and fw == "A":
-        return "both banks separate: the pattern is present in the second brain."
-    if fv == "A" and fw == "B":
-        return ("flyvis-30 separates, FlyWire-30 does not: the pattern did not carry over to "
-                "the second brain.")
-    if fv == "A" and fw == "C":
-        return ("flyvis-30 separates, FlyWire-30 is in between: weak or partial carry-over; "
-                "neither 'present' nor 'did not carry over' is supported.")
-    if fv != "A" and fw != "A":
-        return ("flyvis-30 does not separate on the 30-type grid: the substrate is too narrow for "
-                "this test to show anything -- read as the test failing, not as evidence about "
-                "the hypothesis, whatever FlyWire-30 shows short of A.")
-    if fv != "A" and fw == "A":
-        return ("FlyWire-30 separates, flyvis-30 does not: an unexpected direction -- read as a "
-                "flag to re-examine both fits before drawing a substantive conclusion.")
-    raise ValueError(f"unhandled branch pair {flywire_branch!r}, {flyvis_branch!r}")
+    key = (fv if fv == "A" else "BC", fw if fv == "A" or fw == "A" else "BC")
+    if key not in JOINT_ROWS:
+        raise ValueError(f"unhandled branch pair {flywire_branch!r}, {flyvis_branch!r}")
+    return JOINT_ROWS[key]
+
+
+def named_outcome(per_rank):
+    """Registration section 5, 'combining ranks': a rank that separates while r = 1 does not is
+    its own named outcome, printed per arm."""
+    if per_rank[1]["branch"].startswith("A"):
+        return None
+    higher = [r for r in RANKS if r > 1 and per_rank[r]["branch"].startswith("A")]
+    if not higher:
+        return None
+    return ("higher-rank structure survives where rank-1 does not (ranks "
+            + ", ".join(str(r) for r in higher) + " separate; r = 1 does not)")
 
 
 SENSITIVITY = HERE / "flywire_sensitivity" / "summary.json"
@@ -319,7 +336,7 @@ def write_result_md(out, summary, arm_results):
             q = arm_results[arm]["per_rank"][rank]
             md.append(f"| {arm} | {rank} | {q['real_margin']:+.5f} | {q['shuffled_mean']:+.5f} | "
                       f"{q['shuffled_max']:+.5f} | {q['n_shuffled_ge_real']} | "
-                      f"{q['p_one_sided']:.2f} | {q['survives_bonferroni']} | {q['gap']:+.5f} | "
+                      f"{q['p_one_sided']:.2f} | {q['survives_bonferroni']} | {q['gap']:+.4e} | "
                       f"{q['real_frac_folds_at_max_lambda']:.2f} | "
                       f"{q['shuffle_frac_folds_at_max_lambda']:.2f} | {q['branch']} | "
                       f"{q['negative_reading'] or '-'} |")
@@ -331,6 +348,10 @@ def write_result_md(out, summary, arm_results):
                f"BF_1 was {full65!r}, but flyvis-30 is not A at r = 1: the separating structure "
                "does not live in the 30 column-assigned types alone; some of the 35 dropped types "
                "carry it."]
+    for arm in ARMS:
+        named = named_outcome(arm_results[arm]["per_rank"])
+        if named:
+            md += ["", f"**Named outcome (registration section 5), {arm}:** {named}."]
     md += ["", "## Joint reading per rank", "", "| r | FlyWire-30 | flyvis-30 | reading |",
            "|---|---|---|---|"]
     for rank in RANKS:
