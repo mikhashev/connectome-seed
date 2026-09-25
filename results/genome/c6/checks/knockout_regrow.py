@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Knock out and regrow, block A on flyvis-65 (ADR-005 decision 3).
 
-Implements docs/plans/2026-09-24-knockout-regrow-registration.md, revision 3.1; section numbers
+Implements docs/plans/2026-09-24-knockout-regrow-registration.md, revision 3.2; section numbers
 below refer to it, and main() follows its section 7 order (refusals and pins; machine checks;
 synthetic worlds and the two-world check; the real arm; the verdict and outputs).
 
@@ -13,14 +13,30 @@ the U rule; the fixed lambda = 1 diagnostic (decides nothing). --from-raw now me
 the saved fits and fits only what is missing (the new worlds and the fixed-lambda fits).
 
 Revision 3.1 (2026-09-25, the reviewers' pass on revision 3; text and code only, nothing run):
-three limits instead of one (gamma*_P, the weak leg; gamma_R, the R level; the family limit, the
-maximum of each predictor's own weak-leg limit), printed with the per-gamma fractions seen/n and
+three limits instead of one (gamma*_P, the leg-P limit; gamma_R, the R level; the family limit,
+the largest leg-P limit over the predictors), printed with the per-gamma fractions seen/n and
 R/n, Johnny's binomial note and the width of the transition band [gamma*_P, gamma_R), where U is
 read as "on the detection threshold; cannot be separated"; the lambda each knockout fit selected
 goes on the verdict line, with a G reached through lambda = 100 named there; the registered run
 writes its private and raw outputs to connectome-seed-data/knockout_regrow/<run>, and it must
-reproduce the pre-run synthetic table (PRERUN_DIR, synthetic_worlds.csv, byte for byte) or the
-two-world check stops it.
+reproduce the pre-run synthetic table (PRERUN_DIR, synthetic_worlds.csv) or the two-world check
+stops it (revision 3.1 compared it byte for byte; revision 3.2 compares the deciding columns).
+
+Revision 3.2 (2026-09-25, the reviewers' pass on revision 3.1; text and code only, no fitting
+run): the reproduction gate compares the fresh synthetic_worlds.csv with the pinned one row by
+row on the deciding columns (lattice columns exactly, continuous columns within
+MACHINE_CHECK_TOL; mechanism_description reported, not gated), and records byte identity as a
+fact only (csv_compare, check_prerun_reproduced); the whole pre-run SHA256SUMS.txt is checked
+(check_prerun_files); a per-fit diagnostic compares the fresh raw fits with the pinned ones,
+split by the worlds fitted by revision 2 and by revision 3 (raw_fits_diagnostic; decides
+nothing); a --from-raw pass is reported as a re-read, not a reproduction; the manifest records
+the BLAS, the machine and the four thread variables as found (machine_record); label_text takes
+the U reasons, and a U whose reasons include ceiling_block below the gate is printed as a failed
+fit, never renamed by the U rule; one threshold on two variables is split into GATE_CUT
+(ceiling_block, the G gate) and MECHANISM_CUT (ceiling_full, the description of G), both 0.90;
+the mechanism text names rule #2.1's ceiling_full, which changes the text of column 8 of
+synthetic_worlds.csv (mechanism_description) on the rows that carry it, and with it the bytes
+of that file; "weak leg" is replaced by "leg P".
 
     tools/.venv/Scripts/python.exe results/genome/c6/checks/knockout_regrow.py --synthetic-only --starts 10 --workers 30
     tools/.venv/Scripts/python.exe results/genome/c6/checks/knockout_regrow.py --arm flyvis65 --starts 10 --workers 30
@@ -34,7 +50,11 @@ timing; a smoke run is marked as such and is refused in the real arm. CPU only: 
 the pinned numpy harness; a GPU instrument would be a separate one (section 7).
 """
 import os
-for _v in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS", "NUMEXPR_NUM_THREADS"):
+THREAD_VARS = ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS", "NUMEXPR_NUM_THREADS")
+# Revision 3.2 (A4): the values found in the environment before setdefault, which does not
+# override a value already set; the manifest records them beside the values in effect.
+THREAD_ENV_FOUND = {_v: os.environ.get(_v) for _v in THREAD_VARS}
+for _v in THREAD_VARS:
     os.environ.setdefault(_v, "1")          # one BLAS thread per process, as the harness sets
 import argparse
 import csv
@@ -56,16 +76,30 @@ HERE = Path(__file__).resolve().parent
 C6 = HERE.parent
 ROOT = C6.parents[2]                                   # the repository root
 REGISTRATION = "docs/plans/2026-09-24-knockout-regrow-registration.md"
-REGISTRATION_REVISION = "3.1"
+REGISTRATION_REVISION = "3.2"
 OUT = HERE / "knockout_regrow"                         # section 7: committed, aggregates only
 RULE_PATH = C6 / "rules" / "second_rule_v21" / "fit.py"
 # Section 7 (revision 3.1): private and raw outputs live outside the repository. The registered
 # run writes them to PRIVATE_ROOT / "<arm>_<UTC stamp>_<git head, 12>" (private_run_dir).
 PRIVATE_ROOT = ROOT.parent / "connectome-seed-data" / "knockout_regrow"
-# The pre-run synthetic outputs of revision 3 (copied there on 2026-09-25; SHA256SUMS.txt beside
-# them). The registered run must reproduce synthetic_worlds.csv byte for byte (sections 3.3, 7).
+# The pre-run synthetic outputs (copied there on 2026-09-25; SHA256SUMS.txt beside them). They
+# are mixed: the fits of 30 worlds come from the revision-2 run (families R, Nf, No, W, M0.5,
+# M1.0) and those of 15 worlds from the revision-3 run (M0.6, M0.75, M0.85); the table was written
+# by a revision-3 --from-raw pass over those fits. The registered run must reproduce
+# synthetic_worlds.csv on its deciding columns (sections 3.3, 7; revision 3.2).
 PRERUN_DIR = PRIVATE_ROOT / "synthetic_rev3_prerun"
-PRERUN_WORLDS_CSV_SHA256 = "7a2f02953207f8aacb1cbd8c5e61e7731135d5a6f800a40b359cb0ff12f9c8f1"
+# Revision 3.2 (Ark N3): every file listed in the pre-run SHA256SUMS.txt is checked, against both
+# the list and these pins (section 7's table, raw bytes).
+PRERUN_SHA256 = {
+    "SYNTHETIC.md": "4526d2239c6bf378b161b7fb92bab2c022b0ac648a88fcda8fa02f86f9e58264",
+    "raw_fits.json.gz": "91035af838446b86bda502fe8bf719910550bbad72c1cb12563800a984819e60",
+    "rev2_full.log": "fa5606e37ebcb8e7b4aac69ba592638e3f77cfea9cbff58b639be2ee8ea960d0",
+    "synthetic_only.json": "ea812dfd87238a4a23ca54e06faf5c1d93c7802a36ee28eff9857183236377dd",
+    "synthetic_worlds.csv": "7a2f02953207f8aacb1cbd8c5e61e7731135d5a6f800a40b359cb0ff12f9c8f1"}
+PRERUN_WORLDS_CSV_SHA256 = PRERUN_SHA256["synthetic_worlds.csv"]
+# Which run fitted each pre-run world (the per-fit diagnostic of revision 3.2 splits by it).
+PRERUN_REV2_FAMILIES = ("R", "Nf", "No", "W", "M0.5", "M1.0")
+PRERUN_REV3_FAMILIES = ("M0.6", "M0.75", "M0.85")
 
 # Section 1.1: files and pins (LF-normalised sha256). The script refuses if any differs.
 PINS = {
@@ -146,13 +180,24 @@ BF_KEYS = tuple(f"BF:{r}" for r in RANKS)
 PRED_KEYS = ("rule",) + BF_KEYS + ("N1",)
 PRED_NAME = {"rule": "rule #2.1", **{f"BF:{r}": f"BF_{r}" for r in RANKS}, "N1": "N1"}
 
-# Sections 2.4 and 4: the cuts.
-CEILING_CUT = 0.90
+# Sections 2.4 and 4: the cuts. Revision 3.2 (A5) splits revision 3.1's one CEILING_CUT, which
+# was read on two variables, into two named constants with the same value, so nothing changes
+# numerically: GATE_CUT gates G on rule #2.1's ceiling_block (section 4); MECHANISM_CUT picks the
+# mechanism word of G on rule #2.1's ceiling_full (a description only, borrowed from the gate and
+# not calibrated).
+GATE_CUT = 0.90
+MECHANISM_CUT = 0.90
 P_R = 0.01                                             # leg P for R
 P_W = 0.05 / len(RANKS)                                # leg P for W (0.0125, D6 (i))
 P_G = 0.10                                             # G needs p_P > 0.10 for every predictor
 N_DEG_NAME_ABOVE = 5                                   # section 3.2, D14 (ii): naming threshold
-TAU = H.TAU                                            # 1e-9, the harness's tie band
+# 1e-9, the harness's tie band (revision 3.2, section 3.2). Inert in p_P and p_P_rowcol: with 32
+# present of 64, every AUC there is a multiple of 1/2048, so x >= y - TAU holds exactly when
+# x >= y. In n_ge a shuffle's margin is scored on the shuffled block, whose present count need not
+# be 32, so it is a multiple of 1/(2 n_present n_absent); two unequal margins then differ by far
+# more than TAU, and TAU can only turn a rounding difference between equal fractions into a tie.
+# The tie band that matters is the lambda tie in fitting.
+TAU = H.TAU
 FIXED_LAMBDA = 1.0                                     # section 3.5: the fixed-lambda diagnostic
 LAMBDA_TIE_TEXT = "1e-9"                               # harness.py:727-728 (fit_bf), literal
 WITHIN_FLY_NOTE = ("within-fly variation, not a cut: one FlyWire column differs from FlyWire-30 "
@@ -186,7 +231,7 @@ ZPRIME_PLUS = {"Mi1", "Tm3", "Tm1", "Tm2", "T4a", "T4b", "T5a", "T5b"}   # z' = 
 DENSE_GRID = ((0.5, "M0.5"), (0.6, "M0.6"), (0.75, "M0.75"), (0.85, "M0.85"), (1.0, "M1.0"))
 CURVE_ANCHORS = ((0.0, "Nf"), (2.0, "R"))
 M_FAMILIES = tuple(f for _, f in DENSE_GRID)
-LIMIT_KEYS = ("rule",) + BF_KEYS                       # each has its own weak-leg limit
+LIMIT_KEYS = ("rule",) + BF_KEYS                       # each has its own leg-P limit
 LAMBDA_MAX = max(H.BF_LAMBDAS)                         # the lambda at which the fit is N1's
 BINOMIAL_PS = (0.2, 0.4)                               # Johnny's binomial note (section 3.6)
 
@@ -213,6 +258,10 @@ REQUIREMENTS = (
 NO_CONTINGENCY = "The design cannot tell an orthogonal board from absence."
 U_UNCALIBRATED = "insufficient evidence (uncalibrated)"
 U_THRESHOLD = "on the detection threshold; cannot be separated"
+# Revision 3.2 (A2): a U whose reasons include ceiling_block below GATE_CUT is a failed fit,
+# printed as such whatever else is listed; the U rule's rename never applies to it.
+FAILED_FIT_TEXT = "failed fit: rule #2.1 cannot hold the block even when trained on it alone"
+CEILING_BLOCK_REASON = "rule #2.1's ceiling_block = "   # the prefix of that reason
 N_DEG_SENTENCE = ("{n} of {N} shuffles have no AUC on the block and are excluded from leg S, "
                   "which counts against {k} = {N} - {n} shuffles (smallest p_S {ps:.3f})")
 
@@ -220,6 +269,10 @@ N_DEG_SENTENCE = ("{n} of {N} shuffles have no AUC on the block and are excluded
 BF1_FULL_BANK_MARGIN = 0.028150051052145946
 IDENTITY_TOL = 1e-9
 PARITY_TOL = 1e-9                                      # section 3.4, check 5
+# Revision 3.2 (A1): the tolerance of the reproduction gate on the continuous columns of
+# synthetic_worlds.csv, in each column's own units. The name is reused from
+# results/genome/c6/checks/bf1_p3.py (MACHINE_CHECK_TOL = 1e-9); TAU is not reused for it.
+MACHINE_CHECK_TOL = 1e-9
 
 
 def log(m=""):
@@ -250,6 +303,37 @@ def dump_json(obj):
 def git(*args):
     return subprocess.run(["git", *args], cwd=ROOT, capture_output=True, text=True,
                           check=True).stdout.strip()
+
+
+def machine_record():
+    """Revision 3.2 (A4), for the manifest: the BLAS numpy was built with
+    (numpy.show_config), the BLAS loaded at run time (threadpoolctl, if installed), the machine
+    and CPU, and the four thread variables as found before setdefault and as in effect."""
+    rec = {}
+    try:
+        cfg = np.show_config(mode="dicts")
+        rec["numpy_build"] = {k: cfg.get("Build Dependencies", {}).get(k)
+                              for k in ("blas", "lapack")}
+        rec["numpy_machine_information"] = cfg.get("Machine Information")
+        rec["numpy_simd"] = cfg.get("SIMD Extensions")
+    except Exception as e:                             # recorded, never fatal
+        rec["numpy_build"] = {"error": repr(e)}
+    try:
+        import threadpoolctl
+        # the library path is reduced to its file name: the manifest is committed, and an
+        # absolute path names the user's home directory without telling the reader anything
+        rec["blas_at_run_time"] = [{**i, "filepath": os.path.basename(i.get("filepath") or "")}
+                                   for i in threadpoolctl.threadpool_info()]
+    except Exception as e:
+        rec["blas_at_run_time"] = {"error": repr(e)}
+    # no host name: the manifest is committed, and the CPU, not the host, sets the BLAS kernel
+    rec["machine"] = {"machine": platform.machine(),
+                      "processor": platform.processor(), "platform": platform.platform(),
+                      "cpu_count": os.cpu_count(),
+                      "PROCESSOR_IDENTIFIER": os.environ.get("PROCESSOR_IDENTIFIER")}
+    rec["thread_env"] = {v: {"found": THREAD_ENV_FOUND[v], "in_effect": os.environ.get(v)}
+                         for v in THREAD_VARS}
+    return rec
 
 
 # ------------------------------------------------------------------------------------------
@@ -760,7 +844,9 @@ def precision_at_32(p, y):
 
 
 def regrown_share(a, ceiling):
-    """(AUC - 0.5) / (AUC_ceiling - 0.5); "n/a" (None) when the ceiling is <= 0.5."""
+    """(AUC - 0.5) / (AUC_ceiling - 0.5); "n/a" (None) when the ceiling is <= 0.5. Despite its
+    name it is a ratio, not a share: it can exceed 1 and be negative (revision 3.2, section 3.1);
+    the CSV column keeps its name."""
     if a is None or ceiling is None or ceiling <= 0.5:
         return None
     return (a - 0.5) / (ceiling - 0.5)
@@ -886,11 +972,21 @@ def reading_on(primary, rows):
 
 
 def mechanism_description(pr):
-    """Section 2.4 (revision 3): the mechanism of G is a description, read from nothing."""
+    """Section 2.4 (revision 3): the mechanism of G is a description, read from nothing.
+    Revision 3.2 (A5): it names whose ceiling_full it quotes (rule #2.1's; it is repeated on all
+    six rows of a world in synthetic_worlds.csv), and its cut is MECHANISM_CUT, borrowed from the
+    gate and not calibrated."""
     cf = pr["ceiling_full"]
-    if cf is not None and cf >= CEILING_CUT:
-        return f"no information (ceiling_full {fmt(cf)} >= 0.90)"
-    return f"orthogonal (ceiling_full {fmt(cf)} < 0.90)"
+    if cf is not None and cf >= MECHANISM_CUT:
+        return f"no information (rule #2.1's ceiling_full = {fmt(cf)} >= {MECHANISM_CUT:.2f})"
+    return f"orthogonal (rule #2.1's ceiling_full = {fmt(cf)} < {MECHANISM_CUT:.2f})"
+
+
+def ceiling_block_reason(cb):
+    """The U reason when rule #2.1's ceiling_block is below GATE_CUT (the wording of revision
+    3.1's read_label, unchanged); label_text recognises it by CEILING_BLOCK_REASON."""
+    return (f"{CEILING_BLOCK_REASON}{fmt(cb)} is below {GATE_CUT:.2f}: the rule cannot hold the "
+            "block even when trained on it alone")
 
 
 def read_label(rows):
@@ -910,16 +1006,14 @@ def read_label(rows):
                        f"BF_1 reads {B['letter']}")
     else:
         clear = all(rows[k]["p_P"] > P_G for k in ("rule",) + BF_KEYS)
-        gate = pr["ceiling_block"] is not None and pr["ceiling_block"] >= CEILING_CUT
+        gate = pr["ceiling_block"] is not None and pr["ceiling_block"] >= GATE_CUT
         if clear and gate:
             label = "G"
             mech = mechanism_description(pr)
         else:
             label = "U"
             if not gate:
-                reasons.append(f"rule #2.1's ceiling_block = {fmt(pr['ceiling_block'])} is "
-                               "below 0.90: the rule cannot hold the block even when trained on "
-                               "it alone")
+                reasons.append(ceiling_block_reason(pr["ceiling_block"]))
             if pr["leg_S_passes"] != (pr["p_P"] <= P_R):
                 reasons.append(f"the legs disagree for rule #2.1: leg S n_ge = {pr['n_ge']} of "
                                f"{pr['n_valid_shuffles']}, leg P p_P = {pr['p_P']:.4f}")
@@ -945,26 +1039,34 @@ def instrument_text(starts):
 def limits_text(dl):
     """Section 3.6 (revision 3.1): the three limits with their brackets, the transition band,
     the per-gamma fractions seen/n and R/n, and the instrument; printed with every G."""
-    lp, lr, fam, band = dl["weak_leg"], dl["R"], dl["family"], dl["band"]
-    return (f"gamma_R = {lr['text']} (bracket {lr['bracket_text']}); weak leg from gamma*_P = "
+    lp, lr, fam, band = dl["leg_P"], dl["R"], dl["family"], dl["band"]
+    return (f"gamma_R = {lr['text']} (bracket {lr['bracket_text']}); leg P from gamma*_P = "
             f"{lp['text']} (bracket {lp['bracket_text']}); family limit = {fam['text']}; "
             f"transition band {band['text']}; per gamma seen/n, R/n: {dl['curve_text']}; "
             f"M-world units; instrument: {dl['instrument']}")
 
 
-def label_text(label, dl, u_rule):
-    """Section 4 (revision 3.1). G carries the three limits and the instrument; U is the
-    signature of the detection threshold, renamed by the U rule of section 3.6 when no
-    dense-grid world read U."""
+def label_text(label, dl, u_rule, reasons, ceiling_block=None):
+    """Section 4 (revisions 3.1, 3.2). G carries its gate variable (rule #2.1's ceiling_block),
+    the three limits and the instrument. U: if its reasons include rule #2.1's ceiling_block
+    below GATE_CUT, it is a failed fit, whatever else is listed, and the U rule's rename never
+    applies to it (revision 3.2, A2); otherwise it is the signature of the leg-P detection limit
+    gamma*_P, renamed by the U rule of section 3.6 when no dense-grid world read U.
+    Not to be confused with LABEL_TEXT, a dict in flywire_column_test.py (another test's
+    labels)."""
     if label == "R":
         return "R: regrows"
     if label == "W":
         return "W: rule weaker than the information available"
     if label == "G":
-        return f"G: not detected at the R level above gamma_R ({limits_text(dl)})"
+        return (f"G: not detected at the R level above gamma_R (gate: rule #2.1's ceiling_block = "
+                f"{fmt(ceiling_block)} >= {GATE_CUT:.2f}; {limits_text(dl)})")
+    if any(str(r).startswith(CEILING_BLOCK_REASON) for r in reasons or ()):
+        return f"U: {FAILED_FIT_TEXT}"
     if u_rule["renamed"]:
         return f"U: {U_UNCALIBRATED}; never read as a finding"
-    return f"U: {U_THRESHOLD} (transition band {dl['band']['text']})"
+    return (f"U: {U_THRESHOLD} (at the leg-P detection limit gamma*_P = {dl['leg_P']['text']}; "
+            f"transition band {dl['band']['text']})")
 
 
 def lam_text(x):
@@ -978,7 +1080,7 @@ def verdict_line(ev, dl, u_rule, no_contingency=False):
     named (revision 3.1, Zcode); the n_deg sentence above 5; the No contingency when triggered.
     The fixed-lambda diagnostic is not on this line (Johnny's condition)."""
     r = ev["rows"]["rule"]
-    s = label_text(ev["label"], dl, u_rule)
+    s = label_text(ev["label"], dl, u_rule, ev["U_reasons"], r["ceiling_block"])
     if ev["label"] == "G":
         s += f" [mechanism, description only: {ev['mechanism_description']}]"
     s += (f". rule #2.1: AUC = {fmt(r['auc'])} ({r['n_present']}/{r['n_absent']}), "
@@ -1038,9 +1140,7 @@ def worlds_csv_bytes(worlds):
     """synthetic_worlds.csv as bytes (utf-8, the csv module's CRLF rows), exactly as written."""
     fh = io.StringIO(newline="")
     w = csv.writer(fh)
-    w.writerow(("family", "j", "seed", "gamma_z", "gamma_z1", "board", "label",
-                "mechanism_description", "outside_density") + CSV_FIELDS
-               + ("auc_fixed_lambda1", "p_P_fixed_lambda1"))
+    w.writerow(WORLDS_CSV_HEADER)
     for x in worlds:
         for pk in PRED_KEYS:
             r = json_safe(x["rows"][pk])
@@ -1053,43 +1153,201 @@ def worlds_csv_bytes(worlds):
     return fh.getvalue().encode("utf-8")
 
 
-def csv_differences(ref, got, limit=20):
-    """The cells in which two synthetic_worlds.csv byte strings differ, row by row."""
+def _cells_equal(a, b):
+    """Exact comparison of two CSV cells: the same string, or the same float."""
+    if a == b:
+        return True
+    try:
+        return float(a) == float(b)
+    except ValueError:
+        return False
+
+
+def csv_compare(ref, got, limit=20):
+    """Revision 3.2 (A1): two synthetic_worlds.csv byte strings compared row by row on the
+    deciding columns. Identity and lattice columns (CSV_EXACT_COLUMNS) exactly; continuous
+    columns (CSV_CONTINUOUS_COLUMNS) within MACHINE_CHECK_TOL, in each column's own units;
+    mechanism_description (column 8) is reported, not gated (it is a world-level text derived from
+    rule #2.1's ceiling_full, which is compared exactly). Byte identity is recorded as a fact.
+    Outcome 1: every deciding column equal. Outcome 2: only continuous columns differ, each within
+    MACHINE_CHECK_TOL. Outcome 3: anything else (an identity or lattice column differs, a
+    continuous one beyond the tolerance, or the header or the number of rows differs)."""
     a = list(csv.reader(io.StringIO(ref.decode("utf-8"), newline="")))
     b = list(csv.reader(io.StringIO(got.decode("utf-8"), newline="")))
-    out = []
-    if len(a) != len(b):
-        out.append({"rows_prerun": len(a), "rows_now": len(b)})
-    head = a[0] if a else []
-    for i, (ra, rb) in enumerate(zip(a, b)):
-        if ra == rb:
+    head = list(WORLDS_CSV_HEADER)
+    res = {"byte_identical": ref == got, "rows_prerun": max(len(a) - 1, 0),
+           "rows_now": max(len(b) - 1, 0),
+           "header_equal": bool(a and b and a[0] == head and b[0] == head),
+           "tolerance": MACHINE_CHECK_TOL, "exact_differences": 0, "first_exact_differences": [],
+           "continuous_within_tolerance": {}, "continuous_beyond_tolerance": 0,
+           "first_continuous_beyond_tolerance": [], "mechanism_description_differences": 0,
+           "first_mechanism_description_differences": []}
+    if not res["header_equal"] or len(a) != len(b):
+        return {**res, "outcome": 3, "passed": False,
+                "reason": "the header or the number of rows differs"}
+    col = {c: k for k, c in enumerate(head)}
+    for i, (ra, rb) in enumerate(zip(a[1:], b[1:]), start=1):
+        if len(ra) != len(head) or len(rb) != len(head):
+            res["exact_differences"] += 1
+            res["first_exact_differences"].append({"row": i, "columns": "row length differs"})
             continue
-        cols = [head[k] if k < len(head) else k for k in range(max(len(ra), len(rb)))
-                if (ra[k] if k < len(ra) else None) != (rb[k] if k < len(rb) else None)]
-        out.append({"row": i, "world": ra[:3], "predictor": ra[9] if len(ra) > 9 else None,
-                    "columns": cols})
-    return out[:limit], len(out)
+        where = {"row": i, "seed": ra[col["seed"]], "predictor": ra[col["predictor"]]}
+        exact = [c for c in CSV_EXACT_COLUMNS if not _cells_equal(ra[col[c]], rb[col[c]])]
+        if exact:
+            res["exact_differences"] += 1
+            res["first_exact_differences"].append({**where, "columns": exact})
+        for c in CSV_CONTINUOUS_COLUMNS:
+            x, y = ra[col[c]], rb[col[c]]
+            if x == y:
+                continue
+            try:
+                d = abs(float(x) - float(y))
+            except ValueError:                         # one cell empty ("n/a"), the other not
+                d = math.inf
+            if d == 0.0:
+                continue
+            if d <= MACHINE_CHECK_TOL:
+                w = res["continuous_within_tolerance"]
+                w[c] = max(w.get(c, 0.0), d)
+            else:
+                res["continuous_beyond_tolerance"] += 1
+                res["first_continuous_beyond_tolerance"].append(
+                    {**where, "column": c, "prerun": x, "now": y})
+        m = col["mechanism_description"]
+        if ra[m] != rb[m]:
+            res["mechanism_description_differences"] += 1
+            res["first_mechanism_description_differences"].append(
+                {**where, "prerun": ra[m], "now": rb[m]})
+    for k in ("first_exact_differences", "first_continuous_beyond_tolerance",
+              "first_mechanism_description_differences"):
+        res[k] = res[k][:limit]
+    if res["exact_differences"] or res["continuous_beyond_tolerance"]:
+        outcome = 3
+    elif res["continuous_within_tolerance"]:
+        outcome = 2
+    else:
+        outcome = 1
+    return {**res, "outcome": outcome, "passed": outcome in (1, 2),
+            "reason": PRERUN_OUTCOME_TEXT[outcome]}
 
 
-def check_prerun_reproduced(got, comparable):
-    """Sections 3.3 and 7 (revision 3.1; Johnny, Zcode): the registered run recomputes the
-    synthetic step from a clean committed tree and must reproduce the pre-run table,
-    PRERUN_DIR/synthetic_worlds.csv, byte for byte (same seeds, same pinned environment). The
-    pre-run file is first checked against its pinned sha256. passed is None when the run is not
-    comparable (smoke, or starts != 10); False stops the two-world check."""
+REPRO_FAIL_TREATMENT = (
+    "If the pre-run table was not reproduced: do not re-pin it. Rerun the synthetic step once "
+    "more with a different thread setting and compare it with itself (the cross-configuration "
+    "self-test, section 3.3): self-identical and still different from the pinned table means an "
+    "implementation difference between the revision-2/3 fits and this code; not self-identical "
+    "means machine non-determinism. Either way the result goes to the chat, and any re-pin needs "
+    "the reviewers' review and Mike's word before the real arm.")
+PRERUN_OUTCOME_TEXT = {
+    1: "every deciding column equal",
+    2: "only continuous columns differ, each within MACHINE_CHECK_TOL",
+    3: ("PRE-RUN TABLE NOT REPRODUCED: an identity or lattice column differs, or a continuous one "
+        "beyond MACHINE_CHECK_TOL; the real arm does not run, the table is not re-pinned, and the "
+        "cross-configuration self-test of section 3.3 is run")}
+
+
+def check_prerun_files():
+    """Revision 3.2 (Ark N3): every file listed in PRERUN_DIR/SHA256SUMS.txt is read and its
+    sha256 (raw bytes) must equal the listed value and PRERUN_SHA256; the list must name exactly
+    the pinned files."""
+    sums = PRERUN_DIR / "SHA256SUMS.txt"
+    if not sums.exists():
+        return {"passed": False, "sums_file": str(sums), "files": {},
+                "reason": "SHA256SUMS.txt not found"}
+    listed = {}
+    for ln in sums.read_text(encoding="utf-8").splitlines():
+        if ln.strip():
+            h, name = ln.split(maxsplit=1)
+            listed[name.lstrip("*")] = h
+    files = {}
+    for name in sorted(set(listed) | set(PRERUN_SHA256)):
+        p = PRERUN_DIR / name
+        files[name] = {"listed": listed.get(name), "pinned": PRERUN_SHA256.get(name),
+                       "read": hashlib.sha256(p.read_bytes()).hexdigest() if p.exists() else None}
+    bad = [n for n, f in files.items() if not (f["read"] == f["listed"] == f["pinned"]
+                                               and f["read"] is not None)]
+    return {"passed": not bad, "sums_file": str(sums), "files": files,
+            "reason": ("every listed file matches its listed and pinned sha256" if not bad
+                       else "differs or missing: " + ", ".join(bad))}
+
+
+def check_prerun_reproduced(got, comparable, reread=False):
+    """Sections 3.3 and 7 (revisions 3.1, 3.2; Johnny, Zcode, Ark): the registered run
+    recomputes the synthetic step from a clean committed tree and must reproduce the pre-run
+    table, PRERUN_DIR/synthetic_worlds.csv, on its deciding columns (csv_compare; outcome 1 or 2
+    passes, outcome 3 stops). Every pre-run file is first checked (check_prerun_files). Byte
+    identity is recorded, not gated. passed is None when the run is not comparable (smoke, or
+    starts != 10) and when the table was re-read from saved fits (--from-raw): a re-read is not a
+    reproduction, and its comparison is printed for information only. False stops the two-world
+    check."""
     ref_path = PRERUN_DIR / "synthetic_worlds.csv"
     base = {"prerun_path": str(ref_path), "prerun_sha256_pinned": PRERUN_WORLDS_CSV_SHA256,
-            "recomputed_sha256": hashlib.sha256(got).hexdigest()}
+            "recomputed_sha256": hashlib.sha256(got).hexdigest(),
+            "reread_from_saved_fits": bool(reread), "byte_identical": None, "outcome": None}
     if not comparable:
         return {**base, "passed": None, "reason": "not comparable (smoke or starts != 10)"}
-    if not ref_path.exists():
-        return {**base, "passed": False, "reason": "pre-run table not found"}
-    ref = ref_path.read_bytes()
-    if hashlib.sha256(ref).hexdigest() != PRERUN_WORLDS_CSV_SHA256:
-        return {**base, "passed": False, "reason": "pre-run table differs from its pinned sha256"}
-    diffs, n = csv_differences(ref, got)
-    return {**base, "passed": ref == got, "n_differences": n, "first_differences": diffs,
-            "reason": "reproduced byte for byte" if ref == got else "PRE-RUN TABLE NOT REPRODUCED"}
+    files = check_prerun_files()
+    base["prerun_files"] = files
+    if not files["passed"]:
+        return {**base, "passed": None if reread else False,
+                "reason": "pre-run files do not match SHA256SUMS.txt and their pins: "
+                          + files["reason"]}
+    cmp = csv_compare(ref_path.read_bytes(), got)
+    base.update(byte_identical=cmp["byte_identical"], outcome=cmp["outcome"], comparison=cmp)
+    detail = (f"outcome {cmp['outcome']}: {cmp['reason']}; "
+              f"{'byte-identical' if cmp['byte_identical'] else 'not byte-identical'} (recorded, "
+              f"not gated); mechanism_description differs on "
+              f"{cmp['mechanism_description_differences']} rows (reported, not gated)")
+    if reread:
+        return {**base, "passed": None,
+                "reason": "re-read from saved fits (--from-raw), not a reproduction; compared "
+                          "with the pre-run table for information only: " + detail}
+    return {**base, "passed": cmp["passed"], "reason": detail}
+
+
+def raw_fits_diagnostic(F):
+    """Revision 3.2 (A1): diagnostic, decides nothing. The fits of this run compared with the
+    pinned PRERUN_DIR/raw_fits.json.gz, key by key (p_exist on the 64 block cells, the selected
+    lambda, the labels), split by the worlds that the revision-2 run fitted (30) and those that
+    the revision-3 run fitted (15), and within each by kind (ko, full, block, ko1; sh for the
+    shuffles, pc for the permuted-block ceilings). The ko1 fits of the revision-2 worlds were made
+    in revision 3's pass (section 7)."""
+    ref = read_raw(PRERUN_DIR / "raw_fits.json.gz")
+    groups = {"revision_2_worlds": PRERUN_REV2_FAMILIES,
+              "revision_3_worlds": PRERUN_REV3_FAMILIES}
+    group_of = {f: g for g, fs in groups.items() for f in fs}
+    out = {g: {"families": list(fs), "kinds": {}} for g, fs in groups.items()}
+    for key, v in ref.items():
+        bk, mk, _ = key
+        base, *mods = bk.split("|")
+        if not base.startswith("world:") or base.split(":")[1] not in group_of:
+            continue
+        kind = mods[0].split(":")[0] if mods else mk
+        s = out[group_of[base.split(":")[1]]]["kinds"].setdefault(
+            kind, {"pinned": 0, "missing_now": 0, "compared": 0, "p_differ": 0,
+                   "max_abs_dp": 0.0, "lambda_differ": 0, "labels_differ": 0})
+        s["pinned"] += 1
+        f = F.get(key)
+        if f is None:
+            s["missing_now"] += 1
+            continue
+        s["compared"] += 1
+        p0, p1 = np.asarray(v["p"], np.float64), np.asarray(f["p"], np.float64)
+        if p0.shape != p1.shape:
+            s["p_differ"] += 1
+            s["max_abs_dp"] = math.inf
+        elif not np.array_equal(p0, p1):
+            s["p_differ"] += 1
+            s["max_abs_dp"] = max(s["max_abs_dp"], float(np.max(np.abs(p0 - p1))))
+        s["lambda_differ"] += v.get("lam") != f.get("lam")
+        s["labels_differ"] += [bool(x) for x in v["y"]] != [bool(x) for x in f["y"]]
+    for g in out.values():
+        k = g["kinds"].values()
+        g["total"] = {n: sum(s[n] for s in k) for n in
+                      ("pinned", "missing_now", "compared", "p_differ", "lambda_differ",
+                       "labels_differ")}
+        g["total"]["max_abs_dp"] = max((s["max_abs_dp"] for s in k), default=0.0)
+    return {"status": "diagnostic, decides nothing", **out}
 
 
 def majority(k, n):
@@ -1120,7 +1378,7 @@ def grid_limit(dense, key):
 
 
 def family_limit(per_pred, grid):
-    """Section 3.6 (revision 3.1): the maximum over the predictors of each one's own weak-leg
+    """Section 3.6 (revision 3.1): the maximum over the predictors of each one's own leg-P
     limit; not reached if any predictor's limit is not reached on the grid."""
     if not grid:
         return {"gamma": None, "reached": False, "by": [], "text": "n/a (no dense-grid world run)"}
@@ -1135,12 +1393,12 @@ def family_limit(per_pred, grid):
 
 def transition_band(lp, lr, grid, u_worlds):
     """Sections 3.6 and 4 (revision 3.1): the grid gammas in [gamma*_P, gamma_R), where a
-    majority passes the weak leg and no majority reads R. Its width in grid steps and in gamma,
+    majority passes leg P and no majority reads R. Its width in grid steps and in gamma,
     and where each dense-grid world that read U lies (below, inside, above)."""
     if not lp["reached"]:
         return {"gammas": [], "steps": None, "width_gamma": None, "open": None,
                 "U_position": {"below": len(u_worlds), "inside": 0, "above": 0},
-                "text": "n/a (the weak-leg limit is not reached on the grid)"}
+                "text": "n/a (the leg-P limit is not reached on the grid)"}
     i = lp["grid_index"]
     j = lr["grid_index"] if lr["reached"] else len(grid)
     gammas = grid[i:j]
@@ -1185,7 +1443,7 @@ def detection_limits(worlds, starts):
     worlds seen by each predictor (p_P <= 0.01), the worlds read R, and the labels. The limits,
     each the smallest dense-grid gamma with a majority: gamma*_P (rule #2.1 seen; revision 3's
     gamma*), gamma_R (label R), and the family limit (the maximum over rule #2.1 and BF_1..BF_4
-    of each one's own weak-leg limit). The anchors Nf and R are printed and enter no limit."""
+    of each one's own leg-P limit). The anchors Nf and R are printed and enter no limit."""
     rows = []
     for g, fam in sorted(DENSE_GRID + CURVE_ANCHORS):
         ws = [w for w in worlds if w["family"] == fam]
@@ -1216,13 +1474,13 @@ def detection_limits(worlds, starts):
                  for w in worlds if w["family"] in M_FAMILIES
                  and gamma_of[w["family"]] >= L["gamma"] and w["label"] == "G"])
 
-    return {"rows": rows, "weak_leg": lp, "R": lr, "per_predictor": per,
+    return {"rows": rows, "leg_P": lp, "R": lr, "per_predictor": per,
             "family": family_limit(per, grid), "band": transition_band(lp, lr, grid, u_gammas),
             "binomial_note": binomial_note(dense[0]["n"] if dense else WORLDS_PER_FAMILY),
             "curve_text": "; ".join(f"{r['gamma']}: {r['seen_frac']}, {r['R_frac']}"
                                     for r in dense),
             "grid_complete": len(dense) == len(DENSE_GRID), "instrument": instrument_text(starts),
-            "G_at_or_above_weak_leg": g_at_or_above(lp), "G_at_or_above_R": g_at_or_above(lr)}
+            "G_at_or_above_leg_P": g_at_or_above(lp), "G_at_or_above_R": g_at_or_above(lr)}
 
 
 def u_rule(worlds):
@@ -1341,19 +1599,27 @@ def run_synthetic(args, terms, F=None):
     dl = detection_limits(worlds, args.starts)
     ur = u_rule(worlds)
     for w in worlds:
-        w["label_text"] = label_text(w["label"], dl, ur)
+        w["label_text"] = label_text(w["label"], dl, ur, w["U_reasons"],
+                                     w["rows"]["rule"]["ceiling_block"])
         w["verdict_line"] = verdict_line(w, dl, ur)
     secs = {pk: [v["secs"] for (bk, mk, p), v in F.items() if p == pk and mk == "ko"]
             for pk in PRED_KEYS}
     comparable = (args.starts == 10 and args.worlds_per_family == WORLDS_PER_FAMILY
                   and args.shuffles == N_SHUFFLES and args.perm_ceilings == N_PERM_CEILINGS
                   and list(args.families) == [f[0] for f in FAMILIES])
-    repro = check_prerun_reproduced(worlds_csv_bytes(worlds), comparable)
+    # Revision 3.2 (A3): a --from-raw pass re-reads saved fits; it is not a reproduction.
+    reread = getattr(args, "from_raw", None) is not None
+    repro = check_prerun_reproduced(worlds_csv_bytes(worlds), comparable, reread)
     log(f"pre-run table (section 7): {repro['reason']}; recomputed sha256 "
         f"{repro['recomputed_sha256']}")
+    raw_diag = None
+    if comparable and repro.get("prerun_files", {}).get("passed"):
+        raw_diag = raw_fits_diagnostic(F)
+        log("per-fit diagnostic against the pre-run raw fits (decides nothing): " + "; ".join(
+            f"{g}: {raw_diag[g]['total']}" for g in ("revision_2_worlds", "revision_3_worlds")))
     syn = {"worlds": worlds, "two_world_check": two_world_check(worlds, repro), "limits": dl,
            "u_rule": ur, "fixed_lambda_summary": fixed_lambda_summary(worlds),
-           "fixed_lambda_path_check": path_check,
+           "fixed_lambda_path_check": path_check, "raw_fits_diagnostic": raw_diag,
            "fits": {"saved_reread": n_saved, "fitted_main": fitted_main, "fixed_lambda": fl},
            "mean_seconds_per_knockout_fit": {pk: float(np.mean(v)) if v else None
                                              for pk, v in secs.items()}}
@@ -1379,6 +1645,7 @@ def print_bank(ev, title):
             f"{fmt(r['regrown_share_full'], 2):>5s} {fmt(r['regrown_share_block'], 2):>5s} "
             f"{r['M_real']:+.4f} {r['n_ge']:4d} {r['p_S']:.2f} {r['p_P']:.4f} "
             f"{r['p_P_rowcol']:.4f}  {r['lambda_ko']}/{r['lambda_full']}/{r['lambda_block']}")
+    log("(p_P defines leg P and the limits; p_Prc, the row-and-column p_P, is a diagnostic)")
     for pk in PRED_KEYS:
         r = ev["rows"][pk]
         log(f"  {r['predictor']:10s} quadrant mean p: " + ", ".join(
@@ -1404,9 +1671,9 @@ def print_bank(ev, title):
 
 def md_limits(dl):
     """Section 3.6 (revision 3.1): the three limits with the instrument, the per-predictor
-    weak-leg limits, the transition band with where the U worlds lie, the binomial note, and the
+    leg-P limits, the transition band with where the U worlds lie, the binomial note, and the
     M worlds that read G at or above each limit."""
-    lp, lr, fam, band = dl["weak_leg"], dl["R"], dl["family"], dl["band"]
+    lp, lr, fam, band = dl["leg_P"], dl["R"], dl["family"], dl["band"]
 
     def misses(key):
         m = dl[key]
@@ -1414,22 +1681,27 @@ def md_limits(dl):
                               if m else "")
 
     return [f"**The three limits** (in M-world units; instrument: {dl['instrument']}):", "",
-            f"- gamma*_P, the weak leg (rule #2.1 p_P <= 0.01 in a majority of the worlds): "
+            f"- gamma*_P, the leg-P limit (rule #2.1 p_P <= 0.01 in a majority of the worlds): "
             f"**{lp['text']}**, bracket {lp['bracket_text']}; majority seen at every grid gamma "
             f"above it: {lp['majority_at_every_grid_gamma_above']}.",
             f"- gamma_R (a majority of the worlds read R): **{lr['text']}**, bracket "
             f"{lr['bracket_text']}; majority R at every grid gamma above it: "
             f"{lr['majority_at_every_grid_gamma_above']}.",
-            f"- family limit (the maximum of each predictor's own weak-leg limit): "
+            f"- family limit (the largest leg-P limit: the maximum of each predictor's own "
+            f"leg-P limit): "
             f"**{fam['text']}**. Per predictor: "
             + ", ".join(f"{PRED_NAME[pk]} {L['text']}" for pk, L in dl["per_predictor"].items())
-            + ".",
+            + ". The limits use p_P <= 0.01 for every predictor and are not family-corrected, "
+            f"unlike the W gate (p_P <= {P_W:g} = 0.05/{len(RANKS)}): a limit is a property of "
+            "the instrument, not of a branch (revision 3.2).",
             f"- transition band [gamma*_P, gamma_R): {band['text']}. Dense-grid worlds that read "
             f"U: {band['U_position']['inside']} inside the band, {band['U_position']['below']} "
-            f"below it, {band['U_position']['above']} above it.",
+            f"below it, {band['U_position']['above']} above it. The band is the difference of two "
+            "limits, each uncertain by about one grid step, so a one-step band is one of 0, 1 or 2 "
+            "steps (revision 3.2).",
             f"- per gamma, seen/n and R/n: {dl['curve_text']}.",
             f"- binomial note: {dl['binomial_note']['text']}.",
-            f"- M worlds that read G at or above gamma*_P: {misses('G_at_or_above_weak_leg')}; "
+            f"- M worlds that read G at or above gamma*_P: {misses('G_at_or_above_leg_P')}; "
             f"at or above gamma_R: {misses('G_at_or_above_R')} (printed, no stop).",
             f"- grid complete: {dl['grid_complete']}."]
 
@@ -1460,10 +1732,26 @@ def md_check_and_curve(syn):
                 else f"{row['n_meet']}/{row['n_worlds']} ({row['min_meet']})")
         L.append(f"| {row['family']} | {row['requirement']} | {lab} | {meet} | "
                  f"{row['n_stop_labels']} | {'STOP' if row['stops'] else 'no stop'} |")
-    L += ["", f"Pre-run table (section 7): {rp['reason']} (passed: {rp['passed']}; pinned "
-          f"{rp['prerun_sha256_pinned']}, recomputed {rp['recomputed_sha256']}"
-          + (f"; {rp['n_differences']} differing rows, first: {rp['first_differences']}"
-             if rp.get("n_differences") else "") + ").", "",
+    cmp = rp.get("comparison") or {}
+    L += ["", f"Pre-run table (section 7, revision 3.2): {rp['reason']} (passed: {rp['passed']}; "
+          f"byte-identical: {rp['byte_identical']}; pinned {rp['prerun_sha256_pinned']}, "
+          f"recomputed {rp['recomputed_sha256']}"
+          + (f"; exact-column differences in {cmp['exact_differences']} rows, first: "
+             f"{cmp['first_exact_differences']}" if cmp.get("exact_differences") else "")
+          + (f"; continuous columns within {MACHINE_CHECK_TOL:g}: "
+             f"{cmp['continuous_within_tolerance']}" if cmp.get("continuous_within_tolerance")
+             else "")
+          + (f"; continuous differences beyond it in {cmp['continuous_beyond_tolerance']} "
+             f"cells, first: {cmp['first_continuous_beyond_tolerance']}"
+             if cmp.get("continuous_beyond_tolerance") else "")
+          + (f"; mechanism_description (reported, not gated) differs on "
+             f"{cmp['mechanism_description_differences']} rows"
+             if cmp.get("mechanism_description_differences") else "")
+          + ").", "",
+          "Per-fit diagnostic against the pre-run raw fits (decides nothing): "
+          + (", ".join(f"{g}: {syn['raw_fits_diagnostic'][g]['total']}"
+                       for g in ("revision_2_worlds", "revision_3_worlds"))
+             if syn.get("raw_fits_diagnostic") else "not run") + ".", "",
           f"Two-world check passed: {c['passed']}. No contingency triggered: "
           f"{c['no_contingency']}." + (f" {NO_CONTINGENCY}" if c["no_contingency"] else ""), "",
           "## Power curve and the three limits (section 3.6, revision 3.1)", "",
@@ -1478,7 +1766,9 @@ def md_check_and_curve(syn):
                  f"{', '.join(fmt(a, 3) for a in r['rule_auc'])} | "
                  f"{', '.join(lam_text(x) for x in r['rule_lambda_ko'])} |")
     L += [""] + md_limits(gs) + ["",
-          f"**U rule:** {ur['text']}. U is read as '{U_THRESHOLD}' (revision 3.1). "
+          f"**U rule:** {ur['text']}. U is read as '{U_THRESHOLD}', the signature of the leg-P "
+          f"detection limit gamma*_P (revisions 3.1, 3.2), except a U whose reasons include "
+          f"rule #2.1's ceiling_block below {GATE_CUT:.2f}, which reads '{FAILED_FIT_TEXT}'. "
           f"U across all {ur['all_worlds']} worlds: {ur['all_U']} ("
           + ", ".join(f"{f} {v['U']}/{v['n']}" for f, v in ur["frequency_by_family"].items())
           + ").", "",
@@ -1519,6 +1809,25 @@ CSV_FIELDS = ("predictor", "auc", "D", "logloss", "logloss_margin_over_N1", "pre
               "ceiling_full", "ceiling_block", "regrown_share_full", "regrown_share_block",
               "M_real", "n_ge", "n_shuffles", "n_deg", "n_valid_shuffles", "p_S", "p_P",
               "p_P_rowcol", "lambda_ko", "lambda_full", "lambda_block", "auc_other_59")
+WORLDS_CSV_HEADER = (("family", "j", "seed", "gamma_z", "gamma_z1", "board", "label",
+                      "mechanism_description", "outside_density") + CSV_FIELDS
+                     + ("auc_fixed_lambda1", "p_P_fixed_lambda1"))  # 33 columns, as revision 3
+# Revision 3.2 (A1): the columns of synthetic_worlds.csv by how the reproduction gate compares
+# them. Exact: the identity columns of a row, and the lattice columns, whose values are exact
+# dyadic or rational fractions with steps of at least 1e-4 (AUCs, p values, counts, lambdas, and
+# outside_density, a count over 4,161 cells), so a tolerance adds nothing. Continuous, within
+# MACHINE_CHECK_TOL: D, the log-losses, and the regrown_share ratios (not on a lattice).
+# Reported, not gated: mechanism_description (column 8).
+CSV_EXACT_COLUMNS = ("family", "j", "seed", "gamma_z", "gamma_z1", "board", "predictor",
+                     "label", "outside_density", "auc", "precision_at_32", "ceiling_full",
+                     "ceiling_block", "M_real", "n_ge", "n_shuffles", "n_deg",
+                     "n_valid_shuffles", "p_S", "p_P", "p_P_rowcol", "lambda_ko", "lambda_full",
+                     "lambda_block", "auc_other_59", "auc_fixed_lambda1", "p_P_fixed_lambda1")
+CSV_CONTINUOUS_COLUMNS = ("D", "logloss", "logloss_margin_over_N1", "regrown_share_full",
+                          "regrown_share_block")
+CSV_REPORTED_COLUMNS = ("mechanism_description",)
+assert (sorted(CSV_EXACT_COLUMNS + CSV_CONTINUOUS_COLUMNS + CSV_REPORTED_COLUMNS)
+        == sorted(WORLDS_CSV_HEADER)) and len(WORLDS_CSV_HEADER) == 33
 
 
 def write_worlds_csv(worlds, path):
@@ -1579,8 +1888,9 @@ def quote_row(label):
 
 def md_bank_table(ev):
     L = ["| predictor | AUC (32/32) | D | log-loss | margin over N1 | P@32 | ceiling_full | "
-         "ceiling_block | share (full) | share (block) | n_ge / n_valid | p_S | p_P | p_P row-col | "
-         "lambda ko/full/block |", "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
+         "ceiling_block | share (full) | share (block) | n_ge / n_valid | p_S | p_P | "
+         "p_P row-col (diagnostic) | lambda ko/full/block |",
+         "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
     for pk in PRED_KEYS:
         r = ev["rows"][pk]
         L.append(f"| {r['predictor']} | {fmt(r['auc'])} | {fmt(r['D'], 3)} | {r['logloss']:.4f} | "
@@ -1775,12 +2085,21 @@ def main():
                 "private_outputs": str(private) if private else None,
                 "prerun_dir": str(PRERUN_DIR),
                 "prerun_worlds_csv_sha256": PRERUN_WORLDS_CSV_SHA256,
+                "prerun_sha256": PRERUN_SHA256, "machine_record": machine_record(),
                 "degree_terms": {"c": terms[0], "a": terms[1], "b": terms[2],
                                  "source": "N1 on the real knockout view (outside-block cells)"}}
 
     # Step 3: the synthetic worlds, the pre-run reproduction and the two-world check (3.6, 7).
     syn, F = run_synthetic(a, terms, read_raw(a.from_raw) if a.from_raw else None)
     print_synthetic(syn)
+    rp = syn["two_world_check"]["prerun_reproduction"]
+    # Revision 3.2 (A1): byte identity with the pre-run table is a recorded fact, not the gate.
+    manifest["prerun_csv_byte_identical"] = rp["byte_identical"]
+    manifest["prerun_comparison_outcome"] = rp["outcome"]
+    manifest["prerun_reread_from_saved_fits"] = rp["reread_from_saved_fits"]
+    log(f"machine record (revision 3.2): thread variables "
+        f"{manifest['machine_record']['thread_env']}; machine "
+        f"{manifest['machine_record']['machine']}")
     manifest["runtime_s"] = time.time() - t0
     if a.arm:                                          # section 7: private and raw, before step 4
         write_synthetic_outputs(private, {**syn, "checks": checks, "seeds": seeds}, F, manifest)
@@ -1789,14 +2108,15 @@ def main():
             write_synthetic_outputs(a.out, {**syn, "checks": checks, "seeds": seeds}, F, manifest)
         if not syn["two_world_check"]["passed"]:
             log("TWO-WORLD CHECK FAILED: a requirement marked stop failed, or the pre-run table "
-                "was not reproduced; the real arm does not run (sections 3.6, 7).")
+                "was not reproduced (outcome 3); the real arm does not run (sections 3.6, 7). "
+                + REPRO_FAIL_TREATMENT)
             sys.exit(1)
         log(f"\n--synthetic-only: stopped before any real block score. {time.time() - t0:.0f}s")
         return
     if not syn["two_world_check"]["passed"]:
         log("TWO-WORLD CHECK FAILED: a requirement marked stop failed, or the pre-run table was "
-            "not reproduced; the real arm does not run (sections 3.6, 7). No real block score "
-            f"was computed. Private outputs: {private}")
+            "not reproduced (outcome 3); the real arm does not run (sections 3.6, 7). No real "
+            f"block score was computed. Private outputs: {private}. " + REPRO_FAIL_TREATMENT)
         sys.exit(1)
 
     # Step 4: the real arm.
@@ -1805,7 +2125,8 @@ def main():
     complete_fixed_lambda(Fr, ["real"], a.workers, (a.starts, terms, False),
                           "real arm, fixed lambda = 1 (diagnostic)")
     real = evaluate_bank("real", Fr, N_SHUFFLES, N_PERM_CEILINGS)
-    real["label_text"] = label_text(real["label"], syn["limits"], syn["u_rule"])
+    real["label_text"] = label_text(real["label"], syn["limits"], syn["u_rule"],
+                                    real["U_reasons"], real["rows"]["rule"]["ceiling_block"])
     real["verdict_line"] = verdict_line(real, syn["limits"], syn["u_rule"],
                                         syn["two_world_check"]["no_contingency"])
     write_raw(Fr, private / "raw_fits_real.json.gz")
