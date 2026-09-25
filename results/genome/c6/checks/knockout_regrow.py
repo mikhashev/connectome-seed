@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Knock out and regrow, block A on flyvis-65 (ADR-005 decision 3).
 
-Implements docs/plans/2026-09-24-knockout-regrow-registration.md, revision 3.2; section numbers
+Implements docs/plans/2026-09-24-knockout-regrow-registration.md, revision 3.3; section numbers
 below refer to it, and main() follows its section 7 order (refusals and pins; machine checks;
 synthetic worlds and the two-world check; the real arm; the verdict and outputs).
 
@@ -37,6 +37,19 @@ fit, never renamed by the U rule; one threshold on two variables is split into G
 the mechanism text names rule #2.1's ceiling_full, which changes the text of column 8 of
 synthetic_worlds.csv (mechanism_description) on the rows that carry it, and with it the bytes
 of that file; "weak leg" is replaced by "leg P".
+
+Revision 3.3 (2026-09-25, the reviewers' pass on revision 3.2; text and code only, no fitting
+run): csv_compare matches rows by key (family, j, seed, predictor), reports missing rows and a
+change of row order separately, splits outcome 3 into (a) identity or lattice columns and (b)
+continuous columns beyond MACHINE_CHECK_TOL, and checks that the column-8 differences are exactly
+revision 3.2's rename; the treatment of outcome 3 names four layers and the self-test's outcomes
+(repro_fail_treatment); the null inputs are digested into the manifest (null_input_digests);
+--out is refused inside the pinned reference folder, on a byte copy of it, and with --arm
+(out_dir_refusal); the U rule counts threshold U only, and a failed fit and a ceiling_block that
+was not measured are separate U texts; raw_fits_diagnostic compares the score fields and marks a
+re-read; new raw records store sign_n; a real-arm run with --allow-dirty says on its verdict line
+that it is not the registered run; the manifest records the dirty paths and the --from-raw
+file's sha256; check_prerun_files reports unlisted entries of the pre-run folder.
 
     tools/.venv/Scripts/python.exe results/genome/c6/checks/knockout_regrow.py --synthetic-only --starts 10 --workers 30
     tools/.venv/Scripts/python.exe results/genome/c6/checks/knockout_regrow.py --arm flyvis65 --starts 10 --workers 30
@@ -76,7 +89,7 @@ HERE = Path(__file__).resolve().parent
 C6 = HERE.parent
 ROOT = C6.parents[2]                                   # the repository root
 REGISTRATION = "docs/plans/2026-09-24-knockout-regrow-registration.md"
-REGISTRATION_REVISION = "3.2"
+REGISTRATION_REVISION = "3.3"
 OUT = HERE / "knockout_regrow"                         # section 7: committed, aggregates only
 RULE_PATH = C6 / "rules" / "second_rule_v21" / "fit.py"
 # Section 7 (revision 3.1): private and raw outputs live outside the repository. The registered
@@ -87,6 +100,9 @@ PRIVATE_ROOT = ROOT.parent / "connectome-seed-data" / "knockout_regrow"
 # M1.0) and those of 15 worlds from the revision-3 run (M0.6, M0.75, M0.85); the table was written
 # by a revision-3 --from-raw pass over those fits. The registered run must reproduce
 # synthetic_worlds.csv on its deciding columns (sections 3.3, 7; revision 3.2).
+# Revision 3.3 (A2): no run writes here. out_dir_refusal refuses --out at this folder or inside
+# it, and on any folder that holds a byte copy of it; the reference is recreated only in a new
+# folder, and moved here with PRERUN_SHA256 in one reviewed change (section 7).
 PRERUN_DIR = PRIVATE_ROOT / "synthetic_rev3_prerun"
 # Revision 3.2 (Ark N3): every file listed in the pre-run SHA256SUMS.txt is checked, against both
 # the list and these pins (section 7's table, raw bytes).
@@ -262,6 +278,16 @@ U_THRESHOLD = "on the detection threshold; cannot be separated"
 # printed as such whatever else is listed; the U rule's rename never applies to it.
 FAILED_FIT_TEXT = "failed fit: rule #2.1 cannot hold the block even when trained on it alone"
 CEILING_BLOCK_REASON = "rule #2.1's ceiling_block = "   # the prefix of that reason
+# Revision 3.3 (A4): a ceiling_block that was not measured (None) is not a failed fit and is not
+# "below 0.90"; it has its own reason and its own U text, and the U rule's rename never applies
+# to it. The reason does not start with CEILING_BLOCK_REASON.
+CEILING_BLOCK_NOT_MEASURED = ("rule #2.1's ceiling_block was not measured, so the G gate of "
+                              "section 4 cannot be read")
+NOT_MEASURED_TEXT = ("not measured: rule #2.1's ceiling_block was not measured; the G gate "
+                     "cannot be read")
+# Revision 3.3 (A7): a real-arm run made with --allow-dirty is not the registered run.
+NOT_REGISTERED_TEXT = ("NOT THE REGISTERED RUN: made with --allow-dirty; this verdict cannot be "
+                       "cited as the registered result (sections 3.3, 7).")
 N_DEG_SENTENCE = ("{n} of {N} shuffles have no AUC on the block and are excluded from leg S, "
                   "which counts against {k} = {N} - {n} shuffles (smallest p_S {ps:.3f})")
 
@@ -302,7 +328,7 @@ def dump_json(obj):
 
 def git(*args):
     return subprocess.run(["git", *args], cwd=ROOT, capture_output=True, text=True,
-                          check=True).stdout.strip()
+                          check=True).stdout.rstrip()      # keeps porcelain's status column
 
 
 def machine_record():
@@ -580,6 +606,28 @@ def rc_patterns(y):
     return out
 
 
+def _array_sha256(a):
+    return hashlib.sha256(np.ascontiguousarray(a).tobytes()).hexdigest()
+
+
+def null_input_digests():
+    """Revision 3.3 (F10): digests of the leg-P null inputs, exactly the objects the nulls are
+    computed from: the uniform_perms() matrix, and each rc_patterns(y) matrix, keyed by the
+    sha256 of the y bytes (the rc_patterns cache key). Computed in the main process, where every
+    null is computed (evaluate_bank); pool workers compute no null (they use uniform_perms only
+    for check 6's leak bank), so no per-worker digest is collected. Not needed for
+    perm_ceiling_perm: its outputs are the |pc: fits, which are store keys, and evaluate_bank
+    asserts their labels."""
+    u = uniform_perms()
+    rc = {hashlib.sha256(k).hexdigest(): {"sha256": _array_sha256(v), "dtype": str(v.dtype),
+                                          "shape": list(v.shape)}
+          for k, v in _PERM_CACHE.items() if isinstance(k, bytes)}
+    return {"uniform_perms": {"sha256": _array_sha256(u), "dtype": str(u.dtype),
+                              "shape": list(u.shape), "seed": SEED_PERM,
+                              "computed_in": "main process"},
+            "rc_patterns_by_y_sha256": rc, "rc_seed": SEED_RC}
+
+
 def reserved_seeds(starts):
     """Section 3.7, "Untouched", and the reused ranges, read from the harness where it defines
     them."""
@@ -793,7 +841,10 @@ def _w_group(group):
             "p": np.asarray(dec["p_exist"], np.float64).tolist(),
             "y": bank.exists[BLOCK_CELLS[:, 0], BLOCK_CELLS[:, 1]].tolist(),
             "lam": _lambda_of(pk, P, data),
-            "score": {k: sc[k] for k in ("existence", "offset", "counts", "sign", "n_ne")},
+            # revision 3.3 (C7): sign_n (the integer) is stored beside the five fields of
+            # earlier records; raw_fits_diagnostic compares the fields present in both
+            "score": {k: sc[k] for k in ("existence", "offset", "counts", "sign", "sign_n",
+                                         "n_ne")},
             "outside_density": float(bank.exists[~BLOCK].mean()),
             "secs": time.time() - t0}))
     return out
@@ -854,7 +905,10 @@ def regrown_share(a, ceiling):
 
 def smallest_passing_auc(y, Yu):
     """Section 3.2: the smallest AUC (on the k/1024 grid) that gives p_P <= 0.01 against this
-    run's own 9,999 permutations, for a prediction without ties."""
+    run's own 9,999 permutations, for a prediction without ties. Revision 3.3 (B1): it depends
+    on the block's labels y through Yu = y[uniform_perms()], not only on their count, and on no
+    fit, so it is the same at every gamma: a translation anchor between the AUC axis and P_R,
+    not a gamma limit."""
     null = auc_null(np.arange(N_BLOCK, dtype=float), Yu)
     n1 = int(np.asarray(y, bool).sum())
     den = n1 * (N_BLOCK - n1)
@@ -984,9 +1038,26 @@ def mechanism_description(pr):
 
 def ceiling_block_reason(cb):
     """The U reason when rule #2.1's ceiling_block is below GATE_CUT (the wording of revision
-    3.1's read_label, unchanged); label_text recognises it by CEILING_BLOCK_REASON."""
+    3.1's read_label, unchanged); label_text recognises it by CEILING_BLOCK_REASON. Revision 3.3
+    (A4): a ceiling_block that was not measured (None) gets its own reason,
+    CEILING_BLOCK_NOT_MEASURED, which is not the failed-fit branch and does not say "n/a is below
+    0.90"."""
+    if cb is None:
+        return CEILING_BLOCK_NOT_MEASURED
     return (f"{CEILING_BLOCK_REASON}{fmt(cb)} is below {GATE_CUT:.2f}: the rule cannot hold the "
             "block even when trained on it alone")
+
+
+def u_kind(reasons):
+    """Revision 3.3 (A3, A4): which U a list of U reasons gives. "failed_fit" if a reason is
+    ceiling_block below GATE_CUT (whatever else is listed); else "not_measured" if a reason is
+    CEILING_BLOCK_NOT_MEASURED; else "threshold". Only threshold U enters the U rule."""
+    rs = [str(r) for r in reasons or ()]
+    if any(r.startswith(CEILING_BLOCK_REASON) for r in rs):
+        return "failed_fit"
+    if CEILING_BLOCK_NOT_MEASURED in rs:
+        return "not_measured"
+    return "threshold"
 
 
 def read_label(rows):
@@ -1051,7 +1122,9 @@ def label_text(label, dl, u_rule, reasons, ceiling_block=None):
     the three limits and the instrument. U: if its reasons include rule #2.1's ceiling_block
     below GATE_CUT, it is a failed fit, whatever else is listed, and the U rule's rename never
     applies to it (revision 3.2, A2); otherwise it is the signature of the leg-P detection limit
-    gamma*_P, renamed by the U rule of section 3.6 when no dense-grid world read U.
+    gamma*_P, renamed by the U rule of section 3.6 when no dense-grid world read a threshold U.
+    Revision 3.3 (A4): a U whose reasons say that ceiling_block was not measured prints
+    NOT_MEASURED_TEXT, and is never renamed either (u_kind).
     Not to be confused with LABEL_TEXT, a dict in flywire_column_test.py (another test's
     labels)."""
     if label == "R":
@@ -1061,8 +1134,11 @@ def label_text(label, dl, u_rule, reasons, ceiling_block=None):
     if label == "G":
         return (f"G: not detected at the R level above gamma_R (gate: rule #2.1's ceiling_block = "
                 f"{fmt(ceiling_block)} >= {GATE_CUT:.2f}; {limits_text(dl)})")
-    if any(str(r).startswith(CEILING_BLOCK_REASON) for r in reasons or ()):
+    kind = u_kind(reasons)
+    if kind == "failed_fit":
         return f"U: {FAILED_FIT_TEXT}"
+    if kind == "not_measured":
+        return f"U: {NOT_MEASURED_TEXT}"
     if u_rule["renamed"]:
         return f"U: {U_UNCALIBRATED}; never read as a finding"
     return (f"U: {U_THRESHOLD} (at the leg-P detection limit gamma*_P = {dl['leg_P']['text']}; "
@@ -1073,12 +1149,13 @@ def lam_text(x):
     return "n/a" if x is None else f"{x:g}"
 
 
-def verdict_line(ev, dl, u_rule, no_contingency=False):
+def verdict_line(ev, dl, u_rule, no_contingency=False, not_registered=None):
     """Section 4: the label (G with the three limits and the instrument; U by the U rule); the
     mechanism description of G; the primary's AUC, p_S and p_P; both ceilings; the R/W reading on
     each D1 candidate; the lambda each knockout fit selected, and a G reached through lambda = 100
     named (revision 3.1, Zcode); the n_deg sentence above 5; the No contingency when triggered.
-    The fixed-lambda diagnostic is not on this line (Johnny's condition)."""
+    The fixed-lambda diagnostic is not on this line (Johnny's condition). Revision 3.3 (A7): when
+    not_registered is given (a real-arm run made with --allow-dirty), the line ends with it."""
     r = ev["rows"]["rule"]
     s = label_text(ev["label"], dl, u_rule, ev["U_reasons"], r["ceiling_block"])
     if ev["label"] == "G":
@@ -1103,6 +1180,8 @@ def verdict_line(ev, dl, u_rule, no_contingency=False):
     s += "."
     if no_contingency:
         s += " " + NO_CONTINGENCY
+    if not_registered:
+        s += " " + not_registered
     return s
 
 
@@ -1163,35 +1242,65 @@ def _cells_equal(a, b):
         return False
 
 
+CSV_KEY_COLUMNS = ("family", "j", "seed", "predictor")  # revision 3.3: a row's key
+
+
+def _mech_renamed_32(text):
+    """Revision 3.3 (C5): a pre-run mechanism_description as revision 3.2's rename writes it."""
+    return text.replace("(ceiling_full ", "(rule #2.1's ceiling_full = ")
+
+
 def csv_compare(ref, got, limit=20):
-    """Revision 3.2 (A1): two synthetic_worlds.csv byte strings compared row by row on the
-    deciding columns. Identity and lattice columns (CSV_EXACT_COLUMNS) exactly; continuous
-    columns (CSV_CONTINUOUS_COLUMNS) within MACHINE_CHECK_TOL, in each column's own units;
-    mechanism_description (column 8) is reported, not gated (it is a world-level text derived from
-    rule #2.1's ceiling_full, which is compared exactly). Byte identity is recorded as a fact.
-    Outcome 1: every deciding column equal. Outcome 2: only continuous columns differ, each within
-    MACHINE_CHECK_TOL. Outcome 3: anything else (an identity or lattice column differs, a
-    continuous one beyond the tolerance, or the header or the number of rows differs)."""
+    """Sections 3.3 and 7 (revisions 3.2, 3.3): two synthetic_worlds.csv byte strings compared
+    on the deciding columns, rows matched by CSV_KEY_COLUMNS. Separate outputs: rows missing on
+    either side (or a duplicated key); key-matched rows whose values differ (CSV_EXACT_COLUMNS
+    exactly, CSV_CONTINUOUS_COLUMNS within MACHINE_CHECK_TOL); a change of row order (a fact, not
+    an outcome). Column 8 is reported, and each difference there is checked against revision
+    3.2's rename. Outcome 1: all equal; 2: continuous within tolerance only; 3: part "a"
+    (identity or lattice, rows, header) and/or part "b" (continuous beyond tolerance)."""
     a = list(csv.reader(io.StringIO(ref.decode("utf-8"), newline="")))
     b = list(csv.reader(io.StringIO(got.decode("utf-8"), newline="")))
     head = list(WORLDS_CSV_HEADER)
     res = {"byte_identical": ref == got, "rows_prerun": max(len(a) - 1, 0),
            "rows_now": max(len(b) - 1, 0),
            "header_equal": bool(a and b and a[0] == head and b[0] == head),
-           "tolerance": MACHINE_CHECK_TOL, "exact_differences": 0, "first_exact_differences": [],
+           "key_columns": list(CSV_KEY_COLUMNS), "tolerance": MACHINE_CHECK_TOL,
+           "malformed_rows": 0, "duplicate_keys": [], "rows_missing_now": [],
+           "rows_missing_prerun": [], "row_order_differs": None,
+           "exact_differences": 0, "first_exact_differences": [],
            "continuous_within_tolerance": {}, "continuous_beyond_tolerance": 0,
            "first_continuous_beyond_tolerance": [], "mechanism_description_differences": 0,
-           "first_mechanism_description_differences": []}
-    if not res["header_equal"] or len(a) != len(b):
-        return {**res, "outcome": 3, "passed": False,
-                "reason": "the header or the number of rows differs"}
+           "mechanism_description_explained_by_rename_3_2": 0,
+           "mechanism_description_unexplained": 0,
+           "first_mechanism_description_unexplained": []}
+    if not res["header_equal"]:
+        return {**res, "outcome": 3, "outcome_3_parts": ["a"], "passed": False,
+                "reason": outcome_3_reason(["a"], "the header differs")}
     col = {c: k for k, c in enumerate(head)}
-    for i, (ra, rb) in enumerate(zip(a[1:], b[1:]), start=1):
-        if len(ra) != len(head) or len(rb) != len(head):
-            res["exact_differences"] += 1
-            res["first_exact_differences"].append({"row": i, "columns": "row length differs"})
-            continue
-        where = {"row": i, "seed": ra[col["seed"]], "predictor": ra[col["predictor"]]}
+
+    def index(rows, side):
+        out, order = {}, []
+        for i, r in enumerate(rows[1:], start=1):
+            if len(r) != len(head):
+                res["malformed_rows"] += 1
+                continue
+            k = tuple(r[col[c]] for c in CSV_KEY_COLUMNS)
+            if k in out:
+                res["duplicate_keys"].append({"side": side, "key": list(k)})
+                continue
+            out[k] = (i, r)
+            order.append(k)
+        return out, order
+
+    ia, oa = index(a, "prerun")
+    ib, ob = index(b, "now")
+    res["rows_missing_now"] = [list(k) for k in oa if k not in ib]
+    res["rows_missing_prerun"] = [list(k) for k in ob if k not in ia]
+    both = [k for k in oa if k in ib]
+    res["row_order_differs"] = both != [k for k in ob if k in ia]
+    for k in both:
+        (i, ra), (_, rb) = ia[k], ib[k]
+        where = {"row": i, "key": list(k)}
         exact = [c for c in CSV_EXACT_COLUMNS if not _cells_equal(ra[col[c]], rb[col[c]])]
         if exact:
             res["exact_differences"] += 1
@@ -1216,43 +1325,104 @@ def csv_compare(ref, got, limit=20):
         m = col["mechanism_description"]
         if ra[m] != rb[m]:
             res["mechanism_description_differences"] += 1
-            res["first_mechanism_description_differences"].append(
-                {**where, "prerun": ra[m], "now": rb[m]})
-    for k in ("first_exact_differences", "first_continuous_beyond_tolerance",
-              "first_mechanism_description_differences"):
+            if _mech_renamed_32(ra[m]) == rb[m]:
+                res["mechanism_description_explained_by_rename_3_2"] += 1
+            else:
+                res["mechanism_description_unexplained"] += 1
+                res["first_mechanism_description_unexplained"].append(
+                    {**where, "prerun": ra[m], "now": rb[m]})
+    res["mechanism_description_all_explained_by_rename_3_2"] = (
+        res["mechanism_description_unexplained"] == 0)
+    counts = {f"n_{k}": len(res[k]) for k in ("duplicate_keys", "rows_missing_now",
+                                               "rows_missing_prerun")}
+    res.update(counts)
+    for k in ("duplicate_keys", "rows_missing_now", "rows_missing_prerun",
+              "first_exact_differences", "first_continuous_beyond_tolerance",
+              "first_mechanism_description_unexplained"):
         res[k] = res[k][:limit]
-    if res["exact_differences"] or res["continuous_beyond_tolerance"]:
-        outcome = 3
-    elif res["continuous_within_tolerance"]:
-        outcome = 2
-    else:
-        outcome = 1
-    return {**res, "outcome": outcome, "passed": outcome in (1, 2),
+    part_a = res["exact_differences"] or res["malformed_rows"] or any(counts.values())
+    parts = (["a"] if part_a else []) + (["b"] if res["continuous_beyond_tolerance"] else [])
+    if parts:
+        return {**res, "outcome": 3, "outcome_3_parts": parts, "passed": False,
+                "reason": outcome_3_reason(parts)}
+    outcome = 2 if res["continuous_within_tolerance"] else 1
+    return {**res, "outcome": outcome, "outcome_3_parts": [], "passed": True,
             "reason": PRERUN_OUTCOME_TEXT[outcome]}
 
 
-REPRO_FAIL_TREATMENT = (
-    "If the pre-run table was not reproduced: do not re-pin it. Rerun the synthetic step once "
-    "more with a different thread setting and compare it with itself (the cross-configuration "
-    "self-test, section 3.3): self-identical and still different from the pinned table means an "
-    "implementation difference between the revision-2/3 fits and this code; not self-identical "
-    "means machine non-determinism. Either way the result goes to the chat, and any re-pin needs "
-    "the reviewers' review and Mike's word before the real arm.")
 PRERUN_OUTCOME_TEXT = {
     1: "every deciding column equal",
     2: "only continuous columns differ, each within MACHINE_CHECK_TOL",
-    3: ("PRE-RUN TABLE NOT REPRODUCED: an identity or lattice column differs, or a continuous one "
-        "beyond MACHINE_CHECK_TOL; the real arm does not run, the table is not re-pinned, and the "
-        "cross-configuration self-test of section 3.3 is run")}
+    3: ("PRE-RUN TABLE NOT REPRODUCED; the real arm does not run, the table is not re-pinned, "
+        "and the treatment of section 3.3 is followed")}
+OUTCOME_3_PART_TEXT = {
+    "a": ("(a) identity or lattice: the header, a missing, duplicated or malformed row, or an "
+          "identity or lattice column differs"),
+    "b": "(b) continuous: a continuous column differs beyond MACHINE_CHECK_TOL"}
+
+
+def outcome_3_reason(parts, detail=None):
+    """Revision 3.3 (F1): outcome 3's reason names which parts differed."""
+    return (PRERUN_OUTCOME_TEXT[3] + ". What differed: "
+            + "; ".join(OUTCOME_3_PART_TEXT[p] for p in parts)
+            + (f" ({detail})" if detail else ""))
+
+
+REPRO_LAYERS = (
+    "Four layers can produce the difference; read them in this order. "
+    "(1) The fits: the per-key diagnostic (raw_fits_diagnostic in synthetic_only.json), by kind "
+    "(ko, full, block, ko1, sh, pc) over all 637 keys per world: p on the 64 cells, lambda, the "
+    "labels and the score fields; read it first. "
+    "(2) The leg-P null generator (uniform_perms, rc_patterns): the null-input digests in the "
+    "manifest (null_input_digests); the pinned reference records none, so they can be compared "
+    "only between runs of this code (for example the self-test below). "
+    "(3) The consumer (auc_null, avg_ranks, auc, parity_D): with equal fits and equal null "
+    "inputs, a difference in the null outputs (p_P, p_P_rowcol) or in auc or D is the "
+    "consumer's. "
+    "(4) The machine (the BLAS kernel that OpenBLAS's DYNAMIC_ARCH chooses for this CPU): what "
+    "remains after (1) to (3); it cannot be separated today.")
+REPRO_BRANCH = {
+    "a": ("Part (a) differed (identity or lattice columns): all four layers are candidates; "
+          "read (1), then (2), then (3); (4) is what remains."),
+    "b": ("Part (b) differed (continuous columns beyond the tolerance): the continuous columns "
+          "are functions of the fits' p (D, the log-losses) or of lattice columns (the regrown "
+          "shares), and the null enters only lattice columns (p_P, p_P_rowcol), so layer (2) is "
+          "not the cause; read (1), then (3); (4) is what remains."),
+    "ab": ("Parts (a) and (b) both differed: read (1), then (2), then (3); (4) is what "
+           "remains.")}
+REPRO_SELF_TEST = (
+    "The cross-configuration self-test: export OMP_NUM_THREADS, OPENBLAS_NUM_THREADS, "
+    "MKL_NUM_THREADS and NUMEXPR_NUM_THREADS in the shell before launch (the script's setdefault "
+    "does not override a value already set, so a naive rerun sets them to 1 again and is "
+    "identical), rerun the synthetic step into a new --out folder, and compare the two runs. The "
+    "code declares one BLAS thread per process, so varying the threads tests that claim, not the "
+    "machine. Outcomes: (i) self-identical and still different from the pinned table: a code "
+    "difference or a machine difference; they cannot be told apart today, and both are named; "
+    "(ii) the rerun differs from itself: the gate itself is not self-consistent; stop and report "
+    "'the reproduction gate is not self-consistent'. Either way the result goes to the chat. The "
+    "pinned table is never re-pinned in answer to a red gate; a new reference is made only as "
+    "section 7's 'Recreating the reference' says, with the reviewers' review and Mike's word "
+    "before the real arm.")
+
+
+def repro_fail_treatment(parts=("a", "b")):
+    """Section 3.3 (revision 3.3: F1, item 26): the treatment of outcome 3, by its parts."""
+    key = "".join(p for p in ("a", "b") if p in parts) or "ab"
+    return ("If the pre-run table was not reproduced (outcome 3): do not re-pin it. "
+            + REPRO_BRANCH[key] + " " + REPRO_LAYERS + " " + REPRO_SELF_TEST)
+
+
+REPRO_FAIL_TREATMENT = repro_fail_treatment()                # both parts
 
 
 def check_prerun_files():
     """Revision 3.2 (Ark N3): every file listed in PRERUN_DIR/SHA256SUMS.txt is read and its
     sha256 (raw bytes) must equal the listed value and PRERUN_SHA256; the list must name exactly
-    the pinned files."""
+    the pinned files. Revision 3.3 (C6): entries of the folder that are neither listed nor
+    pinned (such as the provenance/ subfolder) are reported in "unlisted", never failed."""
     sums = PRERUN_DIR / "SHA256SUMS.txt"
     if not sums.exists():
-        return {"passed": False, "sums_file": str(sums), "files": {},
+        return {"passed": False, "sums_file": str(sums), "files": {}, "unlisted": [],
                 "reason": "SHA256SUMS.txt not found"}
     listed = {}
     for ln in sums.read_text(encoding="utf-8").splitlines():
@@ -1266,9 +1436,14 @@ def check_prerun_files():
                        "read": hashlib.sha256(p.read_bytes()).hexdigest() if p.exists() else None}
     bad = [n for n, f in files.items() if not (f["read"] == f["listed"] == f["pinned"]
                                                and f["read"] is not None)]
-    return {"passed": not bad, "sums_file": str(sums), "files": files,
+    known = set(files) | {"SHA256SUMS.txt"}
+    unlisted = [p.name + ("/" if p.is_dir() else "") for p in sorted(PRERUN_DIR.iterdir())
+                if p.name not in known]
+    return {"passed": not bad, "sums_file": str(sums), "files": files, "unlisted": unlisted,
             "reason": ("every listed file matches its listed and pinned sha256" if not bad
-                       else "differs or missing: " + ", ".join(bad))}
+                       else "differs or missing: " + ", ".join(bad))
+            + (f"; present but neither listed nor pinned (reported, not failed): "
+               f"{', '.join(unlisted)}" if unlisted else "")}
 
 
 def check_prerun_reproduced(got, comparable, reread=False):
@@ -1293,11 +1468,19 @@ def check_prerun_reproduced(got, comparable, reread=False):
                 "reason": "pre-run files do not match SHA256SUMS.txt and their pins: "
                           + files["reason"]}
     cmp = csv_compare(ref_path.read_bytes(), got)
-    base.update(byte_identical=cmp["byte_identical"], outcome=cmp["outcome"], comparison=cmp)
+    base.update(byte_identical=cmp["byte_identical"], outcome=cmp["outcome"],
+                outcome_3_parts=cmp["outcome_3_parts"], comparison=cmp)
+    order = {True: "differs", False: "equal"}.get(cmp["row_order_differs"], "not compared")
     detail = (f"outcome {cmp['outcome']}: {cmp['reason']}; "
               f"{'byte-identical' if cmp['byte_identical'] else 'not byte-identical'} (recorded, "
-              f"not gated); mechanism_description differs on "
-              f"{cmp['mechanism_description_differences']} rows (reported, not gated)")
+              f"not gated); rows matched by {'/'.join(CSV_KEY_COLUMNS)}: "
+              f"{cmp.get('n_rows_missing_now', 0)} missing now, "
+              f"{cmp.get('n_rows_missing_prerun', 0)} missing in the pre-run table, row order "
+              f"{order} (a fact, not an outcome); "
+              f"mechanism_description differs on {cmp['mechanism_description_differences']} rows "
+              f"(reported, not gated), of which "
+              f"{cmp['mechanism_description_explained_by_rename_3_2']} are exactly revision "
+              f"3.2's rename and {cmp['mechanism_description_unexplained']} are not")
     if reread:
         return {**base, "passed": None,
                 "reason": "re-read from saved fits (--from-raw), not a reproduction; compared "
@@ -1305,18 +1488,27 @@ def check_prerun_reproduced(got, comparable, reread=False):
     return {**base, "passed": cmp["passed"], "reason": detail}
 
 
-def raw_fits_diagnostic(F):
-    """Revision 3.2 (A1): diagnostic, decides nothing. The fits of this run compared with the
-    pinned PRERUN_DIR/raw_fits.json.gz, key by key (p_exist on the 64 block cells, the selected
-    lambda, the labels), split by the worlds that the revision-2 run fitted (30) and those that
-    the revision-3 run fitted (15), and within each by kind (ko, full, block, ko1; sh for the
-    shuffles, pc for the permuted-block ceilings). The ko1 fits of the revision-2 worlds were made
-    in revision 3's pass (section 7)."""
+SCORE_FIELDS = ("existence", "offset", "counts", "sign", "sign_n", "n_ne")
+
+
+def raw_fits_diagnostic(F, fresh=None, reread_note=None):
+    """Revisions 3.2, 3.3 (A1, A6, A8): diagnostic, decides nothing. The fits of this run compared
+    with the pinned PRERUN_DIR/raw_fits.json.gz, key by key (p_exist on the 64 block cells, the
+    selected lambda, the labels, and the score fields present in both records, SCORE_FIELDS),
+    split by the worlds that the revision-2 run fitted (30) and those that the revision-3 run
+    fitted (15), and within each by kind (ko, full, block, ko1; sh for the shuffles, pc for the
+    permuted-block ceilings). The ko1 fits of the revision-2 worlds were made in revision 3's pass
+    (section 7). Under --from-raw, reread_note says what the comparison is, and "fitted_this_pass"
+    counts the compared keys that this pass fitted (fresh): only those can carry information when
+    the re-read store is the pinned one."""
     ref = read_raw(PRERUN_DIR / "raw_fits.json.gz")
+    fresh = set(fresh or ())
     groups = {"revision_2_worlds": PRERUN_REV2_FAMILIES,
               "revision_3_worlds": PRERUN_REV3_FAMILIES}
     group_of = {f: g for g, fs in groups.items() for f in fs}
     out = {g: {"families": list(fs), "kinds": {}} for g, fs in groups.items()}
+    counters = ("pinned", "missing_now", "compared", "fitted_this_pass", "p_differ",
+                "lambda_differ", "labels_differ", "score_differ")
     for key, v in ref.items():
         bk, mk, _ = key
         base, *mods = bk.split("|")
@@ -1324,14 +1516,14 @@ def raw_fits_diagnostic(F):
             continue
         kind = mods[0].split(":")[0] if mods else mk
         s = out[group_of[base.split(":")[1]]]["kinds"].setdefault(
-            kind, {"pinned": 0, "missing_now": 0, "compared": 0, "p_differ": 0,
-                   "max_abs_dp": 0.0, "lambda_differ": 0, "labels_differ": 0})
+            kind, {**{n: 0 for n in counters}, "max_abs_dp": 0.0, "score_field_differ": {}})
         s["pinned"] += 1
         f = F.get(key)
         if f is None:
             s["missing_now"] += 1
             continue
         s["compared"] += 1
+        s["fitted_this_pass"] += key in fresh
         p0, p1 = np.asarray(v["p"], np.float64), np.asarray(f["p"], np.float64)
         if p0.shape != p1.shape:
             s["p_differ"] += 1
@@ -1341,13 +1533,17 @@ def raw_fits_diagnostic(F):
             s["max_abs_dp"] = max(s["max_abs_dp"], float(np.max(np.abs(p0 - p1))))
         s["lambda_differ"] += v.get("lam") != f.get("lam")
         s["labels_differ"] += [bool(x) for x in v["y"]] != [bool(x) for x in f["y"]]
+        s0, s1 = json_safe(v.get("score") or {}), json_safe(f.get("score") or {})
+        bad = [n for n in SCORE_FIELDS if n in s0 and n in s1 and s0[n] != s1[n]]
+        s["score_differ"] += bool(bad)
+        for n in bad:
+            s["score_field_differ"][n] = s["score_field_differ"].get(n, 0) + 1
     for g in out.values():
         k = g["kinds"].values()
-        g["total"] = {n: sum(s[n] for s in k) for n in
-                      ("pinned", "missing_now", "compared", "p_differ", "lambda_differ",
-                       "labels_differ")}
+        g["total"] = {n: sum(s[n] for s in k) for n in counters}
         g["total"]["max_abs_dp"] = max((s["max_abs_dp"] for s in k), default=0.0)
-    return {"status": "diagnostic, decides nothing", **out}
+    return {"status": "diagnostic, decides nothing"
+            + (f"; {reread_note}" if reread_note else ""), **out}
 
 
 def majority(k, n):
@@ -1486,21 +1682,29 @@ def detection_limits(worlds, starts):
 def u_rule(worlds):
     """Section 3.6 (revision 3), the U rule, written before the dense grid was run: if at least
     one world on the dense grid reads U, U stays and its frequency is printed; if none does, U is
-    renamed "insufficient evidence (uncalibrated)" and is never read as a finding."""
+    renamed "insufficient evidence (uncalibrated)" and is never read as a finding. Revision 3.3
+    (A3): the rule counts threshold U only (u_kind); a failed fit or a ceiling_block that was not
+    measured is counted apart and neither keeps nor renames U."""
     dense = [w for w in worlds if w["family"] in M_FAMILIES]
-    n_u = sum(w["label"] == "U" for w in dense)
+    kinds = [u_kind(w.get("U_reasons")) for w in dense if w["label"] == "U"]
+    n_u = len(kinds)
+    n_thr, n_failed, n_nm = (kinds.count("threshold"), kinds.count("failed_fit"),
+                             kinds.count("not_measured"))
     order = [f[0] for f in FAMILIES]
     fams = sorted({w["family"] for w in worlds}, key=order.index)
     freq = {f: {"U": sum(w["label"] == "U" for w in worlds if w["family"] == f),
                 "n": sum(w["family"] == f for w in worlds)} for f in fams}
-    if n_u:
-        text = f"U read by {n_u} of {len(dense)} dense-grid worlds: U stays; its frequency is printed"
+    split = (f"{n_thr} threshold U, {n_failed} failed fit, {n_nm} ceiling_block not measured")
+    if n_thr:
+        text = (f"threshold U read by {n_thr} of {len(dense)} dense-grid worlds ({split}): U "
+                "stays; its frequency is printed")
     else:
-        text = (f"no dense-grid world read U (0 of {len(dense)}): U is renamed "
-                f"'{U_UNCALIBRATED}' and is never read as a finding")
-    return {"dense_grid_worlds": len(dense), "dense_grid_U": n_u,
+        text = (f"no dense-grid world read a threshold U (0 of {len(dense)}; {split}): U is "
+                f"renamed '{U_UNCALIBRATED}' and is never read as a finding")
+    return {"dense_grid_worlds": len(dense), "dense_grid_U": n_u, "n_u_threshold": n_thr,
+            "n_u_failed": n_failed, "n_u_not_measured": n_nm,
             "all_worlds": len(worlds), "all_U": sum(w["label"] == "U" for w in worlds),
-            "frequency_by_family": freq, "renamed": n_u == 0, "text": text}
+            "frequency_by_family": freq, "renamed": n_thr == 0, "text": text}
 
 
 def fixed_lambda_path_check(F, base_keys, workers, init_args):
@@ -1576,7 +1780,8 @@ def run_synthetic(args, terms, F=None):
     The caller stops on a failed requirement."""
     specs = [w for w in world_specs() if w["family"] in args.families
              and w["j"] < args.worlds_per_family]
-    F = dict(F or {})
+    saved = dict(F or {})
+    F = dict(saved)
     n_saved = len(F)
     init_args = (args.starts, terms, args.synthetic_only)
     groups = []
@@ -1614,7 +1819,22 @@ def run_synthetic(args, terms, F=None):
         f"{repro['recomputed_sha256']}")
     raw_diag = None
     if comparable and repro.get("prerun_files", {}).get("passed"):
-        raw_diag = raw_fits_diagnostic(F)
+        # revision 3.3 (A6): under --from-raw the comparison is marked for what it is
+        fresh = {k for k, v in F.items() if saved.get(k) is not v}
+        note = None
+        if reread:
+            rec = getattr(args, "from_raw_record", None) or {}
+            if rec.get("sha256") == PRERUN_SHA256["raw_fits.json.gz"]:
+                note = (f"re-read: compares the pinned store with itself; carries no information "
+                        f"(apart from the {len(fresh)} fits this pass made, counted as "
+                        f"fitted_this_pass)")
+            else:
+                note = ("re-read of a store other than the pinned one: compares that store's "
+                        f"fits, and the {len(fresh)} fits this pass made, with the pinned ones; "
+                        "not a reproduction")
+        raw_diag = raw_fits_diagnostic(F, fresh, note)
+        if note:
+            log(f"per-fit diagnostic: {note}")
         log("per-fit diagnostic against the pre-run raw fits (decides nothing): " + "; ".join(
             f"{g}: {raw_diag[g]['total']}" for g in ("revision_2_worlds", "revision_3_worlds")))
     syn = {"worlds": worlds, "two_world_check": two_world_check(worlds, repro), "limits": dl,
@@ -1733,7 +1953,8 @@ def md_check_and_curve(syn):
         L.append(f"| {row['family']} | {row['requirement']} | {lab} | {meet} | "
                  f"{row['n_stop_labels']} | {'STOP' if row['stops'] else 'no stop'} |")
     cmp = rp.get("comparison") or {}
-    L += ["", f"Pre-run table (section 7, revision 3.2): {rp['reason']} (passed: {rp['passed']}; "
+    L += ["", f"Pre-run table (section 7, revisions 3.2, 3.3): {rp['reason']} (passed: "
+          f"{rp['passed']}; "
           f"byte-identical: {rp['byte_identical']}; pinned {rp['prerun_sha256_pinned']}, "
           f"recomputed {rp['recomputed_sha256']}"
           + (f"; exact-column differences in {cmp['exact_differences']} rows, first: "
@@ -1744,11 +1965,13 @@ def md_check_and_curve(syn):
           + (f"; continuous differences beyond it in {cmp['continuous_beyond_tolerance']} "
              f"cells, first: {cmp['first_continuous_beyond_tolerance']}"
              if cmp.get("continuous_beyond_tolerance") else "")
-          + (f"; mechanism_description (reported, not gated) differs on "
-             f"{cmp['mechanism_description_differences']} rows"
-             if cmp.get("mechanism_description_differences") else "")
+          + (f"; mechanism_description differences that are not revision 3.2's rename, "
+             f"first: {cmp['first_mechanism_description_unexplained']}"
+             if cmp.get("mechanism_description_unexplained") else "")
           + ").", "",
-          "Per-fit diagnostic against the pre-run raw fits (decides nothing): "
+          "Per-fit diagnostic against the pre-run raw fits ("
+          + (syn["raw_fits_diagnostic"]["status"] if syn.get("raw_fits_diagnostic")
+             else "decides nothing") + "): "
           + (", ".join(f"{g}: {syn['raw_fits_diagnostic'][g]['total']}"
                        for g in ("revision_2_worlds", "revision_3_worlds"))
              if syn.get("raw_fits_diagnostic") else "not run") + ".", "",
@@ -1768,7 +1991,9 @@ def md_check_and_curve(syn):
     L += [""] + md_limits(gs) + ["",
           f"**U rule:** {ur['text']}. U is read as '{U_THRESHOLD}', the signature of the leg-P "
           f"detection limit gamma*_P (revisions 3.1, 3.2), except a U whose reasons include "
-          f"rule #2.1's ceiling_block below {GATE_CUT:.2f}, which reads '{FAILED_FIT_TEXT}'. "
+          f"rule #2.1's ceiling_block below {GATE_CUT:.2f}, which reads '{FAILED_FIT_TEXT}', and "
+          f"a U whose ceiling_block was not measured, which reads '{NOT_MEASURED_TEXT}' "
+          f"(revision 3.3). "
           f"U across all {ur['all_worlds']} worlds: {ur['all_U']} ("
           + ", ".join(f"{f} {v['U']}/{v['n']}" for f, v in ur["frequency_by_family"].items())
           + ").", "",
@@ -1838,6 +2063,35 @@ def private_run_dir(arm, head):
     """Section 7 (revision 3.1): where a registered run writes its private and raw outputs,
     outside the repository: connectome-seed-data/knockout_regrow/<arm>_<UTC stamp>_<head>."""
     return PRIVATE_ROOT / f"{arm}_{time.strftime('%Y%m%dT%H%M%SZ', time.gmtime())}_{head[:12]}"
+
+
+def out_dir_refusal(out, arm=None):
+    """Revision 3.3 (A2, C4): why --out must not be written, or None. Refused: --out with --arm
+    (the real arm writes to private_run_dir and would ignore it); --out at PRERUN_DIR or inside
+    it; and a folder that holds a byte copy of the reference (at least one file named like a
+    pinned one is present, and every such present file matches its PRERUN_SHA256 pin). A missing
+    pinned-name file is not a differing one. PRERUN_DIR and PRERUN_SHA256 are read at call time.
+    Falsifier: the content guard can tell a reference copy from a fresh run's folder only because
+    write_raw's raw_fits.json.gz is not byte-reproducible (gzip writes its mtime into the header);
+    if write_raw becomes deterministic, this guard must be revisited (section 7)."""
+    if out is None:
+        return None
+    if arm:
+        return ("REFUSED: --out is not used with --arm; the real arm writes its private outputs "
+                "to connectome-seed-data/knockout_regrow/<run> (section 7)")
+    target, ref = Path(out).resolve(), Path(PRERUN_DIR).resolve()
+    if target == ref or target.is_relative_to(ref):
+        return (f"REFUSED: --out {target} is the pinned pre-run reference folder or inside it "
+                f"({ref}); write to a new folder (section 7, 'Recreating the reference')")
+    if target.is_dir():
+        present = {n: hashlib.sha256((target / n).read_bytes()).hexdigest()
+                   for n in PRERUN_SHA256 if (target / n).is_file()}
+        if present and all(present[n] == PRERUN_SHA256[n] for n in present):
+            return (f"REFUSED: --out {target} holds a byte copy of the pinned pre-run reference "
+                    f"(present pinned-name files, each equal to its pin: "
+                    f"{', '.join(sorted(present))}); write to a new folder "
+                    "(section 7)")
+    return None
 
 
 def write_sha256sums(d):
@@ -2032,6 +2286,11 @@ def main():
     if a.arm and (smoke or a.from_raw or a.starts != 10):
         sys.exit("REFUSED: the real arm runs as registered: --starts 10, no smoke option, no "
                  "--from-raw (sections 3.3, 7)")
+    # Revision 3.3 (A2, C4): before any write or mkdir, --out is refused at or inside the pinned
+    # reference folder, on a byte copy of it, and with --arm.
+    refusal = out_dir_refusal(a.out, a.arm)
+    if refusal:
+        sys.exit(refusal)
     H.STARTS = a.starts
 
     # Step 1: refusals and pins. --synthetic-only is run before commit (D11), so it records the
@@ -2071,17 +2330,30 @@ def main():
     if a.arm:
         machine_checks_real(a, terms, checks)
 
+    # Revision 3.3 (B6): the --from-raw file with its sha256 and whether it exists.
+    a.from_raw_record = None
+    if a.from_raw:
+        fr = Path(a.from_raw)
+        a.from_raw_record = {"path": str(fr), "exists": fr.is_file(),
+                             "sha256": (hashlib.sha256(fr.read_bytes()).hexdigest()
+                                        if fr.is_file() else None)}
+        a.from_raw_record["is_the_pinned_store"] = (a.from_raw_record["sha256"]
+                                                    == PRERUN_SHA256["raw_fits.json.gz"])
     head = git("rev-parse", "HEAD")
     private = private_run_dir(a.arm, head) if a.arm else (Path(a.out) if a.out else None)
     manifest = {"registration": REGISTRATION, "revision": REGISTRATION_REVISION,
                 "registration_sha256_lf": sha256_lf(ROOT / REGISTRATION),
                 "script_sha256_lf": sha256_lf(Path(__file__)), "git_head": head,
-                "tree_dirty_under_c6_or_plans": bool(dirty), "allow_dirty": bool(a.allow_dirty),
+                "tree_dirty_under_c6_or_plans": bool(dirty),
+                "tree_dirty_paths": dirty.splitlines() if dirty else [],
+                "allow_dirty": bool(a.allow_dirty),
+                "not_the_registered_run": (NOT_REGISTERED_TEXT if a.arm and a.allow_dirty
+                                           else None),
                 "mode": "synthetic-only" if a.synthetic_only else a.arm, "smoke": smoke,
                 "worlds_per_family": a.worlds_per_family, "shuffles": a.shuffles,
                 "perm_ceilings": a.perm_ceilings, "families": a.families, "starts": a.starts,
                 "workers": a.workers, "python": pins["python"], "numpy": pins["numpy"],
-                "device": "CPU", "from_raw": a.from_raw,
+                "device": "CPU", "from_raw": a.from_raw, "from_raw_record": a.from_raw_record,
                 "private_outputs": str(private) if private else None,
                 "prerun_dir": str(PRERUN_DIR),
                 "prerun_worlds_csv_sha256": PRERUN_WORLDS_CSV_SHA256,
@@ -2097,10 +2369,15 @@ def main():
     manifest["prerun_csv_byte_identical"] = rp["byte_identical"]
     manifest["prerun_comparison_outcome"] = rp["outcome"]
     manifest["prerun_reread_from_saved_fits"] = rp["reread_from_saved_fits"]
+    manifest["prerun_comparison_outcome_3_parts"] = rp.get("outcome_3_parts")
+    manifest["null_input_digests"] = null_input_digests()      # revision 3.3 (F10)
+    log(f"null-input digests (revision 3.3): {manifest['null_input_digests']}")
     log(f"machine record (revision 3.2): thread variables "
         f"{manifest['machine_record']['thread_env']}; machine "
         f"{manifest['machine_record']['machine']}")
     manifest["runtime_s"] = time.time() - t0
+    treatment = (repro_fail_treatment(rp.get("outcome_3_parts") or ("a", "b"))
+                 if rp["passed"] is False else "")
     if a.arm:                                          # section 7: private and raw, before step 4
         write_synthetic_outputs(private, {**syn, "checks": checks, "seeds": seeds}, F, manifest)
     if a.synthetic_only:
@@ -2109,14 +2386,14 @@ def main():
         if not syn["two_world_check"]["passed"]:
             log("TWO-WORLD CHECK FAILED: a requirement marked stop failed, or the pre-run table "
                 "was not reproduced (outcome 3); the real arm does not run (sections 3.6, 7). "
-                + REPRO_FAIL_TREATMENT)
+                + treatment)
             sys.exit(1)
         log(f"\n--synthetic-only: stopped before any real block score. {time.time() - t0:.0f}s")
         return
     if not syn["two_world_check"]["passed"]:
         log("TWO-WORLD CHECK FAILED: a requirement marked stop failed, or the pre-run table was "
             "not reproduced (outcome 3); the real arm does not run (sections 3.6, 7). No real "
-            f"block score was computed. Private outputs: {private}. " + REPRO_FAIL_TREATMENT)
+            f"block score was computed. Private outputs: {private}. " + treatment)
         sys.exit(1)
 
     # Step 4: the real arm.
@@ -2128,7 +2405,9 @@ def main():
     real["label_text"] = label_text(real["label"], syn["limits"], syn["u_rule"],
                                     real["U_reasons"], real["rows"]["rule"]["ceiling_block"])
     real["verdict_line"] = verdict_line(real, syn["limits"], syn["u_rule"],
-                                        syn["two_world_check"]["no_contingency"])
+                                        syn["two_world_check"]["no_contingency"],
+                                        manifest["not_the_registered_run"])
+    manifest["null_input_digests"] = null_input_digests()      # now with the real block's y
     write_raw(Fr, private / "raw_fits_real.json.gz")
     write_sha256sums(private)
     log(f"wrote {private}")

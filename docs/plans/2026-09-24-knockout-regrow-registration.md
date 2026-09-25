@@ -1,4 +1,43 @@
 ---
+**Status (revision 3.3, 2026-09-25 UTC): draft. Revision 3.3 has NOT been reviewed; no real-arm
+run before its review, Zcode's vote and Mike's word.**
+
+**Revision 3.3, 2026-09-25 UTC: the reviewers' pass on revision 3.2. Text and code only; no
+fitting run.** It applies the review of revision 3.2 in the DPC Research chat, 2026-09-25
+14:04–14:39 UTC (Ark and Johnny; both vote "yes, with edits"), Zcode's votes at 15:05 UTC and
+CC's probes posted at 15:1x UTC. The procedure is Mike's word of 13:36 UTC: the subagent drafts,
+CC checks, all three review. **Acceptance rule** (Ark and Johnny, 14:36–14:37 UTC): a new item
+enters only if it (1) can destroy an artefact, (2) blocks the run, or (3) changes the text or the
+coverage of a quoted verdict-line string. Drafted by a CC subagent. The votes and the items are in
+§10, the changes and the error ledger in §12. What revision 3.3 changes:
+
+- **The reproduction gate matches rows by key and splits outcome 3** (§3.3, §7). Rows are matched
+  by (family, j, seed, predictor); missing rows, value differences and a change of row order are
+  three separate outputs, and a change of order alone is not outcome 3. Outcome 3 is split into
+  (a) identity or lattice columns and (b) continuous columns beyond `MACHINE_CHECK_TOL`. Its
+  treatment names four layers (the fits, the leg-P null generator, the consumer, the machine) and
+  the order in which they are read, and the self-test's outcomes are corrected: a self-identical
+  rerun that still differs from the pinned table is a code difference **or** a machine
+  difference, and the two cannot be told apart today. The null inputs are digested into the
+  manifest. The 84 column-8 differences are checked to be exactly revision 3.2's rename.
+- **The reference folder is protected** (§7): `--out` is refused at or inside the pinned
+  pre-run folder, on any folder that holds a byte copy of it, and with `--arm`. "Recreating the
+  reference" is written: never in place, and a red pin is never answered by re-pinning.
+- **Three U texts** (§3.6, §4, §5): a threshold U, a failed fit, and a U whose `ceiling_block`
+  was not measured; the U rule counts threshold U only.
+- **The per-fit diagnostic** compares the five score fields too, and says so when a `--from-raw`
+  pass compares the pinned store with itself (§3.3). **`--allow-dirty`** marks a real-arm run as
+  not the registered run on its verdict line (§3.3, §7).
+- **Reading rules, text only** (§3.2, §3.3, §3.6, §3.8): `smallest_passing_auc`; a pin is
+  integrity, not reproducibility; the vocabulary of "present" and of λ; the γ_R input chain and
+  `TAU`; what the gate covers; the provenance of the reference; the four reasons behind V1.
+- **CC's probes** (§3.3, §11): a fresh refit of the three worlds that carry the γ_R bracket and
+  the minus side of γ\*_P equals the pinned store on every field, shuffles and permuted-block
+  ceilings included (2112 of 2112 fits).
+- **An error ledger** (§12): every wrong wording caught in the review, with where it lives.
+
+Revision 3.2 was reviewed at 14:04–14:39 UTC. Its status and its header follow, kept as written.
+
 **Status (revision 3.2, 2026-09-25 UTC): draft. Revision 3.2 has NOT been reviewed; no real-arm
 run before its review and Mike's word.**
 
@@ -395,7 +434,9 @@ Both are computed for the primary and for each BF_r. **Both are printed on the v
   3.2:** the gate cut is a constant of its own (`GATE_CUT` = 0.90), and the G label names its
   gate variable, rule #2.1's `ceiling_block`. The gate never bound in the pre-run:
   `ceiling_block` = 1.0 in all 225 rule #2.1 and BF rows (N1's rows are 0.5 by construction). A
-  U caused by it prints as a failed fit (§4).
+  U caused by it prints as a failed fit (§4). **Revision 3.3 (A4):** a `ceiling_block` that was
+  not measured is not a failed fit and is not "below 0.90"; it has its own reason and its own U
+  text (§4).
 - **A low `ceiling_full` with a high `ceiling_block`** means that the block does not follow from its
   surroundings: the rule can express it but not together with the rest of the bank. Following
   Johnny, this is routed to **G**. Revision 2 labelled it by mechanism, so that one letter did not
@@ -486,6 +527,17 @@ above 0.5; subtracting it removes the degree channel on every bank alike.
   than 1e-9, and `TAU` can at most turn a floating-point rounding difference between two equal
   fractions into a tie. The tie band that matters is the λ tie in fitting (`LAMBDA_TIE`: held-out
   log-likelihoods within 1e-9 go to the larger λ, §6).
+- **The γ_R input chain and `TAU`, stated once (revision 3.3, B4).** Leg S reaches γ_R through
+  this chain: a shuffle's `present` (its block's present count) → degenerate when `present` is 0
+  or 64, where `auc` returns no value (script, `auc`) → `n_deg` → `n_valid` = 99 − `n_deg` →
+  `p_S`; a degenerate shuffle is excluded from `n_ge` (`evaluate_bank`). `n_ge` compares
+  `M_real`, a difference of two AUCs on the 32/32 lattice (steps of 1/2048), with each shuffle's
+  margin, a difference of two AUCs on that shuffle's own lattice (steps of 1/(2 · present ·
+  absent)). **`TAU` is inert because the lattice gaps are far larger than `TAU` and the
+  floating-point rounding is far smaller:** two unequal values on these lattices differ by at
+  least 1/(2048 · 2 · present · absent) ≥ 1/2048² ≈ 2.4e-7, while rounding in double precision
+  is of order 1e-16. The reading does not rest on the 1/2048 lattice alone. `TAU` is a tie
+  policy, not the instrument's resolution (§12, error ledger).
 - `p_S = (1 + n_ge) / (1 + 99 − n_deg)`. **Leg S passes** iff `n_ge = 0` and at least one shuffle
   has an AUC. With `n_deg = 0`, that is `p_S = 0.01`, as in revision 2.
 - **Degenerate shuffles on the verdict line (Ark, review finding 4; kept in revision 3).** If
@@ -510,6 +562,14 @@ statistic is the predictor's AUC against the permuted labels.
   `sqrt(65 / (12 · 32 · 32))` = 0.0727. So `p_P <= 0.01` needs an AUC of about 0.67 or more (both
   confirmed by Ark, review 2026-09-24 20:56 UTC). The script prints the exact smallest passing AUC
   from its own 9,999 draws.
+- **`smallest_passing_auc` (revision 3.3, B1).** It is the lowest AUC on the k/1024 grid whose
+  own null (the 9,999 draws) gives `p_P <= 0.01`. It depends on the block's labels `y` through
+  `Yu = y[uniform_perms()]` (script, `evaluate_bank`), not only on their count, and on no fit, so
+  it is γ-blind: the same at every γ from 0 to 2. It is a translation anchor between the AUC axis
+  and `P_R`, not a γ limit. **Pre-run values: two numbers, split by the No family:** 0.666015625
+  (682/1024) in 40 worlds and 0.6728515625 (689/1024) in the five No worlds (seeds 90120–90124),
+  whose board follows `z'` instead of `z` (read from the pre-run `synthetic_only.json` and from
+  the `--from-raw` re-read of revision 3.3).
 - **Printed beside it (proposal, D4; decides nothing):** the same test under **row-and-column-preserving
   permutations** of the block. These are random 8 × 8 patterns with 4 present in every row and
   every column, drawn by 20 × 32 successful checkerboard swaps from the real pattern, 9,999 draws.
@@ -522,6 +582,11 @@ statistic is the predictor's AUC against the permuted labels.
 
 - **Run once.** The real arm is run once, at a committed head, with the tree clean under
   `results/genome/c6/` and `docs/plans/` (the refusal of `harness.rule_run`, reused).
+  **`--allow-dirty` (revision 3.3, A7):** the option lets the real arm run on a dirty tree, which
+  is useful for dry runs. **A real-arm run made with `--allow-dirty` is not the registered run**:
+  its manifest records `not_the_registered_run`, its verdict line ends with "NOT THE REGISTERED
+  RUN: made with --allow-dirty; this verdict cannot be cited as the registered result", and it
+  cannot be cited as the registered result.
 - **One manifest, from a clean committed tree, and the pre-run table reproduced (revision 3.1;
   Johnny 09:33, Zcode 09:34 UTC).** This file and the script were edited after the pre-run
   synthetic numbers were produced (header), so those numbers are pre-run values. The registered
@@ -537,6 +602,19 @@ statistic is the predictor's AUC against the permuted labels.
   and a runtime of 8 s), and the saved fits it read are mixed: 30 worlds were fitted by the
   revision-2 run (families R, Nf, No, W, M0.5, M1.0) and 15 by the revision-3 run (M0.6, M0.75,
   M0.85). The code of revisions 2 and 3 is not in git.
+  *Why a byte-for-byte stop is not the gate: four reasons (revision 3.3, B7; V1 in §10).* (1) The
+  fits are of mixed generation (revision 2 and revision 3, above). (2) The reference has no
+  producer in git (the provenance below). (3) Byte identity is a fact of one machine: OpenBLAS
+  chooses its kernel at run time (`DYNAMIC_ARCH`), and the kernel is not pinned. (4) gzip writes
+  its mtime into the header of `raw_fits.json.gz`, so that file differs in bytes on every run;
+  this is the only one of the four reasons that also applies to every future run.
+  *Provenance of the reference (revision 3.3, B6).* Its producer exists only as a hash. The
+  pinned `synthetic_only.json` manifest records revision "3", `script_sha256_lf` `508f4b17…`,
+  `registration_sha256_lf` `4c88d602…`, `git_head` `ea60011` and `tree_dirty_under_c6_or_plans`
+  true. At `ea60011` neither file was tracked, and no committed version of either file
+  (`8a514fa`, `52eb381`) has those hashes. The report (`SYNTHETIC.md`) names no input, and the
+  manifest's `from_raw` is a path in a Temp scratchpad. CC's probe P2 (below) established the
+  input's identity by content.
   *Measured facts* (CC, 2026-09-25, this machine, `tools/.venv`, one process):
   (a) fresh fits by the revision-3.1 code of all 45 worlds × {N1, rule #2.1, BF_1–BF_4} on the
   knockout (`ko`) view equal the pinned `raw_fits.json.gz` bit for bit: 270 of 270, max |Δp| = 0,
@@ -544,13 +622,37 @@ statistic is the predictor's AUC against the permuted labels.
   saved keys per world. The 99 shuffles (`|sh:`, 594 keys) and the 20 permuted-block ceilings
   (`|pc:`) were not recomputed. γ\*_P and the family limit rest on `p_P`, which uses the
   knockout fit's AUC (covered); γ_R also needs leg S, which counts the 99 shuffled fits (not
-  covered). (b) The revision-3.1 writer on the pinned fits (`--synthetic-only --from-raw`, 12 s)
-  reproduced the pinned CSV byte for byte (sha256 `7a2f0295…c8f1`). Revision 3.2 then changed
+  covered; revision 3.3: covered for three worlds, fact (c)). (b) The revision-3.1 writer on the
+  pinned fits (`--synthetic-only --from-raw`, 12 s; 13:40 UTC) reproduced the pinned CSV byte for
+  byte (sha256 `7a2f0295…c8f1`). Revision 3.2 then changed
   the text of column 8 (§2.4): its own `--from-raw` re-read of the pinned fits (12 s, into a
   scratch directory) gives outcome 1 below, every deciding column equal, with column 8 differing
   on 84 rows and nothing else differing.
-  *The gate.* The fresh CSV is compared with the pinned CSV row by row on the deciding columns,
-  not by bytes. **Exact comparison** for the identity columns of a row (`family`, `j`, `seed`,
+  *Measured facts added in revision 3.3* (CC's probes, posted 15:1x UTC; this machine,
+  `tools/.venv`, the code of `52eb381`). (c) **P1, a fresh refit against the pinned
+  `raw_fits.json.gz`**, in a 30-process pool, 581 s, every field compared (`p` on all 64 cells as
+  exact lists, `lam`, `y`, and the whole `score` dict: existence, offset, counts, sign, `n_ne`):
+  the base `ko` arm, all 45 worlds × 6 predictors, 270 of 270 equal; `|sh:`, all 99 shuffles × 6
+  predictors for the worlds M0.6:0 and M0.75:0 (the γ_R bracket, revision-3 fits) and M0.5:0
+  (the minus side of γ\*_P, revision-2 fits), 1782 of 1782 equal; `|pc:`, the 20 ceilings of the
+  same 3 worlds, 60 of 60 equal. Total 2112 of 2112. Not recomputed: `|sh:` and `|pc:` of the
+  other 42 worlds. (d) **P2, the input of the reference.** The file that the pinned manifest names
+  as `from_raw` (…/scratchpad/knockout_synth/rev3/raw_fits.json.gz, in a CC scratchpad of
+  2026-09-24/25) exists; compared with the pinned store as objects through `read_raw`, it has the
+  same 28,665 keys, and 5 records differ, only in their `secs` field (`world:W:0`, `ko1`, rule
+  #2.1 and BF_1–BF_4); `p`, `y`, `lam` and `score` are equal. The pinned `raw_fits.json.gz` is a
+  byte copy of the reference pass's own output (…/rev3_final/raw_fits.json.gz, sha256
+  `91035a…`). The revision-2 run's store (…/full/, 18,960 keys) equals the pinned store on every
+  shared key. (e) **The `--from-raw` re-read of revision 3.3** (the drafting subagent, 13 s, into
+  a scratch directory): outcome 1; rows matched by key, none missing on either side, row order
+  equal; column 8 differs on 84 rows, and all 84 are exactly revision 3.2's rename; the recomputed
+  CSV is byte-identical to revision 3.2's re-read (sha256 `32d62c71…95c1`).
+  *The gate.* The fresh CSV is compared with the pinned CSV on the deciding columns, not by
+  bytes. **Revision 3.3 (item ㉗): rows are matched by key**, (`family`, `j`, `seed`,
+  `predictor`), not by position. Three outputs are kept apart: rows missing on either side (a
+  duplicated key counts with them); key-matched rows whose values differ; and a change of row
+  order, which is recorded as a fact and does not by itself give outcome 3.
+  **Exact comparison** for the identity columns of a row (`family`, `j`, `seed`,
   `gamma_z`, `gamma_z1`, `board`, `predictor`) and for the lattice columns: `label`,
   `outside_density`, `auc`, `precision_at_32`, `ceiling_full`, `ceiling_block`, `M_real`,
   `n_ge`, `n_shuffles`, `n_deg`, `n_valid_shuffles`, `p_S`, `p_P`, `p_P_rowcol`, `lambda_ko`,
@@ -565,25 +667,84 @@ statistic is the predictor's AUC against the permuted labels.
   **`mechanism_description` (column 8) is excluded from the deciding set**: it is a world-level
   text derived from rule #2.1's `ceiling_full` and repeated on all six rows of a world. It is
   compared after rule #2.1's `ceiling_full`, which is compared exactly, and its differences are
-  reported, not gated. **Byte identity is recorded in the manifest as a fact**
-  (`prerun_csv_byte_identical`), not used as the stop.
-  *Outcomes and their treatment, written before the run.* (1) Every deciding column equal: the
-  gate passes. (2) Only continuous columns differ, within `MACHINE_CHECK_TOL`: the gate passes,
-  and the report records which columns and the largest difference. (3) Any identity or lattice
-  column differs, or a continuous one beyond the tolerance: the real arm does not run, and the
-  table is not re-pinned. The discriminating test is then a **cross-configuration self-test**:
-  the synthetic step is run once more with a different thread setting and compared with itself.
-  Self-identical and still different from the pinned table means an implementation difference
-  between the revision-2/3 fits and the revision-3.2 code, a finding about the code and not
-  about biology. Not self-identical means machine non-determinism. Either way the result goes to
-  the chat, and any re-pin needs the reviewers' review and Mike's word before the real arm. (The
-  script prints this treatment on a failure; it does not run the self-test by itself.)
+  reported, not gated. **Revision 3.3 (C5):** each column-8 difference is checked against
+  revision 3.2's rename: the pinned text with "(ceiling_full X" rewritten as "(rule #2.1's
+  ceiling_full = X" must equal the fresh text; the report counts the differences that are
+  exactly the rename and prints those that are not. **Byte identity is recorded in the manifest
+  as a fact** (`prerun_csv_byte_identical`), not used as the stop.
+  *Outcomes and their treatment, written before the run (revision 3.3 replaces revision 3.2's
+  treatment; items F1, ㉖, F10).* (1) Every deciding column equal: the gate passes. (2) Only
+  continuous columns differ, within `MACHINE_CHECK_TOL`: the gate passes, and the report records
+  which columns and the largest difference. (3) Otherwise the real arm does not run, and the
+  table is not re-pinned. **Outcome 3 is split by what differed:** (a) identity or lattice (the
+  header, a missing, duplicated or malformed row, or an identity or lattice column); (b)
+  continuous (a continuous column beyond `MACHINE_CHECK_TOL`). The reason and the treatment
+  branch on which part is non-empty. **The treatment names four layers and how each is told
+  apart:** (i) *the fits*, told apart by the per-key diagnostic (`raw_fits_diagnostic`, below),
+  by kind (`ko`, `full`, `block`, `ko1`, `sh`, `pc`) over all 637 keys per world, read in the
+  treatment text; (ii) *the leg-P null generator* (`uniform_perms`, `rc_patterns`), told apart by
+  the null-input digests (below); (iii) *the consumer* (`auc_null`, `avg_ranks`, `auc`,
+  `parity_D`), which is what differs when the fits and the null inputs are equal and the null
+  outputs are not; (iv) *the machine* (the BLAS kernel that `DYNAMIC_ARCH` chooses). **Order of
+  reading:** the per-key diagnostic first; then the null-input digests; then the null outputs;
+  the machine is what remains, and it cannot be separated today. Part (b) alone excludes layer
+  (ii): the continuous columns are functions of the fits' `p` (`D`, the log-losses) or of lattice
+  columns (the regrown shares), and the null enters only lattice columns (`p_P`, `p_P_rowcol`).
+  **The cross-configuration self-test** (the synthetic step run once more with a different
+  thread setting, into a new folder, and compared with the first run) has these outcomes:
+  (1) self-identical and still different from the pinned table: a code difference **or** a
+  machine difference; they cannot be told apart today, and both are named; (2) the rerun differs
+  from itself: the gate itself is not self-consistent, and the run stops with that text.
+  **Mechanism:** the four thread variables must be exported in the shell before launch, because
+  the script's `setdefault` does not override a value already set; a naive rerun sets them to 1
+  again and is identical. The code declares one BLAS thread per process, so varying the threads
+  tests that claim, not the machine. (Revision 3.2 read the self-test as "self-identical and
+  still different means an implementation difference; not self-identical means machine
+  non-determinism". That reading was wrong: determinism within one version of the code is not
+  invariance to the environment; §12, error ledger.) Either way the result goes to the chat. The
+  script prints this treatment, branched on (a) and (b), on a failure (`repro_fail_treatment`);
+  it does not run the self-test by itself. A red pin is never answered by re-pinning (§7,
+  "Recreating the reference").
+  *Null-input digests (revision 3.3, F10).* The manifest records, and the log prints, the sha256
+  of the `uniform_perms()` matrix and of each `rc_patterns(y)` matrix, the latter as a dict keyed
+  by the sha256 of the `y` bytes (the key of the `rc_patterns` cache), each over exactly the
+  object that the null is computed from (`null_input_digests`). They are computed in the main
+  process, where every null is computed; the pool workers compute no null (they use
+  `uniform_perms` only for check 6's leak bank), so no per-worker digest is collected. None is
+  needed for `perm_ceiling_perm`: its outputs are the `|pc:` fits, which are store keys, and
+  `evaluate_bank` asserts their labels. The pinned reference records no digests, so they can be
+  compared only between runs of this code.
   *Pins.* The script checks every file listed in the pre-run `SHA256SUMS.txt`, against the list
   and against the pins of §7, not only the CSV pin (Ark; Johnny noted that the list already
-  names all five files).
+  names all five files). **Revision 3.3 (C6):** entries of the folder that are neither listed nor
+  pinned, such as the `provenance/` subfolder of §7, are reported, not failed.
+  **A pin is integrity, not reproducibility (revision 3.3, B2, item ㊱).** `raw_fits.json.gz`,
+  and the real arm's `raw_fits_real.json.gz`, cannot be byte-reproduced by any run: gzip writes
+  its mtime into header bytes 4–7 (Johnny's probe, 14:25 UTC: the same payload written 1.2 s
+  apart gave different sha256). Reproducibility is claimed per file and per field, never for the
+  `.gz` bytes.
   *Per-fit diagnostic (decides nothing).* The fresh run's fits are compared with the pinned
   `raw_fits.json.gz` key by key (`p_exist` on the 64 block cells, the selected λ, the labels),
   split by the worlds fitted by revision 2 (30) and by revision 3 (15), and by kind of fit.
+  **Revision 3.3 (A8, item ㊲):** it also compares the `score` fields key by key (existence,
+  offset, counts, sign, `n_ne`, and `sign_n` where both records hold it) and reports the
+  differences per kind: three of the four C6 fields (offset, counts, sign) are not functions of
+  `p` and enter no other channel. New raw records store `sign_n`, the integer, beside the older
+  fields (C7). **Revision 3.3 (A6):** under `--from-raw` the diagnostic says what it compares;
+  when the re-read store is the pinned one, it reads "re-read: compares the pinned store with
+  itself; carries no information", apart from the fits that the pass itself made
+  (`fitted_this_pass`).
+  **What the gate covers (revision 3.3, B5, items ㉚ ㊶).** The gate compares the deciding columns
+  of `synthetic_worlds.csv` only. It does not compare the synthetic summary values in
+  `summary.json` (committed, and written only by the real arm in step 5): the synthetic
+  `per_shuffle` records (the input of γ_R), the verdict lines, `smallest_passing_auc` and the
+  permuted-block ceilings. The `per_shuffle.csv` in the committed outputs carries the **real**
+  arm's shuffles: the same name as the synthetic `per_shuffle` in the JSON, a different object.
+  The synthetic half of the registered run writes nothing to the repository by itself: its
+  values reach the committed outputs only through step 5 of the real arm (`write_committed`), so
+  a run that stops at the gate leaves as its trace the log and the private folder only. The
+  per-key diagnostic covers all 637 fit keys per world (the
+  `|sh:` and `|pc:` keys included) but not the null, which has no keys.
 - **Determinism check (a stop).** The primary rule is fitted twice on the real knockout view.
   The two data dicts must hash byte-identically (the G-det test of rule #2.1, reused), else
   "NOT DETERMINISTIC" and stop. Every fit is deterministic given the bank: N1 is a Newton fit, λ is
@@ -835,6 +996,13 @@ This is Johnny's falsifier: "if an M world on the denser grid gives U even once,
 structurally unreachable". **Outcome:** 3 of 25 dense-grid worlds read U, all at γ = 0.6, so U
 stays (see "What the runs found").
 
+**Revision 3.3 (A3): the U rule counts threshold U only.** "Reads U" above means a threshold U.
+A U whose reasons include `ceiling_block` below the gate (a failed fit) and a U whose
+`ceiling_block` was not measured are counted apart (`n_u_failed`, `n_u_not_measured`, beside
+`n_u_threshold`), and neither keeps nor renames U: a failed fit says nothing about the
+threshold. In the pre-run table and in the re-read of revision 3.3 the 3 U worlds are all
+threshold U (0 failed fit, 0 not measured).
+
 **U is the signature of the threshold (revision 3.1; Ark 09:32 UTC, Zcode 09:34 UTC agreeing;
 Johnny 09:33 UTC; narrowed in revision 3.2).** **Revision 3.2 (Ark, V2): U is the signature of
 the detection limit γ\*_P, not of the band.** All 3 U worlds of the pre-run table sit at γ = 0.6
@@ -850,7 +1018,8 @@ width of the transition band, in grid steps and in γ, and where each dense-grid
 relative to it (§4, §11). The U rule above still applies. It sets the name if the registered run's
 dense grid reads no U. **Revision 3.2 (V4, A2):** a U whose reasons include `ceiling_block` below
 the gate is not a threshold reading but a failed fit; it prints as such, and the U rule never
-renames it (§4).
+renames it (§4). **Revision 3.3 (A4):** nor is a U whose `ceiling_block` was not measured; it
+has its own text (§4).
 
 **The No contingency (Ark, finding 3).** If, after the ceiling fix, any No world reads **U**, the
 registration and the outcome note state: **"The design cannot tell an orthogonal board from
@@ -937,7 +1106,9 @@ the registered run recomputes them.**
 - **They are pre-run values of the synthetic step:** γ\*_P = 0.6, γ_R = 0.75 and the family
   limit = 0.75. They are values of the instrument on the M worlds, not an answer about the real
   block. The family limit equals γ_R here, but not by construction (see "Which p value defines
-  the limits" above).
+  the limits" above). **Revision 3.3 (B1):** beside them, `smallest_passing_auc` = 0.666015625
+  (682/1024) in 40 worlds and 0.6728515625 (689/1024) in the five No worlds (§3.2). It is γ-blind
+  and fits nothing: a translation anchor between the AUC axis and `P_R`, not a γ limit.
 - **What they rest on.** The γ_R bracket (0.6, 0.75] rests entirely on worlds fitted by the
   revision-3 run (M0.6 and M0.75). The limits' exposure to the worlds fitted by the revision-2
   run is M0.5 only (5 worlds, the minus side of γ\*_P). M1.0 lies above all three limits and
@@ -988,6 +1159,23 @@ fits.
 and 7 (planted); 1000–1019 (RP); 10000+ (dial); 20260923. The new range 90000–90999 meets none of
 them.
 
+### 3.8 Vocabulary (revision 3.3; C2, B3, item ㊴)
+
+- **"Present in the block" has two carriers, on two banks.** `n_present`, `n_absent` and
+  `block_present` count the block's present cells on the **base** bank of a world (or the real
+  bank): 32 in all 45 worlds. `score["n_ne"]` in a raw record, and `present` in a `per_shuffle`
+  record, count them on the bank that was fitted, which for a shuffle is the **shuffled** bank
+  `sd`: it varies (16, for example). The definition is the same, `int(y.sum())` (harness `score`;
+  script `evaluate_bank`); the banks differ.
+- **λ.** `None`: the predictor has no λ axis (N1). **100** = `LAMBDA_MAX`: the interaction is
+  shrunk to zero, and the prediction is N1's. Across the 23,850 fits that select λ, λ = 100 in
+  22,125 (92.8 %), λ = 3 in 1,014 and λ = 1 in 711 (Johnny's count; the 936 records with λ = 1 in
+  total include the 225 `ko1` fits at fixed λ = 1). **Ties** of the held-out log-likelihood
+  within 1e-9 go to the **larger** λ (`harness.py:727-728`): a direction policy that the earlier
+  revisions applied without naming it, named here.
+- **`TAU`** is a tie policy, inert in every count of this registration (§3.2), not the
+  instrument's resolution.
+
 ## 4. Reading rule (every branch named before data; proposal, D5)
 
 Read on the primary rule unless a row says otherwise. The rows are tested **in order**, and the
@@ -1020,12 +1208,13 @@ Reviewers may prefer (a) with a quantity they name.
 | **R: regrows** | the primary passes leg S (`n_ge = 0` of the `99 − n_deg` shuffles with an AUC, §3.2) **and** leg P (`p_P <= 0.01`), **on both D1 candidates** | The rule, trained without the block, orders the block's cells better than it does in all 99 degree-preserving shuffles and better than 99 % of label permutations. It generates structure that it was not shown and that degrees do not carry, **on flyvis's averaged template**. |
 | **W: rule weaker than the information available** | not R, and **some BF_r** (r = 1..4) passes leg S (`n_ge = 0`) and leg P at `p_P <= 0.0125` (0.05/4), **on both D1 candidates** | The bank outside the block implies the block for a learnable, name-free predictor, and the registered rule does not express it. That is a defect of the rule, not an absence of grammar. The rank that passed is named. |
 | **G: not detected at the R level above γ_R** | not R, not W; the primary **and every BF_r** have `p_P > 0.10`; and the primary's **`ceiling_block` >= 0.90** (the condition is revision 2's, unchanged; the cut is the gate cut, `GATE_CUT`, since revision 3.2) | **Revision 3.1 (Ark 09:32, Johnny 09:33, Zcode 09:34 UTC): "not detected at the R level above γ_R; leg P passes from γ\*_P".** The block carries no structure that this family regrows at the R level at a strength at or above γ_R, where a majority of the synthetic worlds read R. Leg P alone (of rule #2.1) already sees a majority from γ\*_P, and every predictor does from the family limit (§3.6). Revision 3's "not detected above γ\*" named leg P only. The label always prints **all three limits** with their brackets, **the per-γ fractions seen/n and R/n**, the transition band, and the instrument they come from: `BF_LAMBDAS` [1, 3, 10, 30, 100], ties within 1e-9 to the larger λ, `STARTS` = 10. The rule can express the block (`ceiling_block`), and by Johnny's count the information is there (64/64 inferable). **Not** "no grammar found" and **not** "no grammar exists": the instrument has no right to either claim (Ark 08:24, Johnny 08:27 UTC). A G reached through a selected λ = 100 reads "weaker than the detection limit", not "absent" (Zcode 08:22 UTC), and since revision 3.1 it can be read from the verdict line (below). The mechanism, "orthogonal" if the primary's `ceiling_full < 0.90` and "no information" otherwise, is printed beside the label as **a description only** (§2.4, decision (c)). **Revision 3.2 (A5):** the label names its gate variable ("gate: rule #2.1's ceiling_block = … >= 0.90"), and the mechanism description names whose `ceiling_full` it quotes ("rule #2.1's ceiling_full = …"); its cut, `MECHANISM_CUT` = 0.90, is borrowed from the gate and not calibrated (§2.4). A low `ceiling_full` with the gate passed gives G ("orthogonal"), not U. |
-| **U: on the detection threshold; cannot be separated** (revisions 2 and 3: "too noisy to decide"; renamed by the U rule of §3.6 if no dense-grid world reads U: **"insufficient evidence (uncalibrated)"**, never read as a finding) | anything else (the condition is unchanged) | The legs disagree; or the regrowth sits between `p_P` 0.01 and 0.10; or `ceiling_block` is below 0.90, which means that the rule cannot hold the block even when trained on it alone (by §2.4 this is a failure of the fit, since the block is rank 1), so its failure to regrow says nothing; or the two D1 candidates disagree on R/W. The report states which of these applied. **Revision 3.1 (Ark 09:32 UTC; Zcode agreeing; Johnny recording his falsifier as his own error): U is the signature of the threshold, not an independent state.** In the synthetic worlds it appears only in the transition band [γ\*_P, γ_R), between "not seen" and "seen at the R level" (§3.6). A U on the real block is read as "on the detection threshold; cannot be separated". It is printed with the band's width in grid steps and in γ. (A U whose only reason is `ceiling_block` below 0.90 is still a failed fit, as stated above.) **Revision 3.2 (Ark, V2): U is the signature of the detection limit γ\*_P, not of the band;** all 3 pre-run U worlds sit at γ = 0.6 = γ\*_P, and the band's width is uncertain by up to two grid steps (§3.6). The label prints γ\*_P beside the band. **Revision 3.2 (V4, A2): a U whose reasons include `ceiling_block` below 0.90 is a failed fit, whatever else is listed.** Its label text is "failed fit: rule #2.1 cannot hold the block even when trained on it alone", and the U rule's rename never applies to it. Every other U keeps the threshold reading, or the U rule's name. This branch never ran in the pre-run (`ceiling_block` = 1.0 in all 225 rule #2.1 and BF rows); a test injects the reasons and checks the text (`test_knockout_regrow_labels.py`). |
+| **U: on the detection threshold; cannot be separated** (revisions 2 and 3: "too noisy to decide"; renamed by the U rule of §3.6 if no dense-grid world reads U: **"insufficient evidence (uncalibrated)"**, never read as a finding) | anything else (the condition is unchanged) | The legs disagree; or the regrowth sits between `p_P` 0.01 and 0.10; or `ceiling_block` is below 0.90, which means that the rule cannot hold the block even when trained on it alone (by §2.4 this is a failure of the fit, since the block is rank 1), so its failure to regrow says nothing; or the two D1 candidates disagree on R/W. The report states which of these applied. **Revision 3.1 (Ark 09:32 UTC; Zcode agreeing; Johnny recording his falsifier as his own error): U is the signature of the threshold, not an independent state.** In the synthetic worlds it appears only in the transition band [γ\*_P, γ_R), between "not seen" and "seen at the R level" (§3.6). A U on the real block is read as "on the detection threshold; cannot be separated". It is printed with the band's width in grid steps and in γ. (A U whose only reason is `ceiling_block` below 0.90 is still a failed fit, as stated above.) **Revision 3.2 (Ark, V2): U is the signature of the detection limit γ\*_P, not of the band;** all 3 pre-run U worlds sit at γ = 0.6 = γ\*_P, and the band's width is uncertain by up to two grid steps (§3.6). The label prints γ\*_P beside the band. **Revision 3.2 (V4, A2): a U whose reasons include `ceiling_block` below 0.90 is a failed fit, whatever else is listed.** Its label text is "failed fit: rule #2.1 cannot hold the block even when trained on it alone", and the U rule's rename never applies to it. Every other U keeps the threshold reading, or the U rule's name. This branch never ran in the pre-run (`ceiling_block` = 1.0 in all 225 rule #2.1 and BF rows); a test injects the reasons and checks the text (`test_knockout_regrow_labels.py`). **Revision 3.3 (A4): a `ceiling_block` that was not measured is not a failed fit.** Its reason is "rule #2.1's ceiling_block was not measured, so the G gate of section 4 cannot be read" (not "n/a is below 0.90"), its label text is "not measured: rule #2.1's ceiling_block was not measured; the G gate cannot be read", and the U rule's rename never applies to it. A failed-fit reason, when also present, takes precedence. **Revision 3.3 (A3):** only a threshold U enters the U rule (§3.6). |
 
 **The verdict line** prints: the label (G with γ_R, γ\*_P and the family limit, their brackets,
 the per-γ fractions seen/n and R/n, the transition band and the instrument; U under the name the U
 rule gives it, with γ\*_P and the band, or, when its reasons include `ceiling_block` below the
-gate, as a failed fit (revision 3.2)); for G, the mechanism, marked "description only"; the primary's
+gate, as a failed fit (revision 3.2), or, when `ceiling_block` was not measured, as "not
+measured" (revision 3.3)); for G, the mechanism, marked "description only"; the primary's
 `AUC`, `p_S` (with `n_ge` of `99 − n_deg`) and `p_P`; **both ceilings, `ceiling_full` and
 `ceiling_block`**; the R/W reading on each D1 candidate; **the λ selected by each knockout fit**
 (rule #2.1 and BF_1–BF_4, each chosen by its nested inner folds; revision 3.1); and, if
@@ -1033,6 +1222,9 @@ gate, as a failed fit (revision 3.2)); for G, the mechanism, marked "description
 leg S, which counts against `99 − n_deg` shuffles (smallest `p_S` …)" (§3.2). If the No
 contingency of §3.6 was triggered, the verdict line quotes it. **The fixed λ = 1 diagnostic is not
 on the verdict line** (§3.5, Johnny's condition). It is printed in the report beside the limits.
+**Revision 3.3 (A7):** a real-arm run made with `--allow-dirty` ends its verdict line with "NOT
+THE REGISTERED RUN: made with --allow-dirty; this verdict cannot be cited as the registered
+result (sections 3.3, 7)." (§3.3).
 
 **λ on the verdict line (revision 3.1; Zcode's request of 08:22 UTC, addition 1 (i); Ark 09:32
 and Zcode 09:34 UTC vote yes).** The selected λ is already in each fit: `bf_lambda` for BF_r,
@@ -1070,7 +1262,7 @@ their names) and decide nothing.
 | **R** | The first evidence of generation for this rule: an edge of the tree can be held to the knockout standard (ADR-005 decision 3). It holds for the averaged template only, until the male-CNS arm (§8) reads R too. Question (ii) may resume under its own registration (ADR-005 point 5). |
 | **W** | The grammar line needs a better rule, not a different bank. The rank that passed is the lower bound on what the rule must represent. (ii) waits for a rule that passes. |
 | **G: not detected at the R level above γ_R** | This family regrows no structure in the block at the R level at or above γ_R in M-world units. The leg-P limit γ\*_P and the family limit are printed beside it, with the instrument named on the label (revision 3.1). The forward path must not claim that the rule generates the optic lobe's motion circuit. It must not claim either that the block has no grammar: structure weaker than γ_R is not excluded, and the column test suggests that real structure may be weak. Whether any rule could detect it is not shown. The mechanism description ("orthogonal" or "no information") is printed and carries no consequence (revision 3). |
-| **U: on the detection threshold; cannot be separated** (or, under the U rule, **"insufficient evidence (uncalibrated)"**) | Nothing is concluded beyond this: the block sits at the instrument's detection threshold, in the transition band, where this design cannot separate "seen" from "not seen" (revision 3.1). Whether to change the block, the family or the bank returns to Mike. If the U rule renamed U, the label is never read as a finding. If the No contingency was triggered (§3.6), U does not exclude an orthogonal block. **Revision 3.2:** the block sits at the detection limit γ\*_P (Ark, V2). **A U whose reasons include `ceiling_block` below 0.90 is a failed fit** ("failed fit: rule #2.1 cannot hold the block even when trained on it alone"; V4, A2): the rule could not hold the block even when trained on it alone, so nothing about the block is concluded, and the fit, not the block, returns to review. The U rule never renames it. A low `ceiling_full` with the gate passed is not this case: it gives G, with the description "orthogonal", not U. |
+| **U: on the detection threshold; cannot be separated** (or, under the U rule, **"insufficient evidence (uncalibrated)"**) | Nothing is concluded beyond this: the block sits at the instrument's detection threshold, in the transition band, where this design cannot separate "seen" from "not seen" (revision 3.1). Whether to change the block, the family or the bank returns to Mike. If the U rule renamed U, the label is never read as a finding. If the No contingency was triggered (§3.6), U does not exclude an orthogonal block. **Revision 3.2:** the block sits at the detection limit γ\*_P (Ark, V2). **A U whose reasons include `ceiling_block` below 0.90 is a failed fit** ("failed fit: rule #2.1 cannot hold the block even when trained on it alone"; V4, A2): the rule could not hold the block even when trained on it alone, so nothing about the block is concluded, and the fit, not the block, returns to review. The U rule never renames it. A low `ceiling_full` with the gate passed is not this case: it gives G, with the description "orthogonal", not U. **Revision 3.3 (A4):** a U whose `ceiling_block` was not measured ("not measured: …") concludes nothing about the block either; the measurement, not the block, returns to review, and the U rule never renames it. |
 
 ## 6. What the test cannot show
 
@@ -1166,13 +1358,18 @@ ever built, is a separate instrument.** It is validated on its own, with its own
 its own synthetic worlds. It inherits none of this instrument's limits, and this registration does
 not use it.
 
-**Script (written after revision 2, revised with revisions 3, 3.1 and 3.2; not committed as of
+**Script (written after revision 2, revised with revisions 3, 3.1, 3.2 and 3.3; not committed as of
 revision 3.1, and committed since by `8a514fa`):**
 `results/genome/c6/checks/knockout_regrow.py`. It imports `harness` and loads rule #2.1 through
 `harness.load_rule`, with no copies. **Its label test (revision 3.2):**
 `results/genome/c6/checks/test_knockout_regrow_labels.py` calls `label_text` and `read_label`
 with injected U reasons (the positive control of §4's failed-fit branch) and `csv_compare` on
-hand-made tables; it fits nothing. (`label_text` here is a function; `flywire_column_test.py`
+hand-made tables; it fits nothing. **Revision 3.3** adds tests for the not-measured U text, a
+probe that moves `GATE_CUT` and `MECHANISM_CUT` to 0.95 and requires the printed text to move
+(in place of revision 3.2's equality pin), the U rule's count of threshold U, `csv_compare`'s
+key matching, row order, missing rows, outcome-3 parts and column-8 rename check, and the
+`--out` guard on a temporary folder with a monkeypatched `PRERUN_DIR` (never the real one): 12
+tests. (`label_text` here is a function; `flywire_column_test.py`
 has an unrelated dict `LABEL_TEXT`.) Order of work, each step refusing on failure:
 
 1. **The real arm** refuses on a dirty tree under `results/genome/c6/` or `docs/plans/` (this
@@ -1189,7 +1386,11 @@ has an unrelated dict `LABEL_TEXT`.) Order of work, each step refusing on failur
    (§3.3, below); byte identity is recorded, not gated. The per-fit diagnostic is computed beside
    it and decides nothing. The synthetic outputs are written to the run's private directory
    *before* the check is read, so a failure can be cross-checked. Stop on any failed requirement
-   or failed reproduction (outcome 3 of §3.3). No real block score exists yet.
+   or failed reproduction (outcome 3 of §3.3). No real block score exists yet. **Revision 3.3
+   (A2):** because the outputs are written before the outcome test, a failing run also writes;
+   it is the `--out` guard below, not this order, that protects the reference. A run makes one
+   write before the test, not two: `--arm` and `--synthetic-only` are mutually exclusive, and
+   `--out` is refused with `--arm`.
 4. The real arm: knockout fits (primary, BF_1–BF_4, N1), both ceilings (`ceiling_full` and
    `ceiling_block`), 99 shuffles × 6 predictors, leg P and its row-and-column variant, the
    permuted-block `ceiling_full` values, and the fixed λ = 1 knockout fits of the primary and each
@@ -1222,6 +1423,12 @@ the machine and CPU identification, and the values of `OMP_NUM_THREADS`, `OPENBL
 `MKL_NUM_THREADS` and `NUMEXPR_NUM_THREADS`, both as found in the environment at start and as in
 effect (the script's `setdefault` to 1 does not override a value already set). It also records
 `prerun_csv_byte_identical`, `prerun_comparison_outcome` and `prerun_reread_from_saved_fits`.
+**Since revision 3.3 the manifest also records** (B6, F10, A7): `tree_dirty_paths`, the lines of
+`git status --porcelain` under `results/genome/c6/` and `docs/plans/`, not only the boolean;
+`from_raw_record`, the `--from-raw` file with its sha256, whether it exists, and whether it is
+the pinned store; `prerun_comparison_outcome_3_parts`; `null_input_digests` (§3.3); and
+`not_the_registered_run`, set for a real-arm run with `--allow-dirty`. Under `--from-raw` the
+per-fit diagnostic is marked for what it compares (§3.3).
 
 **Outputs (committed; all aggregate):** `results/genome/c6/checks/knockout_regrow/` with
 `RESULT.md` (the verdict line, the §4 row quoted verbatim, the §3.5 table, the pre-data tables of
@@ -1235,7 +1442,9 @@ shuffled fits (`|sh:`) or the permuted-block ceilings (`|pc:`), only their aggre
 `p_S`). It has no `n_present` or `n_absent` (they are printed on the verdict line, not written to
 the CSV) and no U reasons (they are in `synthetic_only.json` and in the run's printed log). Column 8,
 `mechanism_description`, is world-level: 84 rows carry text in the pre-run table, and in 70 of
-them the quoted `ceiling_full` is rule #2.1's, not the row's own. Since revision 3.2 the text
+them the quoted `ceiling_full` is rule #2.1's, not the row's own. **Revision 3.3 (C1):** column 8
+is a world-level field derived from rule #2.1's row of that world and repeated on all six rows of
+the world; the 84 rows are the 14 G worlds (5 Nf, 5 No, 4 M0.5) × 6. Since revision 3.2 the text
 says so ("rule #2.1's ceiling_full = …"), which changed the text of those 84 rows and, with it,
 the bytes of the file (§2.4, §3.3).
 
@@ -1274,6 +1483,8 @@ fitting run; its line "0 new world fits" confirms it (§3.3).
 (`PRERUN_SHA256`) and, before comparing, reads every file listed in the folder's
 `SHA256SUMS.txt`; each must match both the list and its pin, and the list must name exactly these
 five files. A mismatch fails the reproduction gate (in a `--from-raw` pass it is reported only).
+Since revision 3.3 (C6), entries of the folder that are neither listed nor pinned (the
+`provenance/` subfolder below is expected there) are reported, not failed.
 
 **Provenance records of the fitting runs (revision 3.2, to be added by CC).** The pinned table
 was written by a re-read; the `SYNTHETIC.md` files of the two runs that fitted its worlds exist
@@ -1284,6 +1495,27 @@ re-read, 9480 new world fits, fixed lambda 2 reused, 73 fitted"). They are to be
 provenance records, to `connectome-seed-data/knockout_regrow/synthetic_rev3_prerun/provenance/`
 with their own `SHA256SUMS.txt`. They are not copied into the pinned folder itself, whose five
 files and checksums stay as above.
+
+**The `--out` guard (revision 3.3, A2 and C4; items ㊷ ㊸).** Before revision 3.3 nothing guarded
+`--out` (CC's probe P4: it was used as given when the synthetic outputs were written), and
+`write_sha256sums` writes the sums over the folder's files (files only; subfolders are
+ignored). So a `--synthetic-only --out` pointed at the reference would have overwritten it and
+re-summed it. In step 1 of `main`, before any write or `mkdir`, the script now refuses
+(`out_dir_refusal`): `--out` with `--arm` (the real arm writes to its own private directory and
+ignored `--out` before); `--out` that resolves to `PRERUN_DIR` or to a path inside it; and a
+folder that already holds a byte copy of the reference, that is, at least one file named like a
+pinned file is present, and every such present file matches its `PRERUN_SHA256` pin. A folder in
+which a present pinned-name file differs, or an empty or new folder, may be written. A missing
+file is not a differing one. **Falsifier:** the content guard tells a byte copy of the reference
+from a fresh run's folder only because `raw_fits.json.gz` is not byte-reproducible (gzip writes
+its mtime, item ㊱, §3.3). If `write_raw` ever becomes deterministic (a fixed mtime), a fresh
+run's folder could look like a copy of the reference, and the guard must be revisited.
+
+**Recreating the reference (revision 3.3, A2, item ㊹).** The reference is never recreated in
+place. A new reference is written to a new folder and compared with the old one; then
+`PRERUN_DIR` and `PRERUN_SHA256` (and `PRERUN_WORLDS_CSV_SHA256` with them) are moved together,
+in one registered, committed change that is reviewed before use. **A red pin is never answered by
+re-pinning.**
 
 **The registered run's private and raw outputs (revision 3.1).** The real arm writes them outside
 the repository, to `connectome-seed-data/knockout_regrow/<run>/`, where `<run>` is
@@ -1297,7 +1529,8 @@ names the directory (`private_outputs`). The flyvis bank is committed, so nothin
 licence-restricted. They stay private because they are per-fit files, not aggregates.
 
 **The reproduction requirement (revision 3.1; Johnny 09:33, Zcode 09:34 UTC; its gate revised
-in revision 3.2, below and §3.3).** Revision 3's
+in revision 3.2, below and §3.3).** *This paragraph is as of revision 3.1; its byte-for-byte
+requirement is replaced by revisions 3.2 and 3.3 below and in §3.3 (C3).* Revision 3's
 numbers were produced while this file and the script were still being edited, and both are
 untracked (header; as of revision 3.1, and committed since by `8a514fa`). The script's last save before revision 3.1 (08:44:21 UTC) falls inside the
 fitting window of revision 3's added worlds (08:39–09:23 UTC). Whether that mattered is not known
@@ -1321,6 +1554,8 @@ REPRODUCED" with the first differing cells and fails the two-world check. Byte i
 recorded in the manifest as a fact. The CSV format is unchanged (33 columns, the same writer);
 only the text of column 8 changed (§2.4), so the fresh table is not byte-identical to the
 pinned one, while its deciding columns are (the `--from-raw` re-read of revision 3.2, §3.3).
+**Revision 3.3** matches the rows by key instead of by position, splits outcome 3 into its
+parts (a) and (b), and rewrites the treatment (§3.3).
 
 **Cost (measured; revision 3 replaces revision 2's estimate, which was about half the measured
 cost).** CPU, 30 workers, `--starts 10`:
@@ -1498,6 +1733,54 @@ comes from the review as a whole.
 | B10 | the U reasons of the three pre-run U worlds, from the revision-3.1 writer's log | — | §3.6 |
 | C | "weak leg" → "leg P" throughout, and "the smallest/largest leg-P limit" (Ark N1, Johnny); "untracked"/"not committed" marked "as of revision 3.1" (Ark N2); the provenance of the fits (§3.7) and of the fitting runs (§7); the code comments on the pre-run outputs and on the limit keys; the name collision `LABEL_TEXT` / `label_text` noted once | Ark N1, N2; Johnny | header, §0, §3.6, §3.7, §4, §5, §6, §7, §10, §12 |
 
+**Revision 3.3: the reviewers' pass on revision 3.2, 2026-09-25.** DPC Research chat,
+14:04–14:39 UTC: Ark and Johnny, both "yes, with edits". Zcode voted at 15:05 UTC. CC posted
+its probes at 15:1x UTC (§3.3, facts (c) and (d); §7, P4). Procedure, Mike 13:36 UTC: the
+subagent drafts, CC checks, all three review. **Acceptance rule** (Ark and Johnny, 14:36–14:37
+UTC): a new item enters only if it (1) can destroy an artefact, (2) blocks the run, or (3)
+changes the text or the coverage of a quoted verdict-line string. **Readiness:** A and B in the
+tree before the registered run starts; C in the same commit. The item codes in the "source"
+column (F1, ㉖ and so on) are those of the review as CC's work order for revision 3.3 lists them;
+the work order does not attribute each code to a reviewer, and this file does not either.
+
+*Zcode's votes on V1–V4 (15:05 UTC). Zcode's binding vote is on the revision current at the
+start of the run.*
+
+| # | choice (§10, revision 3.2) | Zcode, 15:05 UTC |
+|---|---|---|
+| V1 | the registered run stops unless it reproduces the pre-run table byte for byte | **no**: the reference has no fresh provenance (`SYNTHETIC.md`, line 138); the code of revisions 2 and 3 is lost; byte identity is a fact of one machine, and the `DYNAMIC_ARCH` kernel is not pinned. Supports the column-wise gate on the registered discrete values, the per-fit comparison with `raw_fits.json.gz` as a diagnostic split 30/15, and byte identity as a recorded fact with the machine stamp |
+| V2 | the transition band [γ\*_P, γ_R) | yes |
+| V3 | `p_P <= 0.01` for every predictor, the family limit included | yes; the family limit is the maximum (0.75) |
+| V4 | a U caused only by `ceiling_block` < 0.90 is a failed fit | yes, on two conditions: a committed regression test that exercises the new input through `ev` (it exists: `test_read_label_failed_fit_end_to_end`), and the third branch's text carried over from the dead branch (done in revision 3.2) |
+
+*Items applied in revision 3.3:*
+
+| item | what | source | where |
+|---|---|---|---|
+| A1 | `csv_compare` matches rows by key (family, j, seed, predictor); missing rows, value differences and row order are separate outputs, and a change of order alone is not outcome 3; outcome 3 split into (a) identity or lattice and (b) continuous beyond the tolerance; the treatment names four layers (fits, null generator, consumer, machine), how each is told apart and the order of reading; the self-test's two outcomes and its mechanism corrected; digests of the null inputs in the manifest | F1, ㉖, ㉗, F10 | §3.3, §7; `csv_compare`, `CSV_KEY_COLUMNS`, `outcome_3_reason`, `OUTCOME_3_PART_TEXT`, `PRERUN_OUTCOME_TEXT`, `repro_fail_treatment`, `REPRO_LAYERS`, `REPRO_BRANCH`, `REPRO_SELF_TEST`, `null_input_digests`, `check_prerun_reproduced`, `main` |
+| A2 | the `--out` guard in step 1 (inside `PRERUN_DIR`; a byte copy of the reference; with `--arm`), with its falsifier; "Recreating the reference"; the outputs are written before the outcome test, so the guard, not the order, protects the reference; a test on a temporary folder | ㊷, ㊸, ㊹ | §7; `out_dir_refusal`, `main`; `test_out_guard_refusals` |
+| A3 | the U rule counts threshold U only; failed-fit and not-measured U are counted apart | F2 | §3.6; `u_rule`, `u_kind` |
+| A4 | a `ceiling_block` that was not measured has its own reason and U text, not the failed fit; test (ii) no longer pins the wrong behaviour | F3 | §2.4, §3.6, §4, §5; `ceiling_block_reason`, `CEILING_BLOCK_NOT_MEASURED`, `NOT_MEASURED_TEXT`, `label_text`; `test_ii_not_measured_is_not_a_failed_fit` |
+| A5 | the equality pin `GATE_CUT == MECHANISM_CUT == 0.90` replaced by a probe that moves both cuts to 0.95 and requires the printed text to move | F4a | `test_mechanism_description_names_rule_ceiling_full` |
+| A6 | under `--from-raw` the per-fit diagnostic is marked "re-read: compares the pinned store with itself; carries no information" (apart from the fits the pass made) | F5 | §3.3, §7; `raw_fits_diagnostic`, `run_synthetic` |
+| A7 | `--allow-dirty` registered: a real-arm run made with it is not the registered run, and its verdict line and manifest say so | F7 | §3.3, §4, §7; `NOT_REGISTERED_TEXT`, `verdict_line`, `main` |
+| A8 | the per-fit diagnostic compares the `score` fields key by key, per kind | ㊲ | §3.3; `raw_fits_diagnostic`, `SCORE_FIELDS` |
+| B1 | the pre-run values of the synthetic step (γ\*_P = 0.6, γ_R = 0.75, family limit = 0.75; present in revision 3.2) and `smallest_passing_auc` (two values, split by No; γ-blind; a translation anchor, not a γ limit) | — | §3.2, §3.6; `smallest_passing_auc` docstring |
+| B2 | a pin is integrity, not reproducibility (gzip mtime) | ㊱ | §3.3 |
+| B3 | the carriers of "present in the block"; λ's values and counts; the tie direction named | ㊴ | §3.8 |
+| B4 | the γ_R input chain; `TAU` inert because lattice gaps ≫ `TAU` and rounding ≪ `TAU` | ㊵ | §3.2 |
+| B5 | what the gate covers and does not cover | ㉚, ㊶ | §3.3 |
+| B6 | the provenance of the reference; the manifest records the dirty paths and the `--from-raw` file with its sha256 and existence | ㉝, ㉞, ㉜ | §3.3, §7; `main` |
+| B7 | V1's four reasons (mixed fits; no producer; one machine; gzip mtime) | — | §3.3 |
+| C1 | column 8 is a world-level field derived from rule #2.1's row | ㉔ | §7 |
+| C2 | the vocabulary of B3 in one place | — | §3.8 |
+| C3 | the revision-3.1 paragraph of §7 marked "as of revision 3.1; replaced" | — | §7, §11 |
+| C4 | `--out` with `--arm` refused (done in A2) | — | §7; `out_dir_refusal` |
+| C5 | the column-8 differences checked to be exactly revision 3.2's rename (84 of 84 in the re-read) | F6 | §3.3; `csv_compare`, `_mech_renamed_32` |
+| C6 | `check_prerun_files` reports entries neither listed nor pinned, without failing | F9 (part) | §3.3, §7; `check_prerun_files` |
+| C7 | new raw records store `sign_n` | ㊲′ | §3.3; `_w_group` |
+| C8 | the error ledger | chat 14:37–14:38 UTC | §12 |
+
 ## 11. Not verified at drafting
 
 **Revision 3: what the synthetic runs have since measured** (details in §3.6, "What the runs
@@ -1526,7 +1809,9 @@ new number was computed.**
   computed nothing.
 - **Mutability** (Johnny). Both files are untracked (as of revision 3.1; `8a514fa` committed
   them), and the pre-run numbers precede the final text (header). The registered run recomputes everything from a clean committed tree and must
-  reproduce the pre-run `synthetic_worlds.csv` byte for byte, or it stops (§3.3, §7).
+  reproduce the pre-run `synthetic_worlds.csv` byte for byte, or it stops (§3.3, §7). *(As of
+  revision 3.1; the byte-for-byte requirement is replaced by the gate of revisions 3.2 and 3.3,
+  §3.3.)*
 
 **Revision 3.2: measured, and what it leaves open.**
 
@@ -1547,6 +1832,35 @@ new number was computed.**
   it is inert only up to floating-point rounding between equal fractions (§3.2).
 - **The G gate** never bound in the pre-run, and the failed-fit text is tested only on injected
   reasons (§4).
+
+**Revision 3.3: measured, and what it leaves open.**
+
+- **Measured by CC (probes posted 15:1x UTC; §3.3, facts (c) and (d)):** a fresh refit in a
+  30-process pool (581 s) equals the pinned store on every field in 2112 of 2112 fits: the `ko`
+  arm of all 45 worlds (270), the 99 shuffles (1782) and the 20 permuted-block ceilings (60) of
+  M0.6:0, M0.75:0 and M0.5:0. The file named as the reference pass's `from_raw` holds the same
+  28,665 keys as the pinned store and differs only in 5 `secs` fields; the pinned store is a byte
+  copy of the reference pass's own output; the revision-2 run's store equals the pinned store on
+  every shared key. The revision-3.1 writer reproduced the pinned CSV byte for byte (13:40 UTC).
+  Before revision 3.3, `--out` had no guard (P4, §7).
+- **Measured for revision 3.3 (the drafting subagent):** `python -m py_compile` on the script;
+  the label test, 12 tests, all pass; and one `--synthetic-only --from-raw` re-read of the
+  pinned `raw_fits.json.gz` into a scratch directory (13 s; its only fits are the five refits of
+  the fixed-λ path check, and N1's degree terms on the real knockout view): outcome 1; rows
+  matched by key, none missing, row order equal; column 8 differs on 84 rows, all 84 exactly
+  revision 3.2's rename; the per-fit diagnostic, marked as a re-read of the pinned store, found no
+  difference in `p`, λ, labels or score in the 28,665 keys; the U rule counts 3 threshold U, 0
+  failed fit, 0 not measured; `smallest_passing_auc` 0.666015625 in 40 worlds and 0.6728515625 in
+  the 5 No worlds. The `--out` refusal was tested on a throwaway copy of the pinned
+  `synthetic_worlds.csv` in a scratch folder (refused, nothing written) and with `--arm`
+  (refused before any check), besides the unit test; the pinned folder still matches its
+  `SHA256SUMS.txt`.
+- **Not in this revision (open):** **F8**, the λ gap instrument (the loss gap between the best and
+  the second λ of each fit), needs the per-λ losses, which live inside pinned fitting code; it
+  stays open, since it cannot be obtained without modifying pinned files. **The rest of F9**: the
+  "below" bucket of `transition_band`, and `label_text` branching on a prose prefix of a reason
+  (open, block C). **The `|sh:` and `|pc:` fits of the other 42 worlds** were not recomputed
+  (open). **The GPU instrument** is a separate document.
 
 **Still not verified (revisions 3 and 3.1).**
 
@@ -1774,3 +2088,83 @@ one by one, are in §10.
   revision 3.1"; the provenance of the fits and of the fitting runs; the comments on
   `PRERUN_DIR` and `LIMIT_KEYS`; the `LABEL_TEXT` / `label_text` collision noted.
   `REGISTRATION_REVISION` = "3.2". Header, §3.7, §7, §10.
+
+**Revision 3.3, 2026-09-25 UTC: the reviewers' pass on revision 3.2. Text and code only; no
+fitting run. CC subagent.** From the DPC Research chat, 14:04–14:39 UTC (Ark and Johnny, both
+"yes, with edits"), Zcode's votes at 15:05 UTC and CC's probes at 15:1x UTC, on the procedure of
+Mike's word at 13:36 UTC. **Revision 3.3 has NOT been reviewed; no real-arm run before its
+review, Zcode's vote and Mike's word.** Runs made: `python -m py_compile` on the script; the
+label test (12 tests, all pass); one `--synthetic-only --from-raw` re-read of the pinned
+`raw_fits.json.gz` into a scratch directory (13 s; no new world fit, the five refits of the
+fixed-λ path check, N1's degree terms); and two refusals of `--out` (a throwaway copy of the
+pinned CSV in a scratch folder; `--out` with `--arm`), each of which exited before any check or
+write. No real block cell was read, and nothing under the pinned pre-run folder was written.
+Votes and items, one by one, are in §10.
+
+- **A1, the reproduction gate:** rows matched by key; missing rows, value differences and row
+  order kept apart; outcome 3 split into (a) and (b); the treatment's four layers and order of
+  reading; the self-test's outcomes and mechanism corrected; null-input digests. Script:
+  `csv_compare`, `CSV_KEY_COLUMNS`, `outcome_3_reason`, `OUTCOME_3_PART_TEXT`,
+  `PRERUN_OUTCOME_TEXT`, `repro_fail_treatment` (with `REPRO_LAYERS`, `REPRO_BRANCH`,
+  `REPRO_SELF_TEST`; `REPRO_FAIL_TREATMENT` is kept as the two-part text),
+  `null_input_digests`, `check_prerun_reproduced`, `main`. §3.3, §7, §10.
+- **A2 and C4, the reference folder protected:** `out_dir_refusal` in step 1 of `main`, before
+  any write; "Recreating the reference"; the note on the order of writes; the falsifier. Test:
+  `test_out_guard_refusals`. §7.
+- **A3 and A4, the U texts:** `u_kind`; `u_rule` counts `n_u_threshold`, `n_u_failed` and
+  `n_u_not_measured`, and renames on threshold U only; `ceiling_block_reason(None)` returns
+  `CEILING_BLOCK_NOT_MEASURED`, and `label_text` prints `NOT_MEASURED_TEXT`. Tests:
+  `test_ii_not_measured_is_not_a_failed_fit`, `test_u_rule_counts_threshold_u_only`; test (ii)
+  no longer pins "n/a is below 0.90" as a failed fit. §2.4, §3.6, §4, §5.
+- **A5:** the equality pin replaced by a probe (the test). **A6, A8, C7:** `raw_fits_diagnostic`
+  compares the score fields (`SCORE_FIELDS`), counts `fitted_this_pass` and is marked under a
+  re-read; new raw records store `sign_n` (`_w_group`). **A7:** `NOT_REGISTERED_TEXT` on the
+  verdict line and in the manifest. §3.3, §4, §7.
+- **B1–B7, reading rules (text only):** `smallest_passing_auc`; a pin is integrity; the
+  vocabulary (§3.8, new); the γ_R input chain and `TAU`; the gate's coverage; the provenance of
+  the reference, with `tree_dirty_paths` and `from_raw_record` in the manifest; V1's four
+  reasons. §3.2, §3.3, §3.6, §3.8, §7.
+- **C1–C6, hygiene:** column 8 as a world-level field; the revision-3.1 byte-for-byte paragraphs
+  marked "as of revision 3.1; replaced"; the column-8 rename check; unlisted entries of the
+  pre-run folder reported (`check_prerun_files`). `git()` keeps the status column of the first
+  porcelain line. `REGISTRATION_REVISION` = "3.3". Header, §3.3, §7, §11.
+- **C8, the error ledger** (below).
+
+**Error ledger (revision 3.3, C8).** One row per wrong wording caught in the review of revision
+3.2 (DPC Research chat, 14:37–14:38 UTC). **Where the body and the ledger disagree, the ledger's
+"correct" is right.** "Where" names the file and section that carried the wrong wording, or says
+"chat only"; each was checked by a search of this file and of the script at the time of
+writing. Line numbers of the form ":981" refer to the script at `52eb381`.
+
+| item | was | correct | where the wrong wording lives | caught by |
+|---|---|---|---|---|
+| Ark (1) | the world that flips under λ = 1 is 90161 | 90164 (`p_P` 0.0308 → 0.0011) | chat only (§3.6 names 90164) | Ark |
+| Ark (2) | `D` = 0.0 in 42 N1 rows, a residue in 3 | 41 + 4 (90132 was missed) | chat only (§3.4 lists the four) | Ark |
+| Ark (3) | column 8 repeated 270 times | 84 (14 G worlds × 6) | chat only | Ark |
+| Ark (4) | `smallest_passing_auc` is one number per table | two, split by the No family | chat only | Ark |
+| Ark (5) | V3: the family limit equals γ\*_P if rule #2.1 is the weakest | the family limit is the maximum, 0.75 | chat only | Ark |
+| Ark (6) | ":979" | ":981" | chat only | Ark |
+| Ark (7) | ":630-632 says M1.0 enters no limit" | it names Nf and R; the conclusion holds by structure | chat only | Ark |
+| Ark (8) | the path `rules/second_rule_v21/harness.py` | `results/genome/c6/harness.py` | chat only | Ark |
+| Ark (9) | "the λ confound is on the minus side" | on the plus side; λ moves the margin, not the limit | chat only (§3.6 has the plus side) | Ark |
+| Ark (10) | `ceiling_block` = 1.0 in 77 rows | N1's rows are 0.5 | chat only (§2.4 has 225 rows and N1 at 0.5) | Ark |
+| Ark (11) | two writes before the outcome test | one (`--arm` and `--synthetic-only` are exclusive) | chat only | Ark |
+| Ark (12) | "with A only, the run is possible" | A and B both before the start | chat only (header of revision 3.2 has A and B) | Ark |
+| Ark (13) | "the self-test removes both cells" | determinism within a version is not invariance to the environment | chat only; the body's related reading of the self-test (§3.3, revision 3.2) is replaced by A1 (item ㉖) | Ark |
+| Ark (14) | "`TAU` is the instrument's resolution" | a tie policy; inert in the counts by the lattice | chat only (§3.2 and §3.8 now say so) | Ark |
+| Johnny (1) | "10 revision-2 fits" | 5 (M0.5) | chat only | Johnny |
+| Johnny (2) | "the λ confound is on the minus side" | the plus side, world 90164 | chat only | Johnny |
+| Johnny (3) | BF_4 at γ = 0.6: 1–2 of 5 seen | 0 of 5 | chat only | Johnny |
+| Johnny (4) | "fix ① is three lines" | it needs a fourth parameter | chat only | Johnny |
+| Johnny (5) | "93 %" | 631 of 637 = 99.1 % not recomputed | chat only (§3.3 has 6 of 637 covered) | Johnny |
+| Johnny (6) | ":883" | ":880" | chat only | Johnny |
+| Johnny (7) | two writes before the test | one | chat only | Johnny |
+| CC (1) | "the reference is stale" (a GPU subagent's claim, not in the registration) | the reference reproduces bit for bit; the claim came from a wrong key and cell order | chat only | CC |
+| CC (3) | "the GPU agrees with the live CPU to 3e-16" | 175 of 180; five BF_1 fits differ by 1.4e-9 to 3.8e-8 | chat only (`results/genome/c6/gpu_instrument/README.md`, untracked, states the correct count) | CC |
+
+The numbers in the "correct" column were checked against the pinned `synthetic_worlds.csv`
+where it holds them: N1's `D` is 0.0 in 41 rows with residues at 90104, 90131, 90132 and 90183;
+84 rows carry column 8 (Nf 30, No 30, M0.5 24); N1's `ceiling_block` is 0.5 in all 45 rows and
+`ceiling_block` = 1.0 in all 225 other rows; at γ = 0.6 BF_4 has `p_P <= 0.01` in 0 of 5 worlds;
+world 90164 has `p_P` 0.0308 and `p_P_fixed_lambda1` 0.0011. The other rows are recorded as the
+chat gives them.
