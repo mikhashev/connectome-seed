@@ -13,9 +13,11 @@ injected reasons, and once through read_label, and check:
 Also: the mechanism description names rule #2.1's ceiling_full (A5), and the reproduction gate
 (csv_compare, A1) gives outcomes 1, 2 and 3 on hand-made tables.
 Revision 3.3: a ceiling_block that was not measured gives its own U text, not the failed fit
-(A4); the printed cuts move when GATE_CUT and MECHANISM_CUT move (A5); the U rule counts threshold
-U only (A3); csv_compare matches rows by key, reports order and missing rows apart, splits outcome
-3 into parts (a) and (b), and checks column 8 against revision 3.2's rename (items 27, F1, C5);
+(A4); two probes each move one cut, and only the texts that print that cut move (A5, F4a); the
+expected strings are built from the constants, and no test asserts GATE_CUT == MECHANISM_CUT; the
+U rule counts threshold U only (A3); csv_compare matches rows by key (a permuted copy of the rows
+gives outcome 1 with the order recorded), reports missing rows apart, splits outcome 3 into parts
+(a) and (b), and checks column 8 against revision 3.2's rename (items 27, F1, C5);
 and --out is refused at or inside a pre-run folder, on a byte copy of it, and with --arm (A2). The
 refusal tests use a temporary folder with monkeypatched PRERUN_DIR and PRERUN_SHA256; they never
 touch the real pre-run folder.
@@ -92,7 +94,7 @@ def test_iii_threshold_u_without_the_reason():
 
 def test_iv_g_text():
     g = K.label_text("G", DL, U_KEPT, [], 1.0)
-    gate = "gate: rule #2.1's ceiling_block = 1.0000 >= 0.90; "
+    gate = f"gate: rule #2.1's ceiling_block = 1.0000 >= {K.GATE_CUT:.2f}; "
     assert g == f"G: not detected at the R level above gamma_R ({gate}{K.limits_text(DL)})"
     # Without the A5 clause it is revision 3.1's G text (with "leg P" for "weak leg", item C).
     assert g.replace(gate, "") == (
@@ -110,33 +112,55 @@ def test_read_label_failed_fit_end_to_end():
     lab = K.read_label(rows)
     assert lab["label"] == "U"
     assert lab["U_reasons"] == [K.ceiling_block_reason(0.85)]
-    assert lab["U_reasons"][0] == ("rule #2.1's ceiling_block = 0.8500 is below 0.90: the rule "
-                                   "cannot hold the block even when trained on it alone")
+    assert lab["U_reasons"][0] == (f"rule #2.1's ceiling_block = 0.8500 is below {K.GATE_CUT:.2f}: "
+                                   "the rule cannot hold the block even when trained on it alone")
     assert K.label_text(lab["label"], DL, U_RENAMED, lab["U_reasons"], 0.85) == FAILED
     rows["rule"]["ceiling_block"] = 1.0
     lab = K.read_label(rows)
     assert lab["label"] == "G"
     assert lab["mechanism_description"] == (
-        "no information (rule #2.1's ceiling_full = 0.9500 >= 0.90)")
+        f"no information (rule #2.1's ceiling_full = 0.9500 >= {K.MECHANISM_CUT:.2f})")
 
 
-def test_mechanism_description_names_rule_ceiling_full(monkeypatch):
+def _cut_texts():
+    """The three texts that print a cut: the mechanism description (MECHANISM_CUT), and the
+    ceiling_block reason and the G gate clause (GATE_CUT)."""
+    return {"mechanism": K.mechanism_description({"ceiling_full": 0.92}),
+            "reason": K.ceiling_block_reason(0.85),
+            "gate": K.label_text("G", DL, U_KEPT, [], 1.0)}
+
+
+def test_mechanism_description_names_rule_ceiling_full():
     assert K.mechanism_description({"ceiling_full": 0.5088}) == (
-        "orthogonal (rule #2.1's ceiling_full = 0.5088 < 0.90)")
-    # Revision 3.3 (A5): a probe, not an equality pin. Move each cut to 0.95 and the printed
-    # text must move with it; monkeypatch restores both afterwards.
-    before_g = K.ceiling_block_reason(0.85)
-    before_t = K.label_text("G", DL, U_KEPT, [], 1.0)
+        f"orthogonal (rule #2.1's ceiling_full = 0.5088 < {K.MECHANISM_CUT:.2f})")
     assert K.mechanism_description({"ceiling_full": 0.92}) == (
-        "no information (rule #2.1's ceiling_full = 0.9200 >= 0.90)")
+        f"no information (rule #2.1's ceiling_full = 0.9200 >= {K.MECHANISM_CUT:.2f})")
+
+
+def test_probe_mechanism_cut_moves_only_the_mechanism_text(monkeypatch):
+    """Revision 3.3 (F4a, Ark 15:19): MECHANISM_CUT alone moves; the mechanism text moves, the
+    ceiling_block reason and the G gate clause do not. monkeypatch restores the constant."""
+    before = _cut_texts()
     monkeypatch.setattr(K, "MECHANISM_CUT", 0.95)
+    after = _cut_texts()
+    assert after["mechanism"] != before["mechanism"]
+    assert after["mechanism"] == (
+        f"orthogonal (rule #2.1's ceiling_full = 0.9200 < {K.MECHANISM_CUT:.2f})")
+    assert after["reason"] == before["reason"] and after["gate"] == before["gate"]
+    assert f">= {K.GATE_CUT:.2f}" in after["gate"] and f"{K.MECHANISM_CUT:.2f}" not in after["gate"]
+
+
+def test_probe_gate_cut_moves_only_the_gate_texts(monkeypatch):
+    """Revision 3.3 (F4a, Ark 15:19): GATE_CUT alone moves; the ceiling_block reason and the G
+    gate clause move, the mechanism text does not. monkeypatch restores the constant."""
+    before = _cut_texts()
     monkeypatch.setattr(K, "GATE_CUT", 0.95)
-    assert K.mechanism_description({"ceiling_full": 0.92}) == (
-        "orthogonal (rule #2.1's ceiling_full = 0.9200 < 0.95)")
-    moved_g = K.ceiling_block_reason(0.85)
-    assert moved_g != before_g and "is below 0.95" in moved_g
-    g = K.label_text("G", DL, U_KEPT, [], 1.0)
-    assert g != before_t and "ceiling_block = 1.0000 >= 0.95" in g
+    after = _cut_texts()
+    assert after["reason"] != before["reason"] and after["gate"] != before["gate"]
+    assert f"is below {K.GATE_CUT:.2f}" in after["reason"]
+    assert f"ceiling_block = 1.0000 >= {K.GATE_CUT:.2f}" in after["gate"]
+    assert after["mechanism"] == before["mechanism"]
+    assert f"{K.GATE_CUT:.2f}" not in after["mechanism"]
 
 
 def test_u_rule_counts_threshold_u_only():
@@ -210,6 +234,12 @@ def test_csv_compare_by_key():
     assert swapped["outcome"] == 1 and swapped["row_order_differs"]
     assert swapped["exact_differences"] == 0 and not swapped["byte_identical"]
     assert not K.csv_compare(ref, ref)["row_order_differs"]
+    # a permuted copy of six reference rows: outcome 1, the order recorded as a fact (item 27)
+    six = [_row(seed=90110 + j, predictor=pk, D=0.1 * j) for j, pk in
+           enumerate(("rule #2.1", "BF_1", "BF_2", "BF_3", "BF_4", "N1"))]
+    perm = K.csv_compare(_csv(six), _csv([six[i] for i in (3, 0, 5, 1, 4, 2)]))
+    assert perm["outcome"] == 1 and perm["passed"] and perm["row_order_differs"]
+    assert perm["exact_differences"] == 0 and perm["n_rows_missing_now"] == 0
     short = K.csv_compare(ref, _csv([r1]))
     assert short["outcome"] == 3 and short["outcome_3_parts"] == ["a"]
     assert short["rows_missing_now"] == [["Nf", "0", "90110", "BF_1"]]

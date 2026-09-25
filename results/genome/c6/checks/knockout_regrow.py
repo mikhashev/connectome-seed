@@ -1488,13 +1488,12 @@ def check_prerun_reproduced(got, comparable, reread=False):
     return {**base, "passed": cmp["passed"], "reason": detail}
 
 
-SCORE_FIELDS = ("existence", "offset", "counts", "sign", "sign_n", "n_ne")
-
-
 def raw_fits_diagnostic(F, fresh=None, reread_note=None):
     """Revisions 3.2, 3.3 (A1, A6, A8): diagnostic, decides nothing. The fits of this run compared
     with the pinned PRERUN_DIR/raw_fits.json.gz, key by key (p_exist on the 64 block cells, the
-    selected lambda, the labels, and the score fields present in both records, SCORE_FIELDS),
+    selected lambda, the labels, the score fields present in both records, SCORE_FIELDS, and the
+    outside density; STORE_FIELDS_COMPARED), and secs and reused_from_ko excluded by name
+    (STORE_FIELDS_EXCLUDED); every field seen must be declared in one of the two,
     split by the worlds that the revision-2 run fitted (30) and those that the revision-3 run
     fitted (15), and within each by kind (ko, full, block, ko1; sh for the shuffles, pc for the
     permuted-block ceilings). The ko1 fits of the revision-2 worlds were made in revision 3's pass
@@ -1508,7 +1507,8 @@ def raw_fits_diagnostic(F, fresh=None, reread_note=None):
     group_of = {f: g for g, fs in groups.items() for f in fs}
     out = {g: {"families": list(fs), "kinds": {}} for g, fs in groups.items()}
     counters = ("pinned", "missing_now", "compared", "fitted_this_pass", "p_differ",
-                "lambda_differ", "labels_differ", "score_differ")
+                "lambda_differ", "labels_differ", "score_differ", "outside_density_differ")
+    declared = set(STORE_FIELDS_COMPARED) | set(STORE_FIELDS_EXCLUDED)
     for key, v in ref.items():
         bk, mk, _ = key
         base, *mods = bk.split("|")
@@ -1519,6 +1519,8 @@ def raw_fits_diagnostic(F, fresh=None, reread_note=None):
             kind, {**{n: 0 for n in counters}, "max_abs_dp": 0.0, "score_field_differ": {}})
         s["pinned"] += 1
         f = F.get(key)
+        undeclared = (set(v) | set(f or {})) - declared
+        assert not undeclared, f"undeclared store fields {sorted(undeclared)} in {key}"
         if f is None:
             s["missing_now"] += 1
             continue
@@ -1538,6 +1540,7 @@ def raw_fits_diagnostic(F, fresh=None, reread_note=None):
         s["score_differ"] += bool(bad)
         for n in bad:
             s["score_field_differ"][n] = s["score_field_differ"].get(n, 0) + 1
+        s["outside_density_differ"] += v.get("outside_density") != f.get("outside_density")
     for g in out.values():
         k = g["kinds"].values()
         g["total"] = {n: sum(s[n] for s in k) for n in counters}
@@ -1842,7 +1845,13 @@ def run_synthetic(args, terms, F=None):
            "fixed_lambda_path_check": path_check, "raw_fits_diagnostic": raw_diag,
            "fits": {"saved_reread": n_saved, "fitted_main": fitted_main, "fixed_lambda": fl},
            "mean_seconds_per_knockout_fit": {pk: float(np.mean(v)) if v else None
-                                             for pk, v in secs.items()}}
+                                             for pk, v in secs.items()},
+           # revision 3.3 (item 4): what the mean is over; a timing, not a claim about cost
+           "mean_seconds_population": (
+               f"every record with mask ko, per predictor: per world the base knockout fit and "
+               f"the {args.shuffles} shuffled-bank knockout fits, {len(specs)} worlds, "
+               f"{len(secs['N1'])} records per predictor; under --from-raw the secs saved by the "
+               f"runs that made the fits; a timing, not a claim about cost")}
     return syn, F
 
 
@@ -2024,7 +2033,8 @@ def print_synthetic(syn):
     for ln in md_check_and_curve(syn):
         log(ln)
     log("mean seconds per knockout fit: " + ", ".join(
-        f"{PRED_NAME[k]} {fmt(v, 1)}" for k, v in syn["mean_seconds_per_knockout_fit"].items()))
+        f"{PRED_NAME[k]} {fmt(v, 1)}" for k, v in syn["mean_seconds_per_knockout_fit"].items())
+        + f" (population: {syn['mean_seconds_population']})")
 
 
 # ------------------------------------------------------------------------------------------
@@ -2053,6 +2063,15 @@ CSV_CONTINUOUS_COLUMNS = ("D", "logloss", "logloss_margin_over_N1", "regrown_sha
 CSV_REPORTED_COLUMNS = ("mechanism_description",)
 assert (sorted(CSV_EXACT_COLUMNS + CSV_CONTINUOUS_COLUMNS + CSV_REPORTED_COLUMNS)
         == sorted(WORLDS_CSV_HEADER)) and len(WORLDS_CSV_HEADER) == 33
+# Revision 3.3 (item 37): the fields of a raw_fits.json.gz record, by how raw_fits_diagnostic
+# compares them, key by key (a world's base bank and its shuffled banks differ in
+# outside_density, so only records of the same key are compared). Excluded by name: secs, a
+# timing (the second non-reproducible field after the gzip mtime), and reused_from_ko, the flag
+# of a ko1 record copied from a knockout fit that selected lambda = 1 (its p is compared).
+SCORE_FIELDS = ("existence", "offset", "counts", "sign", "sign_n", "n_ne")
+STORE_FIELDS_COMPARED = ("p", "y", "lam", "score", "outside_density")
+STORE_FIELDS_EXCLUDED = ("secs", "reused_from_ko")
+assert not set(STORE_FIELDS_COMPARED) & set(STORE_FIELDS_EXCLUDED)
 
 
 def write_worlds_csv(worlds, path):

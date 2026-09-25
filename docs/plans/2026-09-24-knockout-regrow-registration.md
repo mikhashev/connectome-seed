@@ -569,7 +569,11 @@ statistic is the predictor's AUC against the permuted labels.
   and `P_R`, not a γ limit. **Pre-run values: two numbers, split by the No family:** 0.666015625
   (682/1024) in 40 worlds and 0.6728515625 (689/1024) in the five No worlds (seeds 90120–90124),
   whose board follows `z'` instead of `z` (read from the pre-run `synthetic_only.json` and from
-  the `--from-raw` re-read of revision 3.3).
+  the `--from-raw` re-read of revision 3.3). **Observation (Ark 15:22):** the pinned
+  `synthetic_worlds.csv` has `board` = `z` in 40 worlds and `z'` in the 5 No worlds (checked on
+  the pinned file), the same 40/5 split as `smallest_passing_auc`; the board is the carrier of the
+  dependence on the layout `y`. This is an observation: its falsifier (recompute with board `z`
+  at the same `y`) was not run.
 - **Printed beside it (proposal, D4; decides nothing):** the same test under **row-and-column-preserving
   permutations** of the block. These are random 8 × 8 patterns with 4 present in every row and
   every column, drawn by 20 × 32 successful checkerboard swaps from the real pattern, 9,999 draws.
@@ -722,7 +726,9 @@ statistic is the predictor's AUC against the permuted labels.
   and the real arm's `raw_fits_real.json.gz`, cannot be byte-reproduced by any run: gzip writes
   its mtime into header bytes 4–7 (Johnny's probe, 14:25 UTC: the same payload written 1.2 s
   apart gave different sha256). Reproducibility is claimed per file and per field, never for the
-  `.gz` bytes.
+  `.gz` bytes. **`secs` is the second non-reproducible field** (revision 3.3, item 4): the gzip
+  mtime is in the container, `secs` (the seconds a fit took) is inside every JSON record. The
+  per-fit comparison excludes it by name.
   *Per-fit diagnostic (decides nothing).* The fresh run's fits are compared with the pinned
   `raw_fits.json.gz` key by key (`p_exist` on the 64 block cells, the selected λ, the labels),
   split by the worlds fitted by revision 2 (30) and by revision 3 (15), and by kind of fit.
@@ -730,7 +736,17 @@ statistic is the predictor's AUC against the permuted labels.
   offset, counts, sign, `n_ne`, and `sign_n` where both records hold it) and reports the
   differences per kind: three of the four C6 fields (offset, counts, sign) are not functions of
   `p` and enter no other channel. New raw records store `sign_n`, the integer, beside the older
-  fields (C7). **Revision 3.3 (A6):** under `--from-raw` the diagnostic says what it compares;
+  fields (C7). **Declared fields (revision 3.3, item ㊲; Ark 15:19, Johnny 15:19):** a store
+  record has six fields, `p`, `y`, `lam`, `score`, `outside_density` and `secs`; 47 `ko1`
+  records of the pinned store carry a seventh, `reused_from_ko`, the flag of a fixed-λ record
+  copied from a knockout fit that selected λ = 1 (read from the pinned `raw_fits.json.gz`: 28,618
+  records with six fields, 47 with seven). Compared exactly, key by key
+  (`STORE_FIELDS_COMPARED`): `p`, `y`, `lam`, `score` (the `SCORE_FIELDS` that both records hold)
+  and `outside_density`, which differs between a world's base bank and its shuffled banks, so it
+  is compared only between records of the same key. Excluded by name (`STORE_FIELDS_EXCLUDED`):
+  `secs`, a timing, and `reused_from_ko`, bookkeeping whose record's `p` is compared. The script
+  asserts that every field it sees is declared in one of the two; the re-read of revision 3.3
+  (second pass) passed that assert on all 28,665 pinned records. **Revision 3.3 (A6):** under `--from-raw` the diagnostic says what it compares;
   when the re-read store is the pinned one, it reads "re-read: compares the pinned store with
   itself; carries no information", apart from the fits that the pass itself made
   (`fitted_this_pass`).
@@ -829,16 +845,18 @@ does on the real bank.
   view**. They use outside-block cells only, which N1 fits in the run anyway, so each world's
   support per type resembles the real one; T5a and T5c stay thin, for example. (Alternative
   under D8: `a`, `b` ~ N(0, 1), `c = −2.2`, fully synthetic.)
-- **Outside cells:** present iff `u_st < sigmoid(c + a_s + b_t + γ_out · z_s · z_t)`, with `u` one
+- **Outside cells:** present iff `u_st < sigmoid(c + a_s + b_t + γ_z · z_s · z_t + γ_z1 · z1_s · z1_t)` (revision
+  3.3: the two coefficients named γ_z and γ_z1, the CSV's `gamma_z` and `gamma_z1`, as in
+  `make_world`; γ_z1 = 0 except in W; the column γ_out below is γ_z), with `u` one
   `(65, 65)` uniform draw from the world's generator.
 - **Block cells, by family:**
 
-| family | γ_out | block pattern | built so that | requirement (fresh seeds) | on failure |
+| family | γ_out (γ_z) | block pattern | built so that | requirement (fresh seeds) | on failure |
 |---|---|---|---|---|---|
 | **R**, regrowable | 2.0 | board by `z` (present iff `z_s z_t = +1`), 16 + 16 | the outside carries `z`, and the block follows it | each of 5 worlds reads **R**, on both D1 candidates (§4) | stop |
 | **Nf**, no information | 0 | board by `z` | the outside carries no polarity at all; the board exists only inside the block | **revision 3:** never **R** or **W**; **at least 3 of 5** read **G** | R or W on any world: stop. Fewer than 3 G: stop. A U: no stop by itself |
 | **No**, orthogonal board | 2.0 | board by `z'`, where `z' = +1` on Mi1, Tm3, Tm1, Tm2, T4a, T4b, T5a, T5b and `−1` on the other 8 | the outside carries `z`, but the block follows a polarity orthogonal to it: `Σ z z'` = 0 over sources and over targets, so `D(z-pattern)` on the `z'` board is exactly 0 | **revision 3:** never **R** or **W**; reads **G** (its mechanism label is printed as a description) | R or W on any world: stop. U: no stop; the No contingency below |
-| **W**, rank-2 information | `γ1 = 2.5` on a second polarity `z1` (random ±1 for the 49 others; on the 16 block types, `z1 = z'` above) plus `γ2 = 1.5` on `z` | board by `z` | a rank-1 fit takes the dominant `z1` and misses `z`, while a rank-2 fit carries both | each of 5 worlds reads **W**, on both D1 candidates | stop |
+| **W**, rank-2 information | `γ_z1 = 2.5` on a second polarity `z1` (random ±1 for the 49 others; on the 16 block types, `z1 = z'` above) plus `γ_z = 1.5` on `z` (revision 3.3 names them; revisions 2–3.2 wrote γ1 and γ2) | board by `z` | a rank-1 fit takes the dominant `z1` and misses `z`, while a rank-2 fit carries both | each of 5 worlds reads **W**, on both D1 candidates | stop |
 | **M**, weak (the power curve) | **revision 3:** 0.5, 0.6, 0.75, 0.85, 1.0 (the dense grid) | board by `z` | real but weak information | **revision 3: none.** Every label is a true reading or a point of the power curve; the curve is printed and the three limits of revision 3.1 are taken from it | **no stop row** |
 
 **The requirement rows as revised (revision 3, decisions (a) and (b)).** Revision 2 required every
@@ -1059,7 +1077,7 @@ re-read from their saved fits, not refitted. Every world had `ceiling_block` = 1
 | R (2.0) | each R → 5/5, met | unchanged | 5/0/0/0 | met |
 | Nf (0) | each G → 5/5, met (3 "no information", 2 "orthogonal") | never R/W; ≥ 3 of 5 G | 0/0/5/0 | met |
 | No (2.0) | each G (orthogonal) → 5/5, met | never R/W; G | 0/0/5/0 | met (all described "orthogonal") |
-| W (1.5 + 2.5) | each W → 5/5, met | unchanged | 0/5/0/0 | met |
+| W (γ_z = 1.5, γ_z1 = 2.5) | each W → 5/5, met | unchanged | 0/5/0/0 | met |
 | M0.5 | U or W → **R 1, G 4: STOP** | power curve, no stop | 1/0/4/0 | curve |
 | M0.6 (new) | — | power curve, no stop | 2/0/0/3 | curve |
 | M0.75 (new) | — | power curve, no stop | 5/0/0/0 | curve |
@@ -1364,12 +1382,13 @@ revision 3.1, and committed since by `8a514fa`):**
 `harness.load_rule`, with no copies. **Its label test (revision 3.2):**
 `results/genome/c6/checks/test_knockout_regrow_labels.py` calls `label_text` and `read_label`
 with injected U reasons (the positive control of §4's failed-fit branch) and `csv_compare` on
-hand-made tables; it fits nothing. **Revision 3.3** adds tests for the not-measured U text, a
-probe that moves `GATE_CUT` and `MECHANISM_CUT` to 0.95 and requires the printed text to move
-(in place of revision 3.2's equality pin), the U rule's count of threshold U, `csv_compare`'s
-key matching, row order, missing rows, outcome-3 parts and column-8 rename check, and the
-`--out` guard on a temporary folder with a monkeypatched `PRERUN_DIR` (never the real one): 12
-tests. (`label_text` here is a function; `flywire_column_test.py`
+hand-made tables; it fits nothing. **Revision 3.3** adds tests for the not-measured U text;
+two probes in place of revision 3.2's equality pin, each moving one cut to 0.95 and requiring
+that only the texts which print that cut move (expected strings built from the constants); the
+U rule's count of threshold U; `csv_compare`'s key matching (a permuted copy of the rows gives
+outcome 1 with the order recorded), missing rows, outcome-3 parts and column-8 rename check; and
+the `--out` guard on a temporary folder with a monkeypatched `PRERUN_DIR` (never the real one):
+14 tests. (`label_text` here is a function; `flywire_column_test.py`
 has an unrelated dict `LABEL_TEXT`.) Order of work, each step refusing on failure:
 
 1. **The real arm** refuses on a dirty tree under `results/genome/c6/` or `docs/plans/` (this
@@ -1557,6 +1576,12 @@ pinned one, while its deciding columns are (the `--from-raw` re-read of revision
 **Revision 3.3** matches the rows by key instead of by position, splits outcome 3 into its
 parts (a) and (b), and rewrites the treatment (§3.3).
 
+**The printed "mean seconds per knockout fit" (revision 3.3, item 4; Ark 15:20).** It averages,
+per predictor, every record with mask `ko`: in each world the base knockout fit and the 99
+shuffled-bank knockout fits, so 100 per world and 4,500 over the 45 worlds. Under `--from-raw`
+these are the `secs` saved by the runs that made the fits. The script prints the population
+beside the means (`mean_seconds_population`). It is a timing, not a claim about cost.
+
 **Cost (measured; revision 3 replaces revision 2's estimate, which was about half the measured
 cost).** CPU, 30 workers, `--starts 10`:
 
@@ -1644,7 +1669,7 @@ deferred on the rest.
 | **D5** | Branch cuts | leg S `n_ge = 0`; leg P `p_P <= 0.01`; W at 0.0125 over r = 1..4; G needs `p_P > 0.10` for every predictor and **`ceiling_block` ≥ 0.90**, with its mechanism named by `ceiling_full` (revision 2, §2.4, §4); U is the remainder. Lower cuts would make R easier and U rarer. | as written | Ark: as written with the ceiling fix. Johnny: the same. Zcode defers. **Revision 3:** the condition of G is unchanged; its name and reading are "not detected above γ\*", with the mechanism as a description only (decisions (b), (c); all three reviewers, 2026-09-25). **Revision 3.1:** the condition is still unchanged; the name and reading are "not detected at the R level above γ_R; leg P passes from γ\*_P", and U reads "on the detection threshold; cannot be separated" (Ark 09:32, Johnny 09:33, Zcode 09:34 UTC). |
 | **D6** | BF ranks printed and used in W | (i) r = 1..4, the FlyWire family. (ii) also r = 8 (M4's rank): more capacity for W; the correction becomes 0.05/5 = 0.01. | (i) | Ark (i). Johnny (i). Zcode defers. |
 | **D7** | Fields | (i) existence decides; offsets, counts and sign are printed for the 32 present cells. (ii) also require offsets: rule #2.1 failed offset on C6, so (ii) would test a known weakness. | (i) | Ark (i). Johnny (i). Zcode defers. |
-| **D8** | Synthetic worlds | degree terms from N1 on the real knockout view (outside cells only) vs i.i.d. normal; γ values (R 2.0, W 2.5/1.5, M 0.5/1.0); the requirement rows, **now including M: U or W, never G, never R, a stop; and No: G (orthogonal), with its contingency** (§3.6). Changing γ after the synthetic-only run requires a new draft. | N1-based terms; γ as written; the M and No rows as in §3.6 | Ark: as written plus the M requirement. Johnny: the same (he raised M to a run condition). Zcode defers. **Revision 3** (the new draft that this row asks for): M is the power curve on the dense grid γ ∈ {0.5, 0.6, 0.75, 0.85, 1.0}, no stop; Nf never R or W (stop) and at least 3 of 5 G; No reads G, never R or W (decisions (a), (b); §3.6). |
+| **D8** | Synthetic worlds | degree terms from N1 on the real knockout view (outside cells only) vs i.i.d. normal; γ values (R 2.0, W γ_z = 1.5 and γ_z1 = 2.5, M 0.5/1.0; axis names added in revision 3.3); the requirement rows, **now including M: U or W, never G, never R, a stop; and No: G (orthogonal), with its contingency** (§3.6). Changing γ after the synthetic-only run requires a new draft. | N1-based terms; γ as written; the M and No rows as in §3.6 | Ark: as written plus the M requirement. Johnny: the same (he raised M to a run condition). Zcode defers. **Revision 3** (the new draft that this row asks for): M is the power curve on the dense grid γ ∈ {0.5, 0.6, 0.75, 0.85, 1.0}, no stop; Nf never R or W (stop) and at least 3 of 5 G; No reads G, never R or W (decisions (a), (b); §3.6). |
 | **D9** | Permuted-block ceilings | (i) 20 seeds, printed, decide nothing; **they are `ceiling_full`**, and their expected fall is information (§2.4). (ii) make them a gate for R: a stricter guard against smoothing, but a new cut. | (i) | Ark (i). Johnny (i), marked `ceiling_full`. Zcode defers. |
 | **D10** | Seeds | the new range 90000–90154 as in §3.7; **revision 3 adds 90160–90184** for the dense γ grid | as written | Ark: as written. Johnny: as written. Zcode defers. |
 | **D11** | Order | the `--synthetic-only` run (it fits rules on synthetic banks, which is regrowth on synthetic data) is made **before** this file is committed, as the column test's revision 2.3 was, so that the requirement rows are known to be reachable. It needs Mike's word. | run it, then commit | Ark yes. Johnny yes (he does not sign the G gate without it). Zcode yes. **Pending Mike.** **Mike: yes, 2026-09-24 21:04 UTC** ("ну ок запускай"). Run 21:32–22:58 UTC; it stopped on the M rows (§3.6, "What the runs found"). Revision 3's added worlds were run under the same approval. |
@@ -1761,7 +1786,7 @@ start of the run.*
 | A2 | the `--out` guard in step 1 (inside `PRERUN_DIR`; a byte copy of the reference; with `--arm`), with its falsifier; "Recreating the reference"; the outputs are written before the outcome test, so the guard, not the order, protects the reference; a test on a temporary folder | ㊷, ㊸, ㊹ | §7; `out_dir_refusal`, `main`; `test_out_guard_refusals` |
 | A3 | the U rule counts threshold U only; failed-fit and not-measured U are counted apart | F2 | §3.6; `u_rule`, `u_kind` |
 | A4 | a `ceiling_block` that was not measured has its own reason and U text, not the failed fit; test (ii) no longer pins the wrong behaviour | F3 | §2.4, §3.6, §4, §5; `ceiling_block_reason`, `CEILING_BLOCK_NOT_MEASURED`, `NOT_MEASURED_TEXT`, `label_text`; `test_ii_not_measured_is_not_a_failed_fit` |
-| A5 | the equality pin `GATE_CUT == MECHANISM_CUT == 0.90` replaced by a probe that moves both cuts to 0.95 and requires the printed text to move | F4a | `test_mechanism_description_names_rule_ceiling_full` |
+| A5 | the equality pin `GATE_CUT == MECHANISM_CUT == 0.90` replaced by probes that move a cut to 0.95 and require the printed text to move (since the additions below, two probes, one cut each) | F4a | `test_probe_mechanism_cut_moves_only_the_mechanism_text`, `test_probe_gate_cut_moves_only_the_gate_texts` |
 | A6 | under `--from-raw` the per-fit diagnostic is marked "re-read: compares the pinned store with itself; carries no information" (apart from the fits the pass made) | F5 | §3.3, §7; `raw_fits_diagnostic`, `run_synthetic` |
 | A7 | `--allow-dirty` registered: a real-arm run made with it is not the registered run, and its verdict line and manifest say so | F7 | §3.3, §4, §7; `NOT_REGISTERED_TEXT`, `verdict_line`, `main` |
 | A8 | the per-fit diagnostic compares the `score` fields key by key, per kind | ㊲ | §3.3; `raw_fits_diagnostic`, `SCORE_FIELDS` |
@@ -1780,6 +1805,20 @@ start of the run.*
 | C6 | `check_prerun_files` reports entries neither listed nor pinned, without failing | F9 (part) | §3.3, §7; `check_prerun_files` |
 | C7 | new raw records store `sign_n` | ㊲′ | §3.3; `_w_group` |
 | C8 | the error ledger | chat 14:37–14:38 UTC | §12 |
+
+*Additions of 15:16–15:26 UTC, applied on top of commit `1d6bb9e`* (Ark 15:19 "a fix whose path
+never ran is indistinguishable from none", Johnny 15:19):
+
+| item | what | source | where |
+|---|---|---|---|
+| 1 | F4a as two cross-probes, each moving one cut: `MECHANISM_CUT` moves only the mechanism text; `GATE_CUT` moves only the `ceiling_block` reason and the G gate clause; expected strings built from the constants; no test asserts `GATE_CUT == MECHANISM_CUT` | Ark 15:19 §2 | `test_probe_mechanism_cut_moves_only_the_mechanism_text`, `test_probe_gate_cut_moves_only_the_gate_texts` |
+| 2 | item ㉗'s control: a permuted copy of the reference rows gives outcome 1 with the order recorded (`test_csv_compare_by_key` had a two-row swap; a six-row permutation is added) | Ark, Johnny 15:19 | `test_csv_compare_by_key` |
+| 3 | the store record's fields declared beside the CSV column classes: compared exactly `p`, `y`, `lam`, `score`, `outside_density`; excluded by name `secs` and `reused_from_ko`; an assert that every field seen is declared | Ark 15:19 §4, Johnny 15:19 §2 | §3.3; `STORE_FIELDS_COMPARED`, `STORE_FIELDS_EXCLUDED`, `raw_fits_diagnostic` |
+| 4 | `secs`, the second non-reproducible field; the population of the printed mean seconds | Ark 15:20 | §3.3, §7; `mean_seconds_population`, `print_synthetic` |
+| 5 | three rules never exercised in the pre-run, in one place | Johnny 15:20 | §11 |
+| 6 | `board` (z 40, z' 5) as the carrier of the layout dependence of `smallest_passing_auc`; an observation, its falsifier not run | Ark 15:22 | §3.2 |
+| 7 | the γ axes named γ_z and γ_z1 (CSV `gamma_z`, `gamma_z1`); values unchanged | Johnny 15:23, Ark 15:24 | §3.6, §10 (D8) |
+| 8 | the ledger in six fields, with the rules for addresses, scope and pins; entries Johnny (8), Johnny (9), Ark (15) | Ark 15:25, Johnny 15:26 | §12 |
 
 ## 11. Not verified at drafting
 
@@ -1844,7 +1883,7 @@ new number was computed.**
   every shared key. The revision-3.1 writer reproduced the pinned CSV byte for byte (13:40 UTC).
   Before revision 3.3, `--out` had no guard (P4, §7).
 - **Measured for revision 3.3 (the drafting subagent):** `python -m py_compile` on the script;
-  the label test, 12 tests, all pass; and one `--synthetic-only --from-raw` re-read of the
+  the label test, 12 tests, all pass (14 after the additions of 15:16–15:26 UTC); and one `--synthetic-only --from-raw` re-read of the
   pinned `raw_fits.json.gz` into a scratch directory (13 s; its only fits are the five refits of
   the fixed-λ path check, and N1's degree terms on the real knockout view): outcome 1; rows
   matched by key, none missing, row order equal; column 8 differs on 84 rows, all 84 exactly
@@ -1855,6 +1894,12 @@ new number was computed.**
   `synthetic_worlds.csv` in a scratch folder (refused, nothing written) and with `--arm`
   (refused before any check), besides the unit test; the pinned folder still matches its
   `SHA256SUMS.txt`.
+- **Three rules never exercised in the pre-run (revision 3.3, item 5).** They are tested only
+  on hand-made inputs, and no synthetic world reached them: (1) **the V4 failed-fit branch** of
+  U (`ceiling_block` = 1.0 in 225 of the 225 fitted rule #2.1 and BF rows); (2) **`n_u_failed`**,
+  which is 0 (and `n_u_not_measured` is 0); (3) **the D14 (ii) exclusion of degenerate
+  shuffles**: `n_deg` = 0 and `n_valid_shuffles` = `n_shuffles` = 99 in all 270 rows of the
+  pinned `synthetic_worlds.csv` (Johnny's count, 15:20 UTC, checked on the pinned file).
 - **Not in this revision (open):** **F8**, the λ gap instrument (the loss gap between the best and
   the second λ of each fit), needs the per-λ losses, which live inside pinned fitting code; it
   stays open, since it cannot be obtained without modifying pinned files. **The rest of F9**: the
@@ -2094,7 +2139,7 @@ fitting run. CC subagent.** From the DPC Research chat, 14:04–14:39 UTC (Ark a
 "yes, with edits"), Zcode's votes at 15:05 UTC and CC's probes at 15:1x UTC, on the procedure of
 Mike's word at 13:36 UTC. **Revision 3.3 has NOT been reviewed; no real-arm run before its
 review, Zcode's vote and Mike's word.** Runs made: `python -m py_compile` on the script; the
-label test (12 tests, all pass); one `--synthetic-only --from-raw` re-read of the pinned
+label test (12 tests, all pass; 14 after the additions of 15:16–15:26 UTC); one `--synthetic-only --from-raw` re-read of the pinned
 `raw_fits.json.gz` into a scratch directory (13 s; no new world fit, the five refits of the
 fixed-λ path check, N1's degree terms); and two refusals of `--out` (a throwaway copy of the
 pinned CSV in a scratch folder; `--out` with `--arm`), each of which exited before any check or
@@ -2129,42 +2174,69 @@ Votes and items, one by one, are in §10.
   pre-run folder reported (`check_prerun_files`). `git()` keeps the status column of the first
   porcelain line. `REGISTRATION_REVISION` = "3.3". Header, §3.3, §7, §11.
 - **C8, the error ledger** (below).
+- **The reviewers' additions of 15:16–15:26 UTC** (§10, on top of `1d6bb9e`): two cross-probes
+  of the cuts; a six-row permuted-copy control of the key match; the declared store fields
+  (`STORE_FIELDS_COMPARED`, `STORE_FIELDS_EXCLUDED`) with an assert in `raw_fits_diagnostic`,
+  which now also compares `outside_density`; `secs` and the population of the mean seconds
+  (`mean_seconds_population`); the three rules never exercised; `board` as the carrier of the
+  layout dependence; the γ axes named γ_z and γ_z1; the ledger in six fields. Runs: py_compile;
+  the label test, 14 tests, all pass; one more `--synthetic-only --from-raw` re-read of the
+  pinned store into a scratch directory (13 s): outcome 1, 84 column-8 rows all the rename,
+  `outside_density` and every other declared field equal in the 28,665 keys, and the
+  declared-fields assert held; the recomputed CSV is byte-identical to the first re-read
+  (sha256 `32d62c71…95c1`).
 
-**Error ledger (revision 3.3, C8).** One row per wrong wording caught in the review of revision
-3.2 (DPC Research chat, 14:37–14:38 UTC). **Where the body and the ledger disagree, the ledger's
-"correct" is right.** "Where" names the file and section that carried the wrong wording, or says
-"chat only"; each was checked by a search of this file and of the script at the time of
-writing. Line numbers of the form ":981" refer to the script at `52eb381`.
+**Error ledger (revision 3.3, C8; six fields since the reviewers' additions of 15:16–15:26 UTC).**
+One row per wrong wording caught in the review of revision 3.2 (DPC Research chat, 14:37–14:38
+UTC, with additions at 15:16–15:26 UTC). **Where the body and the ledger disagree, the ledger's
+"correct" is right.** Rules of the table:
 
-| item | was | correct | where the wrong wording lives | caught by |
-|---|---|---|---|---|
-| Ark (1) | the world that flips under λ = 1 is 90161 | 90164 (`p_P` 0.0308 → 0.0011) | chat only (§3.6 names 90164) | Ark |
-| Ark (2) | `D` = 0.0 in 42 N1 rows, a residue in 3 | 41 + 4 (90132 was missed) | chat only (§3.4 lists the four) | Ark |
-| Ark (3) | column 8 repeated 270 times | 84 (14 G worlds × 6) | chat only | Ark |
-| Ark (4) | `smallest_passing_auc` is one number per table | two, split by the No family | chat only | Ark |
-| Ark (5) | V3: the family limit equals γ\*_P if rule #2.1 is the weakest | the family limit is the maximum, 0.75 | chat only | Ark |
-| Ark (6) | ":979" | ":981" | chat only | Ark |
-| Ark (7) | ":630-632 says M1.0 enters no limit" | it names Nf and R; the conclusion holds by structure | chat only | Ark |
-| Ark (8) | the path `rules/second_rule_v21/harness.py` | `results/genome/c6/harness.py` | chat only | Ark |
-| Ark (9) | "the λ confound is on the minus side" | on the plus side; λ moves the margin, not the limit | chat only (§3.6 has the plus side) | Ark |
-| Ark (10) | `ceiling_block` = 1.0 in 77 rows | N1's rows are 0.5 | chat only (§2.4 has 225 rows and N1 at 0.5) | Ark |
-| Ark (11) | two writes before the outcome test | one (`--arm` and `--synthetic-only` are exclusive) | chat only | Ark |
-| Ark (12) | "with A only, the run is possible" | A and B both before the start | chat only (header of revision 3.2 has A and B) | Ark |
-| Ark (13) | "the self-test removes both cells" | determinism within a version is not invariance to the environment | chat only; the body's related reading of the self-test (§3.3, revision 3.2) is replaced by A1 (item ㉖) | Ark |
-| Ark (14) | "`TAU` is the instrument's resolution" | a tie policy; inert in the counts by the lattice | chat only (§3.2 and §3.8 now say so) | Ark |
-| Johnny (1) | "10 revision-2 fits" | 5 (M0.5) | chat only | Johnny |
-| Johnny (2) | "the λ confound is on the minus side" | the plus side, world 90164 | chat only | Johnny |
-| Johnny (3) | BF_4 at γ = 0.6: 1–2 of 5 seen | 0 of 5 | chat only | Johnny |
-| Johnny (4) | "fix ① is three lines" | it needs a fourth parameter | chat only | Johnny |
-| Johnny (5) | "93 %" | 631 of 637 = 99.1 % not recomputed | chat only (§3.3 has 6 of 637 covered) | Johnny |
-| Johnny (6) | ":883" | ":880" | chat only | Johnny |
-| Johnny (7) | two writes before the test | one | chat only | Johnny |
-| CC (1) | "the reference is stale" (a GPU subagent's claim, not in the registration) | the reference reproduces bit for bit; the claim came from a wrong key and cell order | chat only | CC |
-| CC (3) | "the GPU agrees with the live CPU to 3e-16" | 175 of 180; five BF_1 fits differ by 1.4e-9 to 3.8e-8 | chat only (`results/genome/c6/gpu_instrument/README.md`, untracked, states the correct count) | CC |
+- Both addresses, where the wrong wording lived and what refuted it, are artefacts: a file and
+  line (with the commit), a key, or a pinned file. A session message or a tool call is not a
+  place: a wording that lived only in the chat is written "chat only", and a refutation that
+  rests only on a tool run is written "tool only".
+- A "no such X" refutation names its scope.
+- **A refutation that rests on a pinned file carries its support status**, written "under pin":
+  refuted by that artefact as long as its pin (`PRERUN_SHA256` of the script, §7) holds. A
+  re-pin would reopen it.
+- "Where it lived" was checked by searching this file and the script; line numbers of the form
+  ":981" are of the script at `52eb381`. Pinned CSV = the pre-run `synthetic_worlds.csv`;
+  pinned JSON = the pre-run `synthetic_only.json`; pinned store = the pre-run
+  `raw_fits.json.gz`; all three under `PRERUN_SHA256`.
+- Split rule (Ark 15:25, Johnny 15:26 UTC): a row whose wrong wording lived in an A or B line of
+  the body travels with that fix; the others may follow. In revision 3.3 every row goes in the
+  same commit.
 
-The numbers in the "correct" column were checked against the pinned `synthetic_worlds.csv`
-where it holds them: N1's `D` is 0.0 in 41 rows with residues at 90104, 90131, 90132 and 90183;
-84 rows carry column 8 (Nf 30, No 30, M0.5 24); N1's `ceiling_block` is 0.5 in all 45 rows and
-`ceiling_block` = 1.0 in all 225 other rows; at γ = 0.6 BF_4 has `p_P <= 0.01` in 0 of 5 worlds;
-world 90164 has `p_P` 0.0308 and `p_P_fixed_lambda1` 0.0011. The other rows are recorded as the
-chat gives them.
+| item | was | correct | where the wrong wording lived | what refuted it | caught by |
+|---|---|---|---|---|---|
+| Ark (1) | the world that flips under λ = 1 is 90161 | 90164 (`p_P` 0.0308 → 0.0011) | chat only | pinned CSV, seed 90164, rule #2.1: `p_P` 0.0308, `p_P_fixed_lambda1` 0.0011 (under pin) | Ark |
+| Ark (2) | `D` = 0.0 in 42 N1 rows, a residue in 3 | 41 + 4 (90132 was missed) | chat only | pinned CSV, N1 rows: `D` = 0.0 in 41, residues at 90104, 90131, 90132, 90183 (under pin) | Ark |
+| Ark (3) | column 8 repeated 270 times | 84 (14 G worlds × 6) | chat only | pinned CSV, column 8 non-empty in 84 rows (Nf 30, No 30, M0.5 24) (under pin) | Ark |
+| Ark (4) | `smallest_passing_auc` is one number per table | two, split by the No family | chat only | pinned JSON, `worlds[*].smallest_passing_auc`: 0.666015625 in 40, 0.6728515625 in 5 (under pin) | Ark |
+| Ark (5) | V3: the family limit equals γ\*_P if rule #2.1 is the weakest | the family limit is the maximum, 0.75 | chat only | script `family_limit` (:1380, the maximum over the predictors' leg-P limits); pinned CSV, M0.6: BF_2 1/5, BF_3 1/5, BF_4 0/5 seen (under pin) | Ark |
+| Ark (6) | ":979" | ":981" | chat only | script :981 (the `mechanism_description` line that prints `MECHANISM_CUT`) | Ark |
+| Ark (7) | ":630-632 says M1.0 enters no limit" | it names Nf and R; the conclusion holds by structure | chat only | script :229-232 (`CURVE_ANCHORS`: Nf and R enter no limit); the conclusion for M1.0 by the definition of a limit (§3.6) | Ark |
+| Ark (8) | the path `rules/second_rule_v21/harness.py` | `results/genome/c6/harness.py` | chat only | no `harness.py` in `results/genome/c6/rules/second_rule_v21/` (scope: that directory, working tree at `1d6bb9e`); `results/genome/c6/harness.py` is pinned in §1.1 | Ark |
+| Ark (9) | "the λ confound is on the minus side" | on the plus side; λ moves the margin, not the limit | chat only | pinned CSV: the four unseen M0.5 worlds have `p_P_fixed_lambda1` > 0.01; 90164 (M0.6) flips (under pin) | Ark |
+| Ark (10) | `ceiling_block` = 1.0 in 77 rows | N1's rows are 0.5 | chat only | pinned CSV: `ceiling_block` 0.5 in the 45 N1 rows, 1.0 in the other 225 (under pin) | Ark |
+| Ark (11) | two writes before the outcome test | one (`--arm` and `--synthetic-only` are exclusive) | chat only | script :2007 (a mutually exclusive group) and :2104–2108 (one write per mode) | Ark |
+| Ark (12) | "with A only, the run is possible" | A and B both before the start | chat only | this file at `52eb381`, header line 40 and §10 line 1468 (the readiness rule) | Ark |
+| Ark (13) | "the self-test removes both cells" | determinism within a version is not invariance to the environment | chat only; the related reading lived in this file at `52eb381`, §3.3 line 578, and in the script, `REPRO_FAIL_TREATMENT` :1238–1239; both replaced by A1 (item ㉖) | script :53–58 (`setdefault` does not override a thread variable already set, so a naive rerun is identical) | Ark |
+| Ark (14) | "`TAU` is the instrument's resolution" | a tie policy; inert in the counts by the lattice | chat only | `harness.py:66` (`TAU = 1e-9`, a tie band) and script :200; the lattice argument, §3.2 | Ark |
+| Ark (15) | "the limits live on a slice of a two-dimensional space" | the M families are one-dimensional in `gamma_z` by construction | chat only | script `FAMILIES` (:239–241 at `1d6bb9e`: `gamma_z1` = 0.0 in every M family); pinned CSV, `gamma_z1` = 0.0 in all M rows (under pin) | Ark |
+| Johnny (1) | "10 revision-2 fits" | 5 (M0.5) | chat only | pinned CSV, M0.5: 5 worlds (under pin); §3.7 (M0.5 is a revision-2 family) | Johnny |
+| Johnny (2) | "the λ confound is on the minus side" | the plus side, world 90164 | chat only | as Ark (9) (under pin) | Johnny |
+| Johnny (3) | BF_4 at γ = 0.6: 1–2 of 5 seen | 0 of 5 | chat only | pinned CSV, M0.6, BF_4: `p_P <= 0.01` in 0 of 5 (under pin) | Johnny |
+| Johnny (4) | "fix ① is three lines" | it needs a fourth parameter | chat only | script `label_text` (:1049), whose fourth parameter is `reasons` (the drafter's reading of "fix ①"; not confirmed) | Johnny |
+| Johnny (5) | "93 %" | 631 of 637 = 99.1 % not recomputed | chat only | pinned store: 28,665 keys = 45 worlds × 637 (under pin); fact (a) of §3.3 covered 6 per world | Johnny |
+| Johnny (6) | ":883" | ":880" | chat only | script :880 (`Yu = y[uniform_perms()]`) | Johnny |
+| Johnny (7) | two writes before the test | one | chat only | as Ark (11) | Johnny |
+| Johnny (8) | "every store record has four fields" | six: `p`, `y`, `lam`, `score`, `outside_density`, `secs`; 47 `ko1` records carry a seventh, `reused_from_ko` | chat only | pinned store: 28,618 records with the six fields, 47 with the seven (under pin) | Johnny |
+| Johnny (9) | "γ1 is not named in the registration" | it is named three times under other names, and the CSV column appears once | chat only | this file at `1d6bb9e`: line 841 ("γ1 = 2.5", "γ2 = 1.5"), line 1062 ("W (1.5 + 2.5)"), line 1647 ("W 2.5/1.5"); and line 656, the literal `gamma_z1` as a column of the gate (scope of the original search: the literal `gamma_z1`) | Johnny |
+| CC (1) | "the reference is stale" (a GPU subagent's claim, not in the registration) | the reference reproduces bit for bit; the claim came from a wrong key and cell order | chat only | tool only (CC's probe P1, recorded in §3.3, fact (c)) | CC |
+| CC (3) | "the GPU agrees with the live CPU to 3e-16" | 175 of 180; five BF_1 fits differ by 1.4e-9 to 3.8e-8 | chat only | `results/genome/c6/gpu_instrument/README.md` (untracked; it cites `run3.log`) | CC |
+
+Johnny numbers his γ1 entry as his eighth in the chat, and the store-fields entry is also given
+as his; the drafter did not have the chat and numbered the two sequentially, (8) and (9). CC's
+entry (2) of the first list was withdrawn by CC, who could not confirm writing it; entries (1)
+and (3) keep their numbers.
