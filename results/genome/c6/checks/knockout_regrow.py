@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Knock out and regrow, block A on flyvis-65 (ADR-005 decision 3).
 
-Implements docs/plans/2026-09-24-knockout-regrow-registration.md, revision 3.3; section numbers
+Implements docs/plans/2026-09-24-knockout-regrow-registration.md, revision 3.4; section numbers
 below refer to it, and main() follows its section 7 order (refusals and pins; machine checks;
 synthetic worlds and the two-world check; the real arm; the verdict and outputs).
 
@@ -51,6 +51,14 @@ re-read; new raw records store sign_n; a real-arm run with --allow-dirty says on
 that it is not the registered run; the manifest records the dirty paths and the --from-raw
 file's sha256; check_prerun_files reports unlisted entries of the pre-run folder.
 
+Revision 3.4 (2026-09-25, the reviewers' pass on revision 3.3; text and code only, no fitting
+run): the treatment of outcome 3 traces the leg-P null by generator, one line each (uniform_perms
+-> p_P, p_P_fixed_lambda1, smallest_passing_auc; rc_patterns -> p_P_rowcol); smallest_passing_auc
+is a checked scalar, registered by board (SMALLEST_PASSING_AUC_BY_BOARD) and checked for every
+world before the fits (check_smallest_passing_auc), a mismatch stopping the synthetic step; the
+two excluded store fields carry their labels; each run prints how many ko1 records were copied
+from the ko fit and how many were fitted (a convenience count, not a control).
+
     tools/.venv/Scripts/python.exe results/genome/c6/checks/knockout_regrow.py --synthetic-only --starts 10 --workers 30
     tools/.venv/Scripts/python.exe results/genome/c6/checks/knockout_regrow.py --arm flyvis65 --starts 10 --workers 30
 
@@ -89,7 +97,7 @@ HERE = Path(__file__).resolve().parent
 C6 = HERE.parent
 ROOT = C6.parents[2]                                   # the repository root
 REGISTRATION = "docs/plans/2026-09-24-knockout-regrow-registration.md"
-REGISTRATION_REVISION = "3.3"
+REGISTRATION_REVISION = "3.4"
 OUT = HERE / "knockout_regrow"                         # section 7: committed, aggregates only
 RULE_PATH = C6 / "rules" / "second_rule_v21" / "fit.py"
 # Section 7 (revision 3.1): private and raw outputs live outside the repository. The registered
@@ -919,6 +927,44 @@ def smallest_passing_auc(y, Yu):
     return None
 
 
+# Revision 3.4 (item 2): smallest_passing_auc as a checked scalar, registered by board. Pre-run
+# values, read from the pinned synthetic_only.json (worlds[*].smallest_passing_auc) joined with
+# the board column of the pinned synthetic_worlds.csv: 0.666015625 (682/1024) in all 40 worlds
+# with board z, 0.6728515625 (689/1024) in all 5 worlds with board z' (the No family).
+SMALLEST_PASSING_AUC_BY_BOARD = {"z": 0.666015625, "z'": 0.6728515625}
+SMALLEST_PASSING_AUC_GATES = (
+    "it gates one statistic of Yu = y[uniform_perms()] and the composition (the layout y, P_R, "
+    "N_PERM), through auc_null on one tie-free prediction; it needs no fit. It does not see Yrc "
+    "(rc_patterns), nor a change in the consumer at equal Yu (the p_P lines of evaluate_bank, "
+    "avg_ranks on tied predictions, auc); the null-input digests remain for attribution. Under "
+    "--from-raw, where y comes from the store and Yu is generated fresh, it is the only check of "
+    "the fresh generator that stops the run (the comparison of the re-read table with the pinned "
+    "one is for information only)")
+
+
+def check_smallest_passing_auc(entries, expected=None):
+    """Revision 3.4 (item 2): each world's smallest_passing_auc(y, y[uniform_perms()]) against the
+    value registered for its board (SMALLEST_PASSING_AUC_BY_BOARD, or `expected`). entries: dicts
+    with "world", "board" and "y" (the block labels, 64 booleans in block cell order). A board
+    without a registered value is a mismatch. Run by run_synthetic before any fit; a mismatch
+    stops the synthetic step. What it gates: SMALLEST_PASSING_AUC_GATES."""
+    expected = dict(SMALLEST_PASSING_AUC_BY_BOARD if expected is None else expected)
+    perms, cache, per = uniform_perms(), {}, []
+    for e in entries:
+        y = np.asarray(e["y"], bool)
+        k = y.tobytes()
+        if k not in cache:
+            cache[k] = smallest_passing_auc(y, y[perms])
+        got, want = cache[k], expected.get(e["board"])
+        per.append({"world": e["world"], "board": e["board"], "computed": got,
+                    "registered": want, "equal": want is not None and got == want})
+    bad = [p for p in per if not p["equal"]]
+    return {"registered_by_board": expected, "n_worlds": len(per),
+            "n_equal": len(per) - len(bad), "mismatches": bad,
+            "passed": bool(per) and not bad, "gates": SMALLEST_PASSING_AUC_GATES,
+            "per_world": per}
+
+
 def logit_of(p):
     p = np.clip(np.asarray(p, np.float64), 1e-300, 1 - 1e-16)
     return np.log(p / (1 - p))
@@ -1377,8 +1423,12 @@ REPRO_LAYERS = (
     "manifest (null_input_digests); the pinned reference records none, so they can be compared "
     "only between runs of this code (for example the self-test below). "
     "(3) The consumer (auc_null, avg_ranks, auc, parity_D): with equal fits and equal null "
-    "inputs, a difference in the null outputs (p_P, p_P_rowcol) or in auc or D is the "
-    "consumer's. "
+    "inputs, a difference in the null outputs or in auc or D is the consumer's. The null "
+    "outputs are traced by generator, one line each, because the trace is for attribution: a "
+    "difference in one column must tell which generator moved. "
+    "uniform_perms (Yu) -> p_P and p_P_fixed_lambda1 (CSV columns) and smallest_passing_auc "
+    "(a JSON scalar, checked by board before the fits). "
+    "rc_patterns (Yrc) -> p_P_rowcol only. "
     "(4) The machine (the BLAS kernel that OpenBLAS's DYNAMIC_ARCH chooses for this CPU): what "
     "remains after (1) to (3); it cannot be separated today.")
 REPRO_BRANCH = {
@@ -1386,8 +1436,10 @@ REPRO_BRANCH = {
           "read (1), then (2), then (3); (4) is what remains."),
     "b": ("Part (b) differed (continuous columns beyond the tolerance): the continuous columns "
           "are functions of the fits' p (D, the log-losses) or of lattice columns (the regrown "
-          "shares), and the null enters only lattice columns (p_P, p_P_rowcol), so layer (2) is "
-          "not the cause; read (1), then (3); (4) is what remains."),
+          "shares), and the null enters only lattice columns, by generator: uniform_perms (Yu) "
+          "-> p_P and p_P_fixed_lambda1 (and the JSON scalar smallest_passing_auc); rc_patterns "
+          "(Yrc) -> p_P_rowcol only. So layer (2) is not the cause; read (1), then (3); (4) is "
+          "what remains."),
     "ab": ("Parts (a) and (b) both differed: read (1), then (2), then (3); (4) is what "
            "remains.")}
 REPRO_SELF_TEST = (
@@ -1794,15 +1846,52 @@ def run_synthetic(args, terms, F=None):
             if g:
                 groups.append(g)
     fitted_main = sum(len(g) for g in groups)
+    # Revision 3.4 (item 2): smallest_passing_auc against its registered value by board, before
+    # any fit (it depends only on y and Yu). y is read from the saved store where it holds the
+    # world's base knockout record (--from-raw), and otherwise from the world generator.
+    spa_in = []
+    for w in specs:
+        bk = f"world:{w['family']}:{w['j']}"
+        rec = saved.get((bk, "ko", "N1"))
+        y = (rec["y"] if rec is not None
+             else make_world(w, terms).exists[BLOCK_CELLS[:, 0], BLOCK_CELLS[:, 1]])
+        spa_in.append({"world": bk, "board": w["board"], "y": y})
+    spa = check_smallest_passing_auc(spa_in)
+    log(f"smallest_passing_auc check (revision 3.4, before the fits): {spa['n_equal']} of "
+        f"{spa['n_worlds']} worlds equal their registered value by board "
+        f"{spa['registered_by_board']}; {spa['gates']}")
+    if not spa["passed"]:
+        log(f"SMALLEST PASSING AUC CHECK FAILED: {spa['mismatches']}; the synthetic step stops "
+            "before any fit, and the real arm does not run (sections 3.3, 7)")
+        sys.exit(1)
     if groups:
         F.update(run_groups(groups, args.workers, init_args, "synthetic worlds"))
     keys = [f"world:{w['family']}:{w['j']}" for w in specs]
     path_check = fixed_lambda_path_check(F, keys, args.workers, init_args)
     log(f"fixed-lambda path check: {path_check}")
     fl = complete_fixed_lambda(F, keys, args.workers, init_args, "fixed lambda = 1")
+    # Revision 3.4 (item 3): ko1 records copied from the ko fit (reused_from_ko set) and fitted,
+    # over the store this run reads; a convenience count, not a control.
+    ko1 = [F[(bk, "ko1", pk)] for bk in keys for pk in ("rule",) + BF_KEYS]
+    n_copied = sum(bool(r.get("reused_from_ko", False)) for r in ko1)
+    n_path = len(path_check.get("identical") or {}) if path_check.get("bank") else 0
+    ko1_count = {"ko1_records": len(ko1), "copied_from_ko": n_copied,
+                 "fitted": len(ko1) - n_copied, "fitted_by_path_check": n_path,
+                 "path_check_bank": path_check.get("bank"),
+                 "this_pass": {"copied": fl["reused"], "fitted": fl["fitted"] + n_path},
+                 "status": "a convenience count, not a control"}
+    log(f"ko1 records (revision 3.4; a convenience count, not a control): {len(ko1)}; copied "
+        f"from the ko fit (reused_from_ko) {n_copied}; fitted {len(ko1) - n_copied}, of which "
+        f"{n_path} by the fixed-lambda path check ({path_check.get('bank')}); this pass copied "
+        f"{fl['reused']} and fitted {fl['fitted'] + n_path}")
     worlds = []
-    for w in specs:
+    for w, s in zip(specs, spa["per_world"]):
         ev = evaluate_bank(f"world:{w['family']}:{w['j']}", F, args.shuffles, args.perm_ceilings)
+        # revision 3.4 (item 2): the printed value is the value checked before the fits
+        if ev["smallest_passing_auc"] != s["computed"]:
+            log(f"SMALLEST PASSING AUC CHECK FAILED: {s['world']} printed "
+                f"{ev['smallest_passing_auc']!r}, checked {s['computed']!r} before the fits")
+            sys.exit(1)
         worlds.append({**w, **ev})
     dl = detection_limits(worlds, args.starts)
     ur = u_rule(worlds)
@@ -1843,7 +1932,9 @@ def run_synthetic(args, terms, F=None):
     syn = {"worlds": worlds, "two_world_check": two_world_check(worlds, repro), "limits": dl,
            "u_rule": ur, "fixed_lambda_summary": fixed_lambda_summary(worlds),
            "fixed_lambda_path_check": path_check, "raw_fits_diagnostic": raw_diag,
-           "fits": {"saved_reread": n_saved, "fitted_main": fitted_main, "fixed_lambda": fl},
+           "fits": {"saved_reread": n_saved, "fitted_main": fitted_main, "fixed_lambda": fl,
+                    "ko1_count": ko1_count},
+           "smallest_passing_auc_check": spa,
            "mean_seconds_per_knockout_fit": {pk: float(np.mean(v)) if v else None
                                              for pk, v in secs.items()},
            # revision 3.3 (item 4): what the mean is over; a timing, not a claim about cost
@@ -2068,6 +2159,14 @@ assert (sorted(CSV_EXACT_COLUMNS + CSV_CONTINUOUS_COLUMNS + CSV_REPORTED_COLUMNS
 # outside_density, so only records of the same key are compared). Excluded by name: secs, a
 # timing (the second non-reproducible field after the gzip mtime), and reused_from_ko, the flag
 # of a ko1 record copied from a knockout fit that selected lambda = 1 (its p is compared).
+# Revision 3.4 (item 3), the labels of the two excluded fields:
+#   secs            non-reproducible (a timing).
+#   reused_from_ko  derived from lam: set only on a ko1 record copied from a ko fit that selected
+#                   lambda = FIXED_LAMBDA (complete_fixed_lambda); comparison redundant, since the
+#                   record's p and lam are compared. The converse does not hold: the ko1 records
+#                   of the fixed-lambda path check's bank are refitted there and carry no flag
+#                   although their ko fit selected lambda = 1 (in the pinned store the 5 of
+#                   world:W:0; 47 flagged + 5 = the 52 base ko fits of rule #2.1 and BF_r at 1).
 SCORE_FIELDS = ("existence", "offset", "counts", "sign", "sign_n", "n_ne")
 STORE_FIELDS_COMPARED = ("p", "y", "lam", "score", "outside_density")
 STORE_FIELDS_EXCLUDED = ("secs", "reused_from_ko")

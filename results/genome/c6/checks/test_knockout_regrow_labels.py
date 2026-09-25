@@ -21,6 +21,8 @@ gives outcome 1 with the order recorded), reports missing rows apart, splits out
 and --out is refused at or inside a pre-run folder, on a byte copy of it, and with --arm (A2). The
 refusal tests use a temporary folder with monkeypatched PRERUN_DIR and PRERUN_SHA256; they never
 touch the real pre-run folder.
+Revision 3.4 (item 2): check_smallest_passing_auc, called directly on the two boards' labels,
+passes with the registered values and fails with a wrong or a missing one.
 
 It imports the script as a module (which reads the pins and imports the harness, both read-only)
 and fits nothing. Run: tools/.venv/Scripts/python.exe -m pytest -p no:cacheprovider -v
@@ -247,6 +249,31 @@ def test_csv_compare_by_key():
     assert extra["outcome"] == 3 and extra["n_rows_missing_prerun"] == 1
     assert K.repro_fail_treatment(["b"]) != K.repro_fail_treatment(["a"])
     assert "layer (2) is not the cause" in K.repro_fail_treatment(["b"])
+
+
+def _board_y(board):
+    """The block labels of a synthetic world with this board, in block cell order, as make_world
+    sets them (the block cells follow the board by z or z' in every world)."""
+    import numpy as np
+    zb = K.Z_BLOCK if board == "z" else K.ZPRIME
+    return (np.outer(zb, zb) > 0)[K.BLOCK_CELLS[:, 0], K.BLOCK_CELLS[:, 1]]
+
+
+def test_smallest_passing_auc_check():
+    """Revision 3.4 (item 2): the registered values pass on the two boards, called directly
+    (this computes uniform_perms and fits nothing); a wrong registered value, or a board without
+    one, fails the check."""
+    entries = [{"world": "world:R:0", "board": "z", "y": _board_y("z")},
+               {"world": "world:No:0", "board": "z'", "y": _board_y("z'")}]
+    ok = K.check_smallest_passing_auc(entries)
+    assert ok["passed"] and ok["n_equal"] == 2 and not ok["mismatches"]
+    assert [p["computed"] for p in ok["per_world"]] == [0.666015625, 0.6728515625]
+    wrong = K.check_smallest_passing_auc(entries, {"z": 0.666015625, "z'": 0.666015625})
+    assert not wrong["passed"] and wrong["n_equal"] == 1
+    assert [m["world"] for m in wrong["mismatches"]] == ["world:No:0"]
+    missing = K.check_smallest_passing_auc(entries, {"z": 0.666015625})
+    assert not missing["passed"] and missing["mismatches"][0]["registered"] is None
+    assert not K.check_smallest_passing_auc([])["passed"]
 
 
 def _fake_prerun(tmp_path, monkeypatch):
