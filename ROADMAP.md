@@ -435,7 +435,7 @@ list grows with every commit.
 - **Next: knock out and regrow.** Remove block A, the ON/OFF inputs to T4/T5 (64 cells, a perfect
   checkerboard in every bank), from **flyvis-65**, and ask whether the rule regrows it (Mike,
   2026-09-24 20:39 UTC).
-  - The registration is at revision 3.1, unreviewed and not yet committed:
+  - The registration is at revision 3.1, committed as an unreviewed draft:
     `docs/plans/2026-09-24-knockout-regrow-registration.md`, with its script
     `results/genome/c6/checks/knockout_regrow.py`. The synthetic worlds pass. The real block has not
     been run. Next: review of 3.1, then the real run on the CPU. A batched GPU instrument is built

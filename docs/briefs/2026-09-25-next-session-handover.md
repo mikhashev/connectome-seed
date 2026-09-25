@@ -30,8 +30,8 @@ the retrospective of this session is
     09:32–09:34 UTC); revision 3.1 applies their pass and **has not been reviewed yet**.
   - **Script:** [`results/genome/c6/checks/knockout_regrow.py`](../../results/genome/c6/checks/knockout_regrow.py),
     revision 3.1.
-  - Both files are **untracked** at session close: they are on disk, not committed. They will be
-    committed after the review of 3.1. The registration's header says so.
+  - Both files are committed as an **unreviewed draft** (on Mike's word after the
+    session close). The registration's header says so.
   - The pre-run synthetic outputs (45 worlds) are in
     `connectome-seed-data/knockout_regrow/synthetic_rev3_prerun/`, with `SHA256SUMS.txt`.
     Revision 3.1 requires the registered run to reproduce that table.

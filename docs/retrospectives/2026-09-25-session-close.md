@@ -85,7 +85,7 @@ named. Structural counts, dates, commit hashes and instrument timings are writte
 
 `f568691`, `941ab83`, `b3f41ed`, `9705ef1`, `1a26939`, `3c5c037`, `10b704e`, `0f14304`, `fb3c32e`,
 `2be6fe1`, `ea60011`. The session-close commit adds this file and the handover. The knockout
-registration and its script stay untracked until revision 3.1 is reviewed.
+registration and its script were then committed as an unreviewed draft on Mike's word.
 
 ## 5. Handover
 
