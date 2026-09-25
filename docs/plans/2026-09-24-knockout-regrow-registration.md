@@ -2,6 +2,9 @@
 **Status (revision 3.4, 2026-09-25 UTC): draft. Revision 3.4 has NOT been reviewed; no real-arm
 run before a short confirmation by the reviewers, Zcode's vote and Mike's word.**
 
+**Revision 3.4.1: the reviewers' pass on 3.4 (Ark 16:28, Johnny 16:29, Zcode 16:36 UTC); edits
+below; not re-reviewed.** The items are in §10 (revision 3.4.1's table), the changes in §12.
+
 **Revision 3.4, 2026-09-25 UTC: the reviewers' pass on revision 3.3. Text and code only; no
 fitting run.** Revision 3.3 (commit `cde61d4`) was reviewed in the DPC Research chat by Ark and
 Johnny, both "yes, with edits" (15:49–15:52 UTC). Mike's word at 16:14 UTC: "do 3.4". Drafted by
@@ -596,7 +599,8 @@ statistic is the predictor's AUC against the permuted labels.
   dependence on the layout `y`. This is an observation: its falsifier (recompute with board `z`
   at the same `y`) was not run. **Revision 3.4 (item 2):** the two values are registered by
   board and checked for every world before the fits (§3.3, "`smallest_passing_auc`, a checked
-  scalar").
+  scalar"). **Revision 3.4.1 (item B):** they are not written into the script; they are read at
+  run time from the pinned `synthetic_only.json` (§3.3).
 - **Printed beside it (proposal, D4; decides nothing):** the same test under **row-and-column-preserving
   permutations** of the block. These are random 8 × 8 patterns with 4 present in every row and
   every column, drawn by 20 × 32 successful checkerboard swaps from the real pattern, 9,999 draws.
@@ -770,27 +774,41 @@ statistic is the predictor's AUC against the permuted labels.
   offset, counts, sign, `n_ne`, and `sign_n` where both records hold it) and reports the
   differences per kind: three of the four C6 fields (offset, counts, sign) are not functions of
   `p` and enter no other channel. New raw records store `sign_n`, the integer, beside the older
-  fields (C7). **Declared fields (revision 3.3, item ㊲; Ark 15:19, Johnny 15:19):** a store
-  record has six fields, `p`, `y`, `lam`, `score`, `outside_density` and `secs`; 47 `ko1`
-  records of the pinned store carry a seventh, `reused_from_ko`, the flag of a fixed-λ record
-  copied from a knockout fit that selected λ = 1 (read from the pinned `raw_fits.json.gz`: 28,618
-  records with six fields, 47 with seven). Compared exactly, key by key
-  (`STORE_FIELDS_COMPARED`): `p`, `y`, `lam`, `score` (the `SCORE_FIELDS` that both records hold)
-  and `outside_density`, which differs between a world's base bank and its shuffled banks, so it
-  is compared only between records of the same key. Excluded by name (`STORE_FIELDS_EXCLUDED`):
-  `secs`, a timing, and `reused_from_ko`, bookkeeping whose record's `p` is compared.
-  **Their labels (revision 3.4, item 3; Johnny 15:50 #1, Ark 15:51 #1), also in the code beside
-  `STORE_FIELDS_EXCLUDED`:** `secs`, **non-reproducible (a timing)**; `reused_from_ko`,
-  **derived from `lam`: set only on a `ko1` record copied from a `ko` fit that selected
-  λ = `FIXED_LAMBDA`; comparison redundant** (the record's `p` and `lam` are compared). The
-  reviewers wrote "set exactly when"; the pinned store shows the flag implies λ = 1 but not the
-  converse: 52 base `ko` fits of rule #2.1 and BF_1–BF_4 selected λ = 1, 47 of their `ko1`
-  records carry the flag, and the other 5 (`world:W:0`, the bank of the fixed-λ path check,
-  §3.5) were refitted by that check and carry none, with `p` equal to the `ko` fit's. **A
-  convenience count, not a control:** each run prints the number of `ko1` records copied from
-  the `ko` fit and fitted (`ko1_count` in `synthetic_only.json`). On the pinned store: 225 `ko1`
-  records, 47 copied and 178 fitted (178 = 225 − 47; the reviewers' "47/178" is this split), of
-  which 5 fitted by the path check. The script
+  fields (C7). **Declared fields (revision 3.3, item ㊲; Ark 15:19, Johnny 15:19; revised in
+  revision 3.4.1, item A):** a store record has six fields, `p`, `y`, `lam`, `score`,
+  `outside_density` and `secs`; 47 `ko1` records of the pinned store carry a seventh,
+  `reused_from_ko`, the flag of a fixed-λ record copied from a knockout fit that selected λ = 1
+  (read from the pinned `raw_fits.json.gz`: 28,618 records with six fields, 47 with seven).
+  Compared exactly, key by key (`STORE_FIELDS_COMPARED`): `p`, `y`, `lam`, `score` (the
+  `SCORE_FIELDS` that both records hold), `outside_density`, which differs between a world's
+  base bank and its shuffled banks, so it is compared only between records of the same key, and
+  (since revision 3.4.1) `reused_from_ko`, compared by key on every compared record, **a record
+  without the field reading False** (missing ≡ False; in the pinned store only `ko1` records
+  carry it, and always as True). Excluded by name (`STORE_FIELDS_EXCLUDED`): `secs`, a timing.
+  **Their labels (revision 3.4, item 3; Johnny 15:50 #1, Ark 15:51 #1; the label of
+  `reused_from_ko` replaced in revision 3.4.1, item A; Johnny 16:29 #1, Zcode 16:36 UTC, Ark
+  #131), also in the code beside `STORE_FIELDS_COMPARED` and `STORE_FIELDS_EXCLUDED`:** `secs`,
+  **non-reproducible (a timing)**; `reused_from_ko`, **provenance of the `ko1` record;
+  comparison required.** It records how the record was made: copied from the `ko` fit
+  (`complete_fixed_lambda`, flag set) or fitted by `train_fixed_lambda` (no flag). It is not a
+  function of `lam`: `complete_fixed_lambda` skips a `ko1` record that already exists, so the
+  five `ko1` records of the fixed-λ path check's bank (`fixed_lambda_path_check`, §3.5) are
+  fitted by that check, bit-equal to their `ko` fits, and unflagged. On the pinned store (under
+  pin): 52 base `ko` fits of rule #2.1 and BF_1–BF_4 selected λ = 1; 47 of their `ko1` records
+  carry the flag; the other 5 are `world:W:0` × the five predictors, with `lam` = 1, `p` equal to
+  the `ko` fit's, and no flag. (Revision 3.4 labelled the field "derived from `lam`; comparison
+  redundant" and the count below "a convenience count, not a control"; both are corrected here;
+  §12, error ledger.) **The `ko1` count, a registered control (revision 3.4.1, item A):** each
+  run counts its `ko1` records copied from the `ko` fit and fitted (`ko1_count`,
+  `check_ko1_count`; `ko1_count` in `synthetic_only.json`). The registered count has one address:
+  it is read at run time from the pinned `raw_fits.json.gz` (`registered_ko1_count`, after
+  `check_prerun_files` has verified the file), not written into the script. The pinned store
+  gives 225 `ko1` records, 47 copied and 178 fitted, of which 5 fitted by the path check on
+  `world:W:0`. **A fresh synthetic step comparable to the reference (`--starts 10`, no smoke
+  option) must reproduce 47 / 178; a different count stops the synthetic step**, and the real
+  arm does not run. Under `--from-raw` the count is read from the store that the pass re-reads,
+  not produced by the pass, so the check is informative (printed, not a stop); a smoke run is not
+  compared. The script
   asserts that every field it sees is declared in one of the two; the re-read of revision 3.3
   (second pass) passed that assert on all 28,665 pinned records. **Revision 3.3 (A6):** under `--from-raw` the diagnostic says what it compares;
   when the re-read store is the pinned one, it reads "re-read: compares the pinned store with
@@ -809,15 +827,26 @@ statistic is the predictor's AUC against the permuted labels.
   per-key diagnostic covers all 637 fit keys per world (the
   `|sh:` and `|pc:` keys included) but not the null, which has no keys.
 - **`smallest_passing_auc`, a checked scalar (revision 3.4, item 2; Ark 15:49 #2, Johnny 15:50
-  #3, Ark 15:51 #3, Ark 15:51:56 #1).** *Registered values, by board:* **0.666015625** (682/1024)
-  in every world with board `z`, and **0.6728515625** (689/1024) in every world with board `z'`
-  (the 5 No worlds). Verified before writing on the pinned files (under pin): the pinned
-  `synthetic_only.json`, `worlds[*].smallest_passing_auc`, joined by (family, j, seed) with the
-  `board` column of the pinned `synthetic_worlds.csv` (one board per world), gives 0.666015625 in
-  all 40 worlds with board `z` and 0.6728515625 in all 5 with board `z'`.
+  #3, Ark 15:51 #3, Ark 15:51:56 #1).** *Registered values, by board: the values held by the
+  pinned reference at revision 3.4 (derived at run time from `synthetic_only.json`):*
+  **0.666015625** (682/1024) in every world with board `z`, and **0.6728515625** (689/1024) in
+  every world with board `z'` (the 5 No worlds). Verified before writing on the pinned files
+  (under pin): the pinned `synthetic_only.json`, `worlds[*].smallest_passing_auc`, joined by
+  (family, j, seed) with the `board` column of the pinned `synthetic_worlds.csv` (one board per
+  world), gives 0.666015625 in all 40 worlds with board `z` and 0.6728515625 in all 5 with board
+  `z'`; the JSON's own `worlds[*].board` gives the same split (revision 3.4.1).
+  *One address (revision 3.4.1, item B; Ark 16:28, Johnny 16:29 #3, Zcode 16:36 UTC).* The
+  script does not hard-code the values (revision 3.4's `SMALLEST_PASSING_AUC_BY_BOARD` is
+  removed): `derive_smallest_passing_auc` reads `worlds[*].board` and
+  `worlds[*].smallest_passing_auc` from the pinned `synthetic_only.json`, after
+  `check_prerun_files` has verified it against `PRERUN_SHA256`, and requires exactly one value
+  per board. A board that carries two values, a world without a board or a value, or a pre-run
+  folder that fails its check stops the synthetic step before any fit. The two numbers above are
+  what the pinned reference holds; a registered re-pin moves them with it (§7, "Recreating the
+  reference").
   *The check.* Each world's computed value is compared exactly with the value registered for its
-  board (`SMALLEST_PASSING_AUC_BY_BOARD`, `check_smallest_passing_auc`); a board with no
-  registered value is a mismatch. **A mismatch stops the synthetic step**, and the real arm does
+  board (the derived values, `check_smallest_passing_auc`); a board with no registered value is
+  a mismatch. **A mismatch stops the synthetic step**, and the real arm does
   not run. *Where it runs:* in step 3, **before any fit**, since it needs none: it depends only
   on (`y`, Yu). `y` is read from the saved store where the store holds the world's base knockout
   record (`--from-raw`), and otherwise from the world generator (`make_world`); the value that
@@ -829,7 +858,8 @@ statistic is the predictor's AUC against the permuted labels.
   comes from the store and Yu is generated fresh, it is the only check of the fresh generator
   that stops the run: the comparison of the re-read table with the pinned one (`p_P` and
   `p_P_rowcol` included) is for information only. *Result on the pinned store* (the `--from-raw`
-  re-read of revision 3.4, §12): 45 of 45 worlds equal their registered value.
+  re-read of revision 3.4, §12): 45 of 45 worlds equal their registered value; the same in the
+  re-read of revision 3.4.1, with the values derived from the pinned JSON.
 - **Determinism check (a stop).** The primary rule is fitted twice on the real knockout view.
   The two data dicts must hash byte-identically (the G-det test of rule #2.1, reused), else
   "NOT DETERMINISTIC" and stop. Every fit is deterministic given the bank: N1 is a Newton fit, λ is
@@ -1458,7 +1488,12 @@ U rule's count of threshold U; `csv_compare`'s key matching (a permuted copy of 
 outcome 1 with the order recorded), missing rows, outcome-3 parts and column-8 rename check; and
 the `--out` guard on a temporary folder with a monkeypatched `PRERUN_DIR` (never the real one):
 14 tests. **Revision 3.4** adds `test_smallest_passing_auc_check` (the registered values pass on
-the two boards' labels; a wrong or a missing registered value fails): 15 tests.
+the two boards' labels; a wrong or a missing registered value fails): 15 tests. **Revision
+3.4.1** takes the registered values in that test from the pinned `synthetic_only.json` (read
+only, after `check_prerun_files`; they must equal the two numbers of §3.3) and keeps the
+injected wrong dict, and adds `test_derive_smallest_passing_auc` (fixture JSON files: one value
+per board passes, two values for one board fail) and `test_ko1_count_control` (a missing
+`reused_from_ko` reads False; a different count stops only a fresh comparable run): 17 tests.
 (`label_text` here is a function; `flywire_column_test.py`
 has an unrelated dict `LABEL_TEXT`.) Order of work, each step refusing on failure:
 
@@ -1471,9 +1506,12 @@ has an unrelated dict `LABEL_TEXT`.) Order of work, each step refusing on failur
    real block or fit a rule on the real bank, so they run in the real arm only.
 3. **Synthetic worlds and the two-world check** (§3.6). **First, before any fit (revision 3.4,
    item 2):** each world's `smallest_passing_auc` against its registered value by board (§3.3);
-   a mismatch stops here. Then: the requirement rows, the power curve and
+   a mismatch stops here. (Revision 3.4.1, item B: the pre-run files are verified first, and the
+   registered values are read from the pinned `synthetic_only.json`; a failure of either stops
+   here.) Then: the requirement rows, the power curve and
    the three limits with the transition band (revision 3.1), the U rule, and the fixed λ = 1
-   diagnostic with its path check (§3.5). **The pre-run reproduction (revision 3.1, revised in
+   diagnostic with its path check (§3.5), followed by the `ko1` count against the pinned store's
+   (revision 3.4.1, item A; a stop in a fresh comparable run, informative under `--from-raw`). **The pre-run reproduction (revision 3.1, revised in
    3.2):** `synthetic_worlds.csv` of this run must equal the pre-run file on the deciding columns
    (§3.3, below); byte identity is recorded, not gated. The per-fit diagnostic is computed beside
    it and decides nothing. The synthetic outputs are written to the run's private directory
@@ -1533,8 +1571,12 @@ and predictor, 33 columns, and its format is unchanged from revision 3. It has n
 shuffled fits (`|sh:`) or the permuted-block ceilings (`|pc:`), only their aggregates (`n_ge`,
 `p_S`). It has no `n_present` or `n_absent` (they are printed on the verdict line, not written to
 the CSV) and no U reasons (they are in `synthetic_only.json` and in the run's printed log). Column 8,
-`mechanism_description`, is world-level: 84 rows carry text in the pre-run table, and in 70 of
-them the quoted `ceiling_full` is rule #2.1's, not the row's own. **Revision 3.3 (C1):** column 8
+`mechanism_description`, is world-level: 84 rows carry text in the pre-run table; the value it
+quotes is rule #2.1's `ceiling_full`, and in 62 of the 84 rows it differs from the row's own
+`ceiling_full`. (Revision 3.4.1, item C3, Zcode 16:36 UTC: revision 3.2 wrote 70, that is
+5 × 14. In the other 22 rows the two are equal: the 14 rule #2.1 rows, and the 8 BF rows of
+M0.5 j = 1 and Nf j = 3, where every BF row has `ceiling_full` = 1.0 like the rule. Counted on
+the pinned CSV, under pin; §12, error ledger.) **Revision 3.3 (C1):** column 8
 is a world-level field derived from rule #2.1's row of that world and repeated on all six rows of
 the world; the 84 rows are the 14 G worlds (5 Nf, 5 No, 4 M0.5) × 6. Since revision 3.2 the text
 says so ("rule #2.1's ceiling_full = …"), which changed the text of those 84 rows and, with it,
@@ -1607,7 +1649,10 @@ run's folder could look like a copy of the reference, and the guard must be revi
 place. A new reference is written to a new folder and compared with the old one; then
 `PRERUN_DIR` and `PRERUN_SHA256` (and `PRERUN_WORLDS_CSV_SHA256` with them) are moved together,
 in one registered, committed change that is reviewed before use. **A red pin is never answered by
-re-pinning.**
+re-pinning.** **Revision 3.4.1 (item B):** the registered values of the `smallest_passing_auc`
+check travel with the reference: they are read from its `synthetic_only.json` (§3.3), so a
+registered re-pin moves them too. The same holds for the registered `ko1` count, read from its
+`raw_fits.json.gz` (item A).
 
 **The registered run's private and raw outputs (revision 3.1).** The real arm writes them outside
 the repository, to `connectome-seed-data/knockout_regrow/<run>/`, where `<run>` is
@@ -1904,6 +1949,18 @@ CC's work order for revision 3.4 gives them.
 | 2 | `smallest_passing_auc` as a checked scalar: 0.666015625 for board `z`, 0.6728515625 for board `z'`, verified on the pinned files; checked for every world before the fits; a mismatch stops the synthetic step; what it gates and what it does not; a test | Ark 15:49 #2, Johnny 15:50 #3, Ark 15:51 #3, Ark 15:51:56 #1 | §3.2, §3.3, §7; `SMALLEST_PASSING_AUC_BY_BOARD`, `SMALLEST_PASSING_AUC_GATES`, `check_smallest_passing_auc`, `run_synthetic`; `test_smallest_passing_auc_check` |
 | 3 | the labels of `secs` and `reused_from_ko`; the per-run count of `ko1` records copied from `ko` and fitted (47 and 178 on the pinned store), a convenience count, not a control | Johnny 15:50 #1, Ark 15:51 #1 | §3.3; the comment on `STORE_FIELDS_EXCLUDED`, `run_synthetic` (`ko1_count`) |
 | 4 | working rules at the head of the error ledger (three lines); the Johnny (9) row narrowed; the "column 8 empty except M0.5" statement and Johnny's ninth error under the working rules, not as ledger rows | Ark 15:52:21, Johnny 15:52:08; the Johnny (9) wording per Ark and Johnny 15:51 | §12 |
+
+**Revision 3.4.1: the reviewers' pass on revision 3.4, 2026-09-25.** DPC Research chat, on the
+review request #144 (16:26 UTC): Ark 16:28 "yes"; Johnny 16:29 "yes, with one A edit"; Zcode
+16:36 "yes, with edits before the start", supporting every item below. Text and code only; no
+fitting run; not re-reviewed. The sources are as CC's work order for revision 3.4.1 gives them.
+
+| item | what | source | where |
+|---|---|---|---|
+| A | `reused_from_ko` is the provenance of a `ko1` record, not a function of `lam`: moved to the compared fields (missing ≡ False), labelled "provenance of the ko1 record; comparison required"; the `ko1` count (47 / 178) a registered control read from the pinned store, a stop in a fresh comparable run and informative under `--from-raw`; a ledger row | Johnny 16:29 §1, Zcode 16:36; Ark #131 | §3.3, §7; `STORE_FIELDS_COMPARED`, `raw_fits_diagnostic`, `ko1_count`, `registered_ko1_count`, `check_ko1_count`, `run_synthetic`; `test_ko1_count_control` |
+| B | the registered `smallest_passing_auc` values derived at run time from the pinned `synthetic_only.json` by board, after `check_prerun_files`; exactly one value per board, or stop; they travel with the reference | Ark 16:28 (second note), Johnny 16:29 §3, Zcode 16:36 | §3.2, §3.3, §7; `derive_smallest_passing_auc`, `check_smallest_passing_auc`, `run_synthetic`; `test_smallest_passing_auc_check`, `test_derive_smallest_passing_auc` |
+| C3 | 70 → 62: the column-8 rows whose own `ceiling_full` differs from the quoted value, counted on the pinned CSV; a ledger row | Zcode 16:36 | §7; §12 |
+| C4 | the revision map for line citations and the rule "a cited line carries its revision explicitly" | Ark 16:28, Johnny 16:29, Zcode 16:36 | §12 |
 
 ## 11. Not verified at drafting
 
@@ -2296,11 +2353,14 @@ five of five OK). Items and sources, one by one, are in §10.
   equal the value checked; a mismatch stops the synthetic step; what it gates written. Script:
   `SMALLEST_PASSING_AUC_BY_BOARD`, `SMALLEST_PASSING_AUC_GATES`, `check_smallest_passing_auc`,
   `run_synthetic` (`smallest_passing_auc_check` in `synthetic_only.json`). Test:
-  `test_smallest_passing_auc_check`. §3.2, §3.3, §7.
+  `test_smallest_passing_auc_check`. §3.2, §3.3, §7. (Revision 3.4.1, item B: the constant is
+  removed; the values are derived from the pinned `synthetic_only.json`.)
 - **Item 3, the excluded store fields:** the labels of `secs` and `reused_from_ko`, with the
   pinned store's correction to "set exactly when" (the converse fails on the path check's
   bank); the per-run count of `ko1` records copied and fitted, a convenience count, not a
   control. Script: the comment on `STORE_FIELDS_EXCLUDED`, `run_synthetic` (`ko1_count`). §3.3.
+  (Corrected in revision 3.4.1, item A: `reused_from_ko` is the provenance of the `ko1` record,
+  not derived from `lam`, and is compared; the count is a registered control; §3.3, ledger.)
 - **Item 4, working rules and ledger fixes:** the three working rules at the head of the error
   ledger (below); the Johnny (9) row narrowed to what the file shows; the "column 8 empty except
   M0.5" statement and Johnny's ninth error recorded under the working rules, not as ledger
@@ -2345,6 +2405,18 @@ UTC, with additions at 15:16–15:26 UTC). **Where the body and the ledger disag
   the body travels with that fix; the others may follow. In revision 3.3 every row goes in the
   same commit.
 
+**Revision map for line citations (revision 3.4.1, item C4; Ark 16:28, Johnny 16:29, Zcode 16:36
+UTC).** A line number means something only with the commit it was read at. **Ledger rows:**
+script lines of the form ":981" are of the script at `52eb381`, unless the row marks `1d6bb9e`
+(Ark (15), Johnny (9)); lines of this file name their commit in the row (`52eb381` in Ark (12)
+and Ark (13), `1d6bb9e` in Johnny (9)); `harness.py:66` (Ark (14)) is of the pinned harness
+(§1.1), the same at every commit; the two rows added in revision 3.4.1 cite `ea8fe27`
+(revision 3.4). **§3.3 anchors:** the script lines of the null's trace by generator
+(`evaluate_bank`, :963, :1003–1004, :1011) are of the script at `cde61d4`, with the function
+named beside them. **Current:** every other reference is to the text of this revision, 3.4.1,
+at the commit that carries it. **Rule: a cited line carries its revision explicitly** (the commit
+beside the line number, and for code the function or constant name as well).
+
 | item | was | correct | where the wrong wording lived | what refuted it | caught by |
 |---|---|---|---|---|---|
 | Ark (1) | the world that flips under λ = 1 is 90161 | 90164 (`p_P` 0.0308 → 0.0011) | chat only | pinned CSV, seed 90164, rule #2.1: `p_P` 0.0308, `p_P_fixed_lambda1` 0.0011 (under pin) | Ark |
@@ -2374,8 +2446,50 @@ UTC, with additions at 15:16–15:26 UTC). **Where the body and the ledger disag
 | Johnny (9) | "γ1 is not named in the registration" | revision 3.4 (Ark, Johnny 15:51 UTC): in the registration the names are ordinal (γ1/γ2), in the code by axis (`gamma_z`/`gamma_z1`); the literal `gamma_z1` is in the code, and in this file once, as a column of the gate. (Revision 3.3 read "named three times under other names"; two of the three lines give values only.) | chat only | this file at `1d6bb9e`: line 841 ("γ1 = 2.5" on `z1`, "γ2 = 1.5" on `z`); lines 1062 ("W (1.5 + 2.5)") and 1647 ("W 2.5/1.5") give the values only; line 656, the literal `gamma_z1` as a column of the gate; the script at `1d6bb9e`, :643 (`world_specs`) and :699 (`make_world`), the keys `gamma_z` and `gamma_z1` (scope of the original search: the literal `gamma_z1`) | Johnny |
 | CC (1) | "the reference is stale" (a GPU subagent's claim, not in the registration) | the reference reproduces bit for bit; the claim came from a wrong key and cell order | chat only | tool only (CC's probe P1, recorded in §3.3, fact (c)) | CC |
 | CC (3) | "the GPU agrees with the live CPU to 3e-16" | 175 of 180; five BF_1 fits differ by 1.4e-9 to 3.8e-8 | chat only | `results/genome/c6/gpu_instrument/README.md` (untracked; it cites `run3.log`) | CC |
+| A (3.4.1) | "`reused_from_ko` is derived from `lam`; comparison redundant", and the `ko1` count "a convenience count, not a control" (revision 3.4's text; CC #144; Johnny #132) | provenance of the `ko1` record (copied from the `ko` fit, or fitted by `train_fixed_lambda`); comparison required; 47 / 178 is a registered control | this file at `ea8fe27`: §3.3 lines 784–785 (the label) and 790 (the count), with the related "bookkeeping" at line 781; also header line 18, §10 line 1905, §12 line 2302; the script at `ea8fe27`: the comment on `STORE_FIELDS_EXCLUDED`, :2164–2166, and `run_synthetic`, :1873–1874 and :1882–1883 (module docstring :60) | pinned store: the 5 `ko1` records of `world:W:0` (rule #2.1, BF_1–BF_4) with `lam` = 1, `p` equal to the `ko` fit's, and no flag, beside 47 flagged `ko1` records (under pin) | Johnny (16:29), supported by Zcode (16:36); Ark had it at #131 |
+| C3 (3.4.1) | "in 70 of the 84 column-8 rows the quoted `ceiling_full` is rule #2.1's, not the row's own" (from the formula 5 × 14) | 62: the row's own `ceiling_full` differs from the quoted value in 62 of the 84 rows (Nf 21, No 25, M0.5 16); equal in 22 (the 14 rule #2.1 rows, and the 8 BF rows of M0.5 j = 1 and Nf j = 3, all with `ceiling_full` = 1.0 like the rule) | this file at `ea8fe27`, §7 lines 1536–1537 (written in revision 3.2, `52eb381`) | pinned CSV: column 8 non-empty in 84 rows; the row's own `ceiling_full`, at the quoted precision, differs from the quoted value in 62 (under pin) | Zcode (16:36) |
 
 Johnny numbers his γ1 entry as his eighth in the chat, and the store-fields entry is also given
 as his; the drafter did not have the chat and numbered the two sequentially, (8) and (9). CC's
 entry (2) of the first list was withdrawn by CC, who could not confirm writing it; entries (1)
 and (3) keep their numbers.
+
+**Revision 3.4.1, 2026-09-25 UTC: the reviewers' pass on revision 3.4. Text and code only; no
+fitting run. CC subagent.** From the DPC Research chat, on the review request #144 (16:26 UTC):
+Ark 16:28 "yes", Johnny 16:29 "yes, with one A edit", Zcode 16:36 "yes, with edits before the
+start". **Revision 3.4.1 has NOT been re-reviewed.** Runs made: `python -m py_compile` on the
+script and the test; the label test, 17 tests, all pass; one `--synthetic-only --from-raw`
+re-read of the pinned `raw_fits.json.gz` into a scratch directory (13 s; no new world fit, the
+five refits of the fixed-λ path check, N1's degree terms). Its result: the registered
+`smallest_passing_auc` values derived from the pinned `synthetic_only.json`, 0.666015625 for `z`
+(40 worlds) and 0.6728515625 for `z'` (5 worlds), one value per board; the check before the fits,
+45 of 45 worlds equal; the `ko1` count 225 records, 47 copied from `ko` and 178 fitted (5 of
+them by the path check on `world:W:0`), equal to the count registered from the pinned store and
+informative under `--from-raw`; the per-fit diagnostic, `reused_from_ko_differ` 0 in both groups
+of worlds, as every other counter; outcome 1, rows matched by key, none missing, row order
+equal, column 8 different on 84 rows, all 84 exactly revision 3.2's rename; the recomputed CSV
+byte-identical to revision 3.4's re-read (sha256 `32d62c71…95c1`). No real block cell was read,
+and the pinned pre-run folder was checked unchanged afterwards (`sha256sum -c SHA256SUMS.txt`,
+five of five OK). Items and sources are in §10.
+
+- **Item A, `reused_from_ko`:** the provenance of a `ko1` record, not a function of `lam`;
+  moved from `STORE_FIELDS_EXCLUDED` to `STORE_FIELDS_COMPARED`, compared by key with a missing
+  field read as False (`raw_fits_diagnostic`, `reused_from_ko_differ`); labelled "provenance of
+  the ko1 record; comparison required" in the code and §3.3; the `ko1` count a registered
+  control, read from the pinned `raw_fits.json.gz` (`ko1_count`, `registered_ko1_count`,
+  `check_ko1_count`, `KO1_COUNT_CONTROL`, `run_synthetic`): a fresh comparable run with another
+  count stops, a `--from-raw` pass prints it as informative, a smoke run is not compared. Test:
+  `test_ko1_count_control`. A ledger row. §3.3, §7.
+- **Item B, one address for the registered `smallest_passing_auc` values:**
+  `SMALLEST_PASSING_AUC_BY_BOARD` removed; `derive_smallest_passing_auc` reads them from the
+  pinned `synthetic_only.json`, keyed by `board`, after `check_prerun_files`; a board with two
+  values, or a pre-run folder that fails its check, stops the synthetic step before any fit;
+  `check_smallest_passing_auc` takes the values as an argument; they travel with the reference
+  (§7, "Recreating the reference"). Tests: `test_smallest_passing_auc_check` (values derived
+  from the pinned JSON; an injected wrong dict fails), `test_derive_smallest_passing_auc`
+  (fixture JSON files). §3.2, §3.3, §7.
+- **Item C3, 70 → 62:** counted on the pinned CSV (§7); a ledger row.
+- **Item C4, the revision map for line citations** beside the ledger's rules, with the rule "a
+  cited line carries its revision explicitly"; §3.3's one line citation already names its commit
+  (`cde61d4`) and its function (`evaluate_bank`).
+- `REGISTRATION_REVISION` = "3.4.1". Header line, §10, §12.

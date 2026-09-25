@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Knock out and regrow, block A on flyvis-65 (ADR-005 decision 3).
 
-Implements docs/plans/2026-09-24-knockout-regrow-registration.md, revision 3.4; section numbers
+Implements docs/plans/2026-09-24-knockout-regrow-registration.md, revision 3.4.1; section numbers
 below refer to it, and main() follows its section 7 order (refusals and pins; machine checks;
 synthetic worlds and the two-world check; the real arm; the verdict and outputs).
 
@@ -59,6 +59,16 @@ world before the fits (check_smallest_passing_auc), a mismatch stopping the synt
 two excluded store fields carry their labels; each run prints how many ko1 records were copied
 from the ko fit and how many were fitted (a convenience count, not a control).
 
+Revision 3.4.1 (2026-09-25, the reviewers' pass on revision 3.4; text and code only, no fitting
+run): reused_from_ko is the provenance of a ko1 record (copied from the ko fit, or fitted by
+train_fixed_lambda), not a function of lam; it moves to STORE_FIELDS_COMPARED (a record without
+it reads False), and the ko1 count (copied from ko / fitted) is a registered control, derived
+from the pinned raw_fits.json.gz (registered_ko1_count, check_ko1_count): a fresh comparable
+synthetic step must reproduce it or stops; under --from-raw it is informative. The registered
+smallest_passing_auc values are no longer hard-coded: they are derived at run time from the
+pinned synthetic_only.json, keyed by board, after check_prerun_files has verified it
+(derive_smallest_passing_auc); a board with two values stops the synthetic step.
+
     tools/.venv/Scripts/python.exe results/genome/c6/checks/knockout_regrow.py --synthetic-only --starts 10 --workers 30
     tools/.venv/Scripts/python.exe results/genome/c6/checks/knockout_regrow.py --arm flyvis65 --starts 10 --workers 30
 
@@ -97,7 +107,7 @@ HERE = Path(__file__).resolve().parent
 C6 = HERE.parent
 ROOT = C6.parents[2]                                   # the repository root
 REGISTRATION = "docs/plans/2026-09-24-knockout-regrow-registration.md"
-REGISTRATION_REVISION = "3.4"
+REGISTRATION_REVISION = "3.4.1"
 OUT = HERE / "knockout_regrow"                         # section 7: committed, aggregates only
 RULE_PATH = C6 / "rules" / "second_rule_v21" / "fit.py"
 # Section 7 (revision 3.1): private and raw outputs live outside the repository. The registered
@@ -927,11 +937,14 @@ def smallest_passing_auc(y, Yu):
     return None
 
 
-# Revision 3.4 (item 2): smallest_passing_auc as a checked scalar, registered by board. Pre-run
-# values, read from the pinned synthetic_only.json (worlds[*].smallest_passing_auc) joined with
-# the board column of the pinned synthetic_worlds.csv: 0.666015625 (682/1024) in all 40 worlds
-# with board z, 0.6728515625 (689/1024) in all 5 worlds with board z' (the No family).
-SMALLEST_PASSING_AUC_BY_BOARD = {"z": 0.666015625, "z'": 0.6728515625}
+# Revision 3.4 (item 2): smallest_passing_auc as a checked scalar, registered by board.
+# Revision 3.4.1 (item B; Ark 16:28, Johnny 16:29 #3, Zcode 16:36 UTC): the registered values have
+# one address, the pinned synthetic_only.json. They are derived from it at run time
+# (derive_smallest_passing_auc: worlds[*].board and worlds[*].smallest_passing_auc), after
+# check_prerun_files has verified it against PRERUN_SHA256; revision 3.4's hard-coded
+# SMALLEST_PASSING_AUC_BY_BOARD is removed. The pinned reference at revision 3.4 holds 0.666015625
+# (682/1024) for board z (40 worlds) and 0.6728515625 (689/1024) for board z' (the 5 No worlds).
+# A registered re-pin of the reference moves them with it (section 7, "Recreating the reference").
 SMALLEST_PASSING_AUC_GATES = (
     "it gates one statistic of Yu = y[uniform_perms()] and the composition (the layout y, P_R, "
     "N_PERM), through auc_null on one tie-free prediction; it needs no fit. It does not see Yrc "
@@ -942,13 +955,42 @@ SMALLEST_PASSING_AUC_GATES = (
     "one is for information only)")
 
 
-def check_smallest_passing_auc(entries, expected=None):
+def derive_smallest_passing_auc(path):
+    """Revision 3.4.1 (item B): the registered smallest_passing_auc by board, derived from a
+    synthetic_only.json (in run_synthetic, the pinned one, read after check_prerun_files has
+    verified it against PRERUN_SHA256). Exactly one value per board is required: a board that
+    carries two or more values, a world without a board or a value, or no world at all fails
+    (passed False), and run_synthetic stops before any fit."""
+    worlds = json.loads(Path(path).read_text(encoding="utf-8")).get("worlds") or []
+    values, counts, incomplete = {}, {}, []
+    for w in worlds:
+        b, v = w.get("board"), w.get("smallest_passing_auc")
+        if b is None or v is None:
+            incomplete.append(w.get("seed"))
+            continue
+        values.setdefault(b, set()).add(v)
+        counts[b] = counts.get(b, 0) + 1
+    several = {b: sorted(v) for b, v in values.items() if len(v) != 1}
+    passed = bool(values) and not several and not incomplete
+    reason = ("one value per board" if passed else "; ".join(
+        (["no world with a board and a value"] if not values else [])
+        + [f"board {b!r} carries {len(v)} values {v}" for b, v in several.items()]
+        + ([f"{len(incomplete)} worlds without a board or a value (seeds {incomplete})"]
+           if incomplete else [])))
+    return {"source": str(path), "passed": passed,
+            "by_board": {b: next(iter(v)) for b, v in values.items()} if passed else None,
+            "n_worlds_by_board": counts, "boards_with_several_values": several,
+            "worlds_without_board_or_value": incomplete, "reason": reason}
+
+
+def check_smallest_passing_auc(entries, expected):
     """Revision 3.4 (item 2): each world's smallest_passing_auc(y, y[uniform_perms()]) against the
-    value registered for its board (SMALLEST_PASSING_AUC_BY_BOARD, or `expected`). entries: dicts
+    value registered for its board, `expected` (revision 3.4.1, item B: in run_synthetic, the
+    values derive_smallest_passing_auc reads from the pinned synthetic_only.json). entries: dicts
     with "world", "board" and "y" (the block labels, 64 booleans in block cell order). A board
     without a registered value is a mismatch. Run by run_synthetic before any fit; a mismatch
     stops the synthetic step. What it gates: SMALLEST_PASSING_AUC_GATES."""
-    expected = dict(SMALLEST_PASSING_AUC_BY_BOARD if expected is None else expected)
+    expected = dict(expected or {})
     perms, cache, per = uniform_perms(), {}, []
     for e in entries:
         y = np.asarray(e["y"], bool)
@@ -1540,26 +1582,28 @@ def check_prerun_reproduced(got, comparable, reread=False):
     return {**base, "passed": cmp["passed"], "reason": detail}
 
 
-def raw_fits_diagnostic(F, fresh=None, reread_note=None):
+def raw_fits_diagnostic(F, fresh=None, reread_note=None, ref=None):
     """Revisions 3.2, 3.3 (A1, A6, A8): diagnostic, decides nothing. The fits of this run compared
-    with the pinned PRERUN_DIR/raw_fits.json.gz, key by key (p_exist on the 64 block cells, the
-    selected lambda, the labels, the score fields present in both records, SCORE_FIELDS, and the
-    outside density; STORE_FIELDS_COMPARED), and secs and reused_from_ko excluded by name
-    (STORE_FIELDS_EXCLUDED); every field seen must be declared in one of the two,
-    split by the worlds that the revision-2 run fitted (30) and those that the revision-3 run
+    with the pinned PRERUN_DIR/raw_fits.json.gz (or `ref`, that store already read), key by key
+    (p_exist on the 64 block cells, the selected lambda, the labels, the score fields present in
+    both records, SCORE_FIELDS, the outside density, and, since revision 3.4.1 (item A), the
+    provenance flag reused_from_ko, a record without it reading False; STORE_FIELDS_COMPARED), and
+    secs excluded by name (STORE_FIELDS_EXCLUDED); every field seen must be declared in one of
+    the two, split by the worlds that the revision-2 run fitted (30) and those that the revision-3 run
     fitted (15), and within each by kind (ko, full, block, ko1; sh for the shuffles, pc for the
     permuted-block ceilings). The ko1 fits of the revision-2 worlds were made in revision 3's pass
     (section 7). Under --from-raw, reread_note says what the comparison is, and "fitted_this_pass"
     counts the compared keys that this pass fitted (fresh): only those can carry information when
     the re-read store is the pinned one."""
-    ref = read_raw(PRERUN_DIR / "raw_fits.json.gz")
+    ref = read_raw(PRERUN_DIR / "raw_fits.json.gz") if ref is None else ref
     fresh = set(fresh or ())
     groups = {"revision_2_worlds": PRERUN_REV2_FAMILIES,
               "revision_3_worlds": PRERUN_REV3_FAMILIES}
     group_of = {f: g for g, fs in groups.items() for f in fs}
     out = {g: {"families": list(fs), "kinds": {}} for g, fs in groups.items()}
     counters = ("pinned", "missing_now", "compared", "fitted_this_pass", "p_differ",
-                "lambda_differ", "labels_differ", "score_differ", "outside_density_differ")
+                "lambda_differ", "labels_differ", "score_differ", "outside_density_differ",
+                "reused_from_ko_differ")
     declared = set(STORE_FIELDS_COMPARED) | set(STORE_FIELDS_EXCLUDED)
     for key, v in ref.items():
         bk, mk, _ = key
@@ -1593,6 +1637,9 @@ def raw_fits_diagnostic(F, fresh=None, reread_note=None):
         for n in bad:
             s["score_field_differ"][n] = s["score_field_differ"].get(n, 0) + 1
         s["outside_density_differ"] += v.get("outside_density") != f.get("outside_density")
+        # revision 3.4.1 (item A): provenance, compared by key; missing reads False
+        s["reused_from_ko_differ"] += (bool(v.get("reused_from_ko", False))
+                                       != bool(f.get("reused_from_ko", False)))
     for g in out.values():
         k = g["kinds"].values()
         g["total"] = {n: sum(s[n] for s in k) for n in counters}
@@ -1806,6 +1853,50 @@ def complete_fixed_lambda(F, base_keys, workers, init_args, what):
     return {"reused": reused, "fitted": sum(len(g) for g in todo)}
 
 
+def ko1_count(records):
+    """Revision 3.4 (item 3), a registered control since revision 3.4.1 (item A): over ko1
+    records, how many were copied from the ko fit (reused_from_ko set, complete_fixed_lambda) and
+    how many were fitted (train_fixed_lambda, the fixed-lambda path check included). A record
+    without reused_from_ko reads False (missing == False)."""
+    records = list(records)
+    copied = sum(bool(r.get("reused_from_ko", False)) for r in records)
+    return {"ko1_records": len(records), "copied_from_ko": copied,
+            "fitted": len(records) - copied}
+
+
+def registered_ko1_count(ref):
+    """Revision 3.4.1 (item A): the registered ko1 count, derived from a store (in run_synthetic,
+    the pinned raw_fits.json.gz, read after check_prerun_files has verified it): ko1_count over
+    its ko1 records of the world banks. The pinned store at revision 3.4 gives 225 records, 47
+    copied and 178 fitted (5 of them by the path check, on world:W:0)."""
+    return ko1_count(v for (bk, mk, _), v in ref.items()
+                     if mk == "ko1" and bk.startswith("world:") and "|" not in bk)
+
+
+KO1_COUNT_CONTROL = (
+    "the provenance split of the ko1 records (reused_from_ko): a fresh synthetic step, comparable "
+    "to the reference, must reproduce the registered count read from the pinned "
+    "raw_fits.json.gz, or it stops; under --from-raw the count is read from the store this pass "
+    "re-reads, so the check is informative; a smoke run or starts != 10 is not compared")
+
+
+def check_ko1_count(got, registered, comparable, reread):
+    """Revision 3.4.1 (item A): the ko1 count of this run (ko1_count over the world banks)
+    against the registered one (registered_ko1_count on the pinned store). passed is True or
+    False for a fresh comparable run (False stops the synthetic step), and None (informative)
+    under --from-raw or when the run is not comparable."""
+    equal = None if registered is None else got == registered
+    if not comparable:
+        passed, status = None, "not compared (smoke or starts != 10)"
+    elif reread:
+        passed, status = None, ("informative: under --from-raw the count is read from the store "
+                                "this pass re-reads, not produced by this pass")
+    else:
+        passed, status = equal, "a registered control: a different count stops the synthetic step"
+    return {"counted": got, "registered": registered, "equal": equal, "passed": passed,
+            "status": status, "control": KO1_COUNT_CONTROL}
+
+
 def fixed_lambda_summary(worlds):
     """Section 3.5, per family: the fixed lambda = 1 knockout AUC and p_P of rule #2.1 and each
     BF_r, beside the selected-lambda values. Diagnostic, decides nothing."""
@@ -1846,6 +1937,28 @@ def run_synthetic(args, terms, F=None):
             if g:
                 groups.append(g)
     fitted_main = sum(len(g) for g in groups)
+    comparable = (args.starts == 10 and args.worlds_per_family == WORLDS_PER_FAMILY
+                  and args.shuffles == N_SHUFFLES and args.perm_ceilings == N_PERM_CEILINGS
+                  and list(args.families) == [f[0] for f in FAMILIES])
+    # Revision 3.2 (A3): a --from-raw pass re-reads saved fits; it is not a reproduction.
+    reread = getattr(args, "from_raw", None) is not None
+    # Revision 3.4.1 (items A, B): the registered values of the smallest_passing_auc check and
+    # of the ko1 count are read from the pinned reference, so its files are verified against
+    # SHA256SUMS.txt and PRERUN_SHA256 first, in every mode; a failure stops before any fit.
+    prerun_files = check_prerun_files()
+    if not prerun_files["passed"]:
+        log(f"PRE-RUN REFERENCE NOT VERIFIED: {prerun_files['reason']}; the registered values of "
+            "the smallest_passing_auc check and of the ko1 count are read from it, so the "
+            "synthetic step stops before any fit, and the real arm does not run (sections 3.3, 7)")
+        sys.exit(1)
+    spa_reg = derive_smallest_passing_auc(PRERUN_DIR / "synthetic_only.json")
+    log(f"smallest_passing_auc registered values (revision 3.4.1, derived from the pinned "
+        f"synthetic_only.json): {spa_reg['by_board']}; worlds by board "
+        f"{spa_reg['n_worlds_by_board']}; {spa_reg['reason']}")
+    if not spa_reg["passed"]:
+        log(f"SMALLEST PASSING AUC REGISTERED VALUES NOT DERIVED: {spa_reg['reason']}; the "
+            "synthetic step stops before any fit, and the real arm does not run (sections 3.3, 7)")
+        sys.exit(1)
     # Revision 3.4 (item 2): smallest_passing_auc against its registered value by board, before
     # any fit (it depends only on y and Yu). y is read from the saved store where it holds the
     # world's base knockout record (--from-raw), and otherwise from the world generator.
@@ -1856,10 +1969,12 @@ def run_synthetic(args, terms, F=None):
         y = (rec["y"] if rec is not None
              else make_world(w, terms).exists[BLOCK_CELLS[:, 0], BLOCK_CELLS[:, 1]])
         spa_in.append({"world": bk, "board": w["board"], "y": y})
-    spa = check_smallest_passing_auc(spa_in)
+    spa = check_smallest_passing_auc(spa_in, spa_reg["by_board"])
+    spa["registered_source"] = spa_reg
     log(f"smallest_passing_auc check (revision 3.4, before the fits): {spa['n_equal']} of "
         f"{spa['n_worlds']} worlds equal their registered value by board "
-        f"{spa['registered_by_board']}; {spa['gates']}")
+        f"{spa['registered_by_board']} (revision 3.4.1: derived from the pinned "
+        f"synthetic_only.json); {spa['gates']}")
     if not spa["passed"]:
         log(f"SMALLEST PASSING AUC CHECK FAILED: {spa['mismatches']}; the synthetic step stops "
             "before any fit, and the real arm does not run (sections 3.3, 7)")
@@ -1871,19 +1986,26 @@ def run_synthetic(args, terms, F=None):
     log(f"fixed-lambda path check: {path_check}")
     fl = complete_fixed_lambda(F, keys, args.workers, init_args, "fixed lambda = 1")
     # Revision 3.4 (item 3): ko1 records copied from the ko fit (reused_from_ko set) and fitted,
-    # over the store this run reads; a convenience count, not a control.
-    ko1 = [F[(bk, "ko1", pk)] for bk in keys for pk in ("rule",) + BF_KEYS]
-    n_copied = sum(bool(r.get("reused_from_ko", False)) for r in ko1)
+    # over the store this run reads. Revision 3.4.1 (item A): a registered control, against the
+    # count derived from the pinned raw_fits.json.gz (read once here, and reused by the per-fit
+    # diagnostic below); a fresh comparable run with a different count stops.
+    got = ko1_count(F[(bk, "ko1", pk)] for bk in keys for pk in ("rule",) + BF_KEYS)
     n_path = len(path_check.get("identical") or {}) if path_check.get("bank") else 0
-    ko1_count = {"ko1_records": len(ko1), "copied_from_ko": n_copied,
-                 "fitted": len(ko1) - n_copied, "fitted_by_path_check": n_path,
-                 "path_check_bank": path_check.get("bank"),
-                 "this_pass": {"copied": fl["reused"], "fitted": fl["fitted"] + n_path},
-                 "status": "a convenience count, not a control"}
-    log(f"ko1 records (revision 3.4; a convenience count, not a control): {len(ko1)}; copied "
-        f"from the ko fit (reused_from_ko) {n_copied}; fitted {len(ko1) - n_copied}, of which "
-        f"{n_path} by the fixed-lambda path check ({path_check.get('bank')}); this pass copied "
-        f"{fl['reused']} and fitted {fl['fitted'] + n_path}")
+    ref_store = read_raw(PRERUN_DIR / "raw_fits.json.gz") if comparable else None
+    ko1_check = check_ko1_count(got, registered_ko1_count(ref_store) if comparable else None,
+                                comparable, reread)
+    ko1_check.update(fitted_by_path_check=n_path, path_check_bank=path_check.get("bank"),
+                     this_pass={"copied": fl["reused"], "fitted": fl["fitted"] + n_path})
+    log(f"ko1 records (revision 3.4.1; {ko1_check['status']}): {got['ko1_records']}; copied "
+        f"from the ko fit (reused_from_ko) {got['copied_from_ko']}; fitted {got['fitted']}, of "
+        f"which {n_path} by the fixed-lambda path check ({path_check.get('bank')}); this pass "
+        f"copied {fl['reused']} and fitted {fl['fitted'] + n_path}; registered (pinned store) "
+        f"{ko1_check['registered']}; equal {ko1_check['equal']}")
+    if ko1_check["passed"] is False:
+        log(f"KO1 COUNT CHECK FAILED: this run counts {got}, the pinned store registers "
+            f"{ko1_check['registered']}; the synthetic step stops, and the real arm does not run "
+            "(sections 3.3, 7)")
+        sys.exit(1)
     worlds = []
     for w, s in zip(specs, spa["per_world"]):
         ev = evaluate_bank(f"world:{w['family']}:{w['j']}", F, args.shuffles, args.perm_ceilings)
@@ -1901,11 +2023,6 @@ def run_synthetic(args, terms, F=None):
         w["verdict_line"] = verdict_line(w, dl, ur)
     secs = {pk: [v["secs"] for (bk, mk, p), v in F.items() if p == pk and mk == "ko"]
             for pk in PRED_KEYS}
-    comparable = (args.starts == 10 and args.worlds_per_family == WORLDS_PER_FAMILY
-                  and args.shuffles == N_SHUFFLES and args.perm_ceilings == N_PERM_CEILINGS
-                  and list(args.families) == [f[0] for f in FAMILIES])
-    # Revision 3.2 (A3): a --from-raw pass re-reads saved fits; it is not a reproduction.
-    reread = getattr(args, "from_raw", None) is not None
     repro = check_prerun_reproduced(worlds_csv_bytes(worlds), comparable, reread)
     log(f"pre-run table (section 7): {repro['reason']}; recomputed sha256 "
         f"{repro['recomputed_sha256']}")
@@ -1924,7 +2041,7 @@ def run_synthetic(args, terms, F=None):
                 note = ("re-read of a store other than the pinned one: compares that store's "
                         f"fits, and the {len(fresh)} fits this pass made, with the pinned ones; "
                         "not a reproduction")
-        raw_diag = raw_fits_diagnostic(F, fresh, note)
+        raw_diag = raw_fits_diagnostic(F, fresh, note, ref_store)
         if note:
             log(f"per-fit diagnostic: {note}")
         log("per-fit diagnostic against the pre-run raw fits (decides nothing): " + "; ".join(
@@ -1933,7 +2050,7 @@ def run_synthetic(args, terms, F=None):
            "u_rule": ur, "fixed_lambda_summary": fixed_lambda_summary(worlds),
            "fixed_lambda_path_check": path_check, "raw_fits_diagnostic": raw_diag,
            "fits": {"saved_reread": n_saved, "fitted_main": fitted_main, "fixed_lambda": fl,
-                    "ko1_count": ko1_count},
+                    "ko1_count": ko1_check},
            "smallest_passing_auc_check": spa,
            "mean_seconds_per_knockout_fit": {pk: float(np.mean(v)) if v else None
                                              for pk, v in secs.items()},
@@ -2157,19 +2274,23 @@ assert (sorted(CSV_EXACT_COLUMNS + CSV_CONTINUOUS_COLUMNS + CSV_REPORTED_COLUMNS
 # Revision 3.3 (item 37): the fields of a raw_fits.json.gz record, by how raw_fits_diagnostic
 # compares them, key by key (a world's base bank and its shuffled banks differ in
 # outside_density, so only records of the same key are compared). Excluded by name: secs, a
-# timing (the second non-reproducible field after the gzip mtime), and reused_from_ko, the flag
-# of a ko1 record copied from a knockout fit that selected lambda = 1 (its p is compared).
-# Revision 3.4 (item 3), the labels of the two excluded fields:
+# timing (the second non-reproducible field after the gzip mtime).
+# Revision 3.4 (item 3), the label of the excluded field:
 #   secs            non-reproducible (a timing).
-#   reused_from_ko  derived from lam: set only on a ko1 record copied from a ko fit that selected
-#                   lambda = FIXED_LAMBDA (complete_fixed_lambda); comparison redundant, since the
-#                   record's p and lam are compared. The converse does not hold: the ko1 records
-#                   of the fixed-lambda path check's bank are refitted there and carry no flag
-#                   although their ko fit selected lambda = 1 (in the pinned store the 5 of
-#                   world:W:0; 47 flagged + 5 = the 52 base ko fits of rule #2.1 and BF_r at 1).
+# Revision 3.4.1 (item A; Johnny 16:29 #1, Zcode 16:36 UTC; Ark had it at #131), the label of
+# reused_from_ko, moved from the excluded to the compared fields:
+#   reused_from_ko  provenance of the ko1 record; comparison required. Set (True) on a ko1 record
+#                   copied from the ko fit by complete_fixed_lambda; absent on a ko1 record fitted
+#                   by train_fixed_lambda. It is not a function of lam: complete_fixed_lambda skips
+#                   a ko1 record that already exists, so the five of the fixed-lambda path check's
+#                   bank are fitted, bit-equal to their ko fit and unflagged (in the pinned store:
+#                   52 base ko fits of rule #2.1 and BF_r at lambda = 1, 47 flagged ko1 records;
+#                   the other 5 are world:W:0's). Compared by key on every compared record; a
+#                   record without the field reads False (missing == False). The ko1 count it
+#                   carries is a registered control (registered_ko1_count, check_ko1_count).
 SCORE_FIELDS = ("existence", "offset", "counts", "sign", "sign_n", "n_ne")
-STORE_FIELDS_COMPARED = ("p", "y", "lam", "score", "outside_density")
-STORE_FIELDS_EXCLUDED = ("secs", "reused_from_ko")
+STORE_FIELDS_COMPARED = ("p", "y", "lam", "score", "outside_density", "reused_from_ko")
+STORE_FIELDS_EXCLUDED = ("secs",)
 assert not set(STORE_FIELDS_COMPARED) & set(STORE_FIELDS_EXCLUDED)
 
 

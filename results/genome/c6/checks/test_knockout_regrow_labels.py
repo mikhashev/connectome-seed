@@ -23,6 +23,11 @@ refusal tests use a temporary folder with monkeypatched PRERUN_DIR and PRERUN_SH
 touch the real pre-run folder.
 Revision 3.4 (item 2): check_smallest_passing_auc, called directly on the two boards' labels,
 passes with the registered values and fails with a wrong or a missing one.
+Revision 3.4.1 (items A, B): the registered values are derived from the pinned
+synthetic_only.json (read only, after check_prerun_files) and equal the two numbers of the
+registration text; derive_smallest_passing_auc on small fixture JSON files passes with one value
+per board and fails with two values for one board; ko1_count reads a missing reused_from_ko as
+False, and check_ko1_count stops only a fresh comparable run.
 
 It imports the script as a module (which reads the pins and imports the harness, both read-only)
 and fits nothing. Run: tools/.venv/Scripts/python.exe -m pytest -p no:cacheprovider -v
@@ -260,12 +265,18 @@ def _board_y(board):
 
 
 def test_smallest_passing_auc_check():
-    """Revision 3.4 (item 2): the registered values pass on the two boards, called directly
-    (this computes uniform_perms and fits nothing); a wrong registered value, or a board without
-    one, fails the check."""
+    """Revision 3.4 (item 2), revision 3.4.1 (item B): the registered values, derived from the
+    pinned synthetic_only.json (read only, after check_prerun_files has verified it), equal the
+    two numbers of the registration text and pass on the two boards, called directly (this
+    computes uniform_perms and fits nothing); an injected wrong registered value, or a board
+    without one, fails the check."""
+    assert K.check_prerun_files()["passed"]
+    reg = K.derive_smallest_passing_auc(K.PRERUN_DIR / "synthetic_only.json")
+    assert reg["passed"] and reg["by_board"] == {"z": 0.666015625, "z'": 0.6728515625}
+    assert reg["n_worlds_by_board"] == {"z": 40, "z'": 5}
     entries = [{"world": "world:R:0", "board": "z", "y": _board_y("z")},
                {"world": "world:No:0", "board": "z'", "y": _board_y("z'")}]
-    ok = K.check_smallest_passing_auc(entries)
+    ok = K.check_smallest_passing_auc(entries, reg["by_board"])
     assert ok["passed"] and ok["n_equal"] == 2 and not ok["mismatches"]
     assert [p["computed"] for p in ok["per_world"]] == [0.666015625, 0.6728515625]
     wrong = K.check_smallest_passing_auc(entries, {"z": 0.666015625, "z'": 0.666015625})
@@ -273,7 +284,56 @@ def test_smallest_passing_auc_check():
     assert [m["world"] for m in wrong["mismatches"]] == ["world:No:0"]
     missing = K.check_smallest_passing_auc(entries, {"z": 0.666015625})
     assert not missing["passed"] and missing["mismatches"][0]["registered"] is None
-    assert not K.check_smallest_passing_auc([])["passed"]
+    assert not K.check_smallest_passing_auc([], reg["by_board"])["passed"]
+
+
+def test_derive_smallest_passing_auc(tmp_path):
+    """Revision 3.4.1 (item B): the derivation on small fixture JSON files: one value per board
+    passes; two values for one board fail; a world without a value, or no world, fails."""
+    import json
+
+    def fixture(name, worlds):
+        path = tmp_path / name
+        path.write_text(json.dumps({"worlds": worlds}), encoding="utf-8")
+        return K.derive_smallest_passing_auc(path)
+
+    one = fixture("one.json", [{"seed": 1, "board": "z", "smallest_passing_auc": 0.5},
+                               {"seed": 2, "board": "z", "smallest_passing_auc": 0.5},
+                               {"seed": 3, "board": "z'", "smallest_passing_auc": 0.75}])
+    assert one["passed"] and one["by_board"] == {"z": 0.5, "z'": 0.75}
+    assert one["n_worlds_by_board"] == {"z": 2, "z'": 1}
+    two = fixture("two.json", [{"seed": 1, "board": "z", "smallest_passing_auc": 0.5},
+                               {"seed": 2, "board": "z", "smallest_passing_auc": 0.625},
+                               {"seed": 3, "board": "z'", "smallest_passing_auc": 0.75}])
+    assert not two["passed"] and two["by_board"] is None
+    assert two["boards_with_several_values"] == {"z": [0.5, 0.625]}
+    assert "board 'z' carries 2 values" in two["reason"]
+    gap = fixture("gap.json", [{"seed": 1, "board": "z", "smallest_passing_auc": None}])
+    assert not gap["passed"] and gap["worlds_without_board_or_value"] == [1]
+    assert not fixture("none.json", [])["passed"]
+
+
+def test_ko1_count_control():
+    """Revision 3.4.1 (item A): reused_from_ko is provenance; a record without it reads False;
+    the registered count is taken over the world banks' ko1 records only; a different count
+    stops a fresh comparable run and is informative under --from-raw or when not comparable."""
+    ref = {("world:W:0", "ko1", "rule"): {"lam": 1.0},                  # path check: no flag
+           ("world:R:0", "ko1", "rule"): {"lam": 1.0, "reused_from_ko": True},
+           ("world:R:0", "ko1", "BF:1"): {"lam": 3.0},
+           ("world:R:0|sh:1", "ko", "rule"): {"lam": 1.0},
+           ("real", "ko1", "rule"): {"lam": 1.0, "reused_from_ko": True}}
+    reg = K.registered_ko1_count(ref)
+    assert reg == {"ko1_records": 3, "copied_from_ko": 1, "fitted": 2}
+    same = K.check_ko1_count(dict(reg), reg, comparable=True, reread=False)
+    assert same["passed"] is True and same["equal"]
+    other = {"ko1_records": 3, "copied_from_ko": 2, "fitted": 1}
+    assert K.check_ko1_count(other, reg, comparable=True, reread=False)["passed"] is False
+    info = K.check_ko1_count(other, reg, comparable=True, reread=True)
+    assert info["passed"] is None and info["equal"] is False
+    assert "informative" in info["status"]
+    assert K.check_ko1_count(other, None, comparable=False, reread=False)["passed"] is None
+    assert "reused_from_ko" in K.STORE_FIELDS_COMPARED
+    assert "reused_from_ko" not in K.STORE_FIELDS_EXCLUDED
 
 
 def _fake_prerun(tmp_path, monkeypatch):
