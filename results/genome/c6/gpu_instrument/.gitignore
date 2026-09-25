@@ -1,0 +1,3 @@
+__pycache__/
+# run2.log: the first validation pass, with the key and cell-order bug described in README; kept locally, not committed
+run2.log

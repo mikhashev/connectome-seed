@@ -1,0 +1,12 @@
+rank 1: 45 worlds fitted in one batched call, 18.46s
+rank 2: 45 worlds fitted in one batched call, 29.81s
+rank 3: 45 worlds fitted in one batched call, 33.30s
+rank 4: 45 worlds fitted in one batched call, 37.48s
+
+==== BATCHED SUMMARY (45 worlds x 4 ranks, vs raw_fits.json.gz) ====
+fits compared: 180
+lambda mismatches: 0
+max |AUC diff|: 0
+max |p diff|: 7.86e-08
+total label mismatches (of 11520): 0
+TOTAL batched GPU wall time, all 45 worlds x 4 ranks: 119.1s
