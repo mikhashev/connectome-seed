@@ -5,8 +5,10 @@ lands on (`docs/decisions/`) and the tasks it consists of (`backlog.md`). Dates 
 local day; chat timestamps quoted anywhere in this repository are UTC (this machine is
 UTC+07).
 
-**Last updated 2026-09-25** (the ADR-005 paragraph of the grammar track: the column test ran,
-the knockout block and bank were chosen); the C6 row of the owners table on 2026-09-24; the rest
+**Last updated 2026-09-25, session close** (the ADR-005 paragraph of the grammar track: the
+column test ran, the knockout block and bank were chosen, and the knockout registration reached
+revision 3.1, unreviewed; handover:
+[docs/briefs/2026-09-25-next-session-handover.md](docs/briefs/2026-09-25-next-session-handover.md)); the C6 row of the owners table on 2026-09-24; the rest
 was last revised 2026-09-20. What happened in that session, who decided what, and what was not
 done: [docs/retrospectives/2026-09-20-session-close.md](docs/retrospectives/2026-09-20-session-close.md).
 What a fresh session needs — state in one page, owners, blocks, open decisions, reading order:
@@ -433,8 +435,11 @@ list grows with every commit.
 - **Next: knock out and regrow.** Remove block A, the ON/OFF inputs to T4/T5 (64 cells, a perfect
   checkerboard in every bank), from **flyvis-65**, and ask whether the rule regrows it (Mike,
   2026-09-24 20:39 UTC).
-  - The registration is drafted and in review:
-    `docs/plans/2026-09-24-knockout-regrow-registration.md`.
+  - The registration is at revision 3.1, unreviewed and not yet committed:
+    `docs/plans/2026-09-24-knockout-regrow-registration.md`, with its script
+    `results/genome/c6/checks/knockout_regrow.py`. The synthetic worlds pass. The real block has not
+    been run. Next: review of 3.1, then the real run on the CPU. A batched GPU instrument is built
+    in parallel as a separate instrument (Mike, 2026-09-25 09:34 and 09:40 UTC).
   - The animal control is the **Janelia male CNS v1.0**. Its bank needs its own registered
     builder first.
   - FlyWire-30 stays as provenance: on it the block's targets are cut off from the rest of the
@@ -499,8 +504,8 @@ one that can be trusted to be current.
 | **collective** | — | 7 | 0 |
 | **knowledge** | ADR-004 accepted | 13 | 0 |
 | **network** | — | 0 | 0 |
-| **honesty** | ADR-002 accepted · ADR-003 accepted · ADR-005 accepted | 22 | 0 |
-| **reach** | ADR-001 accepted | 5 | 0 |
+| **honesty** | ADR-002 accepted · ADR-003 accepted · ADR-005 accepted | 23 | 0 |
+| **reach** | ADR-001 accepted | 6 | 0 |
 
 **Observation debt: 0 under an axis + 0 in entries that carry none = 0.** Work finished and never seen working; per axis it says which direction is running ahead of its evidence.
 
