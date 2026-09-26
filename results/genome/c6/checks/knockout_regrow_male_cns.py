@@ -192,7 +192,9 @@ MASKS = {"ko": ~BLOCK, "full": np.ones((65, 65), bool), "block": BLOCK.copy()}
 
 # S3, S5 (sections 1.1, 1.3; D1 (i)): the builder's manifest, read from its committed copy (pinned
 # in check 1: MALE_PINS["bank.meta.json"]); c* and the placed list come from it.
-_BANK_META_BYTES = (ROOT / BANK_META_COMMITTED).read_bytes()
+# LF-normalised: a git checkout on Windows writes the committed copy with CRLF; the private
+# copy has no CR, so its raw sha256 equals the LF sha256 of the committed copy.
+_BANK_META_BYTES = (ROOT / BANK_META_COMMITTED).read_bytes().replace(b"\r\n", b"\n")
 BANK_META_SHA256_READ = hashlib.sha256(_BANK_META_BYTES).hexdigest()
 BANK_META = json.loads(_BANK_META_BYTES.decode("utf-8"))
 C_STAR = float(BANK_META["c_star"])
@@ -552,7 +554,7 @@ def check_pins(real_arm=False):
     now = {f: sha256_lf(ROOT / f) for f in PINS}
     bad.update({f: (now[f], PINS[f]) for f in PINS if now[f] != PINS[f]})
     male = {n: sha256_raw(MALE_BUILD_DIR / n) for n in MALE_PINS}
-    male["bank.meta.json (committed copy)"] = sha256_raw(ROOT / BANK_META_COMMITTED)
+    male["bank.meta.json (committed copy)"] = sha256_lf(ROOT / BANK_META_COMMITTED)
     male["bank.meta.json (committed copy, read at import)"] = BANK_META_SHA256_READ
     for n, h in male.items():
         want = MALE_PINS[n.split(" ")[0]]
