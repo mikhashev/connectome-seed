@@ -1,10 +1,13 @@
 ---
-**Status: DRAFT, revision 1.2, 2026-09-26 UTC (`date -u` read 11:32 UTC when the edits began;
-revision 1 was begun at 10:26 UTC and committed as `fedeec5`; revision 1.1 was committed as
-`345acf2`).** Revision 1.1 applied the reviewers' edits of 10:52–10:54 UTC. Revision 1.2 applies
-the decision of 11:15–11:25 UTC (Ark, Zcode: options (a)/(b)/(c) for E2a rejected; E2 replaced by
-a tie census, §5), recorded in §15 with its own votes and edits tables. Johnny is out (Mike, 11:00
-UTC); the two votes stand, and Johnny reads revision 1.2 in a new session. **Not committed; Mike's
+**Status: DRAFT, revision 1.3, 2026-09-26 UTC (revision 1 was begun at 10:26 UTC and committed
+as `fedeec5`; revision 1.1 as `345acf2`; revision 1.2 as `5983385`).** Revision 1.1 applied the
+reviewers' edits of 10:52–10:54 UTC. Revision 1.2 applied the decision of 11:15–11:25 UTC (Ark,
+Zcode: options (a)/(b)/(c) for E2a rejected; E2 replaced by a tie census, §5). Revision 1.3
+applies the reviews of revision 1.2 (Zcode 11:42 UTC, confirmed in full with text fixes (a)–(d);
+Ark 11:43 UTC, yes with edits 1–6): the at-risk band of E2-III becomes 2^-23, E2-III is a named
+list and not a gate, the census is written per column family, and the census numbers carry their
+pair-set definitions (§5, M19, M20, §15.3). Johnny is out (Mike, 11:00 UTC); Johnny reads the
+current revision in a new session. **Not committed; Mike's
 word is not given. Nothing was fitted for it: no GPU run of the instrument, no CPU fit. The only
 runs made while drafting are listed in §12 (a 20-second environment probe on random tensors, and
 read-only counts and checksums over the pinned and the flyvis-65 run's synthetic stores, the
@@ -165,8 +168,8 @@ recomputed it from the file; "as recorded" means it was read, not recomputed.
 | M16 | the flyvis-65 run's synthetic fits equal the pinned pre-run store | 19,110 + 9,555 = 28,665 compared; 0 differences in p, λ, labels, score | flyvis-65 stdout log line 94 | as recorded |
 | M17 | ceilings, fixed λ, N1, permutations | not ported, not timed | README:313–319 | as recorded |
 | M18 | the 18,000 v3 fits by (rank × λ × view), λ read from the reference | rank 1, λ ∈ {1, 3}, base view: **37 fits, 5 not bit-equal**; rank 1, λ ∈ {1, 3}, shuffle: 164, 0; rank 1, λ = 100 (base 8, shuffles 4,291): 4,299, 0; ranks 2–4, any λ: 13,500, 0. No other λ occurs at rank 1. The v2 set (M4) is a subset of the v3 set. E1's fields on all 18,000: 0 λ, 0 label (of 1,152,000), max AUC difference 0.0 | `validation_pipeline_all45.json` rows (`lam_ref`, `p_bit_equal`); the same four denominators from the pinned pre-run store's `lam` (§12, P6) | verified (rows; Ark's breakdown, 10:52 UTC, reproduced exactly) |
-| M19 | the lattice of `synthetic_worlds.csv` (revision 1.2) | smallest gap between distinct values over the 270 rows, per column: 1/2048 (4.883e-4) for `auc`, `M_real`, `ceiling_full`, `auc_fixed_lambda1`; 1e-4 for `p_P`, `p_P_rowcol`, `p_P_fixed_lambda1`; `outside_density` 1/4161, `regrown_share_block` 1/1024, `precision_at_32` 1/32, `p_S` 1e-2; `auc_other_59` 1.60e-5 **between rows**, but each row lies on its own lattice 1/(2ab), a + b = 59, a ∈ {27, 28, 29}, a step of at least 5.7e-4 (it is in `CSV_EXACT_COLUMNS`); continuous: `D` 2.78e-17, `logloss` 8.7e-6, `logloss_margin_over_N1` 5.5e-5, `regrown_share_full` 3.9e-6 | pinned `synthetic_worlds.csv` (§12, P7) | verified (Ark's table, 11:15 UTC, reproduced; `auc_other_59` reclassified, `logloss_margin_over_N1` added) |
-| M20 | the tie census of the pinned pre-run store (revision 1.2; pairs = present × absent by the record's own `y`, §5 E2-II) | all 28,665 records: 27,123 with at least one exact tie, 782,376 exact ties; **1 record with smallest gap < 2^-24**, `world:M0.85:0\|sh:10\|\|ko\|\|rule` (1.836e-8, no tie; a rule shuffle, CPU in D1 scope); next smallest 9.08e-8 (`world:M0.85:2\|sh:79\|\|ko\|\|BF:1`–`BF:4` and `…\|\|N1`); 438 records with smallest gap < 1e-5, of which 32 are tie-free (31 in [2^-24, 1e-5) plus the one below). **D1 scope (the 18,000 `ko` BF fits):** 17,604 fits with a tie, 423,777 ties; smallest gap 9.08e-8; **0 at risk**; 333 with smallest gap < 1e-5. M3's five: 0 ties each; smallest gaps 6.31e-5 (M1.0:0), 1.06e-3 (M1.0:4), 9.46e-5 (M0.75:0), 1.26e-4 (M0.85:0), 2.97e-4 (M0.85:2). `block‖N1`: 45 of 45 with p constant (1,024 ties of 1,024 pairs, AUC 0.5); `full‖N1`, `ko‖N1` not constant (`world:R:0\|\|full\|\|N1`: 10 ties, 35 distinct values). Shuffles hold 10 to 41 present cells, so 540 to 1,024 pairs | pinned `raw_fits.json.gz` (§12, P7) | verified (Ark's census, 11:15 UTC, and Zcode's 438, 11:25 UTC, reproduced; one label corrected, §15) |
+| M19 | the lattice of `synthetic_worlds.csv` (revision 1.2; digits and `a` corrected in revision 1.3) | smallest gap between distinct values over the 270 rows, per column: 1/2048 (4.883e-4) for `auc`, `M_real`, `ceiling_full`, `auc_fixed_lambda1`; 1e-4 for `p_P`, `p_P_rowcol`, `p_P_fixed_lambda1`; `outside_density` 1/4161, `regrown_share_block` 1/1024, `precision_at_32` 1/32, `p_S` 1e-2; `auc_other_59` 1.596e-5 **between rows**, but it is **not continuous**: each row lies on its own lattice 1/(2ab), a + b = 59 (a, b the present and absent counts among the 59 non-mirror block cells), a step of at least 0.5 / (29 · 30) = 1/1740 = 5.75e-4 (it is in `CSV_EXACT_COLUMNS`). On A the pairs are (27, 32) in 40 worlds (denominator 2 · 27 · 32 = 1728) and (29, 30) in 5 (1740); **revision 1.2's "a ∈ {27, 28, 29}" was wrong, 28 does not occur** (§11, row G-(9)). Continuous: `D` 2.78e-17, `logloss` 8.7e-6, `logloss_margin_over_N1` 5.546e-5, `regrown_share_full` 3.9e-6 | pinned `synthetic_worlds.csv`; the pinned store's `y` and `MIRROR_IDX` (`knockout_regrow.py:209`) for a, b (§12, P7, P8) | verified (Ark's table, 11:15 UTC, reproduced; `auc_other_59` reclassified, `logloss_margin_over_N1` added; revision 1.3: Zcode's (b), (c) and Ark's denominators 1728, 1740 reproduced) |
+| M20 | the tie census of the pinned pre-run store (revision 1.2; **pair-set definitions stated per number in revision 1.3**, §5) | **Definitions.** *pa*: present × absent pairs by the record's own `y` (n_pos · n_neg, 1,024 at 32 / 32; A's shuffles hold 10 to 41 present cells, so 540 to 1,024); *all*: the 2,016 unordered pairs of the 64 cells; *S(f)*: the census pair set of E2-II (pa on a shuffle, all on a base view). A tie count is a count of **tied pairs**, never of tie groups. **All 28,665 records, pa:** 27,123 records with a tie, 782,376 tied pairs; smallest gap 1.836e-8, `world:M0.85:0\|sh:10\|\|ko\|\|rule` (tie-free; a rule shuffle, CPU in D1 scope); 438 records with smallest gap < 1e-5, of which 32 are tie-free; **6 records with smallest gap < 2^-23**: that one and `world:M0.85:2\|sh:79\|\|ko\|\|BF:1`–`BF:4` and `…\|\|N1` (9.079e-8 each, one pair, cells 50 and 59, present and absent). **All 28,665, all pairs:** 27,563 records with a tie, 1,851,770 tied pairs; 7 below 2^-23, the six and `world:M1.0:2\|pc:12\|\|full\|\|rule` (6.292e-8, a pair of two absent cells under its own `y`; its pa gap is 1.27e-4). **D1 scope (the 18,000 `ko` BF fits):** pa 17,604 fits with a tie, 423,777 tied pairs; all 17,617, 885,354; **S(f) 17,613, 424,535**; smallest gap 9.079e-8 under all three; **4 at risk (< 2^-23), `world:M0.85:2\|sh:79\|\|ko\|\|BF:1`–`BF:4`, 0 below 2^-24**; 333 with pa smallest gap < 1e-5. **Base views of D1 (180 BF fits), all pairs:** 41 fits with a tie, 1,538 tied pairs, smallest gap 1.586e-6 (`world:M1.0:3\|\|ko\|\|BF:1`, 26.6 × 2^-24); pa 32 and 780. **N1 in the BF records:** 17,641 of the 18,000 D1 fits (17,600 shuffles and 41 base views, all at λ = 100) have `p` bit-equal to the `p` of their view's N1 record: after decode the BF term does not change `p`. They carry 17,610 of the 17,613 fits with a tie on S(f) and 424,487 of its 424,535 tied pairs, and the 4 at-risk fits. The other 359 fits (λ 1 or 3, and 3 shuffles at λ = 100) carry 3 fits with a tie, `world:W:4\|sh:84\|\|ko\|\|BF:2`–`BF:4` (16 pa ties each, 48 in all). M3's five: 0 ties each; smallest gaps 6.31e-5 (M1.0:0), 1.06e-3 (M1.0:4), 9.46e-5 (M0.75:0), 1.26e-4 (M0.85:0), 2.97e-4 (M0.85:2) (pa). **`|pc:` (900 fits):** pa 502 with a tie, 7,828 tied pairs, smallest gap 2.038e-7 (`world:M0.6:1\|pc:3\|\|full\|\|rule`); all 619, 15,738, 6.292e-8 (`M1.0:2\|pc:12`). **Base `ko`, all six predictors (270), all pairs:** 114 with a tie, 4,370 tied pairs, smallest gap 1.702e-7 (`world:R:2\|\|ko\|\|rule`, two absent cells, 2.86 × 2^-24); `ko1` (225): 28, 138, 1.702e-7 (`R:2\|\|ko1\|\|rule`). **Block mask (270), pa:** 45 fits with a tie, **46,080 = 45 × 1,024 tied pairs, all from `block‖N1`** (p constant, AUC 0.5); `full‖N1`, `ko‖N1` not constant (`world:R:0\|\|full\|\|N1`: 10 ties, 35 distinct values) | pinned `raw_fits.json.gz` (§12, P7, P8) | verified (Ark's census, 11:15 UTC, and Zcode's 438, 11:25 UTC, reproduced; one label corrected, §15.2; revision 1.3: Ark's numbers of 11:43 UTC reproduced under the all-pairs definition, §15.3) |
 
 The two logs of the registered CPU run are
 `connectome-seed-data/knockout_regrow/flyvis65_20260925T171656Z_74de0401a21f.stdout.log`
@@ -255,7 +258,7 @@ Each row says what each option changes. The body follows the recommendation.
 |---|---|---|---|
 | **D1** | Scope: what the GPU replaces | **(a) BF_1–BF_4 on the `ko` mask of every synthetic base view and shuffle** (the 18,000 validated fits, 67.8 % of the stage's CPU-s, M13); everything else on the CPU. (b) (a) plus the BF ceilings (`full`, `block`), BF at fixed λ = 1 and N1: +1.2 % of CPU-s, needs porting and a validation of its own. (c) (a) plus rule #2.1: its port runs on engine v2 and is not faster (M14), so it would mix engines for no gain. (d) everything: the permuted-block ceilings and the rest of rule #2.1 are not ported; permutations are scoring only (seconds, A §7 line 1713–1714) and gain nothing | **(a)** |
 | **D2** | Engine | **(a) v3 only, end to end, for every registered BF fit.** (b) v2: slower (2,879 s against 2,362 s for the shuffles, M1, M9). (c) v2 for the rule and v3 for BF: two engines whose `p` differ on at least 3 of 180 base fits (§3.1, item 4) | **(a)**; v1, v2 and the rule port stay in the directory as unregistered history, and the registered driver refuses to import them (G8) |
-| **D3** | Equivalence criterion against the CPU | (a) **bit-equal `p` through decode on every fit**: already fails (5 of 180 base fits, M3). **(b) E1 + E2 + E3 of §5 (revision 1.2)**: every deciding output exact (λ, labels, AUCs, every exact column of `synthetic_worlds.csv`, every verdict and label string; E1 = E2-I); a **tie census** of every fit, printed by every run, with **0 flipped pairs** required against the reference (E2-II); every **at-risk** fit (smallest gap < 2^-24) with an identical AUC (E2-III); the continuous CSV columns within a bound propagated per differing fit from its own max \|Δp\| (E3). Δp and the per-p float32 bound are printed diagnostics, not criteria: a p-scale bound measures in the wrong place, since decode casts the logit's parameters, not p (§5). This is Ark's and Zcode's decision of 11:15–11:25 UTC, which rejected revision 1.1's E2a (a per-cell bound \|Δp\| ≤ s(p)) and the three ways of keeping it. (c) exact deciding outputs only, no census: a drift of the instrument that reorders two cells without yet moving an AUC would go unseen. **What (b) does not see:** a drift that moves no pair's order and no exact output; it is printed (Δp), not refused, and between an arm's pre-run and its run R5 still requires bit-equality | **(b)** |
+| **D3** | Equivalence criterion against the CPU | (a) **bit-equal `p` through decode on every fit**: already fails (5 of 180 base fits, M3). **(b) E1 + E2 + E3 of §5 (revisions 1.2, 1.3)**: every deciding output exact (λ, labels, AUCs, every exact column of `synthetic_worlds.csv`, every verdict and label string; E1 = E2-I); a **tie census** of every fit, printed by every run, with **0 flipped pairs** required against the reference (E2-II); every **at-risk** fit (smallest gap on its census pair set < 2^-23) named in a printed list, which refuses nothing beyond E1 (E2-III, revision 1.3); the continuous CSV columns within a bound propagated per differing fit from its own max \|Δp\| (E3). Δp and the per-p float32 bound are printed diagnostics, not criteria: a p-scale bound measures in the wrong place, since decode casts the logit's parameters, not p (§5). This is Ark's and Zcode's decision of 11:15–11:25 UTC, which rejected revision 1.1's E2a (a per-cell bound \|Δp\| ≤ s(p)) and the three ways of keeping it. (c) exact deciding outputs only, no census: a drift of the instrument that reorders two cells without yet moving an AUC would go unseen. **What (b) does not see:** a drift that moves no pair's order and no exact output; it is printed (Δp), not refused, and between an arm's pre-run and its run R5 still requires bit-equality | **(b)** |
 | **D4** | Reference of the validation | **(a) A's pinned pre-run store** `synthetic_rev3_prerun/raw_fits.json.gz` (under `PRERUN_SHA256`, A §7), read after `check_prerun_files`. (b) the flyvis-65 run's synthetic store, which the v2/v3 runs used: equal to (a) on every compared field (M16) but not pinned by A's script | **(a)**; the earlier runs' use of (b) is equivalent by M16 |
 | **D5** | The batch composition | **(a) part of the instrument**: the ordered key list, `starts` and the rank order (composition and order) are written to the manifest with a digest, the **refusal digest**; a registered GPU run uses the composition of its pre-run, and a run whose refusal digest differs is refused. **`row_chunk` and the chunk boundaries that follow from it are recorded values, not part of the refusal digest** (Ark, A3): chunk size moved no hash in the probe (run1 against run3, 18 of 18), while batch composition did (run1 against run4). Because no chunk boundary moved between run1 and run3 (§3.2), V4 (c) tests a chunk change that moves every boundary at full scale; if any hash changes there, `row_chunk` returns to the refusal digest in the revision that registers V1–V5's results. An out-of-memory error stops the run (never an automatic smaller chunk). (b) make every fit independent of its batch (no active-set compaction, fixed padded batch shapes): unknown cost, and not shown to remove the dependence, since cuBLAS may still pick its kernel by batch size. (c) ignore it: a rerun with another chunk or another bank list could change 5-odd base fits without anyone knowing why | **(a)**; (b) is future work, a revision of its own |
 | **D6** | Determinism settings | **(a) on and measured**: `CUBLAS_WORKSPACE_CONFIG=:4096:8` set before torch is imported (the value found is recorded, and a different value refuses), `torch.use_deterministic_algorithms(True)` with no `warn_only`, TF32 off for matmul and cuDNN, `cudnn.deterministic = True`, `cudnn.benchmark = False`. TF32 does not touch float64, so that setting is recorded, not relied on. Every validation run is made with (a), since (a) may change the bits relative to the flag-free runs of §2; the probe's 18 matching hashes (flags off, engine v2) do not carry over, and V1 compares the set of differing base fits under (a) with the flag-free state (M3). (b) off, relying on the probe's 3 of 3 stable runs, which were all made with the flags off | **(a)** |
@@ -283,42 +286,66 @@ composition (§6) and the determinism settings (D6). All three parts must hold.
   printed verdict line and label equal as strings to those of an A `--from-raw` pass over the
   pinned store itself; the `ko1` count equal (47 copied, 178 fitted).
 
-**E2, the tie census (revision 1.2; replaces revision 1.1's E2a and E2b).** Decided by Ark (11:15
-UTC) and Zcode (11:25 UTC), who rejected E2a (a per-cell bound |Δp| ≤ s(p)) and the three ways
-of keeping it (§15). E1 and E3 stay as in revision 1.1.
+**E2, the tie census (revision 1.2; replaces revision 1.1's E2a and E2b; band and families
+revised in revision 1.3).** Decided by Ark (11:15 UTC) and Zcode (11:25 UTC), who rejected E2a (a
+per-cell bound |Δp| ≤ s(p)) and the three ways of keeping it (§15.2); confirmed with edits by
+Zcode (11:42 UTC) and Ark (11:43 UTC) (§15.3). E1 and E3 stay as in revision 1.1.
 
 *Why a census.* A GPU `p` enters the deciding outputs through the **order** of the 64 cells'
 values, not through their size. Within a row, every exact column of `synthetic_worlds.csv` sits
-on a lattice whose step is at least 1e-4 (M19; `auc_other_59` on a per-row lattice of at least
-5.7e-4), while the observed Δp is at most 5.63e-8 (M3). A difference that small moves an exact
-column only by changing the order of two cells. The paths, read from `evaluate_bank`
-(`knockout_regrow.py:1015–1100` at `74db080`, unchanged at the current head):
-- **Present × absent pairs, by the record's own `y`.** `auc` = (gt + 0.5·eq) / (n_pos·n_neg)
+on a lattice whose step is at least 1e-4 (M19; `auc_other_59` on a per-row lattice 1/(2ab) with a
+step of at least 5.75e-4, not a continuous column), while the observed Δp is at most 5.63e-8 (M3).
+A difference that small moves an exact column only by changing the order of two cells. The paths,
+read from `evaluate_bank` (`knockout_regrow.py:1015–1100` at `74db080`, unchanged at the current
+head), fall into two **column families**, each with its own pair set (Ark, 11:43 UTC, refining
+revision 1.2's addition 1):
+- **The `auc` family: present × absent pairs, by the record's own `y`** (n_pos · n_neg of them,
+  1,024 on a 32 / 32 board). `auc` = (gt + 0.5·eq) / (n_pos·n_neg)
   (`:501–510`): one tie turned into an order moves it by 0.5 / (n_pos·n_neg), which is 4.88e-4 at
   32 / 32, exactly one step of its 1/2048 lattice; an opposite order moves it by two steps. From
   `auc` follow `M_real`, `n_ge` (against `m_real − TAU` on the shuffles, `:1049`), `p_S` and the
-  `regrown_share` ratios. `auc_other_59` and the per-type AUCs use subsets of the same pairs
+  `regrown_share` ratios; `ceiling_full`, `ceiling_block` and the permuted-block ceilings are
+  `auc` of their own records. `auc_other_59` and the per-type AUCs use subsets of the same pairs
   (`:1053–1055`, `:1075`); `precision_at_32` (`:909–912`) changes only when a present and an
   absent cell trade places across the 32nd rank (ties broken in block cell order).
-  `auc_fixed_lambda1` and `p_P_fixed_lambda1` read the selected `ko` fit's `p` where the `ko1`
-  record is a copy of it (`reused_from_ko`, `:1845`). A shuffle's `p` enters only through
-  `auc(p, y_sd)` (`:1025–1034`).
-- **Any pair of the 64 cells, on a base view (drafter's addition; not in the decision, for the
-  reviewers).** `p_P` and `p_P_rowcol` rank the base view's `p` over all 64 cells (`auc_null`,
-  `avg_ranks`, `:513–536`) and score the ranks against permuted labels (`Yu`, `Yrc`,
-  `:1022–1023`). Under a permutation, two cells with the same label in `y` take different labels,
-  so a same-label pair that changes order moves that permutation's null AUC by one step, and
-  through `null >= a − TAU` it can move the count behind `p_P`. Ark's "the only path is a flipped
-  tie in `auc`" (11:15 UTC) holds for the shuffles, not for a base view's `p_P`; the census
-  therefore takes all pairs on a base view.
+  `auc_fixed_lambda1` reads the `ko1` record's `p`, which is the selected `ko` fit's `p` where the
+  `ko1` record is a copy of it (`reused_from_ko`, `:1845`). A shuffle's `p` enters only through
+  `auc(p, y_sd)` (`:1025–1034`), so a shuffle belongs to this family only.
+- **The `auc_null` family: all 2,016 pairs of the 64 cells, on a base view** (`ko`, and `ko1` for
+  the fixed-λ column). `p_P`, `p_P_rowcol` (`:1051`, `:1069–1070`) and `p_P_fixed_lambda1` (`:1091–1092`)
+  rank the view's `p` over all 64 cells (`auc_null`, `avg_ranks`, `:513–536`) and score the ranks
+  against permuted labels (`Yu`, `Yrc`, `:1022–1023`). Under a permutation, two cells with the
+  same label in `y` take different labels, so a same-label pair that changes order moves that
+  permutation's null AUC by one step, and through `null >= a − TAU` it can move the count behind
+  `p_P`. (Revision 1.2's addition 1, confirmed by Zcode and Ark.) **`smallest_passing_auc` is not
+  in this family, nor in any:** it is `auc_null` of the fixed tie-free prediction
+  `np.arange(N_BLOCK)` against `Yu` (`smallest_passing_auc`, `:924–937`), so it depends on `y`
+  and the permutations and on no fit's `p` (the flyvis-65 run's log, line 37: "it needs no fit").
+
+*The census per family on A (M20; pinned store, CPU reads, §12, P7, P8).*
+
+| family (columns) | fits of D1's scope it reads | pair set | fits with a tie | tied pairs | smallest gap (where) | fits with smallest gap < 2^-23 |
+|---|---|---|---|---|---|---|
+| `auc` (`auc`, `M_real`, `n_ge`, `p_S`, `auc_other_59`, `precision_at_32`, `auc_fixed_lambda1`) | all 18,000 (180 base views, 17,820 shuffles) | present × absent, own `y` | 17,604 | 423,777 | 9.079e-8 (`M0.85:2\|sh:79`, BF_1–BF_4, one pair) | 4 |
+| `auc_null` (`p_P`, `p_P_rowcol`, `p_P_fixed_lambda1`) | the 180 base views (and the `ko1` copies of them) | all 2,016 | 41 | 1,538 | 1.586e-6 (`M1.0:3`, BF_1) = 26.6 × 2^-24 | 0 |
+| the census set S(f) of E2-II (below) | all 18,000 | present × absent on a shuffle, all on a base view | 17,613 | 424,535 | 9.079e-8 | 4 |
+
+The ceiling columns (`ceiling_full`, `ceiling_block`, the `|pc:` ceilings) are in the `auc`
+family but read CPU fits under D1 (a) (scope, below). For comparison, all six predictors of the
+base `ko` views (270 fits, rule #2.1 and N1 included, CPU fits in D1 (a)): all pairs, 114 fits
+with a tie, 4,370 tied pairs, smallest gap 1.702e-7 = 2.86 × 2^-24 (`world:R:2||ko||rule`, two
+absent cells), just outside the band of E2-III (Ark's numbers, 11:43 UTC, reproduced).
 
 *Definitions.*
-- **Census pair set S(f).** On a shuffle: the present × absent pairs by the record's own `y` (the
+- **Census pair set S(f)**: the union of the pair sets of the families that read the fit (table
+  above). On a shuffle: the present × absent pairs by the record's own `y` (the
   64 booleans of `bank.exists` in block cell order, `knockout_regrow.py:860`; present and absent
   cells are interleaved, so "the first 32 against the last 32" is not this set and gives other
   numbers, Zcode, 11:25 UTC). There are n_pos·n_neg of them: 1,024 at 32 / 32, 540 to 1,024 on
   A's shuffles, which hold 10 to 41 present cells (M20). On a base view: all 2,016 unordered pairs
-  of the 64 cells, with the 1,024 present × absent pairs printed as their own sub-count. `y` is
+  of the 64 cells, with the n_pos · n_neg present × absent pairs (the `auc` family) printed as
+  their own sub-count. A census number is always a count of **tied pairs** on a named pair set,
+  never of tie groups (§15.3, the reconciliation). `y` is
   read from the reference record; the GPU record's `y` (G4, from the same bank) must equal it,
   else E1 fails.
 - **Order state** of a pair (i, j) under p: sign(p_i − p_j) ∈ {−1, 0, +1}, compared exactly on the
@@ -344,22 +371,52 @@ column only by changing the order of two cells. The paths, read from `evaluate_b
   cannot say whether any pair flipped, since a flip is a comparison with a CPU fit that the arm
   does not make. Flips are measurable only against a reference (V2, V8). Between an arm's GPU
   pre-run and its GPU run, R5's bit-equality implies 0 flips between the two.
-- **E2-III, at risk:** a fit is **at risk** if its smallest gap is below **2^-24 = 5.96e-8**, the
-  float32 spacing on [0.5, 1), used as the universal bound (not the observed maximum, 5.63e-8).
-  Every at-risk fit is named in the print, and **an at-risk fit must have an identical AUC** (on
-  a base view also identical `p_P` and `p_P_rowcol`, by the drafter's addition above); if one
-  differs, the instrument is refused. Against a reference E2-III is contained in E1, which already
-  requires every AUC to be identical; what it adds is the named list, so that a pass on an
-  at-risk fit is recorded as a case exercised, and a threshold against which another arm's census
-  is read. On A, D1's scope holds **0 at-risk fits** (smallest gap 9.08e-8, M20). The store's one
-  at-risk record, `world:M0.85:0|sh:10||ko||rule` (1.836e-8, tie-free), is a rule #2.1 shuffle: it
-  was bit-equal in the unregistered rule port's run (M7, engine v2), so an at-risk fit has held
-  once, but on the rule port, not on the registered engine or in its scope (D1, D13).
-- **Printed beside E2-III, not a criterion (drafter's addition, for the reviewers):** the fits
-  whose smallest gap lies in [2^-24, 2^-23). Two cells moving in opposite directions by up to
-  2^-24 each close a gap of up to 2^-23 = 1.19e-7, and one float32 step of p is not a bound on Δp
-  (below). On A: 4 fits of D1's scope, `world:M0.85:2|sh:79||ko||BF:1`–`BF:4` (9.08e-8 each, the
-  same pair as that shuffle's N1), all bit-equal (M2).
+  **What E2-II refuses beyond E1** (revision 1.3, Ark's item 5): a flip that leaves every exact
+  column unchanged. Two such cases follow from the code: two flips on one fit whose effects on
+  `auc` cancel (a tie becoming "present above" and another becoming "absent above", +0.5 and −0.5
+  of a step), and a same-label flip on a base view that moves the null AUC of some permutations
+  without moving the count `null >= a − TAU` behind `p_P` or `p_P_rowcol` (so without changing
+  them at their 1e-4 lattice). E1 passes both; E2-II refuses both.
+- **E2-III, the at-risk list (revision 1.3: band 2^-23, a list and not a gate).** A fit is **at
+  risk** if its smallest gap on S(f) is below **2^-23 = 1.192e-7**: both cells of a pair can move,
+  each by up to one float32 step on [0.5, 1) (2^-24), so a pair can flip only if its gap is below
+  2 · 2^-24 (Ark, 11:43 UTC; this was revision 1.2's addition 2, which contradicted revision 1.2's
+  own threshold 2^-24; the addition was right). The band is a naming threshold, not a guarantee:
+  one float32 step of p is not a bound on Δp (below), and 5.63e-8 is an observed maximum.
+  **The universal value 2^-24, not the p-dependent spacing s(p), sets the band.** The code gives
+  no role to p's own float32 spacing: decode casts the parameters (the N1 terms, U, V) and computes
+  p in float64 (`harness.py:273–277`, `decoders/bf_decode.py:10–12`), and on M3's five fits one
+  cast step of the logit moves p by more than s(p) at 16 to 33 of the 64 cells (below), so a band
+  of 2 · s(p) would be too narrow exactly where the cast moves p most. It matters on A: the at-risk
+  pair of `M0.85:2|sh:79` sits at p ≈ 0.2559, where s(p) = 2^-25 = 2.98e-8; its gap 9.079e-8 is
+  3.05 · s(p) (outside a p-dependent 2-ulp band) and 1.52 · 2^-24 (inside the universal band).
+  The universal value is kept as the conservative choice.
+  **E2-III is not a gate** (Ark, 11:43 UTC): every column an at-risk fit could move is an exact
+  column that E1 already requires equal (`auc` and, on a base view, `p_P`, `p_P_rowcol`), so E2-III
+  adds no refusal anywhere. Its role is the named list: every at-risk fit is printed with its gap,
+  the pair (two block cells, their labels and `p`) and whether its `auc` and `p_P` equal the
+  reference's, so that a pass on an at-risk fit is recorded as a case exercised, and a band against
+  which another arm's census is read.
+  **On A (M20):** D1's scope holds **4 at-risk fits**, `world:M0.85:2|sh:79||ko||BF:1`–`BF:4`
+  (9.079e-8 each, one present × absent pair, cells 50 and 59), none below 2^-24. Store-wide, on
+  each record's census pair set, 6 records are at risk: those four, the same shuffle's N1 (a CPU
+  fit), and `world:M0.85:0|sh:10||ko||rule` (1.836e-8, tie-free, a rule #2.1 shuffle, CPU in D1
+  (a)). The record `world:M1.0:2|pc:12||full||rule` (6.292e-8) is at risk only on all 2,016 pairs:
+  its pair is two absent cells, a `|pc:` record enters only its `auc` (present × absent, where its
+  gap is 1.27e-4), and it is a CPU ceiling in D1 (a), so it is not a witness of anything the GPU
+  makes. **The rule shuffle does not test E2-III inside D1's scope** (Zcode (a), 11:42 UTC): it was
+  bit-equal in the unregistered rule port's run (M7, engine v2), not on the registered engine and
+  not in D1. **The four BF fits are exercised inside D1's scope and held:** each was fitted afresh
+  by the registered CPU code in the flyvis-65 run (the run's log, line 94: 19,110 + 9,555 = 28,665
+  compared and fitted this pass, 0 `p` differences; their `secs` differ from the pinned ones, e.g.
+  BF_1 4.2380 s against 4.4466 s), and each is bit-equal on the GPU in both v2
+  (`validation_shuffles_all45.json`) and v3 (`validation_pipeline_all45.json`), λ 100 and AUC
+  0.6114583333 on both sides; the rows' `ref_secs` (4.2380 s for BF_1) are the flyvis-65 store's,
+  so the reference of those comparisons was the fresh registered fit, equal to the pinned one
+  (M16). **What that exercise shows is narrow:** on these four fits `p` is bit-equal to the `p` of the same shuffle's N1 record (the BF term at λ = 100 does not change `p`
+  after decode; M20: 17,641 of the 18,000 D1 fits are so), so the at-risk pair is N1's, made on the
+  CPU in the GPU pipeline too (§1.2), and the GPU's part was to return a BF term too small to move
+  it. No at-risk pair on A was made by a BF term that reaches `p`.
 - **Diagnostics, printed, never deciding (revision 1.1's E2a and E2b):** each fit's max |Δp|, the
   cell where it occurs, that cell's reference p, s(p) = `np.spacing(np.float32(p))` and the ratio
   |Δp| / s(p); the number of fits not bit-equal per (rank × λ × view) cell, against denominators
@@ -381,7 +438,7 @@ Revision 1.1 also found that E2a could not be decided on M3's five from the file
 `p` was saved). The census can be read from the reference alone: a pair flips only if
 |Δp_i − Δp_j| reaches its gap.
 
-*The census on A (M20; CPU reads of the pinned store, §12, P7).*
+*The census on M3's five differing fits (M20; CPU reads of the pinned store, §12, P7).*
 
 | fit | λ | max \|Δp\| (v3) | exact ties (all pairs / present × absent) | smallest gap, present × absent | smallest gap, all 2,016 pairs | all-pairs gap ÷ (2 · max \|Δp\|) |
 |---|---|---|---|---|---|---|
@@ -395,8 +452,11 @@ On each of the five, |Δp_i − Δp_j| ≤ 2 · max |Δp| is more than 600 times
 gap, so no pair can flip: their AUC, `p_P` and `p_P_rowcol` provably cannot move. The other 17,995
 fits of D1's scope are bit-equal (M2, M3) and cannot flip either. So **0 flipped pairs in 18,000
 fits on A**, derived from the files, not counted from saved GPU `p` (none was saved; V2 counts
-them). **Every tie of D1's scope on A (423,777 in 17,604 fits, M20) sits on a bit-equal fit**: on
-A no tie was ever exposed to a nonzero Δp.
+them). **Every tie of D1's scope on A (424,535 tied pairs of S(f) in 17,613 fits, M20; 423,777 in
+17,604 on the present × absent pairs alone) sits on a bit-equal fit**: on A no tie was ever
+exposed to a nonzero Δp. Moreover, 424,487 of those tied pairs sit on the 17,641 fits whose `p` is
+their N1's `p` bit for bit (M20); only 48, on 3 fits (`world:W:4|sh:84`, BF_2–BF_4), sit on fits
+whose BF term reaches `p`.
 
 *Why the census must be repeated on another bank (Ark, 11:15 UTC).* Tie structure depends on the
 bank (density, boards, degenerate shuffles): on A, `block‖N1` is constant on all 45 worlds (1,024
@@ -404,7 +464,8 @@ ties of 1,024 pairs, AUC exactly 0.5, which no flip can move), while `full‖N1`
 ties without being constant (M20); "1,024 / 1,024" is a property of A's block bank only. **0
 flips in 18,000 is a fact about A.** Ark's candidate mechanism for it, that both members of a tied
 pair go through the same reduction and move together, is **unverified**: on A no tied pair sat on
-a fit that differed. V8 repeats the census on the male arm's worlds during that arm's pre-run,
+a fit that differed, and almost every tie on A is a tie of N1's `p`, which the GPU does not compute
+(M20). V8 repeats the census on the male arm's worlds during that arm's pre-run,
 before it unseals; it separates "by construction" from "luck" only if some male fit that differs
 from its CPU reference carries ties, and V8 prints how many do (if none, the question stays open
 and is said to be open). The census costs seconds: at most 2,016 pairs per fit, no fit made.
@@ -417,8 +478,10 @@ pair of theirs can flip, and **the census is not applied to them in this instrum
 `ceiling_full` enters the mechanism, but in D1 (a) it is a CPU AUC over a CPU fit. If a later
 revision ports the ceilings (D1 (b)), the census applies to them, with the present × absent pairs
 of each record's own `y` (a `|pc:` record's `y` is the permuted `y`, `:1082–1083`), and that
-revision registers it. For scale only: the `|pc:` family holds 7,828 ties in 502 of its 900 fits
-on A, smallest gap 2.04e-7 (M20 counts; §12, P7).
+revision registers it. For scale only: the `|pc:` family holds 7,828 tied present × absent pairs
+(its census pair set) in 502 of its 900 fits on A, smallest gap 2.038e-7; on all 2,016 pairs,
+15,738 tied pairs in 619 fits, smallest gap 6.292e-8 (M20 counts; §12, P7, P8; the two
+definitions reconciled in §15.3).
 
 **E3, the continuous columns, within a bound propagated per differing fit (Ark's A2).** A's gate
 compares `D`, `logloss`, `logloss_margin_over_N1`, `regrown_share_full`, `regrown_share_block`
@@ -483,12 +546,13 @@ as the note under §11).
 the differing BF_1 rows (five in the flag-free v3 run); E3 is the comparison that decides for this
 instrument.
 
-**Outcomes (revision 1.2).** (1) E1, E2-II (0 flipped pairs), E2-III and E3 hold: the instrument
-is equivalent on A's worlds, and the result, with the census (ties, gaps, the at-risk list), the
-set of differing fits and the diagnostics, is committed. (2) E1 holds, and E2-II finds a flipped
-pair or E3 does not hold: refused; the reviewers decide whether a revision is needed. (3) E1 fails
-anywhere, an at-risk fit's AUC included (E2-III): refused; the instrument changed a deciding
-output. The diagnostics (Δp, s(p), the counts per cell) never decide an outcome.
+**Outcomes (revision 1.3).** (1) E1, E2-II (0 flipped pairs) and E3 hold: the instrument
+is equivalent on A's worlds, and the result, with the census (ties, gaps, the at-risk list of
+E2-III), the set of differing fits and the diagnostics, is committed. (2) E1 holds, and E2-II finds
+a flipped pair or E3 does not hold: refused; the reviewers decide whether a revision is needed.
+(3) E1 fails anywhere (an at-risk fit's AUC or `p_P` included; E2-III names it, E1 refuses it):
+refused; the instrument changed a deciding output. The diagnostics (Δp, s(p), the counts per
+cell) and the at-risk list never decide an outcome.
 
 ## 6. The reproduction gate of a GPU run (the analogue of A §3.3)
 
@@ -521,8 +585,9 @@ every item before its records are used; each item is a stop.
 - **R7, one head:** the GPU stage and the CPU stage record the same git head and a clean tree under
   `results/genome/c6/` and `docs/plans/`; the CPU stage refuses records whose manifest names
   another head (G13).
-- **Printed, not a stop (revision 1.2): the census of E2-II** (G16): per fit, exact ties, the
-  smallest gap and the at-risk list (E2-III), and the fits with smallest gap in [2^-24, 2^-23).
+- **Printed, not a stop (revisions 1.2, 1.3): the census of E2-II** (G16): per fit and per column
+  family, exact ties (tied pairs), the smallest gap, and the at-risk list of E2-III (smallest gap
+  on S(f) below 2^-23).
   An arm's GPU run has no CPU reference, so it prints no flip count (§5, E2-II); R5 makes its
   census equal to its pre-run's.
 
@@ -536,24 +601,74 @@ All runs on synthetic worlds only, into private folders under
 `SHA256SUMS.txt`; committed aggregates in `results/genome/c6/gpu_instrument/validation/`. The
 per-fit `p` and hashes are saved this time (the earlier runs did not, §3.1). GPU times are
 estimated from §2; none of these runs was made for this draft. Every run below needs G1–G11 and
-G16 (the census, revision 1.2) first, and V3 needs G10.
+G16 (the census, revisions 1.2, 1.3) first, and V3 needs G10.
 
 | run | what | on which worlds | GPU time (estimate) | passes if | refuses the instrument if |
 |---|---|---|---|---|---|
 | V0 | smoke: settings on, one world | R:0 base + 99 shuffles, BF_1–BF_4 | about 1 min (56 s, M9's one-world figure, `validation_pipeline_one_world_R0.json`) | R1–R4 pass; the hashes with the settings on are compared with a run with them off, and the overhead is recorded | the settings raise an error that cannot be avoided (then D6 (a) cannot be met) |
 | V1 | self-stability: three full independent runs of the registered composition | A's 45 worlds, 99 shuffles + base, BF_1–BF_4 (18,000 fits) | about 3 × 40 min = 2 h (plus 3 × 2.3 min of 24 CPU workers) | all 18,000 × 3 per-fit hashes equal. Also reported (A3): the set of base fits that differ from the CPU under D6 against the flag-free set (M3's five), and the environment stamp, which becomes the registered stamp of D7 | any hash differs: "NOT DETERMINISTIC" |
-| V2 | equivalence, E1 and E2 | V1's first run against A's pinned pre-run store | none (CPU, minutes; the census seconds) | E1, E2-II and E2-III of §5 (revision 1.2): 0 flipped pairs over every fit's census pair set; every at-risk fit named, with an identical AUC (on A none is expected, M20). Printed: the census of all 18,000 fits (ties, gaps, the at-risk list, the [2^-24, 2^-23) list) and the diagnostics (each differing fit's max \|Δp\|, its cell, s(p); the counts per cell against 37 / 164 / 4,299 / 13,500) | any λ, label or AUC difference; one flipped pair (named); an at-risk fit whose AUC differs |
+| V2 | equivalence, E1 and E2 | V1's first run against A's pinned pre-run store | none (CPU, minutes; the census seconds) | E1 and E2-II of §5 (revision 1.3): 0 flipped pairs over every fit's census pair set. Printed: the census of all 18,000 fits per column family (tied pairs, gaps) and the at-risk list of E2-III, each at-risk fit with its pair and whether its `auc` (and on a base view `p_P`, `p_P_rowcol`) equals the reference's (on A four are expected, `M0.85:2\|sh:79`, BF_1–BF_4, whose `p` is their N1's, M20); the diagnostics (each differing fit's max \|Δp\|, its cell, s(p); the counts per cell against 37 / 164 / 4,299 / 13,500) | any λ, label, AUC or other exact-column difference (E1; an at-risk fit's included); one flipped pair (named) |
 | V3 | A's gate on a hybrid store, E1 and E3 | a hybrid store: V1's BF `ko` records beside the pinned store's other records; A's script, unmodified, `--synthetic-only --from-raw <hybrid> --out <scratch>`, and the same pass over the pinned store for the reference strings | none (CPU, about 15 s each, plus the path check's five CPU refits) | E1 (CSV exact columns, strings, `ko1` count); E3; the path check passes under D9 (b) | an exact column or a string differs; E3 exceeded |
 | V4 | batch sensitivity, a statement, not a gate | (a) the 45 base views as one batch; (b) one world per batch for M1.0:0, M0.85:2, M0.75:0; (c) **required since revision 1.1**: all 45 worlds, the registered key list, at `row_chunk` 100,000, which moves every chunk boundary (D5 rests on it); (d) the probe's `run4` re-shot with a header line (stamp, `det`, script name and hash, `row_chunk`): M1.0:0, M0.85:2, M0.75:0 inside the 45-view batch, under D6 | (a) about 30 s; (b) about 3 min; (c) about 37 min at 26.5 GB (README:301); (d) about 30 s | the report: how many per-fit hashes change against V1, and E1–E3 against the CPU for each composition; for (c), whether `row_chunk` moves any hash | E1 fails under a composition: not a refusal of the registered composition, but it is reported, and D5 (a) is then the only safe option; (c) moves a hash: `row_chunk` returns to the refusal digest (D5) |
 | V5 | the explanation of the base differences (Ark's condition) | (a) CPU only: `harness.fit_bf` on the 180 base views with `OPENBLAS_NUM_THREADS=4` exported before launch (another BLAS reduction order), compared with the pinned store; (b) engine v3 on `torch` CPU device, float64, on M3's five fits and five bit-equal controls | (a) none (CPU, a few minutes); (b) none (CPU, minutes) | written before the run: if the fits that move in (a) are mainly the rank-1, small-λ base fits (M3's five or a set overlapping them) while most of the rest stay bit-equal, the differences are a property of those fits under any change of reduction order, and the Δp that E2's diagnostics print is explained (revision 1.1 read "the tolerance of E2a") | (a) moves none of M3's five and (b) reproduces them: the differences come from the GPU code, not from the fits; the instrument then waits for a fix, whatever the census says |
-| V6 | negative control: the comparator can separate | engine v3 with `BF_TOL` 1e-5 (instead of 1e-6), R:0 base + 99 shuffles | about 1 min | the comparator flags the run (E1, a flipped pair of E2-II, or E3); its Δp diagnostic is printed beside. Since revision 1.2 no criterion bounds Δp, so V6 now tests whether the census and E1 see a changed stopping rule; whether `BF_TOL` 1e-5 reorders any pair on R:0 is not known before the run | the comparator passes a run made with a changed stopping rule: it cannot separate, and it is refused |
+| V6 | negative control: the comparator sees a changed stopping rule and reports it correctly (**revised in revision 1.3, for the reviewers**; §7.1) | engine v3 with `harness.BF_TOL` set to 1e-5 (instead of 1e-6) in the GPU process only, R:0 base + 99 shuffles (400 fits) | about 1 min | the comparator's report (E1 differences, flipped pairs of E2-II, the at-risk list, the non-bit-equal fits and their max \|Δp\|) equals an independent brute-force recount from the saved `p`, `lam` and `y` of both sides, fit by fit; and the Δp diagnostic reports at least one non-bit-equal fit. If the looser rule changes no `p` at all, V6 is **uninformative** and says so (not a refusal); T-G4, T-G9 and T-G10 then remain the only tests that the comparator refuses | the comparator's report differs from the recount (it misses or invents a difference): the comparator (G9, G16) is refused, and the instrument waits for its fix |
 | V7 | the poisoned-block test (T-G5) | R:0 base + 99 shuffles, with the block cells of `harness.REAL` flipped in the GPU process and in every prep worker | about 1 min | every per-fit hash equal to the unpoisoned run | any hash changes: a code path reads a real block cell |
-| V8 | cross-check on the male worlds, **unregistered** | the male arm's 45 worlds per lobe, BF `ko`, base + 99 shuffles; needs that arm's script (its S1, S4, S5, S14) and its CPU pre-run store | about 40 min per lobe if A's rate holds on the placed grid (not measured), 80 min for both | E1, E2 and E3 against the male CPU pre-run store, reported in the chat as a cross-check. **Revision 1.2 (Ark): the census is repeated on the male worlds, during that arm's pre-run and before it unseals**, since tie structure depends on the bank and 0 flips in 18,000 is a fact about A (§5): ties, gaps, the at-risk list, the flips counted against the male CPU store, and how many of the fits that differ carry ties (which is what separates "by construction" from "luck") | nothing for the male arm, which stays on the CPU (its D13 (iii)). For this instrument: a flipped pair, or an at-risk fit whose AUC differs, refuses it for every arm that would name it (E2-II, E2-III); a statement about the GPU instrument, not an input to a male gate |
+| V8 | cross-check on the male worlds, **unregistered** | the male arm's 45 worlds per lobe, BF `ko`, base + 99 shuffles; needs that arm's script (its S1, S4, S5, S14) and its CPU pre-run store | about 40 min per lobe if A's rate holds on the placed grid (not measured), 80 min for both | E1, E2 and E3 against the male CPU pre-run store, reported in the chat as a cross-check. **Revision 1.2 (Ark): the census is repeated on the male worlds, during that arm's pre-run and before it unseals**, since tie structure depends on the bank and 0 flips in 18,000 is a fact about A (§5): ties, gaps, the at-risk list, the flips counted against the male CPU store, and how many of the fits that differ carry ties (which is what separates "by construction" from "luck") | nothing for the male arm, which stays on the CPU (its D13 (iii)). For this instrument: a flipped pair (E2-II) or an E1 difference (an at-risk fit's included) refuses it for every arm that would name it; a statement about the GPU instrument, not an input to a male gate. Printed as well (revision 1.3): how many male at-risk fits have a `p` that differs from their N1's, since on A none did (M20) |
+
+### 7.1 V6 read from the code (revision 1.3; Ark's item 6)
+
+- **Where `BF_TOL` acts.** `harness.BF_TOL = 1e-6` (`harness.py:538`). On the CPU its only use is
+  the stop of `_newton_rows` (`harness.py:652`: break when the largest row-gradient norm of the
+  matrix is below it). Engine v3 reads it at call time as `H.BF_TOL` (`gpu_bf3.py:154`, `:156`)
+  and passes it to `newton_rows_v3` (`:78–106`), where `go = ~(gn < tol)` (`:94`) stops a problem
+  once its largest row-gradient norm is below it. It acts in every Newton call of all 25 ALS
+  sweeps, U half and V half, both in the inner (fold, λ) problems that choose λ (`fit_bf_all`,
+  `:185`, `want="ll"`) and in the final fit (`:194`, `want="uv"`). No other code of the instrument
+  or of A's script reads it (grep over `harness.py`, `checks/knockout_regrow.py` and
+  `gpu_instrument/*.py`; the constants named `BF_TOL` in `rules/second_rule*/gates.py` are other
+  constants): not N1, not the SVD start, not the decode, not the prep workers. So V6 sets the
+  module attribute in the GPU process only; `harness.py` is not modified.
+- **What a looser stop changes, from the code.** A problem stops iterating once its row gradients
+  are below 1e-5 instead of 1e-6. A Newton step on a row is H⁻¹G with H ⪰ λI (the row Hessian is a
+  sum of weighted outer products plus λI, `gpu_bf3.py:101–103`), so a row stopped early is within
+  about 1e-5 / λ of where the next step would take it: about 1e-7 at λ = 100, 1e-5 at λ = 1. That
+  is an order of magnitude, not a bound (the sweeps couple U and V). Three routes follow. (i) `p`
+  moves most on the small-λ fits of R:0: its 4 base views (λ 1, 3, 3, 3) and its one shuffle at
+  λ 3. (ii) λ can change: the choice compares summed inner log-likelihoods within a tie window of
+  1e-9 (`gpu_bf3.py:190–192`), and near-ties (a λ within 1e-7 of that threshold) occur in about a
+  third of A's banks per rank (M15); a changed λ is an E1 difference. How many R:0 banks are near
+  a tie is not known (the inner log-likelihoods are not saved). (iii) On R:0's other 395 shuffles
+  (λ 100) `p` is today bit-equal to N1's (M20). Whether a looser stop leaves a BF term large
+  enough to reach `p` there cannot be read from the code.
+- **What the census can see on R:0 (Ark's counts, verified).** On all 2,016 pairs, R:0 has 4
+  records with a pair whose gap is below 1e-5, 6 pairs in all: `world:R:0|pc:7||full||rule` (3
+  pairs, 3.613e-6), `world:R:0||ko||BF:4` (3.266e-6, λ 3), `world:R:0||ko||BF:1` (9.436e-6, λ 1)
+  and `world:R:0||ko1||BF:1` (the same, a `reused_from_ko` copy of the `ko` fit). Store-wide on all
+  pairs: 675 records, 1,629 pairs; on the present × absent pairs: 438 records, 805 pairs (M20).
+  **Inside V6's 400 fits only two such pairs exist**, on `ko‖BF:4` and `ko‖BF:1`, and both are
+  same-label pairs: they can move `p_P` and `p_P_rowcol` (the `auc_null` family), not `auc`. The
+  `pc:7` record is a CPU ceiling outside V6. On R:0's 396 shuffles the smallest present × absent
+  gap is 3.458e-5 (`world:R:0|sh:24||ko||BF:1`). So a flip on V6's fits needs |Δp_i − Δp_j| of at
+  least 3.27e-6.
+- **E3 cannot flag V6.** Its bounds are computed from each differing fit's own δ and hold by
+  construction when only that fit's `p` changed (`D` and `logloss` are functions of that `p`; N1
+  and the ceilings are CPU fits). E3 fails only when a continuous column moves by more than its own
+  `p` explains.
+- **Why V6 was revised (for the reviewers).** Revision 1.2's V6 refused the instrument if the
+  comparator passed the `BF_TOL` 1e-5 run. Since revision 1.2, Δp is not a criterion. A run that
+  moves `p` but no exact output and no pair order is therefore accepted by D3 (b) by design, and
+  from the code such a run is a likely outcome on R:0 (above). V6 would then refuse the instrument
+  for a result its own criterion accepts. That is not a negative control. Revision 1.3 makes V6 a
+  check that the comparator reports GPU-made differences correctly: its counts are compared with
+  an independent brute-force recount from the saved `p` of both sides. The tests that the
+  comparator refuses are T-G4, T-G9 and T-G10, on fixtures. Ark's item 6 asked for the expected
+  outcome, not for this change, so the change is proposed, not decided.
 
 **Totals.** V0–V7: about **2 h 50 min of GPU time** with V4 (c), now required (2 h 10 min without
 it), mostly V1; CPU minutes. V8: about 80 min more, after the male pre-run's store exists and
-before the male arm unseals. Revision 1.2 changes no run's cost: the census reads the saved `p`
-(G5) in seconds and makes no fit, so the totals and the break-even of §9 stand. The GPU runs use 24 CPU
+before the male arm unseals. Revisions 1.2 and 1.3 change no run's cost: the census reads the
+saved `p` (G5) in seconds and makes no fit, and V6's recount (revision 1.3) is a CPU read of the
+same files, so the totals and the break-even of §9 stand. The GPU runs use 24 CPU
 workers for about 2.3 min each and one CPU core for the rest, so they can run while the CPU pool
 does other work; the other work would then be slower, not different.
 
@@ -561,7 +676,7 @@ does other work; the other work would then be slower, not different.
 and the refusals work); V1; V2; V3; V5; V4. V8 when the male store exists, before the male arm
 unseals. The results go to a revision of this file, which registers the refusal digest, the stamp
 measured in V1 (D7), the set of differing base fits with the counts per cell and A's census (ties,
-gaps, at-risk list, 0 flips expected), and whether `row_chunk` stays out of the digest
+gaps, at-risk list, 0 flips expected, each per column family), and whether `row_chunk` stays out of the digest
 (V4 (c)), and is reviewed before any arm names the instrument.
 
 ## 8. Use by registered arms
@@ -571,7 +686,8 @@ gaps, at-risk list, 0 flips expected), and whether `row_chunk` stays out of the 
   composition (the arm's own 45 worlds and their shuffles, in a registered order), the same stamp
   and the same head rules. The arm's limits (γ\*_P, γ_R, the family limit) and its
   `smallest_passing_auc` values are then measured by the hybrid instrument, as A §7 requires for a
-  new instrument. The real arm (the real bank's 632 fits, A §7 line 1712–1713) stays on the CPU:
+  new instrument (`smallest_passing_auc` depends on no fit, §5, so its values cannot differ
+  between the two instruments; revision 1.3). The real arm (the real bank's 632 fits, A §7 line 1712–1713) stays on the CPU:
   it touches a real block, and it takes about 3 minutes.
 - **Block A:** its verdict (G) is made on the CPU; this instrument never re-reads it. A's worlds
   are the validation set only.
@@ -636,14 +752,14 @@ All in `results/genome/c6/gpu_instrument/` or in an arm's new script; `harness.p
 | G6 | per-fit sha256 of the raw float64 U, V, λ and of the decoded `p` (the probe's method), in a sidecar file named in the manifest |
 | G7 | the arm adapter: `prep` takes the arm's module (and lobe) instead of importing `knockout_regrow` directly, applies that arm's grid restriction in every worker (the male draft's S5), and accepts only keys `world:<family>:<j>` and `world:<family>:<j>\|sh:<sd>` (R6) |
 | G8 | the registered driver uses `gpu_bf3` only and asserts that `gpu_bf`, `gpu_bf2` and `gpu_rule` are absent from `sys.modules` (D2) |
-| G9 | `gpu_equivalence.py`: E1, E2 and E3 of §5 (revision 1.2), reading A's pinned pre-run store after `check_prerun_files` (imported read-only from A's script). E2-II: each fit's census pair set S(f) from the reference `y` (present × absent on a shuffle, all 2,016 pairs on a base view), the GPU `y` asserted equal; the order state of every pair on both sides, compared exactly; the flipped pairs counted and each named. E2-III: the at-risk list (smallest gap < 2^-24) with each at-risk fit's AUC (and, on a base view, `p_P`, `p_P_rowcol`) compared. Printed beside: the [2^-24, 2^-23) list; the diagnostics (max \|Δp\|, its cell, s(p) of the pinned `p`, the ratio; the counts per (rank × λ × view) cell against denominators from the pinned store's λ, read before the GPU records are opened). E3's bounds per differing fit from the pinned `p` and that fit's own max \|Δp\|, printed with the tighter form and the count of cells where `logit_of` clips. The census itself is the function of G16 |
+| G9 | `gpu_equivalence.py`: E1, E2 and E3 of §5 (revisions 1.2, 1.3), reading A's pinned pre-run store after `check_prerun_files` (imported read-only from A's script). E2-II: each fit's census pair set S(f) from the reference `y` (present × absent on a shuffle, all 2,016 pairs on a base view), the GPU `y` asserted equal; the order state of every pair on both sides, compared exactly; the flipped pairs counted and each named. E2-III (revision 1.3): the at-risk list (smallest gap on S(f) < 2^-23), each at-risk fit printed with its pair and whether its AUC (and, on a base view, `p_P`, `p_P_rowcol`) equals the reference's; a difference there is refused by E1, not by E2-III. The census is printed per column family (the `auc` family on present × absent pairs, the `auc_null` family on all pairs of a base view, §5). Printed beside: the diagnostics (max \|Δp\|, its cell, s(p) of the pinned `p`, the ratio; the counts per (rank × λ × view) cell against denominators from the pinned store's λ, read before the GPU records are opened). E3's bounds per differing fit from the pinned `p` and that fit's own max \|Δp\|, printed with the tighter form and the count of cells where `logit_of` clips. The census itself is the function of G16 |
 | G10 | the hybrid-store builder for V3 (writes to a scratch folder, never into a reference folder) |
 | G11 | the output guard: no write at or in `PRERUN_DIR`, the arm references, or a byte copy of one (A's `out_dir_refusal` rule, reimplemented here, since A's script is not modified) |
 | G12 | in the arm's new script (not A's): the fixed-λ path check of D9 (b) for BF records made by the GPU (λ, labels, AUC exact; 0 flipped pairs by the census function of G16) |
 | G13 | in the arm's new script: the GPU-stage import of D8 (I2): same head, clean tree, file hashes, key set equal to the planned BF `ko` keys, composition digest, stamp, degree-term digest equal to its own (R7) |
 | G14 | README corrections for the ledger rows of §11; `validate_vs_cpu.py`'s docstring corrected (row G-(6)) |
 | G15 | every GPU run prints and writes to its manifest its own near-tie counts by rank (`fit_bf_all`'s `near_tie`, `gpu_bf3.py:193`); a count from another arm or another run is never carried over (M15) |
-| G16 | **(revision 1.2)** one census function (`census.py`), used by G9 and by every GPU run (V0–V8 and an arm's GPU stage): per fit, from its own decoded `p` and `y`, the exact ties on S(f) (with the present × absent sub-count on a base view), the smallest gap, the at-risk list (< 2^-24) and the [2^-24, 2^-23) list, printed and written to the manifest; with no reference, no flip count is printed (§5, E2-II). Like G15, a census from another arm or run is never carried over |
+| G16 | **(revisions 1.2, 1.3)** one census function (`census.py`), used by G9 and by every GPU run (V0–V8 and an arm's GPU stage): per fit, from its own decoded `p` and `y`, the tied pairs on S(f) (with the present × absent sub-count on a base view, that is, per column family), the smallest gap, and the at-risk list (< 2^-23 on S(f), revision 1.3; each entry with its gap, its two cells and whether its `p` equals its view's N1 `p`), printed and written to the manifest; with no reference, no flip count is printed (§5, E2-II). Like G15, a census from another arm or run is never carried over |
 
 **Tests (fixtures, CPU, or seconds of GPU; no real block, no sealed file).**
 - **T-G1:** in a subprocess, importing `gpu_env` then torch gives deterministic mode on and the
@@ -658,24 +774,30 @@ All in `results/genome/c6/gpu_instrument/` or in an arm's new script; `harness.p
   a `D` moved just beyond its E3 bound fails E3 and one moved just within it passes; the
   denominators of the counts per cell read from the pinned store are 37, 164, 4,299 and 13,500;
   the unmodified records pass all three.
-- **T-G9 (an injected flip is caught; revision 1.2):** (i) in a D1-scope shuffle with an exact
+- **T-G9 (an injected flip is caught; revisions 1.2, 1.3):** (i) in a D1-scope shuffle with an exact
   tie, one member of a tied present × absent pair is moved by one float64 step (`np.nextafter`)
   in the GPU copy: E2-II counts as many flipped pairs as that cell had ties in S(f), names each,
   and refuses; (ii) in a tie-free fit, the `p` of a present and an absent cell adjacent in order
   are exchanged: an opposite order is counted and named; (iii) in one of the 9 base views of D1's
   scope whose ties are all same-label pairs (M20 data, §12, P7), one member of such a tie is moved
   by one float64 step: the AUC is unchanged, and E2-II still counts and names the flip (the
-  all-pairs set of a base view); (iv) a move that changes no order state gives 0 flips and passes.
-  The census function run over the whole pinned store reproduces M20: 27,123 records with a tie,
-  782,376 ties, 1 record below 2^-24 (`world:M0.85:0|sh:10||ko||rule`), 438 below 1e-5 of which
-  32 tie-free; in D1's scope 0 at risk.
-- **T-G10 (an at-risk fit with a changed AUC is refused; revision 1.2):** from a pinned D1-scope
-  fit, a reference copy is made at risk by setting a present cell to an absent cell's `p` plus
-  3e-8 (smallest gap 3e-8 < 2^-24); a GPU copy equal to it passes and lists the fit as at risk; a
-  GPU copy with that present cell at the absent cell's `p` minus 3e-8 changes the AUC by
-  1 / (n_pos·n_neg) and is refused, with E2-III's message naming the fit (E1 and E2-II also fire);
-  a reference copy with smallest gap 6.0e-8 is not listed as at risk and is listed in the
-  [2^-24, 2^-23) band.
+  all-pairs set of a base view); (iv) a move that changes no order state gives 0 flips and passes;
+  (v) (revision 1.3) in a D1-scope shuffle with two tied present × absent pairs, one tie is turned
+  into "present above" and the other into "absent above" by one float64 step each: the AUC is
+  unchanged and E1 passes, while E2-II counts both flips, names them and refuses (the case where
+  E2-II refuses beyond E1, §5).
+  The census function run over the whole pinned store reproduces M20 under each definition: on
+  the present × absent pairs, 27,123 records with a tie, 782,376 tied pairs, 438 below 1e-5 of
+  which 32 tie-free; on all pairs, 27,563 and 1,851,770; in D1's scope, 17,604 / 423,777 (present
+  × absent), 17,617 / 885,354 (all pairs), 17,613 / 424,535 (S(f)); at risk on S(f) (< 2^-23), 6
+  records store-wide and 4 in D1's scope (`world:M0.85:2|sh:79||ko||BF:1`–`BF:4`).
+- **T-G10 (an at-risk fit with a changed AUC is listed and refused; revisions 1.2, 1.3):** from a
+  pinned D1-scope fit, a reference copy is made at risk by setting a present cell to an absent
+  cell's `p` plus 3e-8 (smallest gap 3e-8 < 2^-23); a GPU copy equal to it passes and lists the fit
+  as at risk; a GPU copy with that present cell at the absent cell's `p` minus 3e-8 changes the AUC
+  by 1 / (n_pos·n_neg) and is refused by E1 and E2-II, with the at-risk list naming the fit
+  (E2-III refuses nothing, §5); a reference copy with smallest gap 1.1e-7 is listed as at risk, and
+  one with smallest gap 1.3e-7 is not.
 - **T-G5 (poisoned block):** with the block cells of `harness.REAL` flipped in the main process and
   every worker, the per-fit hashes of one world's base view and 5 shuffles are unchanged (seconds
   of GPU; V7 repeats it on 99 shuffles).
@@ -696,15 +818,17 @@ ledger disagree, the ledger's 'correct' is right" (A §12).
 | G-(1) | "The code here re-implements only `harness.bf_als`'s ALS/Newton optimisation" | it also re-implements `fit_bf`'s λ choice: the inner held-out log-likelihood (on the GPU in v3), its sum over folds and the tie rule (on the host in v2 and v3), and in the rule port `fit_existence`'s λ choice | `README.md:10–12` | `gpu_bf3.py:117–122` (`_heldout_ll`), `:174–195` (`fit_bf_all`); `gpu_bf2.py:147–158` (`choose_lambda`, `inner_ll`); `gpu_rule.py:65–97` | this draft |
 | G-(2) | "All scripts set one BLAS thread per process before numpy loads" | the v2/v3 drivers and `prep` do (`run_pipeline.py:25–26`, `validate_shuffles.py:18–19`, `validate_rule.py:16–17`, `prep.py:16–17`); the v1 scripts import numpy with no preamble (`validate.py:15`, `validate_vs_cpu.py:22`, `validate_batched.py:14`), and `harness.py`'s `setdefault` (:33–34) runs after numpy is loaded, too late for OpenBLAS | `README.md:122` | the files and lines named (scope: the eight `.py` files of the directory) | this draft |
 | G-(4) | "v2 and v3 disagree on 2 of 180 base fits" | **≥ 3; no direct comparison was made.** The "2" was a set difference (v3's five minus v2's three, the v2 set being a subset of the v3 set, M18), not a v2↔v3 comparison of `p`. The at-least-3 are M1.0:0 and M0.85:2 (bit-equal in v2, not in v3) and M1.0:4 (not bit-equal in either; max \|Δp\| 5.54e-8 in v2, 3.16e-8 in v3, so the two `p` differ); M0.75:0 and M0.85:0 cannot be told apart without the per-fit `p`, which neither run saved | chat only (Zcode's; he accepts it as his, 10:54 UTC) | `validation_shuffles_base45.json` (row `world:M1.0:4\|\|ko\|\|BF:1`, 5.540526e-08); `run7_pipeline_all45.log:95` (3.156e-08) | this draft |
-| G-(5) | "Δp = one float32 ulp (5.63e-8 ≈ 2^-24)" | **5.63e-8 is the observed maximum; 2^-24 = 5.96e-8 is the ulp bound (the float32 spacing) at p ≥ 0.5, smaller at smaller p (§5: revision 1.1's E2a; since revision 1.2 a printed diagnostic, and 2^-24 the at-risk threshold of E2-III); `p` is stored as float64**, computed from float32-cast parameters (`harness.py:273–277`, `decoders/bf_decode.py:10–12`). The observed 5.63e-8 is larger than one float32 step of the logit at any cell of its fit (§5, drafter's caution) | chat only (Zcode's; he accepts it as his, 10:54 UTC) | `run7_pipeline_all45.log:11` (5.6323528e-08); arithmetic | this draft |
+| G-(5) | "Δp = one float32 ulp (5.63e-8 ≈ 2^-24)" | **5.63e-8 is the observed maximum; 2^-24 = 5.96e-8 is the ulp bound (the float32 spacing) at p ≥ 0.5, smaller at smaller p (§5: revision 1.1's E2a; since revision 1.2 a printed diagnostic; 2^-24 the at-risk threshold of E2-III in revision 1.2, and 2 · 2^-24 = 2^-23 since revision 1.3); `p` is stored as float64**, computed from float32-cast parameters (`harness.py:273–277`, `decoders/bf_decode.py:10–12`). The observed 5.63e-8 is larger than one float32 step of the logit at any cell of its fit (§5, drafter's caution) | chat only (Zcode's; he accepts it as his, 10:54 UTC) | `run7_pipeline_all45.log:11` (5.6323528e-08); arithmetic | this draft |
 | G-(6) | the pre-run store is "stale"; "`harness.fit_n1` … already disagrees with that file's stored N1 predictions" | the store reproduces bit for bit; the claim came from a wrong key and cell order (A §12, row CC (1)) | `validate_vs_cpu.py:1–13` at `74de040` and `cdbde9e`, never corrected | A §3.3, facts (a) and (c) (A lines 650–669 at `74db080`); `README.md:377–385` | this draft |
 | G-(7) | "Every bank is built through `knockout_regrow.build_bank(key, terms, synthetic_only=True)`" | true of the v2/v3 code; the v1 scripts call `make_world` directly, outside `build_bank`'s refusal (they build world specs only) | `README.md:16–17` | `validate.py:50`, `validate_batched.py:43`, `validate_vs_cpu.py:54` | this draft |
 | G-(8) | "All 45 worlds' shuffles: 2,030 s on the GPU" (rule #2.1) | 2,030 s is the wall time of the GPU path; the GPU `bf_als` is 1,142 s of it, the ridge steps on the CPU in the GPU process 530 s, prep 157 s, the rest of the rule's fit 110 s | `README.md:59` | `run8_rule_sh_all45.log:1–45` (per-world stage times, summed) | this draft |
+| G-(9) | "each row lies on its own lattice 1/(2ab), a + b = 59, a ∈ {27, 28, 29}" (`auc_other_59`) | **a ∈ {27, 29}**: the present and absent counts among the 59 non-mirror block cells are (27, 32) in 40 worlds (denominator 1728) and (29, 30) in 5 (1740); 28 does not occur. The step bound, at least 1/1740 = 5.75e-4, stands | this file, M19, line 168 at `5983385` (revision 1.2) | the pinned store's base-view `y` with `MIRROR_IDX` (`knockout_regrow.py:209`), all 45 worlds (under pin); Ark's denominators 1728 and 1740 (11:43 UTC) | this draft (revision 1.3), on Ark's and Zcode's (b) |
 
 **Clarification notes (not ledger rows).** A's rule for the table requires both addresses to be
 artefacts, or "chat only" for a wording that lived only in the chat; "a session message or a tool
 call is not a place" (A §12, lines 2392–2395 at `74db080`). Following A's precedent of recording
-such cases beside the ledger rather than in it (A §12, line 2379), three cases are recorded here:
+such cases beside the ledger rather than in it (A §12, line 2379), five cases are recorded here
+(the last two in revision 1.3):
 
 - **Former row G-(3) (revision 1), moved here in revision 1.1.** Revision 1's row read the wrong
   wording "the GPU scripts have no thread preamble — add" as Zcode's (chat, 09:32 UTC). Zcode's
@@ -726,6 +850,30 @@ such cases beside the ledger rather than in it (A §12, line 2379), three cases 
   below 1e-5, the 31 plus the one below 2^-24). Neither number was wrong under its own definition,
   and neither entered an artefact before this revision, so it is a clarification, not a ledger
   row; §5 and M20 state the narrow definition beside each number.
+- **The census numbers of revision 1.2 and of Ark (revision 1.3; the definitions, not errors).**
+  Ark's census of 11:43 UTC differs from revision 1.2's M20 on three numbers. All six reproduce
+  (§12, P8), each under its own definition. Revision 1.2 counted tied pairs on the present ×
+  absent pairs by each record's own `y`, and M20's heading said so. Ark counted tied pairs on
+  all 2,016 pairs. Neither counted tie groups: the store holds 300,756 tie groups in D1's scope
+  and 4,536 in `|pc:`, and neither number was given by anyone. The `|pc:` smallest gap differs
+  3× because its all-pairs minimum, 6.292e-8 at `world:M1.0:2|pc:12||full||rule`, is a pair of
+  two absent cells, which the present × absent set does not contain (there the smallest gap is
+  2.038e-7, `world:M0.6:1|pc:3||full||rule`). The table in §15.3 gives each number with its
+  definition. No revision-1.2 number was wrong under the definition it stated, and Ark's are
+  chat only, so this is a clarification, not a ledger row. The registration now states the pair
+  set beside every census number (M20, §5).
+- **"The D1 at-risk fits were not recomputed by fresh code" (Ark, 11:43 UTC; chat only).** The
+  fresh CPU refit Ark cites (M0.6:0, M0.75:0, M0.5:0: 3 worlds × 99 shuffles × 6 predictors =
+  1,782 of 1,782 equal) is A §3.3 fact (c), CC's probe P1 of 2026-09-25 (A lines 663–670 at
+  `74db080`). It is not the v1 live-CPU comparison of this directory. It is also not the only
+  recomputation: the registered flyvis-65 run fitted every one of the 28,665 synthetic keys again
+  (its log, line 94: `fitted_this_pass` 19,110 + 9,555, 0 `p` differences; M16), the four
+  `M0.85:2|sh:79` BF fits included (their `secs` differ from the pinned ones). The v2 and v3 GPU
+  runs were compared against that fresh store. So Ark's conclusion that E2-III has not been
+  exercised inside D1 does not follow: it was exercised on 4 fits and held (§5, E2-III). It was
+  exercised narrowly, since those four `p` are their N1's. The wording lived only in the chat.
+  Whether it becomes a ledger row as Ark's (as Zcode's G-(4) and G-(5) did) is Ark's call; until
+  then it is recorded here.
 
 ## 12. Runs made while drafting, and what was not verified
 
@@ -758,6 +906,21 @@ scratchpad only).**
   check Zcode's remark, over "the first 32 against the last 32"), by family, over D1's scope and
   on M3's five (M20, §5); the lines of `knockout_regrow.py` at `74db080` through which `p` reaches
   the exact columns (§5). Outputs in the drafter's scratchpad only.
+- **P8, revision 1.3 (CPU reads only, `tools/.venv`; `date -u` read 12:02 UTC during the edits; no
+  fit, no GPU):** the census of all 28,665 pinned records again, per record: tied pairs and smallest
+  gap on the present × absent pairs, on all 2,016 pairs and on S(f), tie groups, and the pairs below
+  2^-24, 2^-23, 1e-5 and 2e-5, by family, over D1's scope, the `|pc:` family, the base `ko` and
+  `ko1` views and R:0 (M20, §5, §7.1, §15.3); the at-risk pairs' cells, labels and `p`, and s(p)
+  there; the `y` of every `|pc:` record against its base view (900 of 900 differ); the D1 fits
+  whose `p` is bit-equal to their view's N1 `p` (17,641); the `M0.85:2|sh:79` BF and N1 records,
+  `M0.85:0|sh:10||ko||rule` and `M1.0:2|pc:12||full||rule` in the flyvis-65 run's store against
+  the pinned store (`p` equal, `secs` different); their rows in `validation_shuffles_all45.json`
+  and `validation_pipeline_all45.json`; the flyvis-65 run's log, lines 1–12, 37, 55–60, 94; the
+  smallest gaps of `auc_other_59` and `logloss_margin_over_N1` in the pinned CSV and the counts
+  (a, b) behind `auc_other_59` from the pinned `y` and `MIRROR_IDX`; the code of `BF_TOL`
+  (`harness.py:538`, `:652`; `gpu_bf3.py:78–106`, `:154–156`, `:185–194`), of `auc_null`,
+  `smallest_passing_auc` and `evaluate_bank` (`knockout_regrow.py:513–537`, `:924–937`,
+  `:1015–1100`), and A §3.3 fact (c). Outputs in the drafter's scratchpad only.
 
 **Not verified.**
 - That the determinism settings leave the engine's bits unchanged, or its speed (V0).
@@ -774,11 +937,19 @@ scratchpad only).**
 - **0 flipped pairs on A** is derived (bit-equal fits, and the five's gaps against their Δp, §5),
   not counted: no per-cell GPU `p` was saved. V2 counts it.
 - Ark's candidate mechanism for why no tie flipped on A (both members of a pair go through the
-  same reduction); on A no tie sat on a differing fit, so the files cannot test it (V8 may).
+  same reduction); on A no tie sat on a differing fit, and all but 48 of the 424,535 tied pairs
+  of S(f) sit on fits whose `p` is their N1's (M20), so the files cannot test it (V8 may).
+- Why the BF term does not change `p` on 17,641 D1 fits at λ = 100 (U, V exactly zero after the
+  cast, or a product below the float64 resolution of the logit): read as a fact from the store,
+  not traced through U and V (the store holds `p`, not the factors).
+- V6's outcome: from the code, which fits move and whether a λ, a label, an AUC or a pair order
+  changes cannot be predicted (§7.1).
 - That a same-label flip on a base view moves `p_P` or `p_P_rowcol` on some fit: read from the
   code (`auc_null`, §5), not produced on a fit; T-G9 (iii) checks only that the census sees it.
 - The chat messages of 11:00–11:25 UTC (Mike, Ark, Zcode): quoted as relayed in the drafting
   brief for revision 1.2.
+- The reviews of 11:42 and 11:43 UTC (Zcode, Ark): quoted as relayed in the drafting brief for
+  revision 1.3.
 - Whether V4's other compositions keep E1.
 - The GPU rate on the male placed grid and on block B's worlds.
 - The chat messages of 09:13–09:32 UTC: quoted as relayed in the drafting brief; the chat is not in
@@ -822,6 +993,17 @@ scratchpad only).**
   with no reference can state (§5); M19 (the CSV lattice) and M20 (the census of A) added; D3, D9
   (b), §6, V2, V5, V6, V8, Totals, Order, §9, G9, G12, G16, T-G4, T-G8, T-G9, T-G10 updated; §11
   clarification of Ark's census number; §12 P7. No run's cost changes. By a CC subagent.
+- **Revision 1.3, 2026-09-26 UTC:** the reviews of revision 1.2 (§15.3; Zcode 11:42, Ark 11:43
+  UTC). E2-III's band raised to 2^-23 (universal, not p-dependent) and E2-III made a named list, not
+  a gate. What E2-II refuses beyond E1 is stated. The census is written per column family (`auc`
+  on present × absent pairs, `auc_null` on all pairs of a base view; `smallest_passing_auc` in
+  neither). M19 corrected (`auc_other_59`: a ∈ {27, 29}, denominators 1728 and 1740, not
+  continuous; digits). M20 rewritten with the pair set beside every number: 4 at-risk fits in
+  D1's scope, the reconciliation with Ark's numbers, and 17,641 D1 fits whose `p` is their N1's.
+  E2-III shown exercised inside D1 on those 4 fits, narrowly. V6 read from the code (§7.1) and
+  its pass rule revised (for the reviewers). Also updated: D3, §5 (outcomes), §6, V2, V8, Totals,
+  Order, §8 (`smallest_passing_auc`), G9, G16, T-G9 (v), T-G10 and ledger row G-(5); ledger row
+  G-(9) and two clarification notes added (§11); §12 P8. No run's cost changes. By a CC subagent.
 
 ## 15. Reviews (DPC Research chat, 2026-09-26 UTC)
 
@@ -891,3 +1073,56 @@ drafter, and why.
 | **Ark's acknowledgement (11:15 UTC)** of the "0.37 %" and "5,319 ✓" corrections | Ark | no change (§15.1, rows C; M10, M11) | none: 0.0037 % and 5,318 s stand as revision 1.1 has them |
 | **Tests** | the decision | T-G4 (rewritten), T-G8, T-G9 (an injected flip is caught), T-G10 (an at-risk fit with a changed AUC is refused); G9, G12, G16 (§10) | T-G9 (iii) adds a same-label flip on a base view (the drafter's addition above) |
 | **§9 totals** | the decision (if a run changes) | §7 Totals | No run changes: the census reads saved `p` in seconds and makes no fit; 2 h 50 min, V8 80 min and the break-even stand |
+
+### 15.3 Review of revision 1.2 (11:42–11:43 UTC)
+
+**Votes.**
+
+| reviewer | time (UTC) | vote | what it rests on |
+|---|---|---|---|
+| Zcode | 11:42 | **yes: revision 1.2 confirmed in full, with text fixes (a)–(d)** | confirms the drafter's additions (1)–(3) of revision 1.2 (all pairs on a base view; the [2^-24, 2^-23) band; E2-III contained in E1) and the flipped-pair definition |
+| Ark | 11:43 | **yes, with edits 1–6** | his census over the pinned store (below); the band of E2-III; the pair set per column family; E2-III as a list; V6 on R:0 |
+| Johnny | — | **out** | Mike, 11:00 UTC; reads the current revision in a new session |
+| Mike | — | not given | the registration still needs his word |
+
+The reviews are cited as relayed in the drafting brief for revision 1.3. Every number in them was
+recomputed from the pinned files (§12, P8). Where they differ, the reconciliation is below.
+
+**The reconciliation of the census numbers (Ark's item 3).** Every count is a count of tied
+pairs (never tie groups); "pa" = present × absent by the record's own `y`; "all" = the 2,016
+pairs of the 64 cells; S(f) = pa on a shuffle, all on a base view (§5).
+
+| object | quantity | pa | all pairs | S(f) | revision 1.2 | Ark (11:43) |
+|---|---|---|---|---|---|---|
+| `\|pc:` (900 fits) | fits with a tie | **502** | **619** | — (a `\|pc:` record enters only its `auc`: pa) | 502 (pa) | 619 (all) |
+| `\|pc:` | tied pairs | 7,828 | 15,738 | — | 7,828 (pa) | — |
+| `\|pc:` | smallest gap | **2.038e-7** (`M0.6:1\|pc:3`) | **6.292e-8** (`M1.0:2\|pc:12`, two absent cells) | — | 2.04e-7 (pa) | 6.292e-8 (all) |
+| D1 scope (18,000) | fits with a tie | **17,604** | **17,617** | 17,613 | 17,604 (pa) | 17,617 (all) |
+| D1 scope | tied pairs | 423,777 | **885,354** | 424,535 | 423,777 (pa) | 885,354 (all) |
+| D1 scope | smallest gap | 9.079e-8 | 9.079e-8 | 9.079e-8 | 9.08e-8 | 9.079e-8 |
+| store (28,665) | records below 2^-23 | 6 | **7** | 6 | — | 7 (all) |
+| base `ko`, six predictors (270) | tied pairs; smallest gap | 2,252; 3.534e-6 | **4,370; 1.702e-7** | — | — | 4,370; 1.702e-7 (all) |
+
+Tie groups (values held by two or more cells) give neither side's numbers (300,756 in D1's scope,
+4,536 in `|pc:`). So Ark's suspicion is right for the counts, and the 3× difference in the
+`|pc:` smallest gap has the same cause: the all-pairs minimum is a same-label pair. No number of
+revision 1.2 was wrong under its stated definition (§11, clarification notes). Revision 1.3
+states the pair set beside every census number and gives the per-family table (§5), where the
+definition that governs each column is fixed by the code.
+
+**Edits.** "Differs" says where this revision departs from the edit as relayed to the drafter,
+and why.
+
+| edit | asked by | applied in | differs |
+|---|---|---|---|
+| **(a)** the at-risk rule record is not a test of E2-III inside D1 | Zcode | §5 E2-III | none. With Ark's band (edit 1), D1's scope now has 4 at-risk fits, and they were exercised (edit 2) |
+| **(b)** `auc_other_59`: per-row lattice 1/(2ab), a + b = 59, step ≥ 0.5 / (29 · 30) = 5.75e-4; 1.596e-5 is a gap between rows; not continuous | Zcode; Ark's denominators 1728, 1740 | M19; §5 "Why a census" | Reproduced. The pinned `y` gives (27, 32) in 40 worlds and (29, 30) in 5. Revision 1.2's "a ∈ {27, 28, 29}" was wrong (28 does not occur), so it gets a ledger row, G-(9) |
+| **(c)** `logloss_margin_over_N1` (5.546e-5, continuous) in the column list | Zcode | M19 | It was already in revision 1.2's M19 (as 5.5e-5) and in E3's list. The digits are now 5.546e-5 |
+| **(d)** 46,080 is the block family (45 × 1,024, all from `block‖N1`), not `\|pc:` | Zcode | M20 | Reproduced (pa: 45 fits with a tie, 46,080 tied pairs, all `block‖N1`). §15.2 already said so; M20 now carries it |
+| **1** E2-III band = 2^-23; state whether the p-dependent spacing should be used | Ark | §5 E2-III; D3; §6; V2; G9; G16; T-G9; T-G10; M20 | Applied. Revision 1.2's printed [2^-24, 2^-23) band is merged into the at-risk list. **The universal value is kept, with a reason from the code:** decode casts the parameters, not p. A 2 · s(p) band would drop the only D1 at-risk pair (p ≈ 0.256, gap 3.05 · s(p)). **Counts differ from the brief:** D1 holds **4** at-risk fits, not 5 (`…\|\|N1` is a CPU fit, outside D1). On each record's census pair set, 6 records are at risk store-wide, not 7. `M1.0:2\|pc:12` is at risk only on all pairs; its pair is two absent cells, which no output of a `\|pc:` record reads. So it is not a witness, even outside the GPU scope |
+| **2** Ark: the D1 at-risk fits "were not recomputed by fresh code" | Ark | §5 E2-III; §11 clarification note; M20 | **Checked; does not hold.** (i) The registered flyvis-65 run fitted all 28,665 keys afresh and matched the pinned store bit for bit (its log, line 94: `fitted_this_pass` 19,110 + 9,555, `p_differ` 0). This includes the four `M0.85:2\|sh:79` BF fits (λ 100; `secs` 4.2380 against the pinned 4.4466 for BF_1). (ii) All four are bit-equal in v2 and v3 (`validation_shuffles_all45.json`, `validation_pipeline_all45.json`, `p_bit_equal` true, AUC 0.6114583333), against the flyvis-65 store (`ref_secs` 4.2380). Ark's "fresh 1,782 shuffles" is A §3.3 fact (c), CC's probe P1 (3 worlds × 99 shuffles × 6 predictors), not the v1 live-CPU comparison the brief suggested. So E2-III was exercised inside D1 on 4 fits and held. **Drafter's addition:** the exercise is narrow. The four fits' `p` is bit-equal to their N1's, as on 17,641 of the 18,000 D1 fits, so the at-risk pair was not made by a BF term |
+| **3** reconcile the census numbers | Ark | M20; §5; §11 clarification note; the table above | All six numbers reproduce, each under its own definition. No ledger row; a clarification note |
+| **4** pair set per column family | Ark | §5 (the families and their table); S(f); G9; G16 | Applied. **One correction:** `smallest_passing_auc` belongs to no family. It is `auc_null` of the fixed tie-free `np.arange(64)` (`knockout_regrow.py:924–937`) and depends on no fit's `p`. §8's sentence on it is clarified in the same way. Ark's base-`ko` numbers (4,370 tied pairs, 1.702e-7 = 2.86 × 2^-24) reproduce over all six predictors. In D1's scope (BF only) the `auc_null` family has 1,538 tied pairs and smallest gap 1.586e-6 |
+| **5** E2-III is vacuous as a gate; say whether E2-II adds refusal beyond E1 | Ark | §5 E2-II, E2-III, Outcomes; D3; V2; V8; T-G10 | Applied. E2-II does add refusal: cancelling flips on one fit, and a same-label flip on a base view that does not move the count behind `p_P` or `p_P_rowcol`. **Drafter's addition:** T-G9 (v) tests the first case (E1 passes, E2-II refuses) |
+| **6** V6 on R:0; read where `BF_TOL` acts | Ark | §7.1; V6 | Ark's counts reproduce on all pairs: R:0 has 4 records and 6 pairs below 1e-5; the store has 675 records and 1,629 pairs. Only 2 of those pairs are inside V6's 400 fits, both same-label pairs on base views. `BF_TOL` acts only in the Newton stop, in every sweep of the inner (λ-choosing) and the final problems. **Drafter's additions, for the reviewers:** E3 cannot flag V6 by construction. Revision 1.2's V6 would refuse the instrument for a run that D3 (b) accepts by design. V6 is recast as a check of the comparator against a brute-force recount, uninformative (not a refusal) if no `p` moves |
+| **Johnny** | Mike (11:00 UTC) | header | none |
