@@ -1,16 +1,25 @@
 ---
-**Status: DRAFT, revision 1, 2026-09-26 UTC (`date -u` read 08:52 UTC when drafting began).
-Not reviewed, not committed. No script written, nothing fitted, no sealed file opened.** Drafted
-by a CC subagent for review by Ark, Johnny and Zcode, then Mike. The design choices that need a
-vote are marked **proposal** in the body and listed in §9 (D1–D16), each with its options, what
-each option changes, and a recommendation. The body is written with the recommended option, so
-the draft is complete as it stands.
+**Status: DRAFT, revision 1.1, 2026-09-26 UTC. Revision 1.1 has not been voted on and is not
+committed. No script written, nothing fitted, no sealed file opened.** Revision 1 (commit
+`f82d442`; `date -u` read 08:52 UTC when its drafting began) was reviewed in the DPC Research chat
+by Johnny (09:14 UTC), Ark (09:18) and Zcode (09:32), all "yes, with edits" (§9.1). Revision 1.1
+applies those edits (§9.2): three reading rules frozen before unsealing (the male R as a
+conjunction, §4.2; the split class S2 conditional on `x`, §4.3; leg S decided by the count,
+§3.2), and the edits to D7, D8, D11, D12, D13, §1.5, §3.3, §3.6, §3.7, §7.5 and the ledger. It
+also specifies the content of the amendment to A (§9.3), which is made in a later step. Drafted
+by a CC subagent; Mike's word is still needed. The design choices are marked **proposal** in the
+body and listed in §9 (D1–D16), each with its options, what each option changes, and a
+recommendation. The body is written with the recommended option (as relayed, no vote asked for
+another option; D7 (ii), D11 (i) and D13 (i) were kept explicitly), so the draft is complete as it
+stands.
 
 **What this file is.** The registration of the **male CNS arm** of knock out and regrow: the
 animal control that block A's registration names in its §8,
 [`2026-09-24-knockout-regrow-registration.md`](2026-09-24-knockout-regrow-registration.md),
 **revision 3.4.1** (commit `74db080`; LF sha256 `409184de…3facd6`, the value the flyvis-65 run's
-manifest recorded; cited below as "A §n"). It is a **delta on A**: everything of A revision 3.4.1
+manifest recorded; cited below as "A §n"; after the amendment of §9.3 this citation is updated to
+the amended hash, and `409184de…` stays the text the flyvis-65 verdict was made under). It is a
+**delta on A**: everything of A revision 3.4.1
 applies to this arm unchanged unless a section below says otherwise. Every gate and every reading
 rule of A is kept. What changes is the bank (two banks, one per optic lobe of one male), the grid,
 what follows from a block whose content is sealed, the synthetic worlds built on the male banks,
@@ -28,7 +37,7 @@ arm's script (a new file, D14) and its tests are written against it and committe
 marked as a draft. (3) The `--synthetic-only` pre-run of both lobes is made from that committed
 head, on Mike's word; it reads no sealed file, and its outputs become the arm's two pinned
 references. (4) A revision of this file registers the values read from those references (§3.3)
-and is reviewed; in the same step A is amended with the four bank pins (D11). (5) The registered
+and is reviewed; in the same step A is amended as §9.3 specifies (D11). (5) The registered
 run, on Mike's word. It is the first and only code that opens the sealed files (§7.4).
 
 **The seal, at drafting: intact.** No person or agent involved in this draft has opened, printed,
@@ -93,7 +102,7 @@ against flyvis-65's G.
     by a side label that contradicts the lobe of every partner).
   - Inferable **64 / 64** at `c*` in both lobes; **3** mirror cells in each lobe; smallest endpoint
     keep T5a 4 (`BUILD.md` lines 189–190). Also printed by the builder: inferable 56 / 64 in lobe L
-    at the (b′) cut for `w_min` = 2 and 3 (`BUILD.md` lines 210, 227; §11, ledger row M(1)).
+    at the (b′) cut for `w_min` = 2 and 3 (`BUILD.md` lines 210, 227; §11, clarification C1).
   - All 16 block names map by name (`type` column), with 808–1,037 bodies per type per lobe and
     a right/left body ratio between 0.98 and 1.02 for every block type (`BUILD.md` lines 30–84;
     §1.2).
@@ -147,7 +156,8 @@ repository, builder D11 (i)). sha256 over raw bytes, from the committed `bank.me
 The script refuses if any differs. The sealed files' hashes are checked **before** they are
 opened, in the real run only; no other mode computes more than that hash (§7.4). **Where the pins
 live (D11):** in this file and the arm's script; A is amended, append-only, with the four bank
-pins, as A §8 and builder §10.5 step 4 promise.
+pins, as A §8 and builder §10.5 step 4 promise, together with the cancellation of A's seeds for
+this arm and the way to recover A's text as it stood at the flyvis-65 verdict (§9.3).
 
 ### 1.2 The block (unchanged; its mapping on the male bank)
 
@@ -277,7 +287,8 @@ exists outside the sealed files.
 **The script recomputes these tables at run start, in every mode, from the outside files only,
 and stops with "PRE-DATA TABLES DIFFER" if any differs from this section** (check 4, §3.4). The
 male row of A's inferability table ("64 / 64 at every pair threshold tried (Zcode, preliminary
-graph)") is replaced, for this arm, by "64 / 64 at `c*` in each lobe" (ledger row M(1), §11).
+graph)") is, for this arm, "64 / 64 at `c*` in each lobe": a different object, not a correction of
+A's row (clarification C1, §11).
 
 ### 1.5 Prior exposure of male block A, and the read declaration
 
@@ -295,6 +306,12 @@ This repository says **prior exposure**, not "contamination" (B §1.5).
    expectation and sets nothing from it: machine check 3 prints the block instead of comparing it
    with a count (§3.4, D8), no cut, rank, λ grid or seed is chosen with reference to it, and every
    gate and reading rule is A's, fixed before the male bank was built.
+   **One consequence is named, because it bears on readability (revision 1.1; Johnny, Zcode):**
+   the relayed weak cells (means 1.0–2.2) lie below `c*`, so at `c*` the block may be sparse,
+   with `n_present` well below 32. A sparse block raises the chance of the "not readable" U of
+   §3.2 (`smallest_passing_auc` = None) and of degenerate shuffles in leg S (§3.2). This is a named
+   risk, not an expectation that sets anything: no gate, cut or branch moves with it, and the
+   relayed numbers are not verified (§10).
 3. **flyvis-65's G is known** (§0), and so is the flyvis-65 block (public). The lobe-disagreement
    rule (§4.3) and the male readings against G (§5) are written after that verdict. They name
    their inputs, and none of them is the male block.
@@ -315,6 +332,15 @@ instrument's commit message, D13) and the last commit of each cited file. A grep
 repository's `.py`, `.md` and `.json` files for 92000–92999 (§3.7). **Not opened:** either sealed
 file, `summary.json` of the flyvis-65 run beyond what the blind review quotes, anything under
 `chat/`.
+
+**Read declaration, revision 1.1 (a second CC subagent).** Read in addition: this file whole; A
+§3.2, §4, §5, §8 and its end; `knockout_regrow.py` (`74db080`) lines 300–313, 770–790, 920–940,
+1010–1080, 1240–1260, 1810–1876, 2075–2090, 2155–2165, 2280–2292, 2340–2400, 2420–2435; the
+builder's §10.1, §10.5 and §13; the `n_deg` and `degenerate` columns of A's pinned pre-run
+`synthetic_worlds.csv` (`connectome-seed-data/knockout_regrow/synthetic_rev3_prerun/`) and of the
+flyvis-65 run's committed `synthetic_worlds.csv` and `per_shuffle.csv`; greps of the repository
+(§3.7, §9.3, §11). **Not opened:** either sealed file (neither read, counted nor sized), anything
+under `chat/`. The reviewers' messages are known from CC's brief only.
 
 ## 2. The predictors (delta on A §2)
 
@@ -368,6 +394,19 @@ in place of "the other 59". The block's present pattern is printed after unseali
   `99 − n_deg` shuffles with an AUC (A's D14 (ii)), `n_deg` named above 5. A shuffle keeps the
   lobe's degrees, block included, and stays on the placed grid (§1.3). If the male block is
   sparse, a shuffled block is all absent more often; `n_deg` is printed.
+- **Leg S is decided by the count; `p_S` is informative (revision 1.1, frozen before unsealing;
+  Ark, Zcode).** A's script decides leg S by `n_valid >= 1 and n_ge == 0`
+  (`knockout_regrow.py:1067`) and computes `p_S = (1 + n_ge) / (1 + n_valid)` (`:1068`), which it
+  prints with two decimals (`:.2f` at `:1252`, the verdict line; also `:2083`, `:2162`, `:2393`).
+  With `n_deg` = 1 a passing leg S has `p_S` = 1 / 99 = 0.0101, which prints "0.01" and looks
+  equal to `P_R` = 0.01, while the gate decided by the count; with `n_deg` = 2, 1 / 98 = 0.0102.
+  The count and a "`p_S` <= 0.01" reading coincide only when `n_deg` = 0. That held in all 270 rows
+  of A's pinned pre-run and of the flyvis-65 run's synthetic step (checked, column `n_deg`), by
+  chance, not by construction; A's `N_DEG_SENTENCE` (`:310-311`) prints the smallest `p_S` with
+  three decimals only when `n_deg` > 5. **For this arm: the count decides leg S** (A's rule,
+  unchanged); `p_S` is printed as information and never compared with a cut; **when `n_deg` >= 1,
+  `p_S` is printed with four decimals and a mark** naming the count as the deciding quantity (S28).
+  A sparse male block makes `n_deg` >= 1 more likely (§1.5).
 - **Leg P: unchanged in form:** 9,999 uniform permutations of the 64 labels from one generator
   (seed 92000, §3.7), `p_P = (1 + #{AUC_perm >= AUC_real − TAU}) / 10,000`, passing at `<= 0.01`.
   The AUC needed moves with the counts. The null's standard deviation is
@@ -380,6 +419,10 @@ in place of "the other 59". The block's present pattern is printed after unseali
   0.016), leg P cannot pass on that block, so R and W are unreachable by construction. **That lobe
   reads U with its own text, "not readable: leg P cannot reach p_P <= 0.01 on this block
   (n_present = k of 64)"**, never renamed by the U rule and not counted as a threshold U (D8).
+  **Linked to §1.5 (revision 1.1; Johnny, Zcode):** the relayed weak cells of the male block lie
+  below `c*`, so the block at `c*` may be sparse (`n_present` well below 32), and the chance of this
+  "not readable" U is higher than a 32/32 board would suggest. It is a named risk, not a
+  prediction: nothing is set from it.
 - **`TAU` stays inert:** every AUC is a multiple of `1 / (2 n_p n_a)` with `n_p n_a <= 1,024`, so
   two unequal values on these lattices differ by at least `1 / (4 · 1,024²)` ≈ 2.4e-7 ≫ 1e-9 (as A
   §3.2).
@@ -399,7 +442,10 @@ in place of "the other 59". The block's present pattern is printed after unseali
      (chain …, successes …, attempts …)"). **On a real male block it does not stop:** the variant
      prints "n/a (attempt cap reached: chain …, successes …, attempts …)" and the run goes on. The
      variant decides nothing, and the real run is made once, after the seal is broken (§7.4); a
-     stop there would forfeit the registered run for a diagnostic.
+     stop there would forfeit the registered run for a diagnostic. **The asymmetry with check 3
+     is deliberate (revision 1.1, Johnny; D8):** a block with no AUC is fatal for that lobe,
+     because there is no verdict to print; an `rc_patterns` cap hit is a diagnostic, and the
+     verdict stands.
 - **Leg N1:** printed, decides nothing; on the male block it is not "uninformative by algebra"
   (§0).
 
@@ -427,9 +473,13 @@ in place of "the other 59". The block's present pattern is printed after unseali
 - **Registered values, read from each lobe's reference (one address, A revision 3.4.1 item B):**
   `smallest_passing_auc` for boards `z` and `z'`, and the `ko1` count (copied and fitted). **Their
   values do not exist yet.** The revision of this file that follows the pre-run states them,
-  verified on the pinned files. Because both lobes use the same leg-P seed and the same boards
-  (§3.6, §3.7), **the two lobes' `smallest_passing_auc` values must be equal board by board**; the
-  script asserts it.
+  verified on the pinned files. **In the synthetic worlds**, both lobes use the same leg-P seed and
+  the same boards (§3.6, §3.7), and `smallest_passing_auc` depends only on the block's labels and
+  the permutations (`knockout_regrow.py:924-937`), so **the two lobes' values must be equal board
+  by board**; the script asserts it. **This does not extend to the real blocks (revision 1.1,
+  Ark):** each lobe's real block has its own labels, so its `smallest_passing_auc` is a new value,
+  computed once, with no registered value to compare it with; the two lobes' real values are
+  printed, not asserted equal.
 - **Both lobes' gates pass before either sealed file is opened** (§4.2, §7.4). A failed stop row or
   a failed reproduction in either lobe stops the arm with both blocks sealed.
 
@@ -442,7 +492,7 @@ arm before the seal is broken; check 3, check 5, check 6′ and check 11 run aft
 |---|---|
 | 1 pins | A's eight pins; the six male files of §1.1 (the sealed files by hash only, and only in the real arm before opening; §7.4); Python 3.10.20 and numpy 2.2.6; rule #2.1 with `RANK == 1` |
 | 2 block and mask | 64 cells, 8 sources, 8 targets, all 16 names in the placed set; on the placed grid the knockout view has 2,961 cells, none in the block; the full view 3,025; the block view 64 |
-| 3 board | **no reviewed count exists** (A §8: "set by the builder's registered threshold"; §1.5). Replaced by a print, after unsealing: the block's present count, the four quadrant counts, the row and column counts, whether `y_st = x_s · w_t` (flyvis's board), and whether the block is balanced (4 of 8 in every row and column). It stops that lobe only if the block has no AUC (0 or 64 present: "BLOCK HAS NO AUC") (D8) |
+| 3 board | **no reviewed count exists** (A §8: "set by the builder's registered threshold"; §1.5). Replaced by a print, after unsealing: the block's present count, the four quadrant counts, the row and column counts, whether `y_st = x_s · w_t` (flyvis's board), and whether the block is balanced (4 of 8 in every row and column). It stops that lobe only if the block has no AUC (0 or 64 present: "BLOCK HAS NO AUC"): fatal, since there is no verdict to print, unlike an `rc_patterns` cap hit, a diagnostic after which the verdict stands (D8) |
 | 4 pre-data tables | §1.4's endpoint table, 64 / 64 inferable, the three mirrors, the training present count (496 / 526), R1's and CT1(M10)'s row and column cells, and the lobe agreement (493 / 3 / 33) must match, else "PRE-DATA TABLES DIFFER". From the outside files only |
 | 5 N1 parity identity | `D(N1 logit)` printed with the balance of check 3; no stop (it is 0 only on a balanced block) (D8) |
 | 6 leakage | **before unsealing:** the knockout fit of rule #2.1 on the lobe's bank with its block filled two ways (all absent; the board `z`) must give byte-identical data dicts. **6′, after unsealing:** the same fit on the real lobe bank must give the same hash ("BLOCK LEAKS INTO TRAINING") |
@@ -509,9 +559,15 @@ arm.
   be (§6).
 
 **Cost (A §7's measured rate, 3.65 fits per second on 30 CPU workers; assumed to hold on the placed
-grid, where every array is still 65 × 65):** one lobe's synthetic step is 45 × (3 × 6 + 20 + 99 × 6)
-= 28,440 fits, about **2 h 10 min**; both lobes about **4 h 20 min**. The pre-run and the registered
-run's refit together: about **8 h 40 min** of CPU wall time, plus the real blocks (§7.5).
+grid, where every array is still 65 × 65):** one lobe's synthetic step is 45 × (3 × 6 + 20 + 99 × 6
++ 5) = 28,665 fits, about **2 h 11 min**; both lobes about **4 h 22 min**. The pre-run and the
+registered run's refit together: about **8 h 44 min** of CPU wall time, plus the real blocks
+(§7.5). **The + 5 (revision 1.1, Zcode):** the `ko1` fits, the knockout at fixed λ = 1 of rule
+#2.1 and BF_1–BF_4 on every world (the diagnostic of A §3.5; `complete_fixed_lambda`,
+`knockout_regrow.py:1833-1853`): 225 per lobe, about + 0.8 %. Revision 1 left them out; A's
+script counts 637 keys per world (`:1462`). The 225 is an upper bound: a `ko1` record whose ko fit
+already selected λ = 1 is copied, not fitted (A's pinned store: 225 records, 47 copied, 178
+fitted, `:1870-1871`).
 
 ### 3.7 Seeds (proposal, D7; all new; the script asserts that they are distinct)
 
@@ -528,13 +584,25 @@ run's refit together: about **8 h 40 min** of CPU wall time, plus the real block
 their degree terms and content pools, and their leg-P nulls are the same permutations, so a
 difference between the lobes cannot come from a draw. **A §8 says "the same legs, cuts, seeds and
 branch rule apply"**; this table replaces A's seeds with new ones (D7 records the choice and its
-reason). **Untouched:** A §3.7's list (60000, 61000, 70000–70999, 80000–80999, 4242, 99, 7,
+reason), and the amendment to A cancels that sentence as it concerns seeds, with the address of
+this section (§9.3). **What is given up (revision 1.1, Johnny):** the male leg-P null is not
+flyvis-65's 9,999 permutations, so a male `p_P` is not directly comparable with flyvis-65's `p_P`
+draw for draw; the two are compared only as two tests of the same rule, each against its own
+null. **Untouched:** A §3.7's list (60000, 61000, 70000–70999, 80000–80999, 4242, 99, 7,
 1000–1019, the dial seeds, 20260923), A's own seeds (90000, 90001, 90010–90029, 90100–90154,
 90160–90184) and B's (91000, 91001, 91010–91029, 91100–91184). **Checked 2026-09-26 UTC:** a grep
-of the repository's `.py`, `.md` and `.json` files for 92000–92999 found no seed: the hits are
-digits inside floating-point values (`results/genome/c6/rules/second_rule/diagnosis_power_rows.json`)
-and two neuron-pair row counts in `BUILD.md` (92745 and 92100, lines 159 and 168) and their copies
-in `bank.meta.json`. The script asserts that the new seeds are distinct, lie in 92000–92999, and
+of the repository's `.py`, `.md` and `.json` files for 92000–92999 found no seed. **Revision 1.1
+(Zcode): revision 1 named two hits, but the list was not exhaustive.** Recounted over the tracked
+files at revision 1's tree (`f82d442`, before this revision's edits; `git grep -E '92[0-9]{3}'`): **96,233 occurrences of a digit string 92000–92999 on 92,083
+lines in 904 files** (4 `.py`, 21 `.md`, 879 `.json`), almost all inside longer numbers:
+floating-point values, sha256 strings and counts. Bounded as a whole decimal number (no digit, hex
+letter or decimal point on either side), the only hits outside this file are the two neuron-pair
+row counts in `BUILD.md` (92745 and 92100, lines 159 and 168) and their copies in
+`bank.meta.json` (lines 3479, 3587). None of the four `.py` files' hits is a seed (two sha256
+strings in `knockout_regrow.py:130`, `:155`; floating-point values in two `post_run.py` and
+`night3/diagnostics/rowB/rowB3.py`). **The conclusion "no seed in the range" stands**; the census
+is by pattern, and a seed written as an expression (for example `92_000` or `90000 + 2000`) would
+not be found by it. The script asserts that the new seeds are distinct, lie in 92000–92999, and
 meet none of the untouched, reused, block-A or block-B seeds.
 
 ### 3.8 Vocabulary (additions)
@@ -567,9 +635,17 @@ Four differences (D12):
    pre-run U worlds sit at γ = 0.6 = γ\*_P" and "by §2.4 this is a failure of the fit, since the
    block is rank 1". The script prints, after each quoted row, one line naming which literals are
    A's (the flyvis-65 pre-run U worlds; "the block is rank 1") and giving the lobe's own values.
+   The rows are quoted from the amended A, never from this file, which holds none of them
+   (script change S2, D12).
 4. **"Failed fit" on a male block** keeps its text ("failed fit: rule #2.1 cannot hold the block
    even when trained on it alone"), which states the measurement; it is read as "a failed fit or a
    rank limit, not separated", since the male block is not known to be rank 1 (B's D9).
+
+**Leg S in every branch (revision 1.1, frozen before unsealing; Ark, Zcode).** "The primary passes
+leg S" means the count, `n_ge = 0` of the `99 − n_deg` shuffles with an AUC (A §4's own wording;
+`knockout_regrow.py:1067`), never `p_S <= 0.01`. `p_S` is printed beside it as information, with
+four decimals and a mark when `n_deg` >= 1 (§3.2, S28). This is not a fifth difference: A's rule is
+the count; the arm only prints `p_S` so that it cannot be misread as the deciding quantity.
 
 ### 4.2 The two lobes: one run, two labels, one male reading (proposals, D2, D3)
 
@@ -588,6 +664,29 @@ run is fixed. Each lobe gets its own label by §4.1.
 | U | U | **U** in both lobes, each with its own U text |
 | any other pair | | **split: "lobe L reads X, lobe R reads Y"**, with the classification of §4.3. A split is not R, W or G on the male CNS |
 | a lobe with no AUC or "not readable" | | **one lobe only: "lobe ℓ reads X; lobe ℓ′ cannot be read (reason)"**. Not a male R even if X is R |
+
+**The male R is a conjunction of two A criteria (revision 1.1, frozen before unsealing; Johnny,
+Ark, Zcode).** A male R requires A's R in lobe L **and** A's R in lobe R. What that does, stated
+before data:
+
+- **Power: lower than a single-bank R, and not calibrated.** Both lobes must pass both legs on
+  both D1 candidates. The synthetic worlds measure each lobe's R on 32/32 boards (§3.6); no
+  registered quantity measures the joint R rate on the real blocks, whose shape is sealed.
+- **Null: not squared.** If the two lobes were independent tests, each with a false-R rate near
+  `P_R` = 0.01, a false "R in both" would be about 1e-4. They are not independent: both lobes use
+  one permutation matrix (seed 92000), one set of shuffle seeds and boards, and nearly the same
+  outside (493 of lobe R's 526 present outside cells are present in lobe L too; §1.4). The false
+  "R in both" rate therefore lies between `p_L · p_R` and `min(p_L, p_R)`, and with dependence this
+  strong it is nearer the upper end: **about 1 %, not 1e-4.** Neither end is calibrated; nothing in
+  this registration measures where between them it lies.
+- **So the male R is stricter in power and hardly stricter in null.** It is read as "R in each of
+  two strongly dependent readings of one animal", not as a replication.
+- **A split is the likely outcome for a marginal signal, and it is registered as such.** A block
+  near the detection limit can pass in one lobe and not in the other (one lobe R, the other U or
+  G). Such a split is informative: it is classified by §4.3 and printed with both lobe labels. It
+  gets **no male label**. That is a registered choice, made here before data, not a loss to be
+  repaired after it: no rule reads a split as a weak R, and no second criterion is added after
+  unsealing.
 
 ### 4.3 A split: the rule that separates its explanations (proposal, D4; builder D12, §12)
 
@@ -622,15 +721,31 @@ draft):
 |---|---|---|
 | **S0: same block** | `y_L = y_R` | "Block A is the same in both lobes at `c*`; the split comes from the instrument's response to the lobes' other differences (36 of 2,961 outside cells) or from the threshold of detection, not from block A." |
 | **S1: differs like the rest of the lobe** | `1 <= k < k*` | "Block A differs between the lobes in k of 64 cells, within the lobes' outside rate (36 / 2,961, expected about 0.8 of 64): not read as a difference specific to block A. Variation within the animal and a reconstruction difference are not separated." |
-| **S2: differs more than the rest of the lobe** | `k >= k*` | "Block A differs between the lobes more than the rest of the lobe does (k of 64; P(X >= k) = … under the outside rate): a difference specific to block A. Its two explanations, variation within the animal and a difference of reconstruction or typing of the block types, are not separated by this test. The R1–R6 asymmetry is excluded as its carrier (R1 is not a block type, and R1's row and column are the same cells in both lobes at `c*`)." |
+| **S2a: differs more than the rest of the lobe, away from the cut** | `k >= k*`, and **every one** of the k differing block cells has `x` outside [0.5 `c*`, 2 `c*`] in both lobes | "Block A differs between the lobes more than the rest of the lobe does (k of 64; P(X >= k) = … under the outside rate), and no differing cell lies near the cut: a difference specific to block A. Its two explanations, variation within the animal and a difference of reconstruction or typing of the block types, are not separated by this test. The R1–R6 asymmetry is excluded as its carrier (R1 is not a block type, and R1's row and column are the same cells in both lobes at `c*`)." |
+| **S2b: differs more than the rest of the lobe, at the cut** | `k >= k*`, and **at least one** differing block cell does not meet S2a's condition (its `x` lies within [0.5 `c*`, 2 `c*`] in at least one lobe) | "Block A differs between the lobes in k of 64 cells (P(X >= k) = … under the outside rate), and j of them lie near the cut: block cells at the threshold; the same mechanism as 33 of the 36 differing outside cells; specificity to block A not established." |
 
-Printed with the class: each differing cell by name with its presence in each lobe, whether both
-lobes' `x` lie within [0.5 `c*`, 2 `c*`], and the direction count (L-only against R-only) beside the
-outside's 3 against 33. **The binomial reference is descriptive**: block cells are not a random
-sample of outside cells (they are strong medulla-to-lobula-plate pathways, not a random draw of
-type pairs), and the class decides no label. It separates "a block-specific difference" from "a
-lobe-wide one". It does not separate variation within the animal from reconstruction; nothing in
-one animal's two lobes can (§6).
+**S2 is conditional on `x` (revision 1.1, frozen before unsealing; Johnny, strengthened by Ark and
+Zcode).** Revision 1's S2 read every `k >= k*` as "a difference specific to block A". But 33 of the
+36 outside cells that differ between the lobes lie near the cut in both lobes (§1.4): a lobe-wide
+difference in `x` near `c*` turns cells over one by one, and block cells near the cut would turn
+over by the same mechanism. So "specific to block A" is read only when no differing block cell is
+near the cut (S2a); otherwise S2b says the difference is at the threshold and its specificity is
+not established. The band [0.5 `c*`, 2 `c*`] is the one §1.4 used for the outside cells, fixed
+before unsealing. S2a requires every differing cell to lie outside the band in both lobes; S2b is
+its complement, so the two are exhaustive. **Which branch is expected (Ark):** the relayed
+description of §1.5 (20–21 weak cross cells with means 1.0–2.2 at c = 1, against `c*` = 2.994 and
+0.5 `c*` = 1.497) puts weak block cells in or near the band, so if the lobes' blocks differ, S2b,
+the threshold branch, is the expected (modal) one. The relayed numbers are not verified (§10), and
+nothing is set from this expectation.
+
+Printed with the class: each differing cell by name with its presence in each lobe, whether each
+lobe's `x` lies within [0.5 `c*`, 2 `c*`] (and the count j of differing cells that fail S2a's
+condition), and the direction count (L-only against R-only) beside the outside's 3 against 33.
+**The binomial reference is descriptive**: block cells are not a random sample of outside cells
+(they are strong medulla-to-lobula-plate pathways, not a random draw of type pairs), and the class
+decides no label. It separates "a block-specific difference" (S2a) from "a lobe-wide one" (S0, S1)
+and from "a difference at the threshold" (S2b). It does not separate variation within the animal
+from reconstruction; nothing in one animal's two lobes can (§6).
 
 ## 5. What each outcome means, and the joint reading with flyvis-65 (delta on A §5, §8)
 
@@ -647,7 +762,7 @@ A's D13 and adds its reading):**
 |---|---|---|
 | **R** (both lobes) | R on the male CNS only: a flag | **Neither verdict is overturned.** flyvis-65's G stands. The male R reads: "regrows in both lobes of one animal, on an existence bank at one cut; the template does not show it at the R level." The flag is a registered list of what must be examined, **under a new registration, not by a rerun**: (i) the averaging of flyvis-65 (per offset, merged over two flies, column-averaged) against one animal's type-pair means (builder §8), the column-test anchor of A §0 in the other direction; (ii) the threshold: the male block is cut at `c*`, chosen on outside cells, and flyvis's by eq. 8 per offset; (iii) the prior exposure of §1.5; (iv) typing by connectivity in the male CNS (A §6). No consequence for the forward path is drawn from a male R alone |
 | **W** (both lobes) | any other pair | flyvis-65's G stands alone. Printed beside it: "in both lobes of one animal the outside implies block A for a BF_r while rule #2.1 misses; on the template no BF_r passed". It bears on A's column-test anchor (averaging may hide information the animal carries) and on the rule (W); it changes no registered label |
-| **G** (both lobes) | any other pair | Agreement: "not detected at the R level in the template or in either lobe of one animal, each against its own limits". The limits are not compared across banks as numbers (§3.6). A G in the animal does not strengthen flyvis-65's G beyond its own limits; it removes "an artefact of averaging" as the only explanation of flyvis-65's G |
+| **G** (both lobes) | any other pair | Agreement: "not detected at the R level in the template or in either lobe of one animal, each against its own limits". The limits are not compared across banks as numbers (§3.6). A G in the animal does not strengthen flyvis-65's G beyond its own limits. **Revision 1.1 (Johnny, Ark, Zcode):** agreement removes "an artefact of averaging" as the only explanation of flyvis-65's G **only at a power not below A's**, and that is not measured: the male R is a conjunction of two lobes, with lower and uncalibrated power (§4.2), and each lobe's limits are measured on its own instrument-bank pair. **A male G is weaker than it reads**: it is printed with the sentence "power of the male R not calibrated; this G does not by itself exclude averaging as the explanation of flyvis-65's G" |
 | **U**, split, one lobe only | any other pair | flyvis-65's G stands alone; the male reading, its lobe labels and, for a split, its class (§4.3) are printed beside it |
 
 **Per lobe**, A §5's table applies to each lobe's label, with "the block" meaning that lobe's
@@ -662,6 +777,13 @@ A §6 applies, except its male-CNS item, which this arm replaces, and in additio
   block-specific difference from a lobe-wide one; it cannot separate variation within the animal
   from a reconstruction or typing difference (§4.3). A second male, or a female, is not in this
   registration.
+- **A signal in one lobe is not read as R (a named cost; revision 1.1, Johnny, Ark, Zcode).** The
+  male R needs R in both lobes (§4.2). A block that regrows at the R level in one lobe only is a
+  split, classified by §4.3, with no male label. For a marginal signal that is the likely outcome.
+  The conjunction lowers the power of the male R, and its power is not calibrated; its false-R rate
+  is not squared (the lobes share one permutation matrix, one set of boards and nearly the same
+  outside), so it lies between `p_L · p_R` and `min(p_L, p_R)`, about 1 %, not 1e-4, and neither
+  end is calibrated. Stricter in power, hardly stricter in null.
 - **One cut.** The verdict is at `c*` = 2.994 (`w_min` = 1). The builder printed the outside at
   other cuts (`BUILD.md` lines 188–238); the block at those cuts is not scored.
 - **An existence bank.** No offsets, counts or sign exist on it (builder §7, D8); those fields are
@@ -694,12 +816,24 @@ faster than the pool, and base-view fits not all bit-equal (BF 175 / 180, rule #
 rest within 6e-8). It would need its own registration and synthetic worlds (A §7), and it would
 shorten only the BF part of the wall time (four of the six predictors; rule #2.1 is not faster).
 
+**Revision 1.1 (D13; Johnny, Ark, Zcode).** All three reviewers keep the CPU instrument (i) for
+this arm: the pinned pre-run must be made by the same instrument as the registered run, and the
+GPU instrument has no registration yet. **Its economics, as Ark and Zcode gave them (relayed, not
+recomputed here, except 1 − 4,870 / 7,846 = 37.9 %):** the hybrid saves about 38 % of a pass
+(4,870 s against 7,846 s), not a factor 2.3; rule #2.1 is not faster on GPU; the ceilings, the
+fixed-λ diagnostic and the permutations are not ported. **Option (iii) (Johnny, Ark):** during the
+pre-run, the GPU instrument may run the male worlds as a second, unregistered cross-check. It
+decides nothing, its output is an input to no gate, reference or registered value, and it is
+reported apart from the pinned references. **The GPU instrument gets its own registration, on a
+separate track** (Mike's word, DPC Research chat, 09:13 UTC: "review the GPU instrument"); nothing
+in this arm waits for it.
+
 ### 7.2 Script changes (listed; none is made by this draft; D14)
 
 | # | where (A's script, lines at `74db080`) | change |
 |---|---|---|
 | S1 | the file | a new script, `results/genome/c6/checks/knockout_regrow_male_cns.py`, a copy of A's with the changes below, reviewed as a diff against it; A's script stays byte-unchanged; a new label test beside A's |
-| S2 | `REGISTRATION`, `REGISTRATION_REVISION`, the manifest (:109-110, :2583-2601) | this file and its revision; A's registration path pinned by its LF sha256 **after** the D11 amendment, because §4 is quoted from it (`quote_row` :2373-2379, `quote_section` :2367-2370); the builder's registration and `bank.meta.json` recorded |
+| S2 | `REGISTRATION`, `REGISTRATION_REVISION`, the manifest (:109-110, :2583-2601) | this file and its revision; A's registration path pinned by its LF sha256 **after** the D11 amendment, because §4 is quoted from it (`quote_row` :2373-2379, `quote_section` :2367-2370); the builder's registration and `bank.meta.json` recorded. **`quote_row` reads from the amended A, never from this file (revision 1.1; Johnny, Zcode).** It returns the first line that starts with the label's key (`next(...)`, :2379). In A the U and G keys already match two rows each, §4's and §5's (A lines 1328 and 1382 for U, 1327 and 1381 for G; R and W one each, 1325 and 1326); the quote is §4's only because §4 comes first. This file has **zero** such rows (§4.2's table starts "\| R \| R \|"), so quoting from it would raise `StopIteration`. The amendment to A is appended after A's last line (§9.3), below both tables, so it cannot capture the first match even if it held such a line |
 | S3 | `PINS` (:139-156) | the six male files of §1.1, beside A's eight; the sealed files' hashes kept apart (`SEALED_SHA256`) and checked only in `open_sealed` (S21) |
 | S4 | new: the loader | `load_male_bank(lobe)` reads `male_cns_<lobe>_outside.csv` (`src, tar, du, dv, n_syn, sign`), builds `{"offsets": {(0, 0): n_syn}, "hull": [], "sign": 1}` per present cell, refuses a name outside the 55 placed types, a block-A cell ("BLOCK ROW IN OUTSIDE FILE"), an offset other than `(0, 0)` or a sign other than +1, as `load_flywire_bank` does (`flywire_bf_p3.py:85-98`) |
 | S5 | new: the grid | `restrict_to_placed_grid()` replaces `H.ALL_CELLS` with the 3,025 placed cells (`flywire_bf_p3.py:73-75`); called in `main` after check 8 and in `_w_init` (:782-786) for every worker; `_w_group` (:834) asserts `len(H.ALL_CELLS) == 3025` |
@@ -720,11 +854,12 @@ shorten only the BF part of the wall time (four of the six predictors; rule #2.1
 | S20 | `main`, `--arm` (:2498-2533) | `--arm malecns` runs both lobes (§4.2); `--synthetic-only --lobe L|R` for the pre-run; `private_run_dir` gives `malecns_<UTC stamp>_<head 12>`; **`--allow-dirty` refused with `--arm malecns`** (D10) |
 | S21 | new: the unseal step | `open_sealed(lobe)`, called only from the real-arm path after both lobes' synthetic steps and checks 1, 2, 4, 6, 7, 8, 9, 10 have passed: checks the sha256 first, then parses the fixed-width file, runs check 11, returns the present block cells with `n_syn = x`; prints the file's cross-lobe block-weight line after the verdicts (§7.4) |
 | S22 | `machine_checks_real` (:2464-2495) | checks 6 and 9 before unsealing on the two synthetic block fillings; check 6′ after unsealing against the pre-unseal hash |
-| S23 | new: the lobe comparison | `lobe_split_class(y_L, y_R, x_L, x_R)` (§4.3, with `k*` computed from 36 / 2,961 and checked equal to 4) and `male_reading(label_L, label_R)` (§4.2); the joint reading with flyvis-65 (§5) as a table lookup, no computation |
+| S23 | new: the lobe comparison | `lobe_split_class(y_L, y_R, x_L, x_R)` (§4.3, with `k*` computed from 36 / 2,961 and checked equal to 4; S2 split into S2a and S2b by the band [0.5 `c*`, 2 `c*`] on each differing cell's `x` in both lobes, revision 1.1) and `male_reading(label_L, label_R)` (§4.2); the joint reading with flyvis-65 (§5) as a table lookup, no computation |
 | S24 | `WITHIN_FLY_NOTE` (:237-239), the `TAU` comment (:228-233) | the within-animal note of §3.5; the lattice text made generic |
 | S25 | `print_bank`, `md_bank_table`, `summary.json` (the D7 fields, :1077) | the offset, count and sign fields printed under "meaningless on an existence bank" |
 | S26 | `SEAL_RECORD`, new | a constant, "intact" in this revision; if a registered amendment records a break of the seal before review, the verdict lines end with the builder's note "block A of the male CNS was read before its registration was reviewed" (builder §9) |
 | S27 | tests | §7.3 |
+| S28 | the `p_S` prints: the verdict line (:1252), `print_bank` (:2083), `md_check_and_curve` (:2162, the synthetic table), `md_bank_table` (:2393); `N_DEG_SENTENCE` (:310-311) (revision 1.1; Ark, Zcode) | when `n_deg` >= 1, `p_S` is printed with four decimals and the mark "[leg S decided by the count: n_ge = 0 of n_valid]" (or "n_ge = k of n_valid" when it fails); when `n_deg` = 0, as A; no decision reads `p_S` (leg S stays `n_valid >= 1 and n_ge == 0`, :1067) |
 
 ### 7.3 Tests (fixtures and synthetic banks only; no sealed file)
 
@@ -750,7 +885,11 @@ shorten only the BF part of the wall time (four of the six predictors; rule #2.1
 - **T8, readability:** `n_present` = 1 and 63 give `smallest_passing_auc = None` and the "not
   readable" U; 0 and 64 give "BLOCK HAS NO AUC".
 - **T9, the lobe rules:** `male_reading` on all 16 letter pairs and the one-lobe cases;
-  `lobe_split_class` on hand-made `y_L`, `y_R` (S0, S1 with k = 3, S2 with k = 4); `k*` = 4.
+  `lobe_split_class` on hand-made `y_L`, `y_R` (S0, S1 with k = 3, S2a with k = 4 and every
+  differing cell's `x` outside [0.5 `c*`, 2 `c*`] in both lobes, S2b with k = 4 and one cell
+  inside the band in one lobe only); `k*` = 4.
+- **T12, the `p_S` print (S28):** a fixture evaluation with `n_deg` = 1 and `n_ge` = 0 passes leg
+  S and prints `p_S = 0.0101` with the mark; with `n_deg` = 0 the line is A's.
 - **T10, seeds and refusals:** the seed assertion; `--allow-dirty` with `--arm malecns` refused;
   `out_dir_refusal` on all four reference folders (monkeypatched to temporary folders, never the
   real ones, as A's `test_out_guard_refusals`).
@@ -790,12 +929,22 @@ tools/.venv/Scripts/python.exe results/genome/c6/checks/knockout_regrow_male_cns
 **Outputs:** committed aggregates in `results/genome/c6/checks/knockout_regrow_male_cns/`
 (`RESULT.md`, `summary.json`, `per_shuffle_L.csv`, `per_shuffle_R.csv`, `synthetic_worlds_L.csv`,
 `synthetic_worlds_R.csv`); private and raw outputs as §7.4; the two references in their own folders
-(§3.3). Male CNS data is CC-BY (builder §1.1).
+(§3.3). Male CNS data is CC-BY (builder §1.1). **What `per_shuffle_L.csv` and `per_shuffle_R.csv`
+carry (revision 1.1, Johnny; read from A's code):** the **real arm's** leg S, not the synthetic
+worlds'. A's `write_committed` calls `write_per_shuffle_csv(real, …)` (`knockout_regrow.py:2429`)
+on the real bank's evaluation; each of its 99 rows (`evaluate_bank`, :1024-1034; writer :2344-2352)
+holds `sd`, `present` (the present count of the shuffled bank's 64 block cells), `degenerate`,
+`auc_N1`, and for each of the six predictors its AUC on the shuffled block, its margin `M` over N1
+and the λ selected. Per lobe, the rows are that lobe's real-bank shuffles. They are aggregates (no
+per-cell male data); the `present` column is a count on shuffled banks that contain the real
+block, written only after unsealing. The synthetic worlds' shuffles are summarised in
+`synthetic_worlds_<lobe>.csv` (`n_ge`, `n_deg`, `n_valid_shuffles`, `p_S` per world and predictor)
+and are not written per shuffle.
 
-**Cost (A §7's rate):** pre-run about 4 h 20 min (both lobes); registered run about 4 h 20 min for
-the two synthetic steps plus, per lobe, 6 × (3 + 99) + 20 = 632 real-arm fits, 5 fixed-λ fits and
-the checks' 4 rule fits, and 20 C6 folds once for check 8: about 8 min. **Total about 8 h 50 min of
-CPU wall time on 30 workers.** The rate on the placed grid is assumed, not measured (§10).
+**Cost (A §7's rate):** pre-run about 4 h 22 min (both lobes, with the `ko1` fits, §3.6);
+registered run about 4 h 22 min for the two synthetic steps plus, per lobe, 6 × (3 + 99) + 20 = 632
+real-arm fits, 5 fixed-λ fits and the checks' 4 rule fits, and 20 C6 folds once for check 8:
+about 8 min. **Total about 8 h 52 min of CPU wall time on 30 workers.** The rate on the placed grid is assumed, not measured (§10).
 
 ## 8. Lessons applied (delta on A §9)
 
@@ -816,19 +965,94 @@ The body is written with the recommendation of each row.
 | **D1** | Which grid the arm trains and scores on (builder §5.2, §12) | **(i) the placed grid**: `H.ALL_CELLS` = 3,025 placed cells; 2,961 training cells per lobe, density 0.1675 / 0.1776, about flyvis-65's on the same cells (0.1726); A §8 already says "cells outside the builder's type set are left out of training and scoring"; the FlyWire precedent. (ii) the 65 grid: 4,161 training cells, of which **1,200 always absent** (the ten unplaced types): the rule sees ten types with no input or output, N1 spends 20 terms on them, every inner fold gains about 120 certain absences, and the training density falls to about 0.119 / 0.126, far from every calibration density; check 2's count of 4,161 would pass with another meaning | **(i)** |
 | **D2** | How the two lobes are run | **(i) one invocation, both lobes; both synthetic gates pass before either sealed file is opened; one label per lobe** (§4.2): no lobe's verdict is seen before the other's run is fixed. (ii) two invocations, one per lobe: restartable, but the second lobe's run is made knowing the first's verdict. (iii) the right lobe primary and the left the null (builder D12 (ii)): halves the cost, but the left block, sealed like the right, would then be read as a null with no registered test of its own. (iv) a pooled statistic over both lobes (for example a mean AUC): a new statistic and new cuts, which need their own calibration | **(i)** |
 | **D3** | The male reading from the two lobe labels | **(i) the table of §4.2**: a male R needs R in both lobes (builder D12 (i)); a common letter is the male letter; any other pair is a split with its class; one readable lobe is "one lobe only", never a male R. (ii) a male R if either lobe reads R: easier R, and a split would then be read as a positive | **(i)** |
-| **D4** | The rule that separates the explanations of a split (builder D12, §12) | **(i) the classification of §4.3**: S0 same block; S1 differs within the lobes' outside rate; S2 differs beyond it (`k* = 4` from 36 / 2,961); R1–R6 excluded as a carrier by the build's facts; within-animal variation and reconstruction named as not separable. (ii) print the lobe difference, classify nothing: no registered reading of a split. (iii) read every split as within-animal variation: claims what one animal cannot show | **(i)** |
+| **D4** | The rule that separates the explanations of a split (builder D12, §12) | **(i) the classification of §4.3**: S0 same block; S1 differs within the lobes' outside rate; S2 differs beyond it (`k* = 4` from 36 / 2,961), read as specific to block A only if no differing cell lies near the cut (S2a), else as a difference at the threshold (S2b; revision 1.1); R1–R6 excluded as a carrier by the build's facts; within-animal variation and reconstruction named as not separable. (ii) print the lobe difference, classify nothing: no registered reading of a split. (iii) read every split as within-animal variation: claims what one animal cannot show | **(i)** |
 | **D5** | The existence bank (builder §7, §12) | **(i) run the registered predictors and harness unchanged on one `(0, 0)` offset per present cell; the offset, count and sign fields printed as meaningless; the existence path checked by T5 and by the pre-run** (§2). (ii) put a synthetic offset structure into the male bank: content that the animal does not have | **(i)** |
-| **D6** | Synthetic worlds and limits (builder D13; Ark's ×1.22 point) | (a) **transfer A's limits and `smallest_passing_auc`** (γ\*_P 0.6, γ_R 0.75, family 0.75): no pre-run, 0 h; but they were measured on flyvis-65's degree terms, the 65 grid, density 0.137 and content with offsets, so a male G would carry limits of another instrument-bank pair. **(b) rebuild A's 45 worlds on each lobe** (degree terms, grid, content pool and density of the lobe; §3.6): about 2 h 10 min per lobe per pass, **4 h 20 min for the pre-run and 4 h 20 min again in the registered run**. (c) one world set on one lobe's outside, used for both lobes: half the cost; the lobes' outsides share 493 of 526 present cells, so the other lobe's limits would likely be close, but they would be assumed, not measured | **(b)** |
-| **D7** | Seeds | (i) **A's seeds, as A §8 says** ("the same legs, cuts, seeds and branch rule apply"): the leg-P null would be flyvis-65's permutations, and the boards' `smallest_passing_auc` would reproduce A's registered values; but the worlds are different objects on another grid, so sharing A's world seeds buys no comparability and makes their CSV keys collide with A's reference. **(ii) a new range, 92000–92999, shared by both lobes** (§3.7): disjoint from A and B; common random numbers between the lobes. (iii) new seeds per lobe: a lobe difference could then come from a draw. (iv) A's leg-P seeds (90000, 90001) and new world and ceiling seeds: comparability of `p_P` with flyvis-65, at the cost of a mixed rule | **(ii)** |
-| **D8** | Checks 3 and 5, the metric, and the unreadable block | **(i) check 3 prints the block after unsealing and stops only on no AUC; check 5 prints; precision at `n_present`, the other 61 cells; a block on which leg P cannot pass (`smallest_passing_auc` = None) reads the new U text "not readable"** (§3.2, §4.1). (ii) keep check 3 as a comparison with a count: there is no reviewed count, and writing one now would be selection with the knowledge of §1.5. (iii) no new U text: such a block could then read G, a vacuous G, since leg P could not have passed | **(i)** |
+| **D6** | Synthetic worlds and limits (builder D13; Ark's ×1.22 point) | (a) **transfer A's limits and `smallest_passing_auc`** (γ\*_P 0.6, γ_R 0.75, family 0.75): no pre-run, 0 h; but they were measured on flyvis-65's degree terms, the 65 grid, density 0.137 and content with offsets, so a male G would carry limits of another instrument-bank pair. **(b) rebuild A's 45 worlds on each lobe** (degree terms, grid, content pool and density of the lobe; §3.6): about 2 h 11 min per lobe per pass, **4 h 22 min for the pre-run and 4 h 22 min again in the registered run** (with the `ko1` fits, §3.6). (c) one world set on one lobe's outside, used for both lobes: half the cost; the lobes' outsides share 493 of 526 present cells, so the other lobe's limits would likely be close, but they would be assumed, not measured | **(b)** |
+| **D7** | Seeds | (i) **A's seeds, as A §8 says** ("the same legs, cuts, seeds and branch rule apply"): the leg-P null would be flyvis-65's permutations, and the boards' `smallest_passing_auc` would reproduce A's registered values; but the worlds are different objects on another grid, so sharing A's world seeds buys no comparability and makes their CSV keys collide with A's reference. **(ii) a new range, 92000–92999, shared by both lobes** (§3.7): disjoint from A and B; common random numbers between the lobes. (iii) new seeds per lobe: a lobe difference could then come from a draw. (iv) A's leg-P seeds (90000, 90001) and new world and ceiling seeds: comparability of `p_P` with flyvis-65, at the cost of a mixed rule. **Revision 1.1 (Johnny; Ark, Zcode):** under (ii) the **direct comparability of the male `p_P` with flyvis-65's is given up**, stated as the price of (ii); and A §8's sentence "the same legs, cuts, seeds and branch rule apply" is cancelled, as it concerns seeds, by the amendment to A, with the address of §3.7 (§9.3) | **(ii)**, kept |
+| **D8** | Checks 3 and 5, the metric, and the unreadable block | **(i) check 3 prints the block after unsealing and stops only on no AUC; check 5 prints; precision at `n_present`, the other 61 cells; a block on which leg P cannot pass (`smallest_passing_auc` = None) reads the new U text "not readable"** (§3.2, §4.1). (ii) keep check 3 as a comparison with a count: there is no reviewed count, and writing one now would be selection with the knowledge of §1.5. (iii) no new U text: such a block could then read G, a vacuous G, since leg P could not have passed. **The asymmetry with D9, named (revision 1.1, Johnny):** no AUC is fatal for the lobe, because there is no verdict to print; an `rc_patterns` cap hit on a real block is a diagnostic, and the verdict stands | **(i)** |
 | **D9** | The row-and-column variant's attempt cap (builder §12) | **(i) a cap of 100 × 640 attempts per chain; a hit stops a synthetic step (a malfunction on a 32/32 board) and prints "n/a (attempt cap reached: …)" on a real block, which goes on**; the no-checkerboard pre-check prints "n/a". (ii) a hit stops everywhere, as B's D7: on the real block the stop would come after the seal is broken, forfeiting the run for a diagnostic that decides nothing; a sparse real block can hit the cap although swappable (§3.2). (iii) no cap: a real block with no reachable swap would never end | **(i)** |
 | **D10** | The unseal protocol (builder §9) | **(i) §7.4: the sealed files are opened only by the registered real run, after every gate that does not need them; `--allow-dirty` refused with the male arm; a failure after unsealing is recorded, and a second run only on Mike's word.** (ii) A's rule, a dirty real-arm run allowed and marked "not the registered run": such a run opens the sealed files, which builder §9 allows only in the registered run | **(i)** |
-| **D11** | Where the bank pins live (A §8; builder §10.5 step 4) | **(i) amend A, append-only, with the four bank pins, as both documents promise, and pin them in the arm's script too.** A's LF sha256 then changes from `409184de…`: the flyvis-65 run's manifest keeps the old value as the text it ran under; **block B's S2, which pins A "by its LF sha256 at `74db080`", must pin the amended hash or read A from git at `74db080`** (B is not yet implemented). (ii) pin only here and leave A unedited, recording here that A §8's promise is discharged here: A's text would keep a promise that A itself never shows fulfilled | **(i)**, with B's S2 note |
-| **D12** | Verdict-line strings | **(i) A's rows quoted verbatim, then the four differences of §4.1** (lobe prefix; the "not readable" U; a line naming A's literals; "failed fit" read as fit failure or rank limit). (ii) restate §4 with the male's literals: a new text of a reading rule, reviewed as such | **(i)** |
-| **D13** | Instrument | **(i) the pinned CPU harness, as A and B**: about 8 h 50 min of wall time in all. (ii) the GPU instrument of `cdbde9e`: separate and unreviewed, BF about 2.3 times faster, rule #2.1 not faster, base views not all bit-equal; by A §7 it needs its own registration and synthetic worlds | **(i)** |
+| **D11** | Where the bank pins live (A §8; builder §10.5 step 4) | **(i) amend A, append-only, with the four bank pins, as both documents promise, and pin them in the arm's script too.** A's LF sha256 then changes from `409184de…`: the flyvis-65 run's manifest keeps the old value as the text it ran under; **block B's S2, which pins A "by its LF sha256 at `74db080`", must pin the amended hash or read A from git at `74db080`** (B is not yet implemented). (ii) pin only here and leave A unedited, recording here that A §8's promise is discharged here: A's text would keep a promise that A itself never shows fulfilled. **Revision 1.1 (Johnny, Ark, Zcode):** the amendment's content is specified in §9.3: the four bank pins; the cancellation of A's seeds for this arm (D7); and the line `git show 74db080:docs/plans/2026-09-24-knockout-regrow-registration.md` as the way to recover the text under which the flyvis-65 verdict was made (Johnny). Every place that cites A by its LF hash or "at `74db080`" is listed there, with which is updated and which stays history (Ark), checked by grep | **(i)**, kept, with §9.3 |
+| **D12** | Verdict-line strings | **(i) A's rows quoted verbatim, then the four differences of §4.1** (lobe prefix; the "not readable" U; a line naming A's literals; "failed fit" read as fit failure or rank limit). (ii) restate §4 with the male's literals: a new text of a reading rule, reviewed as such. **Revision 1.1 (Johnny, Zcode):** the rows are quoted from the **amended A**, not from this file. `quote_row` takes the first line starting with the key (`knockout_regrow.py:2373-2379`); in A the U and G keys already match two rows each (§4's and §5's; A lines 1327–1328 and 1381–1382), and the quote is §4's only because §4 comes first. This file has zero such rows, so quoting from it would raise `StopIteration`. The amendment is appended after A's last line, below both tables, so it cannot capture the first match (S2) | **(i)** |
+| **D13** | Instrument | **(i) the pinned CPU harness, as A and B**: about 8 h 52 min of wall time in all (revision 1.1, with the `ko1` fits). (ii) the GPU instrument of `cdbde9e`: separate and unreviewed, BF about 2.3 times faster, rule #2.1 not faster, base views not all bit-equal; by A §7 it needs its own registration and synthetic worlds. **(iii) (revision 1.1; Johnny, Ark):** (i), and the GPU instrument may run the male worlds during the pre-run as a second, **unregistered** cross-check: it decides nothing, and its output is an input to no gate, reference or registered value. **Revision 1.1 (all three reviewers):** (i) is kept, because the pinned pre-run must be made by the same instrument as the registered run, and the GPU instrument has no registration yet; it gets its own registration on a separate track (Mike, 09:13 UTC: "review the GPU instrument"). Ark's and Zcode's economics: the hybrid saves about 38 % of a pass (4,870 s against 7,846 s), not ×2.3; rule #2.1 is not faster on GPU; the ceilings, fixed λ and the permutations are not ported (§7.1) | **(i)**, kept; (iii) allowed |
 | **D14** | Script form | **(i) a new file, a copy of A's, reviewed as a diff; A's untouched** (as B's D13 (i)). (ii) a `--arm malecns` inside A's file: the file that A's run and its blind review cite would change. (iii) import A's module and override its constants: `BLOCK`, `MASKS`, `MIRROR_IDX`, `NONBLOCK_CELLS`, `OTHERS` and the world arrays are computed at import (B's D13) | **(i)** |
 | **D15** | Order of work | **(i) the header's order**: the script and this draft committed; the pre-run of both lobes from that committed head on Mike's word; a revision registering the values read from the pinned references, reviewed; A amended (D11); the registered run on Mike's word. Each reference has a producer in git. (ii) A's D11 order (pre-run before commit): repeats the provenance gap of A §3.3 | **(i)** |
 | **D16** | The joint reading with flyvis-65's G | **(i) A's D13 table as voted, and the readings of §5** for male R (a flag with a registered list, examined under a new registration, overturning neither verdict), W, G, U and split. (ii) A's D13 table alone, with no reading written before data for the cases it leaves as "any other pair" | **(i)** |
+
+### 9.1 Votes on revision 1 (DPC Research chat, 2026-09-26 UTC; as relayed by CC)
+
+| reviewer | time (UTC) | vote |
+|---|---|---|
+| Johnny | 09:14 | yes, with edits |
+| Ark | 09:18 | yes, with edits |
+| Zcode | 09:32 | yes, with edits |
+
+Revision 1.1 has not been voted on. Mike's word is not yet given (header).
+
+### 9.2 The edits of revision 1.1, who asked, and where each is applied
+
+Items 1–3 are reading rules, **frozen before unsealing**: they are fixed in this revision, before
+either sealed file is opened, and no later revision changes them after the seal is broken. Items
+4–15 are the other edits. None changes an option of D1–D16.
+
+| # | edit | asked by | applied in | where this revision differs from CC's brief |
+|---|---|---|---|---|
+| 1 | The male R is a conjunction of two A criteria: power lower than a single-bank R and not calibrated; the null not squared (one permutation matrix, one set of boards, 493 of 526 present outside cells shared), between `p_L · p_R` and `min(p_L, p_R)`, about 1 %, not 1e-4; "stricter in power, hardly stricter in null"; the G reading weaker than it reads; "a signal in one lobe is not read as R" a named cost; a split named before data as the likely outcome of a marginal signal, informative, with no male label | Johnny, Ark, Zcode | §4.2 (after the table), §5 (G row), §6 (first new bullet) | §5's G row also prints a sentence with the G ("power of the male R not calibrated; …"), so that the weakening is on the output, not only in this file |
+| 2 | S2 conditional on `x`: "specific to block A" only if every differing block cell lies outside [0.5 `c*`, 2 `c*`] in both lobes; otherwise "block cells at the threshold; the same mechanism as 33 of the 36 differing outside cells; specificity not established"; Ark's note that the threshold branch is the expected one given §1.5, with the relayed numbers unverified | Johnny; strengthened by Ark and Zcode | §4.3 (S2a, S2b and the note after the table), D4, S23, T9 | the brief's "at least one lies inside" is written as the exact complement of S2a (a cell whose `x` is within the band in **at least one** lobe), so that S2a and S2b are exhaustive; the classes are named S2a and S2b |
+| 3 | Leg S: the count decides (`:1067`), `p_S` (`:1068`) is informative; `:.2f` at `:1252` prints 1 / 99 as "0.01"; they coincide only when `n_deg` = 0 (all 270 rows of A's pre-run, by chance); with `n_deg` >= 1, `p_S` printed with more digits and a mark (S28); a sparse block makes `n_deg` >= 1 more likely | Ark, Zcode | §3.2 (new bullet), §4.1 (paragraph after the four differences), S28, T12 | verified: `n_deg` = 0 in all 270 rows of A's pinned pre-run `synthetic_worlds.csv` and of the flyvis-65 run's committed one; the same `:.2f` print is also at `:2083`, `:2162`, `:2393`, all in S28; the digits are fixed at four |
+| 4 | D7: the direct comparability of `p_P` with flyvis-65 is given up; the amendment to A cancels A §8's "the same legs, cuts, seeds and branch rule apply" as it concerns seeds, with an address | Johnny; Ark, Zcode | §3.7, D7, §9.3 | the address is A §8, lines 1749–1750 at `74db080`, bullet "The same block by name" |
+| 5 | D11: the amendment adds the four bank pins, the seed cancellation, and `git show 74db080:docs/plans/2026-09-24-knockout-regrow-registration.md` as the way to recover the text of the flyvis-65 verdict; every place that cites A by its LF hash or "at `74db080`" listed, updated or history, verified by grep | Johnny; Ark | §9.3, D11, §1.1, header | the grep found three places beyond the brief's four: block B's header (line 14), the blind review note (line 220) and the private run folder's `synthetic_only.json`; all listed in §9.3. The builder speaks of "the four pins" without naming the files; read here as the two outside and the two sealed files |
+| 6 | D8: the asymmetry named ("no AUC: fatal, no verdict to print; `rc_patterns` cap: a diagnostic, the verdict stands") | Johnny | D8, §3.2 (guard 3), §3.4 (check 3) | none |
+| 7 | §1.5 linked to §3.2: the weak block cells imply a possibly sparse block (`n_present` well below 32), so a higher chance of the "not readable" U | Johnny, Zcode | §1.5 (point 2), §3.2 (`smallest_passing_auc`) | stated as a named risk that sets nothing, in keeping with §1.5's rule that nothing is set from the prior exposure; also linked to `n_deg` (item 3) |
+| 8 | M(1) is not an error and not a narrowing but a different object; replaced by the three-part form; moved out of the error ledger | the reviewers (as relayed) | §11 (clarification C1), §0, §1.4 | A's row, as written, is about the male CNS at the thresholds of Zcode's preliminary graph (A §1.4 at `74db080`); the brief's form calls them "every flyvis-65 pair threshold tried on the 65 grid", which no file records. C1 quotes A's row as written and gives the brief's description as the reviewers' |
+| 9 | M(2) stays (`flywire_bf_p3.py:73-75`); the builder registration still carries `:74-76` in four places, listed, not edited | Zcode | §11 (M(2)) | verified by grep: lines 214, 705, 976, 1056 of the builder registration at `476cf9b`, as Zcode said |
+| 10 | `quote_row`: in A the U and G keys match two rows each; this file has zero such rows (quoting from it would raise `StopIteration`); rows are quoted from the amended A, whose append-only amendment lies after its last line | Johnny, Zcode | S2, D12, §4.1 (difference 3) | verified: `:2373-2379`; A lines 1327 / 1381 (G), 1328 / 1382 (U), 1325 (R), 1326 (W); zero lines of this file start with any of the four keys |
+| 11 | §3.3: equal `smallest_passing_auc` in L and R by board holds for the synthetic worlds; not for the real blocks, where the value is new | Ark | §3.3 | none |
+| 12 | §7.5: what `per_shuffle_L.csv` / `per_shuffle_R.csv` carry | Johnny | §7.5 | read from the code: the real arm's 99 shuffles per lobe, columns listed |
+| 13 | §3.7: the grep inventory is not exhaustive; the conclusion stands, with the count | Zcode | §3.7 | the count: 96,233 occurrences on 92,083 lines in 904 tracked `.py`, `.md` and `.json` files |
+| 14 | §3.6: the 5 `ko1` fits per world (+225 per lobe, about +0.8 %) named in the cost formula | Zcode | §3.6, §7.5, D6, D13 | 225 is an upper bound: a `ko1` record whose ko fit selected λ = 1 is copied (A's pinned store: 47 copied, 178 fitted); the totals become 2 h 11 min per lobe per pass and about 8 h 52 min in all |
+| 15 | D13: CPU (i) kept; option (iii), the GPU instrument as an unregistered cross-check during the pre-run; the GPU instrument's own registration on a separate track (Mike, 09:13 UTC); Ark's and Zcode's economics | Johnny, Ark, Zcode (Mike's word for the separate track) | D13, §7.1 | the economics are relayed; only 1 − 4,870 / 7,846 = 37.9 % was recomputed |
+| 16 | This table, §9.1 and §9.3 | CC's brief | §9.1–§9.3, §12 | none |
+
+### 9.3 The amendment to A: its content (specified here; made in step 4 of the header's order)
+
+This revision does not edit A. It fixes what the amendment will contain, so that the reviewers
+vote on it with this file.
+
+1. **Where:** appended after A's last line, as a new section; nothing above it changes. It lies
+   below A's §4 and §5 tables, so `quote_row` still returns §4's rows (S2, D12).
+2. **The four bank pins** (A §8: "amended, before that arm runs, to pin the built bank's sha256";
+   builder §10.1, §10.5 step 4): the sha256 values of `male_cns_L_outside.csv`,
+   `male_cns_R_outside.csv`, `male_cns_L_blockA.sealed.csv` and `male_cns_R_blockA.sealed.csv`,
+   as in §1.1, with the build folder's name.
+3. **The seeds, cancelled for the male arm (D7):** "A §8's sentence 'The same legs, cuts, seeds and
+   branch rule apply' (A lines 1749–1750 at `74db080`, bullet 'The same block by name') no longer
+   applies to seeds for the male CNS arm. Its seeds are those of
+   `docs/plans/2026-09-26-knockout-regrow-male-cns-arm-registration.md` §3.7. Legs, cuts and the
+   branch rule apply as written."
+4. **The text of the flyvis-65 verdict:** "The flyvis-65 verdict (commit `1ed55ec`) was made under
+   revision 3.4.1, LF sha256 `409184de…3facd6`. That text is recovered with
+   `git show 74db080:docs/plans/2026-09-24-knockout-regrow-registration.md`."
+5. **Nothing else** (A §8: "nothing else in it changes").
+
+**Every place that cites A by its LF hash (`409184de…`) or "at `74db080`"** (found by
+`git grep -n 409184de` and `git grep -n 74db080` over the tracked files, and `grep -rl 409184de`
+over `connectome-seed-data/knockout_regrow/`, 2026-09-26 UTC):
+
+| place | what it cites | after the amendment |
+|---|---|---|
+| this file, header ("What this file is", lines 18–21 of revision 1.1; line 12 of revision 1) | A revision 3.4.1, commit `74db080`, LF `409184de…` | **updated** in the revision that follows the amendment (step 4): the amended hash is cited; `409184de…` stays named as the text of the flyvis-65 verdict |
+| this file, S2 (§7.2) | A "pinned by its LF sha256 after the D11 amendment" | **updated**: the arm's script pins the amended hash |
+| this file, D11 (§9) | `409184de…` as the value before the amendment | history, unchanged |
+| this file, §1.3, §7.2, §11 (clarification C1 and the working rules) and §13 | A §1.4 and `knockout_regrow.py` lines "at `74db080`" | history, unchanged: they name where a wording lived, or the script's lines (A's script is not amended) |
+| block B's S2 (`2026-09-25-knockout-regrow-block-b-registration.md` line 576) | A "pinned by its LF sha256 at `74db080`" | **to be updated** by a revision of B (not by this file): pin the amended hash, or read A from git at `74db080`; B is not yet implemented |
+| block B's header (same file, line 14) | A revision 3.4.1, commit `74db080` | history: a citation by commit, true as written; B's next revision says which text it quotes |
+| the flyvis-65 run manifest: `results/genome/c6/checks/knockout_regrow/summary.json` line 5 (`registration_sha256_lf`), and the private run folder's `synthetic_only.json` (`connectome-seed-data/knockout_regrow/flyvis65_20260925T171656Z_74de0401a21f/`) | `409184de…` | **history, untouched**: the text the run was made under |
+| the blind review note (`docs/notes/2026-09-26-knockout-regrow-blind-review.md` line 220) | `409184de…`, as verified against the run's manifest | history, untouched |
+
+No `.py` file in the repository contains either string: A's script reads its registration by path
+and records its hash at run time, so a rerun of A's script after the amendment would record the
+amended hash (A's script is not rerun by this arm).
 
 ## 10. Not verified at drafting
 
@@ -849,6 +1073,12 @@ The body is written with the recommendation of each row.
 - **Typing by connectivity** in the male CNS (A §6): unchecked.
 - **GLOSSARY:** no entry for "lobe", "sealed" or "split"; its rules of use ask for a term to be added
   before use. Not added here (this draft modifies no existing file).
+- **Revision 1.1 additions.** The reviewers' messages are known from CC's brief, not read in the
+  chat. The GPU economics of §7.1 (4,870 s, 7,846 s, "not ported") are relayed, not recomputed.
+  The false "R in both" rate of §4.2 is bounded by argument, not measured. The expectation that
+  S2b is the modal split class (§4.3) rests on the relayed description of §1.5, which is not
+  verified. The rate of `ko1` fits that are copied rather than fitted on the male worlds is
+  unknown until the pre-run (§3.6).
 
 ## 11. Error ledger (working rules inherited from A §12)
 
@@ -860,12 +1090,20 @@ file, `knockout_regrow.py` lines are of `74db080`, `harness.py` of `1789aeb` (th
 `flywire_bf_p3.py` of `c55d3e3`, rule #2.1's `fit.py` of `6ffce66`, `BUILD.md` and
 `bank.meta.json` of `5860619`.
 
-**Ledger** (six fields, A §12's form; the rows found while drafting):
+**Ledger** (six fields, A §12's form; the rows found while drafting). **Revision 1.1:** revision
+1's row M(1) is not a wrong wording, so it does not fit the ledger's definition (a wording that
+was wrong, with its refutation); it moves to the clarifications below as C1 (the reviewers: "not
+an error and not a narrowing: a different object").
 
 | item | was | correct | where the wrong wording lived | what refuted it | caught by |
 |---|---|---|---|---|---|
-| M(1) | "male CNS v1.0: 64 / 64 at every pair threshold tried (Zcode, preliminary graph)" | at the registered cut, 64 / 64 in each lobe; among the builder's printed cuts, lobe L is 56 / 64 at the (b′) cut for `w_min` = 2 and 3. Zcode's own thresholds are in no file, so the claim cannot be checked against them; as written it reads as general | A §1.4 (the inferability table) at `74db080`; `knockout_regrow.py:205-208` (`INFERABILITY_PROVENANCE`) at `74db080`; printed in `knockout_regrow/RESULT.md` line 56; builder §0 ("64/64 at every threshold tried") | `BUILD.md` lines 189–190 (64 / 64 at `c*`), 210 and 227 (56 / 64, lobe L) at `5860619` | this draft |
-| M(2) | `restrict_to_30_grid` at `flywire_bf_p3.py:74-76` (and ":74" in the drafting brief) | the function is lines 73–75 (definition 73, docstring 74, the assignment of `H.ALL_CELLS` 75) at `c55d3e3`, the file's last change, which precedes the commit (`d6e3759`) at which the builder read it | builder §2, §7, §12, §13.2 row 1 (`:74-76`) at `476cf9b` | `flywire_bf_p3.py` at `c55d3e3`, lines 73–75 | this draft |
+| M(2) | `restrict_to_30_grid` at `flywire_bf_p3.py:74-76` (and ":74" in the drafting brief) | the function is lines 73–75 (definition 73, docstring 74, the assignment of `H.ALL_CELLS` 75) at `c55d3e3`, the file's last change, which precedes the commit (`d6e3759`) at which the builder read it | builder §2, §7, §12, §13.2 row 1 (`:74-76`) at `476cf9b`: **still there, in four places** (revision 1.1, Zcode; `git grep -n "74-76"`): lines 214 (§2), 705 (§7), 976 (§12) and 1056 (§13.2, edit 1). Not edited here; the builder's next revision corrects them | `flywire_bf_p3.py` at `c55d3e3`, lines 73–75 | this draft |
+
+**Clarifications (not errors; revision 1.1).**
+
+| item | clarification |
+|---|---|
+| C1 (revision 1's ledger row M(1)) | Three objects, none a correction of another. **A's row:** "male CNS v1.0: 64 / 64 at every pair threshold tried (Zcode, preliminary graph)" (A §1.4 at `74db080`; `knockout_regrow.py:205-208`; `knockout_regrow/RESULT.md` line 56; builder §0), which the reviewers describe as 64 / 64 at every flyvis-65 pair threshold tried on the 65 grid; the thresholds are in no file. **This arm:** 64 / 64 at `c*` in each lobe (`BUILD.md` lines 189–190). **The (b′) diagnostic, at another cut and on this bank:** 56 / 64 in lobe L at `w_min` 2 and 3 (`BUILD.md` lines 210, 227). Revision 1 called A's row a wording that "reads as general"; it is a statement about other thresholds, and it stays in A as written |
 
 **Registered expectations and what the build showed** (not wrong wordings; recorded so that no one
 reads them as met):
@@ -876,8 +1114,8 @@ reads them as met):
 | "`c*_L < c*_R` among the §5.4 diagnostics would read as a consequence of this asymmetry" (builder §4, §12) | `c*_L` = 2.69453 < `c*_R` = 3.39337 did occur, but R1's row and column are equal between the lobes, so the gap is not carried by R1–R6; it is lobe-wide (33 R-only against 3 L-only outside cells at `c*`) | `BUILD.md` lines 195, 198; §1.4 |
 | "the first question put to the build: how much larger the R1-row asymmetry is than 1 : 2.04 in bodies" (builder §4) | answered: at `c*` there is no R1-row asymmetry in presence (1 : 1 against 1 : 2.04 in bodies) | `BUILD.md` line 185 |
 
-**The seal record:** intact at revision 1 (header). A break before review is recorded here, and S26
-carries it to the verdict lines.
+**The seal record:** intact at revision 1 and at revision 1.1 (header). A break before review is
+recorded here, and S26 carries it to the verdict lines.
 
 ## 12. Changelog
 
@@ -888,6 +1126,20 @@ tables, inferability, mirrors, R1's and CT1(M10)'s rows, the lobe agreement (493
 36 cells and their `x` relative to `c*`), the fold composition on the placed grid; from arithmetic
 only: the null standard deviations, the binomial tails and `k*` = 4. No sealed file opened; nothing
 fitted. Proposals D1–D16 open.
+
+**Revision 1.1 (2026-09-26 UTC): the reviewers' edits, CC subagent.** Votes of Johnny (09:14),
+Ark (09:18) and Zcode (09:32 UTC), all "yes, with edits" (§9.1); the edits and who asked are in
+§9.2. Reading rules frozen before unsealing: the male R as a conjunction (§4.2, §5, §6); split class
+S2 split into S2a and S2b by `x` (§4.3); leg S decided by the count, `p_S` printed with four
+decimals and a mark when `n_deg` >= 1 (§3.2, §4.1, S28). Also: D7 (comparability of `p_P` given
+up), D8 (the asymmetry with D9), D11 and §9.3 (the amendment's content and the list of places that
+cite A by hash or commit), D12 and S2 (`quote_row` reads the amended A), D13 and §7.1 (option (iii),
+the separate track, the economics), §1.5 and §3.2 (a possibly sparse block), §3.3 (equal
+`smallest_passing_auc` in the worlds only), §3.6, §7.5, D6 (the `ko1` fits; about 8 h 52 min in
+all), §3.7 (the grep count), §7.5 (what the per-shuffle files carry), §11 (M(1) moved to C1; M(2)'s
+four builder lines). Checked for this revision: `n_deg` in A's pre-run and run CSVs; the script
+lines cited; the greps of §3.7, §9.3 and §11. No sealed file opened; nothing fitted; A, the
+builder registration and B not edited.
 
 ## 13. Sources
 
@@ -907,4 +1159,7 @@ fitted. Proposals D1–D16 open.
 - `results/genome/c6/checks/knockout_regrow/RESULT.md` (the flyvis-65 verdict, `1ed55ec`);
   `docs/notes/2026-09-26-knockout-regrow-blind-review.md`.
 - Commit `cdbde9e` (the GPU instrument's message only).
+- Revision 1.1: A's pinned pre-run `connectome-seed-data/knockout_regrow/synthetic_rev3_prerun/synthetic_worlds.csv`
+  and the flyvis-65 run's committed `synthetic_worlds.csv` and `per_shuffle.csv` (the `n_deg` and
+  `degenerate` columns only); CC's brief relaying the three reviews and Mike's 09:13 UTC word.
 - `idea.md` (the project goal; context).
