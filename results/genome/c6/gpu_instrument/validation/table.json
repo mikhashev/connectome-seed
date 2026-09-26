@@ -1,0 +1,82 @@
+{
+ "V0": {
+  "run": "V0",
+  "outcome": "PASS",
+  "text": "R1-R4 passed with the settings on (stamp: STAMP NOT YET REGISTERED: validation run; the stamp is recorded and compared with nothing (D7: V1 measures the registered stamp)); no RuntimeError from deterministic mode; hashes on vs off: 0 of 400 fits differ; GPU 56.8s on vs 53.3s off; against the pinned store: 400 / 400 bit-equal, outcome 1",
+  "head": "a0e16b696389fb796a9f3b95c308358b52dd9dc8",
+  "not_from_a_committed_head": false,
+  "utc": "2026-09-26T13:16:21Z",
+  "registration": "docs/plans/2026-09-26-gpu-instrument-registration.md revision 1.3 (ec5cbc0)",
+  "applied_ahead": "Ark's review of revision 1.3 (chat 12:09 UTC), points 1-3, applied ahead of revision 1.4: (1) the BF-active subset (fits whose p differs from their own view's N1 p) is classified and printed by the comparator; (2) the census denominator is per fit (n_pos*n_neg on the auc family; 2,016 only on base ko/ko1 fits for the auc_null family), never a constant 1,024; (3) V6 draws its fits from the BF-active subset, and 'uninformative' is a recorded outcome"
+ },
+ "V6": {
+  "run": "V6",
+  "outcome": "PASS",
+  "text": "comparator equals the brute-force recount on all 359 BF-active fits; 321 not bit-equal; comparator outcome 3 (2 E1, 10 flipped pairs)",
+  "head": "a0e16b696389fb796a9f3b95c308358b52dd9dc8",
+  "not_from_a_committed_head": false,
+  "utc": "2026-09-26T13:18:55Z",
+  "registration": "docs/plans/2026-09-26-gpu-instrument-registration.md revision 1.3 (ec5cbc0)",
+  "applied_ahead": "Ark's review of revision 1.3 (chat 12:09 UTC), points 1-3, applied ahead of revision 1.4: (1) the BF-active subset (fits whose p differs from their own view's N1 p) is classified and printed by the comparator; (2) the census denominator is per fit (n_pos*n_neg on the auc family; 2,016 only on base ko/ko1 fits for the auc_null family), never a constant 1,024; (3) V6 draws its fits from the BF-active subset, and 'uninformative' is a recorded outcome"
+ },
+ "V7": {
+  "run": "V7",
+  "outcome": "PASS",
+  "text": "all 400 per-fit hashes and the degree-term digest equal to the unpoisoned run",
+  "head": "a0e16b696389fb796a9f3b95c308358b52dd9dc8",
+  "not_from_a_committed_head": false,
+  "utc": "2026-09-26T13:20:20Z",
+  "registration": "docs/plans/2026-09-26-gpu-instrument-registration.md revision 1.3 (ec5cbc0)",
+  "applied_ahead": "Ark's review of revision 1.3 (chat 12:09 UTC), points 1-3, applied ahead of revision 1.4: (1) the BF-active subset (fits whose p differs from their own view's N1 p) is classified and printed by the comparator; (2) the census denominator is per fit (n_pos*n_neg on the auc family; 2,016 only on base ko/ko1 fits for the auc_null family), never a constant 1,024; (3) V6 draws its fits from the BF-active subset, and 'uninformative' is a recorded outcome"
+ },
+ "V1": {
+  "run": "V1",
+  "outcome": "PASS",
+  "text": "all 18000 x 3 per-fit hashes equal; base fits differing from the CPU under D6: 5 (the same as M3's five); stamp measured (register it: D7)",
+  "head": "a0e16b696389fb796a9f3b95c308358b52dd9dc8",
+  "not_from_a_committed_head": false,
+  "utc": "2026-09-26T15:43:44Z",
+  "registration": "docs/plans/2026-09-26-gpu-instrument-registration.md revision 1.3 (ec5cbc0)",
+  "applied_ahead": "Ark's review of revision 1.3 (chat 12:09 UTC), points 1-3, applied ahead of revision 1.4: (1) the BF-active subset (fits whose p differs from their own view's N1 p) is classified and printed by the comparator; (2) the census denominator is per fit (n_pos*n_neg on the auc family; 2,016 only on base ko/ko1 fits for the auc_null family), never a constant 1,024; (3) V6 draws its fits from the BF-active subset, and 'uninformative' is a recorded outcome"
+ },
+ "V2": {
+  "run": "V2",
+  "outcome": "PASS (outcome 1)",
+  "text": "EQUIVALENT (outcome 1): E1, E2-II (0 flipped pairs) and E3 hold on the compared fits",
+  "head": "a0e16b696389fb796a9f3b95c308358b52dd9dc8",
+  "not_from_a_committed_head": false,
+  "utc": "2026-09-26T15:43:55Z",
+  "registration": "docs/plans/2026-09-26-gpu-instrument-registration.md revision 1.3 (ec5cbc0)",
+  "applied_ahead": "Ark's review of revision 1.3 (chat 12:09 UTC), points 1-3, applied ahead of revision 1.4: (1) the BF-active subset (fits whose p differs from their own view's N1 p) is classified and printed by the comparator; (2) the census denominator is per fit (n_pos*n_neg on the auc family; 2,016 only on base ko/ko1 fits for the auc_null family), never a constant 1,024; (3) V6 draws its fits from the BF-active subset, and 'uninformative' is a recorded outcome"
+ },
+ "V3": {
+  "run": "V3",
+  "outcome": "PASS",
+  "text": "E1 (exact columns, mechanism, verdict lines and labels, ko1 47/178), E3 on 5 differing rows, and the D9 (b) path check (world:W:0) hold",
+  "head": "a0e16b696389fb796a9f3b95c308358b52dd9dc8",
+  "not_from_a_committed_head": false,
+  "utc": "2026-09-26T15:45:41Z",
+  "registration": "docs/plans/2026-09-26-gpu-instrument-registration.md revision 1.3 (ec5cbc0)",
+  "applied_ahead": "Ark's review of revision 1.3 (chat 12:09 UTC), points 1-3, applied ahead of revision 1.4: (1) the BF-active subset (fits whose p differs from their own view's N1 p) is classified and printed by the comparator; (2) the census denominator is per fit (n_pos*n_neg on the auc family; 2,016 only on base ko/ko1 fits for the auc_null family), never a constant 1,024; (3) V6 draws its fits from the BF-active subset, and 'uninformative' is a recorded outcome"
+ },
+ "V5": {
+  "run": "V5",
+  "outcome": "STATEMENT (neither refused nor explained)",
+  "text": "{\"a\": {\"n_moved\": 0, \"moved_in_M3_five\": []}, \"b\": {\"M3_five_differ_from_cpu_harness\": 3, \"M3_five_equal_to_V1_gpu\": 1}}",
+  "head": "a0e16b696389fb796a9f3b95c308358b52dd9dc8",
+  "not_from_a_committed_head": false,
+  "utc": "2026-09-26T15:55:07Z",
+  "registration": "docs/plans/2026-09-26-gpu-instrument-registration.md revision 1.3 (ec5cbc0)",
+  "applied_ahead": "Ark's review of revision 1.3 (chat 12:09 UTC), points 1-3, applied ahead of revision 1.4: (1) the BF-active subset (fits whose p differs from their own view's N1 p) is classified and printed by the comparator; (2) the census denominator is per fit (n_pos*n_neg on the auc family; 2,016 only on base ko/ko1 fits for the auc_null family), never a constant 1,024; (3) V6 draws its fits from the BF-active subset, and 'uninformative' is a recorded outcome"
+ },
+ "V4": {
+  "run": "V4",
+  "outcome": "STATEMENT",
+  "text": "V4a: 12 of 180 hashes differ from V1, E outcome 1; V4b_M1.0-0: 1 of 4 hashes differ from V1, E outcome 1; V4b_M0.85-2: 1 of 4 hashes differ from V1, E outcome 1; V4b_M0.75-0: 1 of 4 hashes differ from V1, E outcome 1; V4c: 0 of 18000 hashes differ from V1, E outcome 1; V4d: 9 of 90 hashes differ from V1, E outcome 1",
+  "head": "a0e16b696389fb796a9f3b95c308358b52dd9dc8",
+  "not_from_a_committed_head": false,
+  "utc": "2026-09-26T16:44:01Z",
+  "registration": "docs/plans/2026-09-26-gpu-instrument-registration.md revision 1.3 (ec5cbc0)",
+  "applied_ahead": "Ark's review of revision 1.3 (chat 12:09 UTC), points 1-3, applied ahead of revision 1.4: (1) the BF-active subset (fits whose p differs from their own view's N1 p) is classified and printed by the comparator; (2) the census denominator is per fit (n_pos*n_neg on the auc family; 2,016 only on base ko/ko1 fits for the auc_null family), never a constant 1,024; (3) V6 draws its fits from the BF-active subset, and 'uninformative' is a recorded outcome"
+ }
+}

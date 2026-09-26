@@ -1,0 +1,243 @@
+{
+ "run": "V4",
+ "outcome": "STATEMENT",
+ "text": "V4a: 12 of 180 hashes differ from V1, E outcome 1; V4b_M1.0-0: 1 of 4 hashes differ from V1, E outcome 1; V4b_M0.85-2: 1 of 4 hashes differ from V1, E outcome 1; V4b_M0.75-0: 1 of 4 hashes differ from V1, E outcome 1; V4c: 0 of 18000 hashes differ from V1, E outcome 1; V4d: 9 of 90 hashes differ from V1, E outcome 1",
+ "head": "a0e16b696389fb796a9f3b95c308358b52dd9dc8",
+ "not_from_a_committed_head": false,
+ "utc": "2026-09-26T16:44:01Z",
+ "registration": "docs/plans/2026-09-26-gpu-instrument-registration.md revision 1.3 (ec5cbc0)",
+ "applied_ahead": "Ark's review of revision 1.3 (chat 12:09 UTC), points 1-3, applied ahead of revision 1.4: (1) the BF-active subset (fits whose p differs from their own view's N1 p) is classified and printed by the comparator; (2) the census denominator is per fit (n_pos*n_neg on the auc family; 2,016 only on base ko/ko1 fits for the auc_null family), never a constant 1,024; (3) V6 draws its fits from the BF-active subset, and 'uninformative' is a recorded outcome",
+ "details": {
+  "parts": {
+   "V4a": {
+    "run": "C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed-data\\gpu_instrument\\V4a_20260926T155511Z_a0e16b696389",
+    "hashes_vs_V1_run1": {
+     "compared": 180,
+     "differ": 12,
+     "differing": [
+      "world:M0.5:4||ko||BF:1",
+      "world:M0.5:4||ko||BF:4",
+      "world:M0.6:0||ko||BF:4",
+      "world:M0.6:1||ko||BF:3",
+      "world:M0.6:1||ko||BF:4",
+      "world:M0.85:2||ko||BF:1",
+      "world:M1.0:0||ko||BF:1",
+      "world:M1.0:4||ko||BF:1",
+      "world:Nf:4||ko||BF:1",
+      "world:Nf:4||ko||BF:2",
+      "world:Nf:4||ko||BF:3",
+      "world:Nf:4||ko||BF:4"
+     ],
+     "differing_by_field": {
+      "U": 12,
+      "V": 12,
+      "lambda": 0,
+      "p": 3
+     }
+    },
+    "E": {
+     "outcome": 1,
+     "outcome_text": "EQUIVALENT (outcome 1): E1, E2-II (0 flipped pairs) and E3 hold on the compared fits",
+     "n_not_bit_equal": 3,
+     "n_flipped_pairs": 0
+    },
+    "differing_fits": [
+     "world:M1.0:4||ko||BF:1",
+     "world:M0.75:0||ko||BF:1",
+     "world:M0.85:0||ko||BF:1"
+    ]
+   },
+   "V4b_M1.0-0": {
+    "run": "C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed-data\\gpu_instrument\\V4b_M1.0-0_20260926T155554Z_a0e16b696389",
+    "hashes_vs_V1_run1": {
+     "compared": 4,
+     "differ": 1,
+     "differing": [
+      "world:M1.0:0||ko||BF:1"
+     ],
+     "differing_by_field": {
+      "U": 1,
+      "V": 1,
+      "lambda": 0,
+      "p": 0
+     }
+    },
+    "E": {
+     "outcome": 1,
+     "outcome_text": "EQUIVALENT (outcome 1): E1, E2-II (0 flipped pairs) and E3 hold on the compared fits",
+     "n_not_bit_equal": 1,
+     "n_flipped_pairs": 0
+    },
+    "differing_fits": [
+     "world:M1.0:0||ko||BF:1"
+    ]
+   },
+   "V4b_M0.85-2": {
+    "run": "C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed-data\\gpu_instrument\\V4b_M0.85-2_20260926T155612Z_a0e16b696389",
+    "hashes_vs_V1_run1": {
+     "compared": 4,
+     "differ": 1,
+     "differing": [
+      "world:M0.85:2||ko||BF:1"
+     ],
+     "differing_by_field": {
+      "U": 1,
+      "V": 1,
+      "lambda": 0,
+      "p": 1
+     }
+    },
+    "E": {
+     "outcome": 1,
+     "outcome_text": "EQUIVALENT (outcome 1): E1, E2-II (0 flipped pairs) and E3 hold on the compared fits",
+     "n_not_bit_equal": 0,
+     "n_flipped_pairs": 0
+    },
+    "differing_fits": []
+   },
+   "V4b_M0.75-0": {
+    "run": "C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed-data\\gpu_instrument\\V4b_M0.75-0_20260926T155625Z_a0e16b696389",
+    "hashes_vs_V1_run1": {
+     "compared": 4,
+     "differ": 1,
+     "differing": [
+      "world:M0.75:0||ko||BF:1"
+     ],
+     "differing_by_field": {
+      "U": 1,
+      "V": 1,
+      "lambda": 0,
+      "p": 0
+     }
+    },
+    "E": {
+     "outcome": 1,
+     "outcome_text": "EQUIVALENT (outcome 1): E1, E2-II (0 flipped pairs) and E3 hold on the compared fits",
+     "n_not_bit_equal": 1,
+     "n_flipped_pairs": 0
+    },
+    "differing_fits": [
+     "world:M0.75:0||ko||BF:1"
+    ]
+   },
+   "V4c": {
+    "run": "C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed-data\\gpu_instrument\\V4c_20260926T155638Z_a0e16b696389",
+    "hashes_vs_V1_run1": {
+     "compared": 18000,
+     "differ": 0,
+     "differing": [],
+     "differing_by_field": {
+      "U": 0,
+      "V": 0,
+      "lambda": 0,
+      "p": 0
+     }
+    },
+    "E": {
+     "outcome": 1,
+     "outcome_text": "EQUIVALENT (outcome 1): E1, E2-II (0 flipped pairs) and E3 hold on the compared fits",
+     "n_not_bit_equal": 5,
+     "n_flipped_pairs": 0
+    },
+    "differing_fits": [
+     "world:M1.0:0||ko||BF:1",
+     "world:M1.0:4||ko||BF:1",
+     "world:M0.75:0||ko||BF:1",
+     "world:M0.85:0||ko||BF:1",
+     "world:M0.85:2||ko||BF:1"
+    ]
+   },
+   "V4d": {
+    "run": "C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed-data\\gpu_instrument\\V4d_20260926T164337Z_a0e16b696389",
+    "hashes_vs_V1_run1": {
+     "compared": 90,
+     "differ": 9,
+     "differing": [
+      "world:M0.5:4||ko||BF:1",
+      "world:M0.5:4||ko||BF:4",
+      "world:M0.6:0||ko||BF:4",
+      "world:M0.6:1||ko||BF:4",
+      "world:M0.85:2||ko||BF:1",
+      "world:M1.0:0||ko||BF:1",
+      "world:M1.0:4||ko||BF:1",
+      "world:Nf:4||ko||BF:1",
+      "world:Nf:4||ko||BF:4"
+     ],
+     "differing_by_field": {
+      "U": 9,
+      "V": 9,
+      "lambda": 0,
+      "p": 3
+     }
+    },
+    "E": {
+     "outcome": 1,
+     "outcome_text": "EQUIVALENT (outcome 1): E1, E2-II (0 flipped pairs) and E3 hold on the compared fits",
+     "n_not_bit_equal": 3,
+     "n_flipped_pairs": 0
+    },
+    "differing_fits": [
+     "world:M1.0:4||ko||BF:1",
+     "world:M0.75:0||ko||BF:1",
+     "world:M0.85:0||ko||BF:1"
+    ],
+    "header": {
+     "stamp": {
+      "python": "3.10.20",
+      "numpy": "2.2.6",
+      "torch": "2.9.1+cu128",
+      "cuda": "12.8",
+      "dll_sha256": {
+       "cublas64_12.dll": "9513540e4ec4c51ee9e7304138c2cc255c29a8c181f9e80c38efa25738becd99",
+       "cublasLt64_12.dll": "b199d1ff892a81b7fd3d57ba1781549609b41500b36008fef326038393ad46c7",
+       "cusolver64_11.dll": "3d4f7a66b5f352db56d4bb5962bb453a42d5feb2d831779f4a0bebc9971c36fb"
+      },
+      "driver": "596.86",
+      "gpu_name": "NVIDIA RTX PRO 4500 Blackwell"
+     },
+     "det": true,
+     "script": "run_registered.py / gpu_stage.py",
+     "script_sha256_lf": {
+      "results/genome/c6/gpu_instrument/gpu_bf3.py": "63f364ed9cbd0622f7b9fc5f07f569eaa6de8fe75d50889ec3c11abeb583dd90",
+      "results/genome/c6/gpu_instrument/gpu_stage.py": "962fb469dfaa237478ceadf4c4e5743859fdef6faad765176a120410bc841440",
+      "results/genome/c6/gpu_instrument/run_registered.py": "28be009e4f780a52657c5fcfd55a3d1daa38eef5c1ce2b2a878b2cacbecf6384"
+     },
+     "row_chunk": 40000
+    },
+    "probe_hashes": {
+     "M1.0:0||BF:1": {
+      "U": "2af79176a3aa76ccaa9037ac8e2bf6064d1bafbddfa7ff19340a15f63f0897dc",
+      "V": "d13acd7fa2d4afc881ff10bcc63c7966a58b413f2148bb81c72ea0ce04f30913",
+      "lambda": "6c3c396ed6b5c36dcae172271f462051b1266b851e92df3deea8ac65478fd712"
+     },
+     "M1.0:0||BF:4": {
+      "U": "9f2c5c70da5f3a6658ee97273f9fd2aaad2862c3fbc88f619fd835a82d954e42",
+      "V": "ac655b673c928d1f2645a36b19fdcf9c9a2e2b3ef80b3aed8626548cd22db579",
+      "lambda": "161f4c0b1a18a0501127332c387e782b5acc10c6c7a9f7e494c1e3394c49bad5"
+     },
+     "M0.85:2||BF:1": {
+      "U": "a4795d97168d0c016889cf5dee6b4d5d306fbf084593de5cf7746c3eea760b3a",
+      "V": "d2ca7789fb71a9ff386ef484546a81667bc01329fb5a463b93a1e47cc366c7dd",
+      "lambda": "161f4c0b1a18a0501127332c387e782b5acc10c6c7a9f7e494c1e3394c49bad5"
+     },
+     "M0.85:2||BF:4": {
+      "U": "27c5177244e4b8e81f7fc58a3ef8ee89030a361fe877dd735f0432409cb83943",
+      "V": "124b21c3d0d959de969c1259e4140852133fa4eb781d9f6c098f8d6ed04843de",
+      "lambda": "161f4c0b1a18a0501127332c387e782b5acc10c6c7a9f7e494c1e3394c49bad5"
+     },
+     "M0.75:0||BF:1": {
+      "U": "ad5ad8a42a64bea9035437e3f19d807cb7ed622ec7c479d5623b48704a92acd1",
+      "V": "bf6828c1d61e7320eed62e5b5ec81a26b48d9dc97fe4e86c4b9d50eefd4d2407",
+      "lambda": "161f4c0b1a18a0501127332c387e782b5acc10c6c7a9f7e494c1e3394c49bad5"
+     },
+     "M0.75:0||BF:4": {
+      "U": "d96c9b30a7f01bedd600a8986dd34f1f2735f7ee2d869f46041d58facc61ca72",
+      "V": "74e3d27f230befe26785302f0165a928a2c87b0523abeaf4e356bebea07b60a6",
+      "lambda": "161f4c0b1a18a0501127332c387e782b5acc10c6c7a9f7e494c1e3394c49bad5"
+     }
+    }
+   }
+  },
+  "flags": []
+ }
+}

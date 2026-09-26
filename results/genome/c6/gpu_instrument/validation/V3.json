@@ -1,0 +1,251 @@
+{
+ "run": "V3",
+ "outcome": "PASS",
+ "text": "E1 (exact columns, mechanism, verdict lines and labels, ko1 47/178), E3 on 5 differing rows, and the D9 (b) path check (world:W:0) hold",
+ "head": "a0e16b696389fb796a9f3b95c308358b52dd9dc8",
+ "not_from_a_committed_head": false,
+ "utc": "2026-09-26T15:45:41Z",
+ "registration": "docs/plans/2026-09-26-gpu-instrument-registration.md revision 1.3 (ec5cbc0)",
+ "applied_ahead": "Ark's review of revision 1.3 (chat 12:09 UTC), points 1-3, applied ahead of revision 1.4: (1) the BF-active subset (fits whose p differs from their own view's N1 p) is classified and printed by the comparator; (2) the census denominator is per fit (n_pos*n_neg on the auc family; 2,016 only on base ko/ko1 fits for the auc_null family), never a constant 1,024; (3) V6 draws its fits from the BF-active subset, and 'uninformative' is a recorded outcome",
+ "details": {
+  "gpu_run": "C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed-data\\gpu_instrument\\V1_run_20260926T132024Z_a0e16b696389",
+  "folder": "C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed-data\\gpu_instrument\\V3_20260926T154357Z_a0e16b696389",
+  "hybrid": {
+   "built_by": "hybrid_store.py (G10)",
+   "gpu_run": "C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed-data\\gpu_instrument\\V1_run_20260926T132024Z_a0e16b696389",
+   "gpu_label": "V1",
+   "gpu_head": "a0e16b696389fb796a9f3b95c308358b52dd9dc8",
+   "reference": {
+    "path": "C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed-data\\knockout_regrow\\synthetic_rev3_prerun\\raw_fits.json.gz",
+    "pinned": true,
+    "check_prerun_files": "every listed file matches its listed and pinned sha256",
+    "sha256": "91035af838446b86bda502fe8bf719910550bbad72c1cb12563800a984819e60"
+   },
+   "records": 28665,
+   "gpu_ko_records": 18000,
+   "ko1_copies_replaced_by_gpu_ko": 29,
+   "ko1_fitted_records_kept_cpu": 151,
+   "raw_fits_sha256": "6819d716f9cfa0e37dcef23007b203e0e5c36498f55b6c5a8862ed8add872ecf"
+  },
+  "a_rc_reference_pass": 0,
+  "a_rc_hybrid_pass": 0,
+  "path_check_D9b": {
+   "bank": "world:W:0",
+   "per_predictor": {
+    "rule": {
+     "exact": true,
+     "passed": true
+    },
+    "BF:1": {
+     "lam_equal": true,
+     "y_equal": true,
+     "label_diffs": 0,
+     "auc_equal": true,
+     "n_flips": 0,
+     "flips": [],
+     "max_abs_dp": 0.0,
+     "bit_equal": true,
+     "passed": true
+    },
+    "BF:2": {
+     "lam_equal": true,
+     "y_equal": true,
+     "label_diffs": 0,
+     "auc_equal": true,
+     "n_flips": 0,
+     "flips": [],
+     "max_abs_dp": 0.0,
+     "bit_equal": true,
+     "passed": true
+    },
+    "BF:3": {
+     "lam_equal": true,
+     "y_equal": true,
+     "label_diffs": 0,
+     "auc_equal": true,
+     "n_flips": 0,
+     "flips": [],
+     "max_abs_dp": 0.0,
+     "bit_equal": true,
+     "passed": true
+    },
+    "BF:4": {
+     "lam_equal": true,
+     "y_equal": true,
+     "label_diffs": 0,
+     "auc_equal": true,
+     "n_flips": 0,
+     "flips": [],
+     "max_abs_dp": 0.0,
+     "bit_equal": true,
+     "passed": true
+    }
+   },
+   "passed": true,
+   "rule": "D9 (b): BF exact on lambda, labels, AUC, 0 flipped pairs; rule #2.1 exact"
+  },
+  "a_exact_path_check_failed": false,
+  "exact_differences": [],
+  "verdict_or_label_differs": [],
+  "ko1_count": {
+   "ko1_records": 225,
+   "copied_from_ko": 47,
+   "fitted": 178
+  },
+  "ko1_equal_47_178": true,
+  "e3_failures": [],
+  "e3_rows_not_bit_equal": [
+   {
+    "row": [
+     "M0.75",
+     "0",
+     "90170",
+     "BF_1"
+    ],
+    "bit_equal": false,
+    "bounds": {
+     "delta": 1.6312917239247327e-08,
+     "q_min": 0.06170159518604507,
+     "D_bound": 5.287680874395541e-07,
+     "D_tighter_diagnostic": 2.1621735204350262e-07,
+     "cells_clipped_by_logit_of": 0,
+     "clipped_cells": [],
+     "m_min": 0.13406299695132537,
+     "logloss_bound": 1.2168098289769029e-07
+    },
+    "check": {
+     "exact_required": false,
+     "dD": 3.0454580413064036e-08,
+     "dlogloss": 6.504919269900711e-09,
+     "D_within": true,
+     "logloss_within": true,
+     "passed": true
+    },
+    "margin_ok": true,
+    "regrown_share_exact": true,
+    "passed": true
+   },
+   {
+    "row": [
+     "M0.85",
+     "0",
+     "90180",
+     "BF_1"
+    ],
+    "bit_equal": false,
+    "bounds": {
+     "delta": 2.9369687570834913e-08,
+     "q_min": 0.0295812819152966,
+     "D_bound": 1.9856940382051345e-06,
+     "D_tighter_diagnostic": 4.277960923459197e-07,
+     "cells_clipped_by_logit_of": 0,
+     "clipped_cells": [],
+     "m_min": 0.14679704185547238,
+     "logloss_bound": 2.0007002320762402e-07
+    },
+    "check": {
+     "exact_required": false,
+     "dD": 1.058395326936079e-08,
+     "dlogloss": 1.6668716407153283e-09,
+     "D_within": true,
+     "logloss_within": true,
+     "passed": true
+    },
+    "margin_ok": true,
+    "regrown_share_exact": true,
+    "passed": true
+   },
+   {
+    "row": [
+     "M0.85",
+     "2",
+     "90182",
+     "BF_1"
+    ],
+    "bit_equal": false,
+    "bounds": {
+     "delta": 5.6323528063728645e-08,
+     "q_min": 0.06160328950909959,
+     "D_bound": 1.8285883274271886e-06,
+     "D_tighter_diagnostic": 6.514824082268886e-07,
+     "cells_clipped_by_logit_of": 0,
+     "clipped_cells": [],
+     "m_min": 0.1707947368952351,
+     "logloss_bound": 3.2977320664323105e-07
+    },
+    "check": {
+     "exact_required": false,
+     "dD": 4.383162788279549e-08,
+     "dlogloss": 1.0688403051517525e-08,
+     "D_within": true,
+     "logloss_within": true,
+     "passed": true
+    },
+    "margin_ok": true,
+    "regrown_share_exact": true,
+    "passed": true
+   },
+   {
+    "row": [
+     "M1.0",
+     "0",
+     "90150",
+     "BF_1"
+    ],
+    "bit_equal": false,
+    "bounds": {
+     "delta": 2.3333568188732556e-08,
+     "q_min": 0.03113276360838633,
+     "D_bound": 1.4989718537192193e-06,
+     "D_tighter_diagnostic": 3.1344615438173977e-07,
+     "cells_clipped_by_logit_of": 0,
+     "clipped_cells": [],
+     "m_min": 0.09013893361960139,
+     "logloss_bound": 2.5886226130878583e-07
+    },
+    "check": {
+     "exact_required": false,
+     "dD": 2.9392199119016027e-08,
+     "dlogloss": 5.418030468717916e-09,
+     "D_within": true,
+     "logloss_within": true,
+     "passed": true
+    },
+    "margin_ok": true,
+    "regrown_share_exact": true,
+    "passed": true
+   },
+   {
+    "row": [
+     "M1.0",
+     "4",
+     "90154",
+     "BF_1"
+    ],
+    "bit_equal": false,
+    "bounds": {
+     "delta": 3.155508565555465e-08,
+     "q_min": 0.11449033923480592,
+     "D_bound": 5.512270444205596e-07,
+     "D_tighter_diagnostic": 3.2521078576986933e-07,
+     "cells_clipped_by_logit_of": 0,
+     "clipped_cells": [],
+     "m_min": 0.15184152567984627,
+     "logloss_bound": 2.0781591540437818e-07
+    },
+    "check": {
+     "exact_required": false,
+     "dD": 2.289183631543068e-08,
+     "dlogloss": 3.7708152156312735e-09,
+     "D_within": true,
+     "logloss_within": true,
+     "passed": true
+    },
+    "margin_ok": true,
+    "regrown_share_exact": true,
+    "passed": true
+   }
+  ],
+  "a_prediction_outcome_3b": 3
+ }
+}
