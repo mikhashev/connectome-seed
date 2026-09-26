@@ -2,11 +2,13 @@
 """Knock out and regrow, the male CNS arm: block A in each optic lobe of one male (the animal
 control of block A).
 
-Implements docs/plans/2026-09-26-knockout-regrow-male-cns-arm-registration.md, revision 1.1
-("the arm", section numbers below refer to it unless marked "A"), a delta on block A's
+Implements docs/plans/2026-09-26-knockout-regrow-male-cns-arm-registration.md, revision 1.3
+(revision 1.1's text, the pre-run references of section 3.3.1 registered in S17's constants
+(revision 1.2), and the reviewers' edits of revision 1.3: S29-S32; "the arm", section numbers
+below refer to it unless marked "A"), a delta on block A's
 registration docs/plans/2026-09-24-knockout-regrow-registration.md, revision 3.4.1 ("A").
 This file is a copy of A's script results/genome/c6/checks/knockout_regrow.py (at 74db080) with
-the script changes S1-S28 of section 7.2, and is reviewed as a diff against it (D14 (i)); A's
+the script changes S1-S32 of section 7.2, and is reviewed as a diff against it (D14 (i)); A's
 script and the pinned harness are not edited. Each change is marked "S<n>" where it is made.
 
 What differs from A, in one paragraph: the bank is the male CNS builder's existence bank, one per
@@ -62,7 +64,7 @@ C6 = HERE.parent
 ROOT = C6.parents[2]                                   # the repository root
 # S2: this arm's registration and revision; the manifest records its LF sha256 at run time.
 REGISTRATION = "docs/plans/2026-09-26-knockout-regrow-male-cns-arm-registration.md"
-REGISTRATION_REVISION = "1.1"
+REGISTRATION_REVISION = "1.3"
 # S2 (D11, D12, section 9.3): A's registration, from which quote_row and the A-literals line
 # quote section 4's rows. It is pinned by its LF sha256 AFTER the amendment of section 9.3 (made
 # in step 4 of D15). PLACEHOLDER: None until that revision registers the amended hash; while it is
@@ -81,18 +83,47 @@ RULE_PATH = C6 / "rules" / "second_rule_v21" / "fit.py"
 # them to PRIVATE_ROOT / "malecns_<UTC stamp>_<git head, 12>" (private_run_dir).
 PRIVATE_ROOT = ROOT.parent / "connectome-seed-data" / "knockout_regrow"
 # S17 (sections 3.3, 7.5; D15): one pinned pre-run reference per lobe, made by the
-# --synthetic-only pre-run of that lobe from a committed head. PLACEHOLDERS: the pins are
-# registered in the revision of the registration that follows the pre-run, and the reference is
-# moved to PRERUN_DIR[lobe] in that reviewed change. While a lobe's PRERUN_SHA256 or
-# PRERUN_WORLDS_CSV_SHA256 is None, --arm malecns refuses, and --synthetic-only runs in pre-run
-# mode (it makes a reference; it checks none). A's revision-2/3 split of its pre-run
-# (PRERUN_REV2_FAMILIES, PRERUN_REV3_FAMILIES) and revision 3.2's rename check (_mech_renamed_32)
-# are A's history and are not carried over (S17).
+# --synthetic-only pre-run of that lobe from a committed head. Registered by revision 1.2
+# (section 3.3.1, D17): the pre-run of 2026-09-26 (started 13:12:49 UTC, head a0e16b6, tree
+# clean) wrote malecns_prerun_<lobe>_20260926T131249Z/; its five files were copied byte for byte
+# (sha256 and cmp equal) to PRERUN_DIR[lobe], the folder names section 3.3 proposed and each
+# reference's own manifest records as prerun_dir. The originals are left in place, untouched:
+# they are the GPU instrument's V8 inputs (instrument.MALE_PRERUN_STORES). While a lobe's
+# PRERUN_SHA256 or PRERUN_WORLDS_CSV_SHA256 is None, --arm malecns refuses, and --synthetic-only
+# runs in pre-run mode (it makes a reference; it checks none). A's revision-2/3 split of its
+# pre-run (PRERUN_REV2_FAMILIES, PRERUN_REV3_FAMILIES) and revision 3.2's rename check
+# (_mech_renamed_32) are A's history and are not carried over (S17).
 PRERUN_DIR = {"L": PRIVATE_ROOT / "synthetic_malecns_L_prerun",
               "R": PRIVATE_ROOT / "synthetic_malecns_R_prerun"}
-PRERUN_SHA256 = {"L": None, "R": None}                 # PLACEHOLDER: {file name: raw sha256}
-PRERUN_WORLDS_CSV_SHA256 = {"L": None, "R": None}      # PLACEHOLDER
+# {file name: raw sha256}, exactly the files listed in each folder's SHA256SUMS.txt (read by
+# check_prerun_files, which requires listed == pinned == read for every one of them).
+PRERUN_SHA256 = {
+    "L": {"SYNTHETIC.md": "97797a5120eab60bdf7c5ea94aaeb5835430f54a3af9c2e27c12b0d81741363f",
+          "raw_fits.json.gz": "e0e1114d9c7fc6bcb316a131aaea572b426ef46e6f1c4f8786fdb63d2783dad2",
+          "synthetic_only.json":
+              "9498de82d33444ff98e090b2cff895d2ab760f433fbf41d22e12e9b67b61f649",
+          "synthetic_worlds.csv":
+              "506576312638005e5bd09876c9da0ffe9a8a753641a59a2b354c0c59bed25d91"},
+    "R": {"SYNTHETIC.md": "6f4b94b1c9096b45a8532395a2e45f47b5484663431d66532548d68db4753e84",
+          "raw_fits.json.gz": "183b9376315dd98bb421015fb721d941cddf2dd1949f96be82055d1f4c5acade",
+          "synthetic_only.json":
+              "8acf217d77fbe21d29561f47cc33373769e74f3cc50150def97eca4f6b49f219",
+          "synthetic_worlds.csv":
+              "e8476a936356d3965aa5715d7f04a82c3587ff0795569db81071822fbca9cae0"}}
+PRERUN_WORLDS_CSV_SHA256 = {
+    "L": "506576312638005e5bd09876c9da0ffe9a8a753641a59a2b354c0c59bed25d91",
+    "R": "e8476a936356d3965aa5715d7f04a82c3587ff0795569db81071822fbca9cae0"}
 PRERUN_FILES = ("SYNTHETIC.md", "raw_fits.json.gz", "synthetic_only.json", "synthetic_worlds.csv")
+# S30 (revision 1.3; Ark, Zcode): the pre-run and the registered run are made by different code.
+# Both lobes' references were made at head a0e16b6 by the script whose LF sha256 is below (read
+# from each reference's manifest, keys git_head and script_sha256_lf; section 3.3.1 (a)). The
+# registered run is made by the script after this branch is merged (another hash). It records
+# and prints both (prerun_provenance); a reference whose manifest names another head or script
+# stops the run. The check registered in section 3.3.1 (h) (a --from-raw pass of the merged
+# script against each pinned store must re-derive the worlds table byte for byte) is what shows
+# that the new code reads the old references as registered.
+PRERUN_GIT_HEAD = "a0e16b696389fb796a9f3b95c308358b52dd9dc8"
+PRERUN_SCRIPT_SHA256_LF = "7a09f9fdfee38d93596fe0be9ffd4daab5b82cb287acdfa4a16bbdd4a3a281fc"
 # S18: the other arms' references, which --out must never touch. A's is pinned (A section 7);
 # block B's folder is the one B section 3.3 proposes, with no pins yet (B is not implemented), so
 # only the path is refused for it.
@@ -2074,6 +2105,37 @@ def check_prerun_files(lobe):
                f"{', '.join(unlisted)}" if unlisted else "")}
 
 
+def prerun_provenance(lobe, head, script_sha256_lf):
+    """S30 (revision 1.3; Ark, Zcode): which code made the lobe's reference and which code makes
+    this run. The reference's files are verified first (check_prerun_files); its manifest's
+    git_head and script_sha256_lf must equal PRERUN_GIT_HEAD and PRERUN_SCRIPT_SHA256_LF (else
+    passed False, and the caller stops). The text names both, so that no reader takes the
+    reference and this run for one piece of code."""
+    out = {"lobe": lobe, "registered_git_head": PRERUN_GIT_HEAD,
+           "registered_script_sha256_lf": PRERUN_SCRIPT_SHA256_LF,
+           "this_run_git_head": head, "this_run_script_sha256_lf": script_sha256_lf}
+    files = check_prerun_files(lobe)
+    if not files["passed"]:
+        return {**out, "passed": False, "reason": "reference not verified: " + files["reason"],
+                "text": None}
+    man = json.loads((PRERUN_DIR[lobe] / "synthetic_only.json")
+                     .read_text(encoding="utf-8"))["manifest"]
+    ph, ps = man.get("git_head"), man.get("script_sha256_lf")
+    ok = ph == PRERUN_GIT_HEAD and ps == PRERUN_SCRIPT_SHA256_LF
+    text = (f"lobe {lobe}: pre-run made by head {str(ph)[:7]}, script {str(ps)[:8]} (LF "
+            f"sha256 {ps}); this run by head {str(head)[:7]}, script {script_sha256_lf[:8]} (LF "
+            f"sha256 {script_sha256_lf})"
+            + ("; the same script" if ps == script_sha256_lf else
+               "; different code: the reference is read by this script as registered only if "
+               "the --from-raw check of section 3.3.1 (h) re-derived it byte for byte"))
+    return {**out, "prerun_git_head": ph, "prerun_script_sha256_lf": ps,
+            "same_script": ps == script_sha256_lf, "passed": ok,
+            "reason": ("the reference's manifest names the registered head and script" if ok
+                       else f"the reference's manifest names head {ph} and script {ps}; "
+                            f"registered {PRERUN_GIT_HEAD} and {PRERUN_SCRIPT_SHA256_LF}"),
+            "text": text}
+
+
 def check_prerun_reproduced(got, comparable, reread=False, lobe=None):
     """Sections 3.3, 7 (A revisions 3.1, 3.2), per lobe (S17): the synthetic step must reproduce
     the lobe's pinned table, PRERUN_DIR[lobe]/synthetic_worlds.csv, on its deciding columns
@@ -3184,6 +3246,122 @@ def a_literals_line(ev, lobe, dl, ur, inferable):
 
 
 # ------------------------------------------------------------------------------------------
+# S29, S31, S32 (revision 1.3; Ark, Zcode): three lines printed beside the verdicts. Each is
+# computed from the lobe's own synthetic step (which the registered run refits and reproduces
+# against the pinned reference), so the numbers are the instrument's, not constants.
+
+def _dense_worlds(worlds):
+    gamma_of = {f: g for g, f in DENSE_GRID}
+    return [(gamma_of[w["family"]], w) for w in worlds if w["family"] in gamma_of]
+
+
+def male_u_reading_line(ev, lobe, dl, ur, worlds):
+    """S29, section 4.1 (5) (revision 1.3, frozen before unsealing): printed with a lobe's
+    threshold U (not a failed fit, not measured, not readable, not renamed; those keep their own
+    texts). On the male banks gamma*_P = gamma_R = the family limit, so the transition band
+    [gamma*_P, gamma_R) is empty, and the U worlds lie at or below the limit: a threshold U reads
+    "not detected at the R level", with no position on a threshold, not A's "the signature of the
+    leg-P detection limit gamma*_P". The line gives the lobe's band, the gammas of its U worlds
+    and how many lie above the family limit. None when it does not apply."""
+    if ev.get("label") != "U" or u_kind(ev.get("U_reasons")) != "threshold" or ur["renamed"]:
+        return None
+    band, fam = dl["band"], dl["family"]
+    us = [g for g, w in _dense_worlds(worlds) if w["label"] == "U"]
+    per = ", ".join(f"{g}: {us.count(g)}" for g in sorted(set(us))) or "none"
+    lim = fam.get("gamma")
+    above = sum(g > lim for g in us) if lim is not None else None
+    at = sum(g == lim for g in us) if lim is not None else None
+    s = (f"On the male arm (section 4.1 (5), revision 1.3): lobe {lobe}'s transition band "
+         f"[gamma*_P, gamma_R) is {band['text']}; its {len(us)} dense-grid U worlds lie at gamma "
+         f"{per} (family limit {fam['text']}: {at} at it, {above} above it). ")
+    if band.get("steps") == 0:
+        s += ("The band is empty, so this U reads \"not detected at the R level: the two legs, or "
+              "the two D1 candidates, disagree\", with no position on a threshold; A's reading, "
+              "\"the signature of the leg-P detection limit gamma*_P\" (A's U worlds sat on "
+              "gamma*_P), does not hold on this lobe.")
+    else:
+        s += ("The band is not empty on this lobe; the frozen male reading was written for an "
+              "empty band (section 4.1 (5)) and is printed for information only.")
+    return s
+
+
+# S31: A's power curve (A's pinned pre-run, synthetic_rev3_prerun/synthetic_worlds.csv, rule
+# #2.1 rows: seen = p_P <= 0.01, R = label R, of 5 worlds per gamma), history, for comparison.
+A_CURVE_TEXT = "0.5: 1/5, 1/5; 0.6: 3/5, 2/5; 0.75: 5/5, 5/5; 0.85: 5/5, 5/5; 1.0: 5/5, 5/5"
+
+
+def male_g_instrument_line(lobe, syn):
+    """S31, sections 5 and 6 (revision 1.3; Ark, Zcode): printed beside a G of lobe `lobe` and
+    beside a male G: the instrument on the male banks is weaker than A's, named with its numbers
+    from the lobe's synthetic step: the power curve (rule #2.1 seen, i.e. p_P <= 0.01, and read R,
+    of n worlds per gamma) against A's; the M worlds that read G at or above gamma_R (rule #2.1
+    AUC and p_P); the M worlds that read W (rule #2.1 n_ge of n_valid)."""
+    dl, worlds = syn["limits"], syn["worlds"]
+    by_seed = {w["seed"]: w for w in worlds}
+    g = "; ".join(f"{x['family']} seed {x['seed']} (rule #2.1 AUC "
+                  f"{by_seed[x['seed']]['rows']['rule']['auc']:.4f}, p_P "
+                  f"{by_seed[x['seed']]['rows']['rule']['p_P']:.4f})"
+                  for x in dl["G_at_or_above_R"]) or "none"
+    w_ = "; ".join(f"{w['family']} seed {w['seed']} (rule #2.1 n_ge = "
+                   f"{w['rows']['rule']['n_ge']} of {w['rows']['rule']['n_valid_shuffles']})"
+                   for _, w in _dense_worlds(worlds) if w["label"] == "W") or "none"
+    return (f"The instrument on lobe {lobe} is weaker than A's (sections 5, 6, revision 1.3): per "
+            f"gamma, rule #2.1 seen (p_P <= 0.01) / read R, of the worlds at that gamma: "
+            f"{dl['curve_text']} (A: {A_CURVE_TEXT}); gamma*_P = {dl['leg_P']['text']} (A 0.6), "
+            f"gamma_R = {dl['R']['text']}; M worlds that read G at or above gamma_R: {g}; M worlds "
+            f"that read W: {w_}. This G is stated against these limits.")
+
+
+def split_notions(reading, split, syn):
+    """S32, sections 4.2 and 4.3 (revision 1.3; Ark, Zcode): the two objects called "split",
+    printed separately. By reading (D3, section 4.2): the lobes' labels differ. By block (section
+    4.3): k of the 64 cells differ in presence, class S0/S1/S2a/S2b. Labels can differ at k = 0,
+    and S2 may not fire when labels differ; a split by reading is read as "the lobes' blocks
+    differ" only when section 4.3's class says so. The worlds' reference, measured before
+    unsealing: world pairs (same seed in both lobes, hence the same board, k = 0) whose labels
+    differ, on the dense grid and on the four axis families."""
+    lab = {lobe: {w["seed"]: w for w in syn[lobe]["worlds"]} for lobe in LOBES}
+    seeds = sorted(set(lab["L"]) & set(lab["R"]))
+    axis = [f[0] for f in FAMILIES if f[0] not in M_FAMILIES]
+    pairs = {"dense": [], "axis": []}
+    for sd in seeds:
+        wl, wr = lab["L"][sd], lab["R"][sd]
+        kind = "dense" if wl["family"] in M_FAMILIES else ("axis" if wl["family"] in axis
+                                                          else None)
+        if kind is None:
+            continue
+        k = int((board_y(wl["board"]) != board_y(wr["board"])).sum())
+        pairs[kind].append({"seed": sd, "family": wl["family"], "L": wl["label"],
+                            "R": wr["label"], "k": k})
+    dif = {kd: [p for p in v if p["L"] != p["R"]] for kd, v in pairs.items()}
+    by_reading = {"split": reading["label"] == "split", "text": reading["text"]}
+    if split is None:
+        by_block = {"class": None, "k": None, "blocks_differ": None,
+                    "text": "not computed: a lobe's block was not unsealed"}
+    else:
+        by_block = {"class": split["class"], "k": split["k"], "blocks_differ": split["k"] > 0,
+                    "beyond_outside_rate": split["class"] in ("S2a", "S2b"),
+                    "text": f"class {split['class']}, k = {split['k']} of 64 cells differ"}
+    worlds_text = (f"{len(dif['dense'])} of {len(pairs['dense'])} dense-grid world pairs split by "
+                   f"reading ("
+                   + (", ".join(f"seed {p['seed']} {p['L']}/{p['R']}" for p in dif["dense"])
+                      or "none")
+                   + f"), {len(dif['axis'])} of {len(pairs['axis'])} axis-family pairs; every "
+                   f"world pair has k = "
+                   + ", ".join(str(x) for x in sorted({p['k'] for v in pairs.values() for p in v}))
+                   + " (the same board in both lobes)")
+    text = ("Split by reading (section 4.2, D3): "
+            + ("yes: " if by_reading["split"] else "no: ") + reading["text"]
+            + ". Block difference (section 4.3, by block): " + by_block["text"]
+            + ". Two objects (revision 1.3): a split by reading is read as \"the lobes' blocks "
+            "differ\" only if the section 4.3 class says so (S1, S2a, S2b); labels can differ at "
+            "k = 0, and S2 may not fire when they differ. In the worlds (before unsealing): "
+            + worlds_text + ".")
+    return {"by_reading": by_reading, "by_block": by_block,
+            "worlds": {"pairs": pairs, "differing": dif, "text": worlds_text}, "text": text}
+
+
+# ------------------------------------------------------------------------------------------
 # S21, section 7.4: the unseal step, check 11.
 
 SEALED_HEADER = ["src", "tar", "W", "n_tar", "x", "present"]
@@ -3369,6 +3547,10 @@ def real_arm_lobe(a, lobe, terms, bank, sealed, syn, h_before, inferable):
                                       syn["two_world_check"]["no_contingency"], lobe=lobe)
     ev["quoted_row"] = quote_row(ev["label"])
     ev["a_literals_line"] = a_literals_line(ev, lobe, syn["limits"], syn["u_rule"], inferable)
+    ev["male_u_reading_line"] = male_u_reading_line(ev, lobe, syn["limits"], syn["u_rule"],
+                                                    syn["worlds"])                      # S29
+    ev["male_g_instrument_line"] = (male_g_instrument_line(lobe, syn) if ev["label"] == "G"
+                                    else None)                                          # S31
     ev["fixed_lambda_fits"] = fl
     return {"lobe": lobe, "ev": ev, "checks": checks, "fits": Fr, "status": lobe_status(ev)}
 
@@ -3376,11 +3558,12 @@ def real_arm_lobe(a, lobe, terms, bank, sealed, syn, h_before, inferable):
 # ------------------------------------------------------------------------------------------
 # S19, section 7.5: outputs.
 
-def write_committed(summary, syn, real, reading, split, joint, cross_lines):
+def write_committed(summary, syn, real, reading, split, joint, cross_lines, notions=None):
     """S19: RESULT.md, summary.json, per_shuffle_<lobe>.csv, synthetic_worlds_<lobe>.csv, all
     aggregates (section 7.4 (5)): the male reading first, then each lobe's verdict line, the
-    quoted A section 4 row and the line naming A's literals; the lobe comparison; the joint
-    reading with flyvis-65."""
+    quoted A section 4 row and the line naming A's literals (with S29's U line and S31's G line
+    where they apply); the lobe comparison with S32's two notions of split; the joint reading
+    with flyvis-65. S30: the header names the code that made the references and this run."""
     OUT.mkdir(parents=True, exist_ok=True)
     (OUT / "summary.json").write_text(dump_json(summary), encoding="utf-8", newline="\n")
     for lobe in LOBES:
@@ -3391,8 +3574,13 @@ def write_committed(summary, syn, real, reading, split, joint, cross_lines):
           f"Registration `{REGISTRATION}`, revision {REGISTRATION_REVISION}; A "
           f"`{A_REGISTRATION}` (amended, LF sha256 {A_REGISTRATION_SHA256_LF_AMENDED}). "
           f"git_head={summary['manifest']['git_head']}, runtime={summary['runtime_s']:.0f}s. "
-          f"Seal record: {SEAL_RECORD}.", "",
-          f"**Male reading: {reading['text']}**", ""]
+          f"Seal record: {SEAL_RECORD}.", ""]
+    prov = summary["manifest"].get("prerun_provenance") or {}
+    if prov:
+        md += ["Code (S30): " + "; ".join(prov[lobe]["text"] for lobe in LOBES if lobe in prov)
+               + ".", ""]
+    md += [f"**Male reading: {reading['text']}**", ""]
+    md += [ln for x in reading.get("instrument_lines", []) for ln in (x, "")]
     for lobe in LOBES:
         r, c = real[lobe], real[lobe]["checks"]
         md += [f"## Lobe {lobe}", ""]
@@ -3403,6 +3591,8 @@ def write_committed(summary, syn, real, reading, split, joint, cross_lines):
             md += [f"**Verdict: {ev['verdict_line']}**", "",
                    "The A section 4 row, verbatim (from the amended A):", "",
                    "> " + ev["quoted_row"], "", ev["a_literals_line"], ""]
+            md += [ln for k in ("male_u_reading_line", "male_g_instrument_line")   # S29, S31
+                   if ev.get(k) for ln in (ev[k], "")]
             if ev["label"] == "U":
                 md += [f"N1's own p_P beside the U (decides nothing): "
                        f"{ev['rows']['N1']['p_P']:.4f}.", ""]
@@ -3432,6 +3622,8 @@ def write_committed(summary, syn, real, reading, split, joint, cross_lines):
                f"(outside: 3 against 33). Differing cells: "
                + (", ".join(f"{d['cell']} (L {int(d['present_L'])}, R {int(d['present_R'])})"
                             for d in split["differing_cells"]) or "none") + ".", ""]
+    if notions is not None:
+        md += [f"The two notions of split (S32): {notions['text']}", ""]
     md += ["## The joint reading with flyvis-65 (section 5)", "",
            f"flyvis-65 reads {joint['flyvis65']}; the male reading is {joint['male']} (A's D13 "
            f"row: {joint['A_D13_row']}). {joint['text']}.", "",
@@ -3553,11 +3745,18 @@ def run_synthetic_only(a, t0, smoke):
         a.from_raw_record["is_the_pinned_store"] = (a.from_raw_record["sha256"]
                                                     == pins_l.get("raw_fits.json.gz"))
     head = git("rev-parse", "HEAD")
+    prov = None
+    if reference_mode(a.lobe):                         # S30: which code made the reference
+        prov = prerun_provenance(a.lobe, head, sha256_lf(Path(__file__)))
+        if not prov["passed"]:
+            sys.exit(f"PRE-RUN PROVENANCE DIFFERS (lobe {a.lobe}, S30): {prov['reason']}")
+        log(f"pre-run provenance (S30): {prov['text']}")
     manifest = make_manifest(a, "synthetic-only", head, dirty, pins, {a.lobe: terms},
                              Path(a.out) if a.out else None, [a.lobe], smoke,
                              {"not_a_reference": NOT_A_REFERENCE_TEXT if not_a_reference
                               else None,
                               "reference_mode": reference_mode(a.lobe),
+                              "prerun_provenance": prov,
                               "sealed_files_touched": False})
     syn, F = run_synthetic(a, a.lobe, banks[a.lobe], terms,
                            read_raw(a.from_raw) if a.from_raw else None)
@@ -3629,7 +3828,16 @@ def _run_real_arm(a, t0, smoke, constants, dirty, pins, head, private):
     for lobe in LOBES:
         log_terms(lobe, terms[lobe])
     a.from_raw_record = None
-    manifest = make_manifest(a, "malecns", head, dirty, pins, terms, private, LOBES, smoke)
+    # S30: the references were made by other code than this run; both are recorded and printed.
+    prov = {lobe: prerun_provenance(lobe, head, sha256_lf(Path(__file__))) for lobe in LOBES}
+    for lobe in LOBES:
+        if not prov[lobe]["passed"]:
+            log(f"PRE-RUN PROVENANCE DIFFERS (lobe {lobe}, S30): {prov[lobe]['reason']}; both "
+                "sealed files stay sealed")
+            sys.exit(1)
+        log(f"pre-run provenance (S30): {prov[lobe]['text']}")
+    manifest = make_manifest(a, "malecns", head, dirty, pins, terms, private, LOBES, smoke,
+                             {"prerun_provenance": prov})
     syn, F = {}, {}
     for lobe in LOBES:
         syn[lobe], F[lobe] = run_synthetic(a, lobe, banks[lobe], terms[lobe])
@@ -3693,6 +3901,9 @@ def _finish_real_arm(a, t0, manifest, checks, seeds, tables, syn, sealed, real, 
             print_bank(r["ev"], f"male CNS, lobe {lobe}, the real block (section 3.5)")
             log(f"quoted A section 4 row: {r['ev']['quoted_row']}")
             log(r["ev"]["a_literals_line"])
+            for k in ("male_u_reading_line", "male_g_instrument_line"):         # S29, S31
+                if r["ev"].get(k):
+                    log(r["ev"][k])
         write_raw(r["fits"], private / f"raw_fits_real_{lobe}.json.gz")
     split = lobe_split_class(sealed["L"]["y"], sealed["R"]["y"], sealed["L"]["x"],
                              sealed["R"]["x"])
@@ -3700,6 +3911,9 @@ def _finish_real_arm(a, t0, manifest, checks, seeds, tables, syn, sealed, real, 
     joint = joint_reading(reading)
     if reading["label"] == "G":
         reading["text"] += f" ({MALE_G_SENTENCE})"
+        reading["instrument_lines"] = [male_g_instrument_line(lobe, syn[lobe])   # S31
+                                       for lobe in LOBES]
+    notions = split_notions(reading, split, syn)                                 # S32
     log(WITHIN_ANIMAL_NOTE)
     for lobe in LOBES:
         ev = real[lobe]["ev"]
@@ -3707,8 +3921,11 @@ def _finish_real_arm(a, t0, manifest, checks, seeds, tables, syn, sealed, real, 
             + (ev["verdict_line"] if ev is not None
                else f"{lobe_prefix(lobe)}{real[lobe]['status']['reason']}"))
     log(f"\nMALE READING: {reading['text']}")
+    for ln in reading.get("instrument_lines", []):
+        log(ln)
     log(f"lobe comparison (section 4.3): class {split['class']}: {split['text']} differing cells "
         f"{split['differing_cells']}; direction {split['direction']}")
+    log(f"the two notions of split (S32): {notions['text']}")
     log(f"joint reading with flyvis-65 (section 5): {joint}")
     cross = {lobe: sealed[lobe]["cross_lobe_line"] for lobe in LOBES}
     log(f"cross-lobe block weight (printed after the verdicts; S21): {cross}")
@@ -3725,11 +3942,13 @@ def _finish_real_arm(a, t0, manifest, checks, seeds, tables, syn, sealed, real, 
                "inferability_provenance": INFERABILITY_PROVENANCE,
                "male_reading": reading, "joint_reading_with_flyvis65": joint,
                "lobe_comparison": split_class_committed(split),
+               "split_notions": notions,
                "cross_lobe_block_weight": cross,
                "real": {lobe: {"ev": real[lobe]["ev"], "status": real[lobe]["status"],
                                "checks": real[lobe]["checks"]} for lobe in LOBES},
                "synthetic": syn, "runtime_s": time.time() - t0}
-    write_committed(summary, syn, real, reading, split_class_committed(split), joint, cross)
+    write_committed(summary, syn, real, reading, split_class_committed(split), joint, cross,
+                    notions)
     log(f"wall-clock {summary['runtime_s']:.0f}s")
     return summary
 
