@@ -2493,3 +2493,48 @@ five of five OK). Items and sources are in §10.
   cited line carries its revision explicitly"; §3.3's one line citation already names its commit
   (`cde61d4`) and its function (`evaluate_bank`).
 - `REGISTRATION_REVISION` = "3.4.1". Header line, §10, §12.
+
+## 13. Amendment 1 (append-only): the male CNS arm's bank pins and seeds
+
+**Pointer.** This section amends §8 of revision 3.4.1 at two addresses: the promise to pin the
+built bank (§8, lines 1725–1726) and the sentence on seeds (§8, lines 1749–1750, bullet "The same
+block by name"); no line above this section is changed.
+
+**What this section is.** The amendment that §8 promises ("This registration will be amended,
+before that arm runs, to pin the built bank's sha256, and nothing else in it changes"; §8,
+lines 1725–1726) and that the builder's registration names
+(`docs/plans/2026-09-25-male-cns-bank-builder-registration.md`, revision 2.1, §10.1 and §10.5
+step 4). Its content was fixed by the male CNS arm's registration,
+`docs/plans/2026-09-26-knockout-regrow-male-cns-arm-registration.md`, §9.3 (revision 1.1, D11
+(i)), and reviewed with it. It is appended after this file's last line; no line above it is
+changed.
+
+**1. The four bank pins** (sha256 over raw bytes; the build folder
+`connectome-seed-data/Janelia/derived/male_cns_v1_20260926T084555Z_e0a3cd744c39/`, outside the
+repository, built at head `e0a3cd7`, committed in `5860619` with
+`results/genome/c6/checks/male_cns_bank/BUILD.md` and `bank.meta.json`):
+
+| file | sha256 |
+|---|---|
+| `male_cns_L_outside.csv` | `16c5752a241b2e61d4caeaa23bc4b9b9385011c2bfa6a2db504195199bfe9fb0` |
+| `male_cns_R_outside.csv` | `27a9079b656d1aeb1943702e173d2fa3009f7d8257a78f9e8b5c0f3712b4cf36` |
+| `male_cns_L_blockA.sealed.csv` | `eb611f6805484c4f54c22f072a2ca74219a97b3265c6bfb8a4639e45108e8b8e` |
+| `male_cns_R_blockA.sealed.csv` | `c53a44670b784f7af1c8c3973ba440961b24bff08b039a0cf4c73bd32414da84` |
+
+The two sealed files' values are quoted from `bank.meta.json` and the build's `SHA256SUMS.txt`;
+they are checked against these pins before they are opened, in the male arm's registered run
+only. The male arm pins the same four values, and two more files, in its §1.1 and its script.
+
+**2. The seeds, cancelled for the male arm.** §8's sentence "The same legs, cuts, seeds and
+branch rule apply" (lines 1749–1750 at `74db080`, bullet "The same block by name") no longer
+applies to seeds for the male CNS arm. Its seeds are those of
+`docs/plans/2026-09-26-knockout-regrow-male-cns-arm-registration.md` §3.7 (92000–92999). Legs,
+cuts and the branch rule apply as written.
+
+**3. The text of the flyvis-65 verdict.** The flyvis-65 verdict (commit `1ed55ec`) was made under
+revision 3.4.1, LF sha256 `409184dead0a8f9b971bd4b480043725d4a0d1a3c53c20c35734a944a63facd6`.
+That text is recovered with
+`git show 74db080:docs/plans/2026-09-24-knockout-regrow-registration.md`.
+
+**4. Nothing else changes** (§8). Every place that cites this file by its LF hash or "at
+`74db080`" is listed, with what happens to it, in the male arm's registration §9.3.
