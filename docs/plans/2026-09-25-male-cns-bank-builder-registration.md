@@ -1,4 +1,20 @@
 ---
+**Status (revision 2, 2026-09-26 UTC): the reviewers' pass on revision 1. Not re-reviewed, not
+committed, nothing built.** Revision 1 (commit `d6e3759`) was reviewed in the DPC Research chat on
+2026-09-26 by Johnny (04:57 UTC), Ark (05:00 UTC) and Zcode (05:08 UTC), all "yes, with edits".
+The eleven edits, who asked for each, and where each lives are in §13.2. What revision 2
+changes, in short: the harness grid is an explicit obligation of the male arm (§7, §12); two
+densities are named and the rationale of D1 is corrected (§5.2); the collapse of flyvis-65 onto
+the placed grid is a decision (D15, §5.3); the c = 1 fact is corrected (§0, §5.5); the lobe
+reading has two explanations (§4); the order map → T → threshold is fixed (§5.2); D2 says what
+`w_min` changes; `rc_patterns` needs an attempt cap in the arm (§12); the sealed files' size is
+not printed and their `w_min` is named (§9); the side parser and the birth-id sort are specified
+(§3.2, §4); the file is renamed to its UTC day (D14 closed). **Revision 2 read no male CNS data.**
+Its only new numbers are flyvis-65 counts on the placed grid under two collapses (§5.3). They were
+computed from `offsets.csv` and `types.csv` with block A excluded by name before counting. The
+line numbers it cites in `harness.py`, `flywire_bf_p3.py` and `knockout_regrow.py` were read at
+commit `d6e3759`. Revision 1's header follows.
+
 **Status (revision 1, drafted 2026-09-25 20:10–21:00 UTC; 2026-09-26 local, +07:00): draft for
 review. Not reviewed, not committed, nothing built.** Drafted by a CC subagent on Mike's word in
 the DPC Research chat, 2026-09-25 20:02 UTC: "do the male CNS builder". The seven points it must
@@ -7,10 +23,11 @@ brief; the chat is not in the repository). The design choices that need a vote a
 **proposal** in the body and listed in §13. The body is written with the recommended option, so
 the draft is complete as it stands.
 
-**File date.** The request named this file `2026-09-26-…`, which is the local day. The UTC clock
-read 2026-09-25 20:10 UTC when drafting began (`date -u`), so the
-[glossary's date-time convention](../../GLOSSARY.md) would date it `2026-09-25-…`. The name is
-kept as requested and the question is D14 (§13), as it was D12 of the knockout registration.
+**File date.** Revision 1 was named `2026-09-26-…`, the local day. The UTC clock read
+2026-09-25 20:10 UTC when drafting began (`date -u`), so the
+[glossary's date-time convention](../../GLOSSARY.md) dates it `2026-09-25-…`. **Revision 2
+renames it** (`git mv`; the reviewers agreed, D14 closed). No other file of the repository named
+the old path (checked with `grep` at the rename).
 
 **What was read from the male CNS data for this draft, and nothing else** (§1.2): the file list
 and sizes; the sha256 of both files; the Arrow schema of both files; the pandas metadata of both
@@ -51,15 +68,25 @@ places (§3). The banks are to serve as the **animal control** of the knock-out-
   tighter on block A makes R easier or harder. This is why D1's rule reads no block cell (§5).
 - **Block A of the male CNS has already been looked at,** in a preliminary graph (Zcode,
   2026-09-24 20:59 UTC; knockout registration §8; backlog entry
-  `THE-MALE-CNS-BANK-NEEDS-A-REGISTERED-BUILDER-…`). Under the definition "total synapses / number
-  of target neurons in the lobe ≥ 1" (about a sum of 850 or more), the block was a perfect board
-  with 4 mirror cells. Under other definitions, 20–21 weak cross cells appeared, with means of
-  1.0–2.2, and 52–54 mirror cells. **The people choosing D1 therefore know which threshold gives a
-  perfect board.** The recommended rule (§5.2) is a function of outside-block cells and of
-  flyvis-65 only, so its output does not depend on that knowledge. The choice *of the rule* is still
-  made by people who have that knowledge, and this is recorded, not removed.
-- Zcode's other definitions (the ones that gave 20–21 cross cells) are **not written in any file
-  this draft opened.** They are not reproduced here.
+  `THE-MALE-CNS-BANK-NEEDS-A-REGISTERED-BUILDER-…`). **Revision 2 corrects what was seen (Zcode,
+  2026-09-26 05:08 UTC, as relayed).** The perfect board with 4 mirror cells came from a
+  **summed** threshold, a total of about 500–800 synapses per type pair, that was mislabelled
+  "mean ≥ 1". **At an honest mean ≥ 1 (c = 1 in §5.1) the male block had 20–21 weak cross cells,
+  with means of 1.0–2.2: not a perfect board.** Other definitions also gave 52–54 mirror cells.
+  The committed files still carry the old label: the backlog says "total/n_tar >= 1 (about sum
+  >= 850)", and knockout registration §8 says "at least 1, which is about a sum of 850 or more".
+  This draft does not edit them. The correction rests on Zcode's word in the chat and is **not
+  verified from any file** (§14).
+- **Block A was inferable 64/64 at every threshold tried** (Zcode, preliminary graph; knockout
+  registration §1.4, the inferability table: "64 / 64 at every pair threshold tried"; backlog
+  entry: "block A inferable 64/64 in both lobes at every threshold Zcode tried"). So no threshold
+  tried starves an endpoint of block A.
+- **The people choosing D1 have seen block A at c = 1 and at a summed threshold.** The
+  recommended rule (§5.2) is a function of outside-block cells and of flyvis-65 only, so its
+  output does not depend on that knowledge. The choice *of the rule* is still made by people who
+  have that knowledge, and this is recorded, not removed.
+- Zcode's thresholds and definitions from the preliminary graph are **not written in any file
+  this draft opened.** They are not reproduced here beyond the relayed words above.
 
 ## 1. Inputs and pins
 
@@ -134,6 +161,14 @@ except uniqueness and autapses, which need the weight stream (§6).
   (`restrict_to_30_grid`) and leaves `H.FOLD`, `H.TYPE_FIELDS`, `H.PAIR_ID`, `H.NAMES` and
   `H.IDX` untouched. The knockout registration §8 says the male-CNS bank is embedded "as the
   FlyWire arm was".
+- **The grid is fixed at 65 × 65 in the harness (revision 2; Johnny, Ark).** `NAMES` comes from
+  `types.csv`, sorted by birth id, with `assert len(NAMES) == 65` (`harness.py:119-123`).
+  `ALL_CELLS` is every `(s, t)` in `range(65)²` (`:154`). `Bank.exists` is a 65 × 65 array
+  (`:163-166`). A bank on fewer types is therefore still a 65 × 65 bank whose unplaced rows and
+  columns are empty. The cells an arm uses are restricted by replacing `H.ALL_CELLS`, as
+  `flywire_bf_p3.py:74-76` (`restrict_to_30_grid`) does, leaving `FOLD`, `TYPE_FIELDS`,
+  `PAIR_ID`, `NAMES` and `IDX` untouched. **This is an obligation of the male arm's registration,
+  not of the builder** (§7, §12). No harness edit and no pin change are proposed here.
 - **So the builder writes, per lobe, a CSV in that format, with names in flyvis spelling and only
   placed types, plus a manifest.** The loader of the male-CNS arm, which is not written here, reads
   it the same way.
@@ -190,8 +225,14 @@ backlog says.
   and lobula compartments cannot be split. Placing one population at six (or two) indices would
   make six (or two) **identical** rows and columns. That is free structure outside the block that
   flyvis-65 does not have, since its R1–R6 rows differ (`types.csv`: `n_in_entries` 3, 3, 2, 2, 2,
-  1). **The index kept is the flyvis name whose birth id sorts first**, which is R1 (`9654b247…`)
-  and CT1(M10) (`63667a4a…` before CT1(Lo1)'s `7c280b5b…`). The rule reads no data. The two CT1
+  1). **The index kept is the flyvis name whose birth id sorts first.** The birth id is the
+  `birth_id` column of `types.csv`: the first 12 hex digits of sha256 of
+  `cs-birth-v1|type|<name>` (`harness.id_hex`; the harness asserts the column equals it). The
+  sort is ascending on the 12-character lowercase hex string, which for strings of equal length
+  is the numeric order. So the population's index is also the lowest harness index among its
+  names, since the harness indexes types in birth-id order (`harness.py:120`). This gives R1
+  (`9654b247b494`; R2–R6 are `b075…`, `a935…`, `d54d…`, `bf13…`, `ef2d…`) and CT1(M10)
+  (`63667a4a1a53`, before CT1(Lo1)'s `7c280b5b9f34`). The rule reads no data. The two CT1
   indices have the same `type_fields` (`types.csv` rows 18–19: stride 1, 1, `intermediate`,
   `intermediate`), so the choice changes nothing a rule can see.
 - **Unplaced names** (R2–R6, CT1(Lo1), Mi3, Mi11, Mi12, Tm28) are left out of training and scoring
@@ -218,8 +259,14 @@ breakdown of `status`. These are annotation counts, not connectivity.
 
 **Side of a body (in this order):** `somaSide` if it is `L` or `R`; otherwise `rootSide` if it is
 `L` or `R`; otherwise the `_L` / `_R` suffix of `instance`; otherwise **unassigned**. `M`,
-`unknown` and null do not assign. Unassigned bodies are left out and counted per type. The
-fallback order exists because optic-lobe sensory cells may have no `somaSide` (their somata lie
+`unknown` and null do not assign. **The suffix parser (revision 2; Zcode):** the `instance`
+string, unchanged (no strip, no case change), must end with exactly `_L` or `_R`, that is, match
+the regular expression `_(L|R)\Z`; the side is the captured letter. Anything else is no suffix:
+a null `instance`, a string ending in any other way (for example `_L_1`, `(L)` or a lowercase
+`_l`), or a string equal to `_L` or `_R` alone. The fixture tests include each of these cases.
+The first three rows of the file show the pattern (`DNp01(GF)_R`, `OCG01d_L`, `VCH_R`, §1.2).
+Which bodies of the placed types reach this third step was not checked. Unassigned bodies are
+left out and counted per type. The fallback order exists because optic-lobe sensory cells may have no `somaSide` (their somata lie
 outside the brain). Whether that is so for R1–R8 in this file was **not checked** (§1.2).
 
 **Lobe of a body = its side, except for the declared flip set `FLIP = {CT1}`,** whose lobe is the
@@ -242,9 +289,26 @@ types, only their outside-block pairs enter the share.
 **Two banks.** Each lobe's bank is built from neuron pairs whose two bodies are both assigned to
 that lobe. A pair across lobes enters neither bank. Its weight is counted per outside type pair and
 printed as a diagnostic. **The same threshold `c*` is applied to both lobes** (D9, §5.2). So the
-two banks differ only by the lobe: same animal, same pipeline, same cut. **Reading (a proposal
-handed to the arm's registration, D12):** if block A regrows (R) in one lobe and not in the other,
-that difference is within-animal variation, not averaging. A male-CNS R would then need both lobes.
+two banks share the animal, the pipeline and the cut. **They do not share a density:** `c*` is
+set on the pooled lobes, so each lobe's outside density differs from T by whatever the two lobes
+differ, by construction. Both densities are printed.
+
+**Reading (handed to the arm's registration, D12; revised in revision 2, Johnny and Ark).** A
+disagreement between the lobes, for example R in one and G in the other, is not averaging, since
+neither bank averages over animals or columns. **It has two explanations that this builder cannot
+separate:**
+
+1. **Variation within the animal:** the two lobes of one fly are wired differently on block A;
+2. **Incompleteness of one lobe:** the left lobe may be less completely reconstructed or typed.
+   This file's own counts point that way: R1–R6 has 2,265 bodies on the right and 1,112 on the
+   left (knockout registration §8). Under a pooled cut, a less complete lobe is also a sparser
+   bank, and a sparser bank is a weaker instrument.
+
+**The rule that separates them is the arm's to register, before its data.** What the builder
+supplies for it, all outside block A: per lobe and per placed type, the body counts; per lobe, the
+outside density at `c*`; the per-lobe matched cuts `c*_L` and `c*_R` (§5.4); and the cross-lobe
+weight. Revision 1's proposal, "a male-CNS R needs both lobes", stays as one ingredient. It
+settles when the male CNS reads R, but it does not say which explanation a disagreement has.
 
 **Known asymmetries (knockout registration §8, as counted in review; not recounted here).** R1–R6
 has 2,265 bodies on the right and 1,112 on the left. CT1 and Am1 have n = 1 per lobe. The male
@@ -274,17 +338,31 @@ CNS has no column assignment for T4/T5 (backlog).
 
 **w_min (proposal, D2): 1.** The release is already cut at synapse confidence 0.5 (file name), and
 62 % of edges carry weight 1 (backlog, Johnny). With `w_min` = 2 those edges would leave `W`
-altogether. Under D1's density rule, `c*` adapts to whatever `w_min` leaves, so `w_min` changes
-*which* cells pass at a given density, not how many. `w_min` = 2 and 3 are printed as diagnostics
+altogether. Under D1's density rule, `c*` adapts to whatever `w_min` leaves, so the number of
+present outside cells stays about K. **What `w_min` changes is the composition of the cells that
+pass (revision 2; Ark).** A type pair whose weight is spread over many weight-1 neuron pairs loses
+most of its `W` at `w_min` = 2. A type pair carried by fewer, stronger neuron pairs keeps its `W`.
+So at the same density, a different `w_min` selects different cells. `w_min` = 2 and 3 are printed as diagnostics
 (§5.4). The FlyWire builder used ≥ 2 as a starting choice (`SYNAPSE_THRESHOLD = 2`,
 `flywire_bank_builder.py`). Whether flyvis's source volumes applied any per-pair cut was **not
 checked**.
 
 ### 5.2 The rule for D1 (proposal): match flyvis-65's outside-block density, pooled over both lobes
 
-Let Ω be the placed cells outside block A (2,961 cells on the 55-type grid, §3.2). Let **T** be
-the share of Ω that is present in flyvis-65 (existence under C6: at least one non-`dropped` row,
-`harness.py`). Then:
+**Order (revision 2; Ark).** The steps run in one order: **the type map is frozen (§3), then T
+is computed from it (§5.3), then the threshold is chosen (below).** T depends on the placed grid
+and on the collapse (D15), so a legal change of the map changes T. A legal change is one made by a
+reviewed amendment of this registration. It moves the §5.3 table in the same amendment. The
+"DENSITY TARGET DIFFERS" stop compares the run's T and K with the table **for the registered map
+and collapse**. It catches a map that drifted without an amendment, not a map that was changed
+legally.
+
+Let Ω be the placed cells outside block A (2,961 cells on the 55-type grid, §3.2). **Block A's
+mirror cells, the transposes (target → source) of its 64 cells, all lie in Ω** (Zcode). They are
+64 positions, none of them in the block, since sources and targets are disjoint (checked for this
+draft), and they are read like any other outside cell. Let **T** be the share of Ω that is
+present in flyvis-65 after the collapse of D15 (existence under C6: at least one non-`dropped`
+row, `harness.py`). Then:
 
 1. `K = round(T × 2 |Ω|)`, the number of present outside cells the two lobes should hold together
    at flyvis-65's density.
@@ -298,11 +376,39 @@ the share of Ω that is present in flyvis-65 (existence under C6: at least one n
    them or uses them in choosing `c*`.**
 
 **What this rule reads:** flyvis-65 presence outside block A, and male-CNS `x` outside block A.
-It reads no block cell of either bank. Because it matches **density**, the property that sets how
-much a rule can see, the male arm's instrument works at the density on which the knockout
-instrument's synthetic limits were measured (knockout registration §3.6, where the degree terms
-come from flyvis-65). A male-CNS verdict that differs from flyvis-65's is then not a difference of
-density by construction.
+It reads no block cell of either bank.
+
+**What it matches (corrected in revision 2; Ark).** It matches **flyvis-65 on the same cells**:
+the male bank's density on Ω equals flyvis-65's density on Ω, the property that sets how much a
+rule can see there. **It does not match the density on which the knockout instrument's synthetic
+limits were measured.** Two densities must be kept apart:
+
+| density | cells | present | value |
+|---|---|---|---|
+| flyvis-65, full grid outside block A: the grid of the flyvis-65 run and of its synthetic worlds (knockout §1.3, §3.6) | 4,161 | 572 | **0.137467** |
+| flyvis-65 on the placed Ω, restrict-only collapse (§5.3) | 2,961 | 497 | **0.167849** |
+
+The second is **× 1.221** the first (0.167849 / 0.137467), because the ten unplaced types are
+sparse in flyvis-65. Revision 1 said this rule "works at the density on which the synthetic
+limits were measured". That was wrong, and it is withdrawn. **The full-grid alternative** (D1
+option (b′)): take T = 0.137467 on Ω, which gives K = round(0.137467 × 5,922) = **814**, about
+**407 per lobe** (814.08 unrounded). It matches the calibration density's number, but on
+different cells. Neither option carries the synthetic limits over to the male bank. Whether they
+must be re-derived on the male bank is D13, the arm's.
+
+**Which grid the arm trains and scores on is the arm's to register (handed on; revision 2, Ark).**
+The two options, with their consequences:
+
+- **2,961 placed cells** outside the block, by replacing `H.ALL_CELLS` as the FlyWire arm did
+  (§2). The training density per lobe is then the lobe's density on Ω, about T.
+- **4,161 cells**, the full 65 × 65 grid without the block. Then **1,200 cells** (4,225 − 3,025)
+  of the ten unplaced types are in training and always absent. The rule sees ten types with no
+  input and no output, and the training density per lobe falls to about K / 2 / 4,161, for
+  example 497 / 4,161 ≈ 0.119. Knockout check 2's count of 4,161 training cells would still pass,
+  with a different meaning.
+
+This builder recommends the first, as the FlyWire precedent, but the choice and its
+consequences are the arm's.
 
 **What this rule does not do.** It does not make the two banks agree cell by cell. It does not
 make degrees agree. And it cannot remove the knowledge described in §0: it only makes the output a
@@ -318,15 +424,44 @@ row reproduces knockout registration §1.3 (572 present of 4,161).
 |---|---|---|---|---|---|
 | all 65 (reference only) | 65 | 4,161 | 572 | 0.137467 | — |
 | D4 option (b): duplicated R1–R6 and CT1 | 61 | 3,657 | 545 | 0.149029 | 1,090 |
-| **D4 recommended: one index per population** | **55** | **2,961** | **497** | **0.167849** | **994** |
+| D4 recommended, **restrict-only collapse** (D15 (i)) | 55 | 2,961 | 497 | 0.167849 | 994 |
+| D4 recommended, **pooled collapse** (D15 (ii), recommended) | **55** | **2,961** | **511** | **0.172577** | **1,022** |
+| D4 recommended, full-grid density on Ω (D1 (b′)) | 55 | 2,961 | — | 0.137467 | 814 |
 
-The builder recomputes T and K at run time and stops ("DENSITY TARGET DIFFERS") if they differ from
-this table for the registered grid.
+**The collapse of flyvis-65 onto the placed grid (D15; revision 2, Zcode).** flyvis-65 has 65
+types. The male bank has 55. So T needs a rule for what an unplaced flyvis type contributes:
+
+- **(i) restrict-only:** the cells of R2–R6, CT1(Lo1), Mi3, Mi11, Mi12 and Tm28 are dropped. R1's
+  row is flyvis's R1 row alone. This gives 497.
+- **(ii) pooled:** the index that carries a population in the male bank carries it in flyvis-65
+  too. R1's cell `(R1, t)` is present if **any** of `(R1, t)` … `(R6, t)` is present (a logical
+  OR), and likewise for columns, for `(R1, R1)` from any `(Ri, Rj)`, and for CT1(M10) from CT1(Lo1)
+  or CT1(M10). Mi3, Mi11, Mi12 and Tm28 are dropped as in (i). This gives **511**.
+
+**Verified for this draft** (scratch script, outside the repository, from `offsets.csv` and
+`types.csv` under the pins of §1.1). The 64 block cells were excluded by name, after the
+collapse and before any count was taken. The script held flyvis-65's set of present cells in
+memory, block included, and printed no number about the block (flyvis-65's block A is public
+anyway: the reviewed board of knockout §0). No collapsed cell falls in the block, since neither
+R1–R6 nor CT1 is a block type (checked). **Zcode's 511 (T = 0.172577, K = 1,022) is reproduced
+only when both populations are pooled.** Pooling R1–R6 alone gives 498 (T = 0.168186, K = 996). The pooled row above is
+therefore "R1–R6 and CT1 pooled", the rule that matches D4 (one index per population, both
+populations).
+
+**Why (ii) is recommended.** The male index R1 holds every R1–R6 body, and CT1(M10) holds the one
+CT1 cell with both compartments summed (§3.2, §8). The target should describe the same objects,
+so flyvis-65's R1 index should also stand for all six. Under (i), flyvis's R1 row alone stands
+against the male R1–R6 population.
+
+**The builder prints T and K under both collapses** (and the full-grid (b′) value). It uses the
+one D15 registers, and it stops with "DENSITY TARGET DIFFERS" if the T and K it recomputes for the
+**registered map and collapse** differ from this table (the order of §5.2).
 
 ### 5.4 Diagnostics printed beside `c*` (decide nothing; outside block A only)
 
-For each `w_min` ∈ {1, 2, 3} and each `c` in {`c*`; `c*_L` and `c*_R`, each lobe matched to T on
-its own; 0.5; **1, the flyvis-style convention** (a pair needs at least one synapse per target
+For each `w_min` ∈ {1, 2, 3} and each `c` in {`c*`; `c*` under the other collapse of D15;
+`c*` at the full-grid density (b′); `c*_L` and `c*_R`, each lobe matched to T on its own; 0.5;
+**1, the flyvis-style convention** (a pair needs at least one synapse per target
 neuron on average, which is flyvis's equation-8 cut applied to the pair's sum instead of per
 offset); 2}, and for each lobe:
 
@@ -345,11 +480,17 @@ because they are not written in any file (§0).
 ### 5.5 Options considered for D1 (details in §13)
 
 - **(a) A fixed convention, `c = 1` (total / n_tar ≥ 1).** It is simple and set with no male
-  number at all. **But it is the threshold under which the block is already known to be a perfect
-  board** (§0). Choosing it now would choose, with knowledge of block A, the value that makes the
-  male board look like flyvis's. That is lesson (a) of the lessons note, selection after the data.
-  It is printed as a diagnostic.
-- **(b) Density match, pooled (recommended).**
+  number at all. **Corrected in revision 2 (Zcode):** revision 1 said c = 1 was the threshold
+  under which the block is known to be a perfect board. It is not. At an honest c = 1 the male
+  block had 20–21 weak cross cells (§0). The perfect board came from a summed threshold. **c = 1
+  stays demoted for the same reason as before, because it was seen:** the block's content at c = 1
+  is known to the people choosing, so choosing it now would be a choice made with knowledge of
+  block A. That is lesson (a) of the lessons note, selection after the data. It is printed as a
+  diagnostic. (The summed threshold that gave the perfect board is not an option here: it is not
+  written in any file, and it was seen too.)
+- **(b) Density match on the same cells, pooled (recommended),** with T from the collapse of D15.
+- **(b′) Density match at the full-grid density** T = 0.137467 on Ω, K = 814 (§5.2): the
+  calibration density's number, on different cells.
 - **(c) Density match per lobe.** Each lobe gets its own `c*_ℓ`, so the two banks have equal
   density. But then the within-animal null compares two different cuts. Printed as a diagnostic.
 - **(d) Degree-distribution match** (for example, the smallest distance between the outside
@@ -411,6 +552,16 @@ reading, not arithmetic. **Cost: not timed.**
 - **Not verified:** that `knockout_regrow.py`, rule #2.1's `fit` and the harness's `score` run on a
   bank whose every cell has the single offset `(0, 0)`. That is checked by the arm's registration,
   which owns the loader.
+- **The grid (revision 2; Johnny raised it as blocking, Ark showed that it is not, with a
+  residue).** The bank file names only placed types, but the harness it is loaded into is 65 × 65
+  (§2): `NAMES` from `types.csv` with `assert len(NAMES) == 65` (`harness.py:119-123`),
+  `ALL_CELLS` over `range(65)²` (`:154`), and `Bank.exists` a 65 × 65 array (`:163-166`). So the
+  male bank loads as a 65 × 65 bank with ten empty rows and columns. **Obligation of the male arm's
+  registration:** it restricts the cells it uses by replacing `H.ALL_CELLS`, as
+  `results/genome/c6/checks/flywire_bf_p3.py:74-76` (`restrict_to_30_grid`) does, and it states
+  which grid it trains and scores on (§5.2, the 2,961 / 4,161 choice). No harness edit and no pin
+  change are needed for this. The harness structures that depend on the grid are listed as open
+  in §12.
 
 ## 8. What changes between flyvis-65 and the male CNS bank (named)
 
@@ -446,11 +597,20 @@ operation is computing its sha256.**
 **How the builder keeps it:**
 
 - Per lobe, the block cells go to their own file, `male_cns_<lobe>_blockA.sealed.csv`. It holds
-  **all 64 rows** (present or not), with `src, tar, W, n_tar, x, present`, so that the file's
-  length says nothing about presence. The bank file of §7 holds the outside cells only.
+  **all 64 rows** (present or not), with `src, tar, W, n_tar, x, present`, so that the number of
+  rows says nothing about presence. The bank file of §7 holds the outside cells only.
+- **`w_min` of the sealed files (revision 2; Zcode):** `W`, `x` and `present` are computed at
+  the registered `w_min` (D2, 1) and the registered `c*` only. No diagnostic `w_min` or `c`
+  enters them. The cross-lobe weight of block type pairs (§6) is one further line, at the same
+  `w_min`.
+- **No size side channel (revision 2; Zcode).** A file's byte size could leak its content through
+  the number of digits written. Every field of a sealed file is therefore written at a **fixed
+  width**: integers zero-padded to 12 digits, `x` in `%.6e`, `present` as `0`/`1`. So the size is
+  the same for every content. The size is **not printed**, and it is **not written** in any
+  manifest, private or committed, or in `BUILD.md`. Only the sha256 is. (`SHA256SUMS.txt` holds
+  hashes only.)
 - Nothing the builder prints or writes, apart from the sealed files, is computed from a block
-  row. The manifest names the sealed files with their sha256 and byte size, and nothing else about
-  them.
+  row. The manifest names the sealed files with their sha256, and nothing else about them.
 - The male-CNS arm's script is the first code allowed to read the sealed files, and it does so in
   its registered real run only.
 - **If the rule is broken,** the break is recorded in that registration's error ledger, and the
@@ -460,9 +620,9 @@ operation is computing its sha256.**
 **The blindness test (fixture; a test that separates both worlds).** Two synthetic datasets that
 are identical except for their block-A rows (a perfect board in one, a random pattern with the
 same totals in the other) are built by the builder. Their stdout and their manifests must be
-byte-identical, except for the sealed files' sha256 and byte size. The sealed files themselves must
-differ. If any printed or written line depends on a block row, the test fails. This is the
-builder's version of knockout machine check 6 ("BLOCK LEAKS INTO TRAINING").
+byte-identical, except for the sealed files' sha256. The sealed files themselves must differ, and
+their byte sizes must be equal (the fixed width above). If any printed or written line depends on
+a block row, the test fails. This is the builder's version of knockout machine check 6 ("BLOCK LEAKS INTO TRAINING").
 
 ## 10. Outputs, pins, environment and modes
 
@@ -491,10 +651,12 @@ The registration path and its sha256; the git head and a dirty-tree listing; the
 each input's name, size, sha256 and download date (§1.1); the Python, numpy, pandas, pyarrow and
 psutil versions actually used; the type map as applied, with the per-type per-lobe body counts
 under both name columns; the side-rule counts per type (by `somaSide`, `rootSide`, `instance`,
-unassigned); the lobe-consistency shares; T, K, `w_min`, `c*`, the tie excess or shortfall;
-the diagnostic table of §5.4; rows read, batches read, autapse rows dropped, duplicate outside
-keys, cross-lobe weight; peak memory and runtime; and each output file's sha256 (the sealed files
-by hash and size only).
+unassigned); the lobe-consistency shares; the collapse (D15), with T and K under both collapses
+and at the full-grid density; `w_min`, `c*`, the tie excess or shortfall; per-lobe outside
+densities; the diagnostic table of §5.4; rows read, batches read, autapse rows dropped, duplicate
+outside keys, cross-lobe weight of outside type pairs; peak memory and runtime; and each output
+file's sha256 and, **except for the sealed files, its size** (the sealed files by sha256 only,
+§9).
 
 ### 10.3 Modes
 
@@ -541,14 +703,18 @@ harness, because the harness refuses on changed pins and needs no pyarrow. It re
 ## 11. Tests (fixtures only; no real data)
 
 1. **Blindness** (§9): two worlds differing only in block rows give identical prints and manifests
-   except the sealed hashes, and different sealed files.
+   except the sealed hashes, different sealed files, and equal sealed-file sizes.
+1a. **Suffix parser** (§4): `X_L` and `X_R` assign; `X_L_1`, `X(L)`, `X_l`, `_L` alone and a null
+   `instance` do not.
 2. **Flip** (§4): a fixture where CT1's side label is opposite to its partners' passes with
    `FLIP = {CT1}` and stops without it. A fixture where it is not opposite stops with the flip.
 3. **Zero matches:** a fixture with the canonical column renamed stops with "ZERO NAME MATCHES".
    A fixture with one placed type removed from one lobe stops with "TYPE WITH NO CELLS".
 4. **Chunked equals whole** (§6.5).
 5. **Density rule:** on a hand-made `x` table with known order, `c*`, the tie excess and the
-   shortfall case come out as §5.2 states. T and K for the registered grid equal §5.3.
+   shortfall case come out as §5.2 states. T and K for the registered map and collapse equal
+   §5.3 (497 / 994 restrict-only; 511 / 1,022 pooled), and a changed map moves them (the order of
+   §5.2).
 6. **Row count:** a fixture whose metadata `stop` differs from its rows stops with "ROW COUNT
    DIFFERS".
 7. **One index per population:** R2–R6 and CT1(Lo1) never appear in the bank files, and R1 and
@@ -566,7 +732,46 @@ harness, because the harness refuses on changed pins and needs no pyarrow. It re
 - **Its own synthetic worlds.** Knockout §8 proposes rebuilding the §3.6 worlds on the male bank's
   degree terms, "decided with the builder". **Handed on (D13):** it is the arm's decision, because
   it is a property of the instrument on this bank, not of the bank.
-- **The L/R reading (D12)** is proposed in §4 and decided in the arm's registration.
+- **The L/R reading (D12).** It has two explanations, variation within the animal and
+  incompleteness of the left lobe (§4). The rule that separates them is registered by the arm.
+- **The grid (obligation of the arm; revision 2, Johnny and Ark).** The arm restricts its cells
+  by replacing `H.ALL_CELLS` (precedent: `results/genome/c6/checks/flywire_bf_p3.py:74-76`,
+  `restrict_to_30_grid`), and it states whether it trains and scores on the 2,961 placed cells or
+  on 4,161 with 1,200 always-absent cells (§5.2). On Windows, where workers are spawned, the
+  FlyWire arm re-applied the restriction in each worker (`worker_init` there). **Open: which
+  harness structures depend on the 65-type grid and what each does under a restricted
+  `ALL_CELLS`.** No harness edit and no pin change are proposed. Read for this draft, not
+  analysed:
+  - `FOLD` (65 × 65, from `folds.csv`, `harness.py:149-153`): `cv_fold` (`:753-755`) holds out
+    `FOLD == f` intersected with `ALL_CELLS`, and `inner_folds` (`:554-555`) reads `FOLD` on the
+    view's cells. That gives the nested λ choice of `fit_bf` (`:710-728`). On a restricted grid the
+    folds keep their cells, but their sizes and present counts change.
+  - `PAIR_ID` (`:133`): used to check `folds.csv` at import (`:152`); unchanged.
+  - `TYPE_FIELDS` (`:131`): 65 rows, handed to every rule in each view (`make_view`, `:180-186`),
+    unplaced types included; their field codes are computed over all 65 types.
+  - **Knockout check 8** (the harness identity, BF_1's full-bank margin 0.028150051052145946;
+    `knockout_regrow.py:312-313`, `:2489`): it is defined on flyvis-65 on the full grid. It must
+    run before `ALL_CELLS` is replaced, as the FlyWire arm's `machine_check` did ("wrapper on
+    flyvis bank, unpatched grid").
+  - Constants of the registered knockout script tied to flyvis-65: `N_TRAIN_CELLS, N_TRAIN_PRESENT
+    = 4161, 572` (`knockout_regrow.py:192`, check 2), the 65 × 65 masks (`:178-189`), the
+    synthetic-world draws over 65 × 65 (`:713-714`), and the pre-data tables' expected values
+    (`ENDPOINTS_EXPECTED`, `MIRRORS_EXPECTED`, `:196-209`).
+  - `shuffled_bank` → `rewire_and_permute` (`harness.py:871-883`) swaps only among the bank's
+    present cells (`edges = sorted(bank.content)`), so its shuffles stay among placed types, but
+    its rejection test reads the 65 × 65 `exists`.
+- **`rc_patterns` needs an attempt cap in the arm's script (obligation of the arm; revision 2, Ark
+  and Zcode).** In `knockout_regrow.py`, `rc_patterns` (`:596-624`) draws row-and-column-preserving
+  patterns with `while (succ < RC_SWAPS).any():` (`:611`). It has **no attempt cap**, and it is
+  written for an 8 × 8 block (`reshape(8, 8)` at `:607`, `rng.integers(8, …)` at `:612`), with
+  `RC_SWAPS = 20 * 32` (`:244`). On flyvis-65 the block is the 32/32 board, and the loop ends. **On
+  the male CNS the block's row and column counts are unknown and must stay unread** (§9). A block
+  whose rows or columns are all present or all absent can admit few or no checkerboard swaps, and
+  then the loop never ends. The arm's script must add an attempt cap with a stop message, on the
+  harness's own pattern (`harness.py:881-883`: `cap = 100 * target`, and the loop runs `while …
+  succ < target and att < cap`), that is, a cap of 100 × `RC_SWAPS` attempts per chain. **The
+  registered block-A script is not edited.** The cap belongs to the arm's own script and
+  registration. What the arm reports when the cap is hit is the arm's to register.
 - **Types typed by connectivity.** If the male CNS's T4/T5 or Tm/Mi labels lean on connectivity,
   part of block A may be true by definition (candidates note, risk 2). This is not checked here.
 
@@ -577,8 +782,8 @@ recommendation.
 
 | # | question | options (what each changes) | recommendation |
 |---|---|---|---|
-| **D1** | The pair threshold `c` on `x = W / n_tar` | (a) fixed `c = 1`: set without male data, but it is the value already known to give a perfect male board, so choosing it is selection with knowledge of block A. (b) **match flyvis-65's outside-block density, pooled over both lobes** (§5.2): output depends on outside cells only; same density as the primary arm; one cut for both lobes. (c) the same, per lobe: equal densities, but the within-animal null then compares two cuts. (d) degree-sequence match: closer to what N1 sees; needs a distance and a search of its own. (e) fixed synapse total: scales with lobe size and type counts; rejected. | **(b)**, with (a), (c), 0.5 and 2 printed beside it (§5.4) |
-| **D2** | Minimum weight of a neuron pair, `w_min` | 1: keep everything the release keeps at confidence 0.5. 2 or 3: drops the 62 % of weight-1 edges (or more), the FlyWire builder's starting choice. Under D1 (b), `c*` adapts, so this changes which cells pass, not how many. | **1**, with 2 and 3 printed |
+| **D1** | The pair threshold `c` on `x = W / n_tar` | (a) fixed `c = 1`: set without male data, but the block at c = 1 **was seen** (20–21 weak cross cells, not a perfect board; revision 2 corrects revision 1), so choosing it is a choice made with knowledge of block A. (b) **match flyvis-65's density on the same cells, Ω on the placed grid, pooled over both lobes** (§5.2): the output depends on outside cells only; T and K from the collapse of D15 (pooled: 511 / 2,961, T = 0.172577, K = 1,022; restrict-only: 497, 0.167849, 994); one cut for both lobes. It does **not** match the density the synthetic limits were calibrated on (0.137467 on 4,161 cells; × 1.22). (b′) the full-grid density 0.137467 on Ω: K = 814, about 407 per lobe; the calibration's number on different cells. (c) (b) per lobe: equal densities, but the within-animal null then compares two cuts. (d) degree-sequence match: closer to what N1 sees; needs a distance and a search of its own. (e) fixed synapse total: scales with lobe size and type counts; rejected. | **(b)** with the D15 collapse, with (a), (b′), (c), 0.5 and 2 printed beside it (§5.4) |
+| **D2** | Minimum weight of a neuron pair, `w_min` | 1: keep everything the release keeps at confidence 0.5. 2 or 3: drops the 62 % of weight-1 edges (or more), the FlyWire builder's starting choice. Under D1 (b), `c*` adapts, so the number of present cells stays about K, but **the composition of the passing cells changes**: pairs spread over many weight-1 neuron pairs lose, pairs carried by few strong neuron pairs gain (revision 2, Ark). | **1**, with 2 and 3 printed |
 | **D3** | The canonical name column | (i) **`type`, with a closed override table of three names** (R7, R8 roll-ups and TmY9q from `flywireType`): the animal's own typing, and the one the reviewed counts appear to use. (ii) `flywireType` everywhere: one column, no overrides, but labels carried over from a female FlyWire fly, 21,350 more nulls overall, and T4d counted 1,710 instead of 1,709. (iii) keep a body only where both columns agree: strictest, and it drops bodies for reasons no one has read. | **(i)** |
 | **D4** | A population that flyvis splits into several types (R1–R6; CT1's two compartments) | (a) **one grid index per population** (R1; CT1(M10); the index is the birth-id-first name): 55 types; no duplicated rows. (b) the population at every flyvis index: 61 types, but six identical R rows and columns and two identical CT1 rows, which is structure flyvis-65 does not have. (c) split CT1 by region: needs a region-level download that is not in `connectome-seed-data/Janelia/`. | **(a)** |
 | **D5** | TmY9 | (i) **map to `TmY9q`, flagged** (the review's map; outside block A). (ii) leave TmY9 out (54 types). | **(i)** |
@@ -588,9 +793,43 @@ recommendation.
 | **D9** | One cut for both lobes | (i) **one `c*` from the pooled lobes**: same cut, so a lobe difference is the animal's. (ii) `c*_ℓ` per lobe: equal densities, different cuts. | **(i)**, (ii) printed |
 | **D10** | Block A sealed | (i) **a separate sealed file per lobe, 64 rows each, never read before the arm's review; blindness test** (§9). (ii) one bank file with a do-not-read rule: simpler, but any look at the bank shows the block. | **(i)** |
 | **D11** | Where the banks live | (i) **outside the repository; the manifest and `BUILD.md` committed**, as for FlyWire. (ii) commit the outside bank files too (CC-BY allows it, per `SOURCE.md`): easier to reuse, but the committed tree would then hold per-pair male data, and the sealed files must stay outside anyway. | **(i)** |
-| **D12** | The L/R reading (**handed to the arm's registration**) | (i) R on the male CNS needs R in both lobes; a disagreement reads "within-animal variation", not averaging. (ii) the right lobe primary (the side of FIB-19 and of the male optic lobe v1.1), the left lobe the null. | **(i)** as a proposal there |
+| **D12** | The L/R reading (**handed to the arm's registration**) | (i) R on the male CNS needs R in both lobes. (ii) the right lobe primary (the side of FIB-19 and of the male optic lobe v1.1), the left lobe the null. **Revision 2 (Johnny, Ark):** a disagreement has two explanations, variation within the animal and incompleteness of the left lobe (R1–R6: 2,265 right, 1,112 left), and the pooled cut makes the lobe densities differ by construction (§4). The rule that separates the two explanations must be registered by the arm, before its data. | **(i)** as one ingredient there; the separating rule is the arm's |
 | **D13** | Synthetic worlds on the male bank (**handed to the arm's registration**) | knockout §8: "decided with the builder". It is a property of the instrument on this bank. | decide in the arm's registration |
-| **D14** | File date | `2026-09-26-…` (as requested; the local day) vs `2026-09-25-…` (the UTC day of drafting, per GLOSSARY) | rename to `2026-09-25-…` before commit, as knockout D12 did |
+| **D14** | File date | `2026-09-26-…` (the local day) vs `2026-09-25-…` (the UTC day of drafting, per GLOSSARY) | **Closed in revision 2:** renamed to `2026-09-25-…` with `git mv` (the reviewers agreed) |
+| **D15** | **The collapse of flyvis-65 onto the placed grid** (new in revision 2, Zcode), which sets T and K | (i) restrict-only: unplaced types dropped, and R1 is flyvis's R1 alone; 497 of 2,961, T = 0.167849, K = 994. (ii) **pooled**: the index that carries a population carries it in flyvis-65 too, as a logical OR (R1 from R1–R6; CT1(M10) from both CT1 compartments); 511, T = 0.172577, K = 1,022. Pooling R1–R6 alone gives 498 (T = 0.168186, K = 996). All verified for this draft (§5.3). Both are printed, and the "DENSITY TARGET DIFFERS" stop is keyed to the registered one. | **(ii)**, R1–R6 and CT1 pooled, matching D4 |
+
+### 13.1 Votes on revision 1 (DPC Research chat, 2026-09-26 UTC; as relayed by CC)
+
+| reviewer | time (UTC) | vote |
+|---|---|---|
+| Johnny | 04:57 | yes, with edits |
+| Ark | 05:00 | yes, with edits |
+| Zcode | 05:08 | yes, with edits |
+
+Revision 2 has not been voted on.
+
+### 13.2 The edits of revision 2, who asked, and where each is applied
+
+| # | edit | asked by | applied in |
+|---|---|---|---|
+| 1 | The harness grid is 65 × 65; the arm restricts `H.ALL_CELLS` as `flywire_bf_p3.py:74-76` does; an obligation of the arm; the grid-dependent harness structures listed as open; no harness edit, no pin change | Johnny (raised as blocking); Ark (not blocking, with a residue) | §2, §7, §12 |
+| 2 | Two densities: 572 / 4,161 = 0.137467 (the synthetic limits' grid) vs 497 / 2,961 = 0.167849 on Ω (× 1.221); the rationale of §5.2 corrected to "matches flyvis-65 on the same cells"; the full-grid option (K = 814, about 407 per lobe) as D1 (b′); the 2,961 / 4,161 training grid handed to the arm with its consequence | Ark | §5.2, §5.3, §5.5, D1 |
+| 3 | The collapse as a decision: restrict-only 497 vs pooled 511 (T = 0.172577, K = 1,022); T, K and the stop depend on the chosen collapse; both printed | Zcode | §5.3, §5.4, §10.2, §11, D15 |
+| 4 | The c = 1 fact: the perfect board came from a summed threshold mislabelled "mean ≥ 1"; at an honest c = 1 the block had 20–21 weak cross cells; c = 1 stays demoted because it was seen; 64/64 inferable at every threshold tried added to §0 | Zcode | §0, §5.5, D1, §14 |
+| 5 | Two explanations of a lobe disagreement (variation within the animal; incompleteness of the left lobe); the pooled cut makes the lobe densities differ by construction; the separating rule handed to the arm | Johnny, Ark | §4, §12, D12 |
+| 6 | Order: map frozen → T → threshold, so the "DENSITY TARGET DIFFERS" stop does not fire on a legal map change | Ark | §5.2, §5.3 |
+| 7 | D2: `w_min` changes the composition of the passing cells | Ark | §5.1, D2 |
+| 8 | `rc_patterns` has no attempt cap and is written for 8 × 8; the arm's script adds a cap of 100 × target with a stop message (the pattern of `harness.py:881-883`); the registered block-A script is not edited | Ark, Zcode | §12 |
+| 9 | Block A's mirror cells lie in Ω; the sealed files' size is not printed or written (fixed width); `w_min` of the sealed files named; the `instance`-suffix parser and the birth-id sort specified | Zcode | §5.2, §9, §10.2, §11, §4, §3.2 |
+| 10 | Rename to `2026-09-25-…` with `git mv`; D14 closed | the reviewers | file name, header, D14 |
+| 11 | This vote and edit table | CC's brief | §13.1, §13.2 |
+
+**Where revision 2 differs from the brief.** Edit 3 relayed Zcode's pooled collapse as "R1 = OR
+of R1–R6 presence". The count of 511 is reproduced only if CT1's two compartments are pooled too.
+With R1–R6 alone the count is 498 (§5.3). Revision 2 registers the pooled collapse as both
+populations, which is also what D4 places. For edit 2, Ark's alternative "K = 814, 407 per lobe"
+is 0.137467 × 5,922 = 814.08, so about 407.04 per lobe (verified). For edit 8, the brief cited
+`harness.py:883`; the cap is defined at `:881` and used at `:883`.
 
 ## 14. Not verified at drafting
 
@@ -598,6 +837,12 @@ recommendation.
   the 16 block types; the exact strings of R1–R6, the R7/R8 roll-ups, `CT1`, `Am1` and `TmY9q`
   in their columns (§3.2). Settled by the dry run.
 - That Am → Am1 is the backlog's 61st mapped type (§3.2; inferred from arithmetic).
+- **Zcode's correction of the c = 1 fact** (revision 2, §0): that the perfect board came from a
+  summed threshold of about 500–800 and that c = 1 gave 20–21 weak cross cells. It rests on his
+  word in the chat of 2026-09-26 05:08 UTC, as relayed. The backlog and knockout registration §8
+  still carry the older wording, and neither was edited.
+- What each grid-dependent harness structure does under a restricted `ALL_CELLS` (§12). Listed,
+  not analysed. The arm's registration owns it.
 - The backlog's counts (61 of 65, 49 by name, 62 % weight-1 edges, the 18.1 GB read), the
   review's counts (T4d 1,709 / 1,710; R7/R8 1,300 / 1,329; 931 `_unclear`; R1–R6 2,265 / 1,112;
   CT1 and Am1 n = 1 per lobe; CT1_L's 100 %) and Zcode's preliminary block views. All are quoted

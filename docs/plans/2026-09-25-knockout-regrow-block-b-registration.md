@@ -1,8 +1,13 @@
 ---
-**Status: DRAFT, not reviewed, not committed.** Drafted 2026-09-26 UTC by a CC subagent on Mike's
-word (DPC Research chat, 2026-09-25 20:02 UTC, as relayed by CC; the chat is not in the
-repository): a second block on flyvis-65. Nothing was fitted, regrown or scored for block B. No
-cell of block B was read from the bank (§1.5, read declaration).
+**Status: DRAFT, revision 1.1: the reviewers' pass on revision 1 applied; not re-reviewed, not
+committed.** Revision 1 was drafted 2026-09-25 UTC (after Mike's word; the scratch scripts
+of §1.4 are stamped 20:12 and 20:14 UTC) by a CC subagent on Mike's word (DPC Research chat,
+2026-09-25 20:02 UTC, as relayed by CC; the chat is not in the repository): a second block on
+flyvis-65. It was committed as a draft in `d6e3759` (2026-09-26 04:50 UTC) under the name
+`2026-09-26-…`, and renamed to its UTC day by `git mv` in revision 1.1 (D15). Revision 1 was
+reviewed in the DPC Research chat on 2026-09-26: Johnny 04:57, Ark 05:00, Zcode 05:08 UTC, all
+"yes, with edits"; the votes and the edits are in §10 ("Revision 1.1"). Nothing was fitted,
+regrown or scored for block B. No cell of block B was read from the bank (§1.5, read declaration).
 
 **What this file is.** A delta on block A's registration,
 [`2026-09-24-knockout-regrow-registration.md`](2026-09-24-knockout-regrow-registration.md),
@@ -25,7 +30,9 @@ tables, §1.2 was edited for wording, for factual qualifications (B-full's targe
 grid; candidate C's size there, not counted), and to make its tie-break explicit (the
 larger of the two options that pass, which was already the recommendation, and the admission of
 a restriction of a candidate by its own biology text, which is what B-motion already was). The
-chosen block did not change.
+chosen block did not change. **Revision 1.1 correction (Zcode):** "its own biology text" is too
+strong for B-motion's targets: candidate B's paragraph names 7 of the 8 (§1.2); the carrier of
+the target set is block A's source list.
 ---
 
 # Registration: knock out and regrow, block B on flyvis-65 (a delta on block A's registration)
@@ -75,7 +82,7 @@ Block A's verdict G stands as registered. Block B is read on its own (§5, D11).
 Unchanged: the eight pins of A §1.1 (`offsets.csv`, `types.csv`, `folds.csv`, `harness.py`, rule
 #2.1's `fit.py` and `decode.py`, `bf_decode.py`, `n1_decode.py`). The scratch script of §1.4 read
 `offsets.csv`, `types.csv` and `harness.py` at the pinned hashes (`8c45e850…`, `237a195a…`,
-`6fc80952…`; LF sha256, 2026-09-26). The block-B script records this file's own LF sha256 in its
+`6fc80952…`; LF sha256, 2026-09-25 UTC). The block-B script records this file's own LF sha256 in its
 manifest, as A's does (§7).
 
 ### 1.2 Block B: the choice rule, written before any table was computed
@@ -105,6 +112,16 @@ endpoint keeps, inferability, mirrors) are computed from presence **outside** bl
 of block A's registration did; they do not reopen the choice, and a failure of K3 there goes to
 review (D1), not to an automatic switch.
 
+**Revision 1.1 (Johnny; Zcode on the target set): what this rule is, stated plainly.** The rule
+above was written in this draft, after block A's verdict G was known, not in the candidates
+note. Its second clause ("a restriction of one of them") admits an option that no line of the note
+contains, and B-motion is exactly such an option: **a narrowing invented in this draft.** Its
+target set is **carried by block A's source list** (A §1.2), not by candidate B's paragraph, which
+names 7 of the 8 (Mi1, Tm3, Tm1, Tm2, Tm4, Mi9, Tm9) and also Tm20, which B-motion leaves out; Mi4
+is not in that paragraph (note, lines 81–83, checked for revision 1.1). So the selection after the
+data happens **at the level of the block choice itself**, not only through block B's cells having
+been in training (§1.5).
+
 **The options, on the 65-type grid.** The candidates note counted its candidates on a 30-type grid
 (note §1). Its name rules are translated to the 65 types of `types.csv`: the photoreceptors are
 R1–R8 (the eight `input`/`retina` types), the lamina monopolar cells L1–L5.
@@ -112,17 +129,18 @@ R1–R8 (the eight `input`/`retina` types), the lamina monopolar cells L1–L5.
 | option | name rule | cells | K1 structure | K2 copy | K3 endpoints visible (by the rule's shape) | K4 | what choosing it changes |
 |---|---|---|---|---|---|---|---|
 | **B-full** (candidate B as written) | src ∈ {L1–L5} × tar ∉ {L1–L5, R1–R8} | 5 × 52 = 260 | yes (note §2B) | yes | **no**: the L rows keep only L→L and L→R cells; the note's own risk ("almost a whole-row knockout ... 'no grammar' and 'no information' would be read from the same failure") | yes | a block where a G cannot be told from "no information"; its targets also take in 29 types that the 30-type rule never had to consider (52 against 23; Lawf1, Lawf2 and Am among them), so the note's rule does not fix it on the 65 grid |
-| **B-motion** (candidate B restricted; recommended) | src ∈ {L1, L2, L3, L4, L5} × tar ∈ {Mi1, Tm3, Mi4, Mi9, Tm1, Tm2, Tm4, Tm9} (block A's eight sources) | 5 × 8 = 40 | yes: "L1 feeds the ON side (Mi1, Tm3), L2 the OFF side (Tm1, Tm2, Tm4), and L3 feeds Mi9, Tm9 and Tm20" (note §2B) | yes: both polarities and all five L types are removed together | **yes by shape**: each L row keeps its cells into the other 44 non-L, non-R types; each target column keeps its cells from the other 60 types | same sources as candidate B (Meinertzhagen & O'Neil 1991; Takemura et al. 2013, 2015) | the stage upstream of block A: the lamina's input to the eight motion inputs. **It is not one of the note's three rules verbatim**: it restricts candidate B's targets to the targets named in candidate B's own biology paragraph and in block A's source list (D1) |
+| **B-motion** (candidate B restricted; recommended) | src ∈ {L1, L2, L3, L4, L5} × tar ∈ {Mi1, Tm3, Mi4, Mi9, Tm1, Tm2, Tm4, Tm9} (block A's eight sources) | 5 × 8 = 40 | yes: "L1 feeds the ON side (Mi1, Tm3), L2 the OFF side (Tm1, Tm2, Tm4), and L3 feeds Mi9, Tm9 and Tm20" (note §2B) | yes: both polarities and all five L types are removed together | **yes by shape**: each L row keeps its cells into the other 44 non-L, non-R types; each target column keeps its cells from the other 60 types | same sources as candidate B (Meinertzhagen & O'Neil 1991; Takemura et al. 2013, 2015) | the stage upstream of block A: the lamina's input to the eight motion inputs. **It is not one of the note's three rules**: it is a narrowing invented in this draft. Its target set is carried by block A's source list; candidate B's paragraph names 7 of the 8 (not Mi4) and also Tm20, which is left out (revision 1.1, Zcode; D1) |
 | **B-L123** | src ∈ {L1, L2, L3} × the same eight | 3 × 8 = 24 | yes | yes | yes by shape | smaller: only the L types whose targets the note states | fewer cells, lower power (a leg-P pass needs a higher AUC on 24 cells than on 40) |
 | **C** (candidate C as written) | src ∈ {R7, R8} × tar ∉ {R1–R8} | 2 × 57 = 114 | partly (note §2C) | yes | **no**: the R7 and R8 rows keep only cells into R1–R8 | **no on the 30 grid**: "too small and too noisy" (4 FlyWire-30 pairs, 7 flyvis-30 pairs; note §2). On the 65 grid its targets include Tm5a, Tm5b, Tm5c and Tm5Y (flyvis's Tm5 types; the note names Tm5 as an R7 partner "not among the 30"; the identification is this draft's); its size there was not counted | a near whole-row block, as B-full |
 | **defer** | a new candidates note on the 65-type grid | — | — | — | — | — | a new selection round, reviewed before any registration; costs a session |
 
 **Chosen (recommendation; D1): B-motion**, 40 cells, `{L1–L5} × {Mi1, Tm3, Mi4, Mi9, Tm1, Tm2,
 Tm4, Tm9}`. Two options pass K1–K4 by their name rule, B-motion and B-L123, and B-motion is the
-larger (40 cells against 24). It keeps candidate B's
-biology and sources and removes candidate B's own named risk (K3) by restricting the targets to
-the ones that biology names. It is the input stage of block A's pathway, so it asks the same
-question one synapse upstream.
+larger (40 cells against 24). It keeps candidate B's sources (the L types) and literature, and
+removes candidate B's own named risk (K3) by restricting the targets to block A's eight sources,
+7 of which candidate B's biology names (revision 1.1: revision 1 said "the ones that biology
+names"). It is the input stage of block A's pathway, so it asks the same question one synapse
+upstream.
 
 **What the choice does not rest on.** Block A's run printed rule #2.1's `ceiling_full` = 0.8442
 ("orthogonal", as a description only; `RESULT.md` line 5). **That value is not a reason for
@@ -131,8 +149,9 @@ mechanism label of G is a description from which no decision is read (block A's 
 decision (c)), and a block chosen to move it would be selection after the data (lesson a). Nor
 does the choice rest on block A's verdict G: B-motion restricts candidate B, which was written
 (note committed `10b704e`) before block A's registration, and it is judged by the criteria written
-then. It is still chosen after block A's result was known; §1.5 says what that does and does not
-compromise.
+then. **But it is chosen after block A's G, and the narrowing itself is new** (revision 1.1,
+Johnny): the candidates and the criteria predate block A's result; the choice among them, and
+the option chosen, do not. §1.5 says what that does and does not compromise.
 
 **The answer key (used only to score and to print strata, never to train).** From the note §2B:
 L1 → Mi1, Tm3 (ON); L2 → Tm1, Tm2, Tm4 (OFF); L3 → Mi9, Tm9. The targets' ON/OFF split is block
@@ -180,7 +199,7 @@ N1's, not a zero one as on block A.
 
 ### 1.4 Printed before data: inferability, mirrors, what each endpoint keeps (computed now)
 
-Computed on 2026-09-26 by one scratch script (outside the repository, in the drafting agent's
+Computed on 2026-09-25 (about 20:12 UTC) by one scratch script (outside the repository, in the drafting agent's
 session scratchpad, not committed), after §1.2 was written: names from `types.csv`, presence as
 `harness.REAL.exists & ~BLOCK_B`, one expression, so no cell of block B was read. Presence means
 C6 existence, as in A §1.3. Self-loops are counted, as in A. **Not computed:** anything inside
@@ -248,11 +267,24 @@ seen by a blind author; GLOSSARY §8), so this file says **prior exposure**.
    note's "pair" is C6 existence; not checked). No file opened for this draft gives the count.
    §1.4 says how A §1.4 and a full endpoint table would give its column counts.
 
+**Block B's content cannot be kept blind (revision 1.1, Johnny).** Because `offsets.csv` is
+committed and the note has already printed an upper bound of 32 for a superset of the block,
+nobody can be blind to block B's content; anyone can count it. What this file can do is **choose
+not to count it** before the run (D3 (ii)): no author of this registration counts the block's
+cells or writes a count of them, and the reading rules are fixed before anyone does. That is a
+declared abstention, checked only by the read declarations of the people involved, not an
+enforced blindness.
+
 **What this compromises.**
 
-- **The block is chosen after block A's verdict.** That is selection after data at the level of
-  which block to test (lesson a). It is mitigated, not removed: the candidate list and the
-  criteria predate block A's run, and `ceiling_full` = 0.8442 is named in §1.2 as not a reason.
+- **The block is chosen after block A's verdict G, and B-motion is a narrowing invented in this
+  draft, not a line of the candidates note** (revision 1.1, Johnny; §1.2). That is selection after
+  data **at the level of the block choice** (lesson a), and it is a second exposure, separate
+  from items 1–5 (block B's cells in training and in public files). It is mitigated, not removed:
+  the candidate list and the criteria predate block A's run, the reading rules and cuts are
+  revision 3.4.1's, and `ceiling_full` = 0.8442 is named in §1.2 as not a reason. What is not
+  mitigated: the narrowing and the choice among the options were made by an author who knew
+  block A's result.
 - **The answer is textbook and the bank is public** (risk 3, as for block A).
 - **Block A's synthetic limits cannot be reused:** A's worlds were built on block A's board and on
   degree terms that include block B's cells. Block B's limits come from new worlds (§3.6).
@@ -281,8 +313,12 @@ seen by a blind author; GLOSSARY §8), so this file says **prior exposure**.
 the committed-output writer); the first columns of `types.csv`; seed contexts found by grep. Not
 opened: `offsets.csv` as text, `type_pairs.csv`, `summary.json`, the regularity reading, anything
 under `chat/`. **Two incidental exposures, stated:** (1) listing the names of `types.csv` also
-showed its `n_out_entries` column, a whole-bank degree total per type; with an endpoint table it
-bounds an L row's count inside the block; no such difference is written here. (2) While
+showed its `n_out_entries` column, a whole-bank degree total per type. **Revision 1.1
+(Zcode):** that column needs no endpoint table to say something about block B. On its own it is an
+upper bound on each L row's count inside the block (a type has at most one compiled pair per json
+entry, GLOSSARY §2, "json entry"), and with counts already public (the note's bound of 32 on the
+30-type grid, item 5; A §1.4) it bounds the block's content further. Revision 1 said "with an
+endpoint table it bounds", which understated it. No such bound is computed or written here. (2) While
 cross-checking the scratch table against A §1.4, the agent saw that the subtraction gives block
 B's column counts and saw the result for one target before stopping. That value is not written in
 this file, and the choice (§1.2) was on disk before it.
@@ -333,10 +369,21 @@ AUC on the 31 cells that are not mirror partners, in place of "the other 59".
 - **`smallest_passing_auc`:** unchanged in definition, on the grid `k / (n_p n_a)` (A: `k/1024`);
   two new registered values, one per synthetic board (§3.3, §3.6).
 - **Row-and-column variant (printed, decides nothing):** 5 × 8 patterns with the block's row and
-  column counts, 640 successful checkerboard swaps per draw as in A, seed 91001. **New guard
-  (D7):** a pattern with no checkerboard 2 × 2 (a nested pattern) admits no swap, and A's loop
-  (`rc_patterns`, `while (succ < RC_SWAPS).any()`) would never end. If the block's pattern has no
-  checkerboard, the variant prints "n/a: the row-and-column null has one pattern".
+  column counts, 640 successful checkerboard swaps per draw as in A, seed 91001. **New guards
+  (D7; revision 1.1, Ark and Zcode).** A's loop (`rc_patterns`, `while (succ < RC_SWAPS).any()`)
+  has no attempt limit, so a chain that cannot reach 640 swaps never ends. (1) **An attempt cap
+  with a stop**, on the pattern of the harness's own rewiring (`harness.py:881–883`:
+  `cap = 100 * target`, `while … succ < target and att < cap`): each chain may make at most
+  100 × 640 = 64,000 attempts; if any chain reaches the cap before its 640 swaps, the script stops
+  with "ROW-AND-COLUMN NULL: ATTEMPT CAP REACHED (chain …, successes …, attempts …)". The harness
+  records `successful_swaps` and `attempts` and goes on (`shuffled_bank`, lines 905–916); the
+  stop here is block B's own rule. (2) **Before the loop**, a pattern with no checkerboard 2 × 2 (a
+  nested pattern) admits no swap at all; its row-and-column null has exactly one pattern, and the
+  variant prints "n/a: the row-and-column null has one pattern" instead of entering the loop.
+  **A's code would not even reach the loop on block B:** `reshape(8, 8)` of 40 labels raises
+  `ValueError` ("cannot reshape array of size 40 into shape (8,8)"), and with the reshape fixed to
+  (5, 8) but the indices still drawn by `integers(8)`, the first row index above 4 raises
+  `IndexError` (both checked on numpy 2.2.6, `tools/.venv`, no bank involved; S12).
 - **`TAU` stays inert:** every AUC here is a multiple of `1/(2 n_p n_a)` with `2 n_p n_a <= 800`,
   so two unequal margins differ by at least `1/800²` ≈ 1.6e-6, far above 1e-9 (arithmetic, this
   draft).
@@ -448,7 +495,7 @@ per world; the rule that a failed stop row stops the real arm.
 
 **Untouched:** A §3.7's list (60000, 61000, 70000–70999, 80000–80999, 4242, 99, 7, 1000–1019,
 the dial seeds, 20260923) **and block A's own seeds** (90000, 90001, 90010–90029, 90100–90154,
-90160–90184). **Checked 2026-09-26:** a grep of the repository's `.py`, `.md` and `.json` files for
+90160–90184). **Checked 2026-09-25 UTC:** a grep of the repository's `.py`, `.md` and `.json` files for
 91000–91999 found no seed: the hits are the cuDNN version string 91002 in night records and digits
 inside floating-point values (`diagnosis_power_rows.json` and a `spread` file of rule #2.1's C6
 run, contexts printed). The script asserts that the new seeds are distinct, lie in
@@ -505,8 +552,13 @@ A §6 applies, and in addition:
   32/32 in A (§3.2). The thinnest source keeps 4 training targets (§1.4).
 - **Prior exposure** (§1.5): the block is chosen after block A's verdict, and its cells trained
   every block-A fit.
-- **Mirrors:** 9 of 40 partners, and five of them are cells the key names (§1.4); a rule that tied
-  source and target factors could read them; no registered predictor does.
+- **Mirrors, a named risk (revision 1.1, Johnny).** 9 of block B's 40 cells have a present mirror
+  (block A: 5 of 64), and five of the nine partners are cells that the answer key names as present
+  (§1.4). The registered predictors do not tie a type's source factor to its target factor
+  (BF_r's `U` and `V` are separate; rule #2.1 has one `(u, v)` pair and the group-level `W`;
+  A §1.4), so the mirrors are **not a direct channel** for them. They would be one for any rule
+  that tied the two roles, and a regrowth by such a rule on block B would have to be read against
+  the mirrors first. The 9 partners are printed on their own line, with the AUC on the other 31.
 - **The male-CNS arm** (A §8) is not part of this registration (§8).
 
 ## 7. Environment, script, run command, outputs, cost (delta on A §7)
@@ -531,7 +583,7 @@ own registration (D12).
 | S9 | `check_n1_parity` | a printed value, no stop (D6) |
 | S10 | `check_auc_function` | one unbalanced 40-cell case |
 | S11 | `uniform_perms`, `perm_ceiling_perm` | `permutation(40)`; seeds 91000, 91010 + j |
-| S12 | `rc_patterns` | reshape to (5, 8); row and column indices drawn on their own ranges (A draws all four from `integers(8)`); the no-checkerboard guard (D7) |
+| S12 | `rc_patterns` | reshape to (5, 8) (A's `reshape(8, 8)` raises `ValueError` on 40 labels); row and column indices drawn on their own ranges (A draws all four from `integers(8)`, which raises `IndexError` on a 5-row pattern); an attempt cap of 100 × 640 per chain with a stop message, on the pattern of `harness.py:881–883`; the no-checkerboard pre-check printing "n/a" (D7; revision 1.1, Ark and Zcode) |
 | S13 | `SEED_*`, `assert_seeds_unique`, `reserved_seeds` | 91000, 91001, 91010, 91100; range 91000–91999; block A's seeds added to the reserved set |
 | S14 | worlds: `Z_PLUS`, `ZPRIME_PLUS`, the two assertions, `OTHERS`, `NONBLOCK_CELLS`, `degree_terms`, `make_world` | §3.6 (D4, D5): the polarity of the 13 types; target-only exact orthogonality; 52 others; content pool and degree terms outside block B; assertion 20 |
 | S15 | `precision_at_32`, `auc_other_59`, the CSV header, the printed and Markdown tables ("/64", "(32/32)", "other 59", "P@32") | precision at `n_present`; the other 31; block B's own CSV column names (its reference is written by this script, so no compatibility with A's CSV is needed) |
@@ -581,11 +633,11 @@ The body is written with the recommendation of each row.
 |---|---|---|---|
 | **D1** | Which block B | **B-motion** (L1–L5 × block A's eight sources, 40 cells): passes K1–K4 by its name rule; it is candidate B restricted by candidate B's own biology, **not one of the note's rules verbatim**. **B-L123** (24 cells): only the L types whose targets the note states; less power. **B-full** (260 cells) and **C** (114): fail K3 by shape, so a failure cannot be read as "no grammar". **Defer:** a new candidates note on the 65-type grid; a session of selection and review | B-motion |
 | **D2** | How much of §1.4 is printed before data | (i) the full endpoint table, as A §1.4: with A §1.4 it gives block B's column counts by subtraction. (ii) inferability, minima, mirrors and the table's sha256; the script prints the table at run start and checks the hash. (iii) nothing before data: K3 unverified until the run | (ii) |
-| **D3** | Block B's own pattern before the run | (i) counted by name after this choice is committed, three times, as block A's board was, and registered; check 3 then compares with it; §0's open questions (degree channel, rank) are settled before data, and the authors see the answer. (ii) unread until the run: check 3 prints the counts and stops only on "no AUC"; the training present count is printed, not checked | (ii) |
+| **D3** | Block B's own pattern before the run | (i) counted by name after this choice is committed, three times, as block A's board was, and registered; check 3 then compares with it; §0's open questions (degree channel, rank) are settled before data, and the authors see the answer. (ii) **a choice not to count it before the run** (revision 1.1, Johnny: not blindness, which is not achievable, since `offsets.csv` is committed and the note printed an upper bound of 32; §1.5): check 3 prints the counts and stops only on "no AUC"; the training present count is printed, not checked; the abstention is declared, not enforced | (ii) |
 | **D4** | Worlds' polarity on L3–L5 | (i) fixed L3 +1, L4 −1, L5 +1: one layout per board, so the one-value-per-board check of `smallest_passing_auc` can hold. (ii) drawn per world: the layout varies by world, so that check fails by construction and would have to be registered per world (a gate change). (iii) all +1: columns 4 of 5 against 1 of 5 | (i) |
 | **D5** | `z'_B` and the No assertion | (i) A's `z'` on the targets (exact orthogonality, classes of 2), `z'` = (+1, +1, −1, −1, +1) on L1–L5, the assertion relaxed to the targets, with §3.6's algebra. (ii) make the sources orthogonal too, which needs an even number of sources, so it changes the block of D1 | (i) |
 | **D6** | Check 5 (N1 parity identity) | (i) a printed value, no stop. (ii) kept as a stop: it fails on every non-degenerate 5 × 8 block (§0), so the real arm could never run | (i) |
-| **D7** | Printed-only adaptations | strata for quadrants; precision at `n_present`; the other 31 cells; the row-and-column null on 5 × 8 with 640 swaps and a guard for a pattern with no checkerboard (without it the swap loop never ends). All decide nothing | as written |
+| **D7** | Printed-only adaptations | strata for quadrants; precision at `n_present`; the other 31 cells; the row-and-column null on 5 × 8 with 640 swaps, an attempt cap of 100 × 640 per chain that stops the run with a message (the harness's pattern, `harness.py:881–883`; revision 1.1, Ark and Zcode), and a pre-check that prints "n/a" for a pattern with no checkerboard. Without a cap A's swap loop has no end; without S12 it would fail earlier, on the reshape. The cap stops the whole run although the variant decides nothing: the alternative is to print "n/a (cap reached)" and go on, which keeps the run but reports a truncated null | as written (stop) |
 | **D8** | U and the degree channel | (i) U's label and text unchanged; N1's own `p_P` printed beside U; the outcome note names the additive channel. (ii) a new U reason, "N1 alone passes leg P", on the verdict line: changes a verdict-line string, so it needs its own review and a test | (i) |
 | **D9** | A's literals in the quoted §4 rows; "failed fit" | (i) quote A's rows verbatim, then a printed line naming A's literals (64/64; the pre-run U worlds; "the block is rank 1"); "failed fit" read on block B as "fit failure or rank limit, not separated". (ii) restate §4 in this file with block B's literals: a new text of a reading rule, reviewed as such | (i) |
 | **D10** | Order of work | (i) commit the script and this draft; the pre-run from that committed head on Mike's word; a revision registering the values read from the pinned reference; review; the registered run. Block B's reference then has a producer in git. (ii) A's D11 order (pre-run before commit): repeats the provenance gap of A §3.3 | (i) |
@@ -593,6 +645,32 @@ The body is written with the recommendation of each row.
 | **D12** | Instrument | (i) the pinned CPU harness, as A: the same instrument, about 4.5 h of wall time. (ii) the GPU instrument of `74de040`: separate and unreviewed; by A §7 it needs its own registration and synthetic worlds | (i) |
 | **D13** | Script form | (i) a new file, a copy of A's, reviewed as a diff against it; A's file untouched. (ii) a `--block` flag in A's file: the file that A's run and blind review cite changes (A stays reproducible from `74de040`). (iii) import A's module and override its constants: fragile, since `BLOCK`, `MASKS`, `MIRROR_IDX`, `Z_BLOCK`, `ZPRIME` and `NONBLOCK_CELLS` are computed at import | (i) |
 | **D14** | Seeds | as §3.7 | as written |
+| **D15** | File date (revision 1.1) | `2026-09-26-…` (the name of revision 1, commit `d6e3759`; the local day at +07:00) vs `2026-09-25-…` (the UTC day of drafting, per the GLOSSARY's date-time convention: the §1.4 scratch scripts are stamped 2026-09-25 20:12 and 20:14 UTC) | `2026-09-25-…`, renamed with `git mv` in revision 1.1; as the knockout registration's D12 decided the same question and as the male-CNS builder draft's D14 does (that draft is renamed to `2026-09-25-…` in the same working tree). No other file of the repository referred to the old name (grep, revision 1.1) |
+
+### Revision 1.1: the reviewers' pass on revision 1 (2026-09-26)
+
+Revision 1 (commit `d6e3759`) was reviewed in the DPC Research chat on 2026-09-26. The votes and
+the edits are as CC's message to the drafting agent relays them; the chat is not in the
+repository. Zcode also recomputed, independently: the endpoint table's sha256 (exact match), 40 /
+40 inferable, the minima 4 and 9, the 9 mirrors, the option sizes 260 and 114, both algebras of
+this draft (the 5 × 8 balance and the No world's exact 0.5), and the seeds.
+
+| reviewer | time (UTC) | vote |
+|---|---|---|
+| Johnny | 04:57 | yes, with edits |
+| Ark | 05:00 | yes, with edits |
+| Zcode | 05:08 | yes, with edits |
+
+| # | edit | asked by | applied in revision 1.1 |
+|---|---|---|---|
+| 1 | D3 and §1.5: "unread before the run" is a choice not to count, not achievable blindness (`offsets.csv` is committed; the note printed an upper bound of 32) | Johnny | yes: §1.5 ("Block B's content cannot be kept blind"), D3 (ii) |
+| 2 | Selection after data at the level of the block choice: the block is chosen after block A's G, and B-motion is a narrowing invented in this draft, not a line of the note; stated besides "B's cells were in training" | Johnny | yes: §1.2 (a paragraph under the rule; "What the choice does not rest on"), §1.5 ("What this compromises") |
+| 3 | The eight targets' provenance: candidate B's paragraph names 7 of the 8 (it has Tm20 and not Mi4); the carrier of the set is block A's source list | Zcode | yes: §1.2 (the rule's paragraph, the option table, "Chosen"), the header's drafting record; checked against the note, lines 81–83 |
+| 4 | Mirrors as a named risk in §6: 9 / 40 against 5 / 64, five partners named present by the key, no direct channel for the registered predictors | Johnny | yes: §6 |
+| 5 | `n_out_entries`: the column itself, with public counts, already bounds the in-block row count; the endpoint table is not needed for that | Zcode | yes: §1.5, read declaration |
+| 6 | `rc_patterns`: an attempt cap with a stop message, on the pattern of `harness.py:883` (cap = 100 × target), not only a no-checkerboard check; A's `reshape(8, 8)` / `integers(8)` fail on 5 × 8 before any hang | Ark, Zcode | yes: §3.2, D7, S12. The error at the reshape is `ValueError`; `IndexError` comes from `integers(8)` once the reshape is fixed (both checked on numpy 2.2.6). The cap line is `harness.py:881`, the loop condition line 883 |
+| 7 | Date: rename to `2026-09-25-…` with `git mv`, recorded as a D item | reviewers (as relayed) | yes: D15, header; the in-file dates of revision 1 ("2026-09-26" in §1.1, §1.4, §3.7) corrected to the UTC day |
+| 8 | This table of votes and edits | CC's request, from the review | yes |
 
 ## 11. Not verified at drafting
 
