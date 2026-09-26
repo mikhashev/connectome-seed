@@ -1,4 +1,22 @@
 ---
+**Status (revision 2.1, 2026-09-26 UTC): the reviewers' edits after the `--inspect-only` output.
+Not re-reviewed, not committed, the build not run.** The inspect-only output
+(`results/genome/c6/checks/male_cns_bank_builder_inspect_only.txt`, commit `2af21e5`) was
+reviewed in the DPC Research chat on 2026-09-26 by Johnny (08:10 UTC), Zcode (08:11 UTC) and Ark
+(08:19 UTC), all "yes, with edits", before the build (§13.4). The edits, who asked for each, and
+where each lives are in §13.3. What revision 2.1 changes, in short: the left/right reading of §4
+is restated in its measured form (the whole left lobe is not less complete; the deficit is
+specific to R1–R6), with an expectation handed to the arm (§4, §12); the photoreceptor side is
+named a transfer through `rootSide` (§1.2, §4); `R1-R6` / `R1-6` are named as two spellings of
+one object (§3.1); an R7/R8 side control independent of `flywireType` is added (§4);
+`assignedOlHex1/2` are shown to be column coordinates that cannot carry a side (§1.2, §4); the
+codec is read from the record batch headers (§1.2, §6); and the instrument's edits (a–g of
+§13.3) change the inspect header, the dirty-tree rule, the blindness test, three stop messages,
+the environment field and the lobe-consistency print (§6, §9, §10, §11). **The type map, the
+side rule, D1–D15 and the density target are unchanged.** New numbers in revision 2.1 are
+annotation counts and IPC header fields only (a scratch script and the builder's own functions,
+2026-09-26 UTC; no weight value was read). Revision 2's header follows.
+
 **Status (revision 2, 2026-09-26 UTC): the reviewers' pass on revision 1. Not re-reviewed, not
 committed, nothing built.** Revision 1 (commit `d6e3759`) was reviewed in the DPC Research chat on
 2026-09-26 by Johnny (04:57 UTC), Ark (05:00 UTC) and Zcode (05:08 UTC), all "yes, with edits".
@@ -141,12 +159,39 @@ distinct `bodyId` (read). 36 columns: `assignedOlHex1`, `assignedOlHex2` (double
 | `statusLabel` | 20 values (`Reviewed` 54,066, `Roughly traced` 71,979, `Prelim Roughly traced` 36,387, …) |
 
 The first three rows show `instance` values with a side suffix (`DNp01(GF)_R`, `OCG01d_L`,
-`VCH_R`) and `somaSide` equal to that suffix. **Not checked:** which of `somaSide`, `rootSide` and
-the `instance` suffix is filled for the 16 block types, for R1–R6, R7, R8 and CT1. Also not
-checked: how many bodies each type has, whether `assignedOlHex1/2` is null for T4/T5, the
-compression codec of either file, whether (`body_pre`, `body_post`) is unique, and whether rows
-with `body_pre == body_post` exist. The builder settles each of these in its dry run (§10.3),
-except uniqueness and autapses, which need the weight stream (§6).
+`VCH_R`) and `somaSide` equal to that suffix. At revision 2, the following were **not checked**:
+which of `somaSide`, `rootSide` and the `instance` suffix is filled for the 16 block types, for
+R1–R6, R7, R8 and CT1; how many bodies each type has; whether `assignedOlHex1/2` is null for
+T4/T5; the compression codec of either file; whether (`body_pre`, `body_post`) is unique; and
+whether rows with `body_pre == body_post` exist. Uniqueness and autapses need the weight stream
+(§6) and remain open.
+
+**Settled by the inspect-only output (commit `2af21e5`) and revision 2.1 (annotations and IPC
+headers only).**
+
+- **Which column carries the side.** Every placed type except the photoreceptors takes its side
+  from `somaSide` alone (the inspect table, §3.2). The photoreceptors take it from `rootSide`:
+  R1–R6 `somaSide` 4 L / 9 R, `rootSide` 1,108 L / 2,256 R; R7 `somaSide` 1 / 1, `rootSide`
+  607 / 691; R8 `somaSide` 14 / 0, `rootSide` 611 / 704. For all three the `instance` step
+  assigns 0 / 0 and 0 bodies are unassigned. **So trust in the photoreceptor side is a transfer,
+  not a measurement:** it rests on `rootSide` meaning the lobe for these cells as `somaSide`
+  does for the others, and nothing in this file measures that. The lobe-consistency check (§4)
+  is the first test of it; it needs the weight pass.
+- **`assignedOlHex1/2` (revision 2.1; Ark proposed it as an independent lobe carrier).** Both are
+  doubles that hold integers, 1–36 and 1–39. They are non-null for 23,720 bodies, all
+  `superclass == ol_intrinsic`, in 15 types (L1, L2, L3, L5, C2, C3, T1, Mi1, Mi4, Mi9, Tm1, Tm2,
+  Tm4, Tm9, Tm20; none of R1–R8, T4, T5 or CT1). Neither column has field metadata, and
+  `SOURCE.md` says nothing about them. The pair (`assignedOlHex1`, `assignedOlHex2`) is one
+  value per body per lobe (Mi1: 875 distinct pairs for 875 left bodies with a hex, 886 for 887
+  right), and **the two lobes use the same coordinates**: all 879 pairs seen on the left also
+  occur on the right (the right has 13 more). The best single threshold on either column
+  predicts the side of a hex body with accuracy 0.5593, which is the share of right bodies among
+  them (13,267 / 23,720). So these are **hex column coordinates within a lobe, not a side**, and
+  they cannot carry the lobe. **No check is built on them.**
+- **The compression codec (revision 2.1; Ark voted against deferring it).** Read from the
+  flatbuffer headers only (§6): the weight file's 2,318 record batches are all `LZ4_FRAME`, and
+  their header row lengths sum to 151,856,684, equal to the pandas metadata `stop`. The
+  annotation file's 4 record batches are `LZ4_FRAME` too (211,577 rows).
 
 ## 2. What a bank file must contain (read from the harness and the FlyWire arm)
 
@@ -199,13 +244,39 @@ nobody picks per type after seeing counts.
 body matched by the override table is not also matched through `type`. The self-test stops if any
 body is claimed by two flyvis types.
 
+**What the two columns say about the photoreceptors (revision 2.1; Johnny, Zcode).**
+
+- **`type = 'R1-R6'` and `flywireType = 'R1-6'` are two spellings of one object.** Both select
+  3,377 bodies, and they are the same bodyIds (symmetric difference 0; checked in revision 2.1,
+  and printed by `--inspect-only` from revision 2.1 on). The inspect line of commit `2af21e5`,
+  "R1 … under flywireType [0, 0]; disagree 3377", is therefore a string artefact: it looks up
+  `R1-R6` in `flywireType`, where the object is spelled `R1-6`. It is not an absence.
+- **`flywireType` alone would cover R1–R6, R7 and R8.** `R1-6`, `R7` (1,300 bodies) and `R8`
+  (1,329) are ready populations there, and they are the same bodies that `type` holds as
+  `R1-R6`, as `R7d` + `R7p` + `R7y` + `R7_unclear` and as `R8d` + `R8p` + `R8y` + `R8_unclear` (§4).
+  So, for the photoreceptors, the D3 mix of columns is redundant: it selects the same bodies as
+  either column would. **The map is not changed** (same bodies); the redundancy is named. It
+  does not extend to the whole map: under `flywireType`, four placed types carry another name
+  (`Tm5Y` is `Tm5f`, 898 bodies; `TmY18` is `Tm27`, 1,367; `TmY13` is `TmY11`, 432; `Tm30` is
+  `Tm31`, 124), and TmY9's `TmY9q` is `TmY9b` in `type` (515). `--inspect-only` prints these
+  pairs from revision 2.1 on.
+- **`R1-R6` is an aggregate label, and the status column marks it.** 1,983 of its 3,377 bodies
+  (59 %) have a null `status`, and 1,982 of those carry `statusLabel = 'Out of scope'` (the
+  other one has a null `statusLabel`). No other read type has a null status except **L4, with
+  one body**: bodyId 136673, `somaSide` L, `instance` `L4_L`, `statusLabel` `Out of scope`.
+  R7 and R8 have none (R7 has one `Anchor`; everything else is `Traced`). In the whole file,
+  `statusLabel = 'Out of scope'` occurs only with a null status (4,585 bodies: 2,601 without a
+  `type`, 1,982 `R1-R6`, one L4, one `Lai`). Under D7 (i) every mapped body counts whatever its
+  status, so this changes no body count; it is recorded because it bears on the R1–R6 asymmetry
+  (§4).
+
 ### 3.2 The map, 65 → placed types (proposal, D4)
 
 | group | flyvis names | male CNS | placed at grid index | count |
 |---|---|---|---|---|
 | by name | the 49 names not listed below (the 16 block names among them) | same string in `type` | own index | 49 |
 | renamed | Am | `Am1` in `type` | Am | 1 |
-| one population, six flyvis types | R1, R2, R3, R4, R5, R6 | the R1–R6 type in `type` (exact string read in the dry run, §10.3) | **R1 only**; R2–R6 not placed | 1 placed (6 mapped) |
+| one population, six flyvis types | R1, R2, R3, R4, R5, R6 | the R1–R6 type in `type`: `R1-R6` (read in the dry run of commit `2af21e5`; spelled `R1-6` in `flywireType`, §3.1) | **R1 only**; R2–R6 not placed | 1 placed (6 mapped) |
 | override | R7, R8 | `flywireType` roll-ups | own index | 2 |
 | one cell per lobe, two flyvis compartments | CT1(Lo1), CT1(M10) | `CT1` in `type`, with the side flip (§4) | **CT1(M10) only**; CT1(Lo1) not placed | 1 placed (2 mapped) |
 | override, flagged | TmY9 | `TmY9q` in `flywireType` | own index | 1 |
@@ -253,7 +324,10 @@ The builder stops, each with its own message:
 
 Printed, deciding nothing: for each of the 61 mapped names, the body count per lobe under `type`
 and under `flywireType`, the number of bodies on which the two columns disagree, and the per-type
-breakdown of `status`. These are annotation counts, not connectivity.
+breakdown of `status`. **From revision 2.1 also:** the value pairs on which the two columns
+disagree (so that a second spelling shows as such, §3.1); the status per lobe of every type with
+any status other than `Traced`; the whole file's status by side; the R7/R8 side control and the
+`R1-R6` / `R1-6` body identity (§4, §3.1). These are annotation counts, not connectivity.
 
 ## 4. Left and right: two banks (proposal, D6; the within-animal null)
 
@@ -265,9 +339,15 @@ the regular expression `_(L|R)\Z`; the side is the captured letter. Anything els
 a null `instance`, a string ending in any other way (for example `_L_1`, `(L)` or a lowercase
 `_l`), or a string equal to `_L` or `_R` alone. The fixture tests include each of these cases.
 The first three rows of the file show the pattern (`DNp01(GF)_R`, `OCG01d_L`, `VCH_R`, §1.2).
-Which bodies of the placed types reach this third step was not checked. Unassigned bodies are
-left out and counted per type. The fallback order exists because optic-lobe sensory cells may have no `somaSide` (their somata lie
-outside the brain). Whether that is so for R1–R8 in this file was **not checked** (§1.2).
+Unassigned bodies are left out and counted per type. The fallback order exists because
+optic-lobe sensory cells may have no `somaSide` (their somata lie outside the brain). **Checked
+(inspect output, commit `2af21e5`; revision 2.1):** for R1–R8 it is so. R1–R6 takes its side
+from `somaSide` for 4 L / 9 R bodies and from `rootSide` for 1,108 L / 2,256 R; R7 from
+`somaSide` 1 / 1 and `rootSide` 607 / 691; R8 from `somaSide` 14 / 0 and `rootSide` 611 / 704.
+No body of a placed type reaches the `instance` step, and none is unassigned. Every other placed
+type takes its side from `somaSide` alone. **The photoreceptor side is therefore a transfer, not
+a measurement** (§1.2): it trusts `rootSide` to mean the lobe. Across the whole file, the
+`instance` step assigns a side to 16 L / 15 R `Traced` bodies, none of a placed type.
 
 **Lobe of a body = its side, except for the declared flip set `FLIP = {CT1}`,** whose lobe is the
 opposite of its side label. Zcode verified that CT1_L has 100 % of its weight with right-lobe
@@ -284,7 +364,26 @@ assigned to the same lobe. The build stops with "LOBE ASSIGNMENT INCONSISTENT" i
 If the flip were wrong, CT1's share would be near 0 (by Zcode's 100 %). If a side column meant
 something other than the lobe for some type, that type's share would fall below 0.5. The shares are
 printed for every type. CT1 is not a block type, so its check reads no block cell. For the 16 block
-types, only their outside-block pairs enter the share.
+types, only their outside-block pairs enter the share. **Revision 2.1 (Ark):** beside each share
+the build prints the inconsistencies themselves, per type, whether the check passes or stops:
+the neuron-pair rows whose partner is in the other lobe, of all the type's rows, as source and
+as target, and their weight. They are counted on the same outside-block rows as the share, so no
+block-A pair enters them.
+
+**No second lobe carrier is available in this file (revision 2.1).** Ark proposed
+`assignedOlHex1` as an independent carrier of the lobe, to check the side rule. It is a hex
+column coordinate within a lobe, and the two lobes use the same coordinates (§1.2), so it cannot
+carry a side, and no check is built on it. The side rule is checked only by the lobe-consistency
+check above.
+
+**R7/R8 sides, independent of `flywireType` (revision 2.1; Ark).** The R7 and R8 roll-ups are
+read from `flywireType` (§3.1). Their sides are recounted from the `type` variants: R7 =
+`R7d` + `R7p` + `R7y` + `R7_unclear` (82 + 332 + 482 + 404), R8 = `R8d` + `R8p` + `R8y` +
+`R8_unclear` (76 + 330 + 481 + 442). `R7R8_unclear` (85 bodies) was to be split by its
+`flywireType`; all 85 have a null `flywireType`, so it enters neither. Result: the variant sets are
+**the same bodies** as `flywireType = 'R7'` and `'R8'` (symmetric difference 0 for both), and give
+the same sides, **R7 608 L / 692 R and R8 625 L / 704 R**. Johnny's R7/R8 numbers do not depend on
+the column. `--inspect-only` prints this control from revision 2.1 on.
 
 **Two banks.** Each lobe's bank is built from neuron pairs whose two bodies are both assigned to
 that lobe. A pair across lobes enters neither bank. Its weight is counted per outside type pair and
@@ -299,10 +398,35 @@ neither bank averages over animals or columns. **It has two explanations that th
 separate:**
 
 1. **Variation within the animal:** the two lobes of one fly are wired differently on block A;
-2. **Incompleteness of one lobe:** the left lobe may be less completely reconstructed or typed.
-   This file's own counts point that way: R1–R6 has 2,265 bodies on the right and 1,112 on the
-   left (knockout registration §8). Under a pooled cut, a less complete lobe is also a sparser
-   bank, and a sparser bank is a weaker instrument.
+2. **A difference of reconstruction between the lobes, in the types that differ (restated in
+   revision 2.1 in its measured form; Johnny, Ark, Zcode).** Revision 2 wrote here that "the left
+   lobe may be less completely reconstructed or typed" and that "this file's own counts point
+   that way". **That general form is refuted by the same file** (§13.3, the refuted claim). The
+   whole file's `status == Traced` bodies by side are **81,362 L / 82,738 R (1 : 1.02)** under
+   `somaSide` then `rootSide`, and 81,378 L / 82,753 R under the full side rule of this section
+   (the `instance` step adds 16 L / 15 R); either way, 1 : 1.02. The deficit is **specific to
+   R1–R6**: 1,112 L / 2,265 R (1 : 2.04), of which `Traced` 501 / 893 and null status
+   611 / 1,372. **R7 (608 / 692, 1 : 1.14) and R8 (625 / 704, 1 : 1.13), sided by the same rule
+   through the same `rootSide` step, are nearly even**, and so is every other placed type (the
+   inspect table). **The mechanism is not established.** The source statement stands: the male
+   optic-lobe connectome that the male CNS extends is the right optic lobe
+   ([where our bank comes from §5.2](../notes/2026-09-23-where-our-bank-comes-from.md), Nern et
+   al. 2025). It does not explain why everything but R1–R6 is symmetric.
+
+**Consequence, registered as an expectation and not as a defect (revision 2.1).** The placed
+index R1 carries every R1–R6 body (§3.2, D4). Its left row and column hold about half the
+bodies of the right (1,112 against 2,265). `x = W / n_tar` is a mean per target neuron, so the
+body count alone does not fix `x`; but a lobe with half the reconstructed R1–R6 bodies can also
+hold less of their synaptic weight, and under the shared cut `c*` the **left bank is expected to
+be sparser in the R1 row and column.** So the lobe comparison in R1's row and column is **not a
+clean within-animal null**. What the build supplies for it (all outside block A; R1–R6 is not a
+block type): K_L and K_R, the present outside cells of each lobe at `c*`, and the present cells
+in R1's row and column per lobe with the lobe's body count (printed beside `c*` and written to
+the manifest as `population_rows_at_c_star`, revision 2.1; CT1(M10) is printed the same way).
+They are diagnostics and decide nothing. **The first question put to the
+build** is how much larger the R1-row asymmetry is than the 1 : 2.04 in bodies. `c*_L < c*_R`
+among the §5.4 diagnostics would read as a consequence of this asymmetry. The rule that uses it
+is the arm's (§12).
 
 **The rule that separates them is the arm's to register, before its data.** What the builder
 supplies for it, all outside block A: per lobe and per placed type, the body counts; per lobe, the
@@ -310,12 +434,12 @@ outside density at `c*`; the per-lobe matched cuts `c*_L` and `c*_R` (§5.4); an
 weight. Revision 1's proposal, "a male-CNS R needs both lobes", stays as one ingredient. It
 settles when the male CNS reads R, but it does not say which explanation a disagreement has.
 
-**Known asymmetries (knockout registration §8, as counted in review; not recounted here).** R1–R6
-has 2,265 bodies on the right and 1,112 on the left. CT1 and Am1 have n = 1 per lobe. The male
-optic-lobe connectome that the male CNS extends is the **right** optic lobe
-([where our bank comes from §5.2](../notes/2026-09-23-where-our-bank-comes-from.md), Nern et al.
-2025). So the left lobe may be less complete. The per-type body counts per lobe are printed in the
-dry run.
+**Known asymmetries (recounted from the annotation file for revision 2.1; the counts of knockout
+registration §8 are reproduced).** R1–R6 has 2,265 bodies on the right and 1,112 on the left.
+CT1 and Am1 have n = 1 per lobe. The whole file and every other placed type are nearly even
+(explanation 2 above). The male optic-lobe connectome that the male CNS extends is the
+**right** optic lobe (Nern et al. 2025); that is a statement about the source, and it does not
+explain why only R1–R6 is uneven. The per-type body counts per lobe are printed in the dry run.
 
 ## 5. The pair statistic and the pair threshold (D1, D2, D9)
 
@@ -525,13 +649,33 @@ table.
    (`body_pre`, `body_post`) keys among kept **outside** rows are counted and printed (a sort of the
    kept rows, which are few). The build stops on any duplicate key among kept block rows, with a
    message that carries no number.
-4. **Memory:** peak resident memory is recorded (psutil, in the builder's environment) and the
-   build stops above a registered cap of **4 GiB** ("MEMORY CAP"). The cap is a guard against a
-   repeat of the 18.1 GB read, not a measured budget. A batch of 65,536 rows is about 1.5 MB of
-   `int64` data before any compression, and the accumulators are a few 55 × 55 arrays. **Peak use
-   was not measured**, and the machine's RAM was not read for this draft.
+4. **Memory (what the cap is; revision 2.1, Ark):** the quantity is the **process's peak
+   working set** as psutil reports it (`peak_wset`, Windows), or the current resident set size
+   where the platform reports no peak. It is probed once before the stream and once after each
+   record batch, and the maximum of the probes is recorded. Both measures count the pages of the
+   memory-mapped weight file that the process has touched, not only its own allocations. The
+   build **stops** when that maximum is above **4 GiB** ("MEMORY CAP", which names the measure
+   and the batch). **The cap limits nothing:** it does not bound the batch size (set by the
+   file's record batches), any allocation or the memory map. It is a guard against a repeat of
+   the 18.1 GB read, detected at most one batch late, not a measured budget. A batch of 65,536
+   rows is about 1.5 MB of `int64` data before any compression, and the accumulators are a few
+   55 × 55 arrays. **Peak use was not measured**, and the machine's RAM was not read for this
+   draft.
 5. **Equality test (fixture):** on a synthetic feather written with small record batches, the
-   chunked path and a whole-table `pandas` groupby must give identical `W` arrays.
+   chunked path and a whole-table `pandas` groupby must give identical `W` arrays (and, from
+   revision 2.1, identical per-type counts of cross-lobe rows).
+6. **The compression codec (revision 2.1; Ark voted against deferring it).** It is named without
+   decoding any value: the builder reads the file footer (Arrow `Footer.fbs`: one Block per
+   record batch, with its offset, metadata length and body length), then only the metadata
+   bytes of each record batch message (`Message.fbs`: a `RecordBatch` header whose optional
+   `compression` table holds the codec, `LZ4_FRAME` or `ZSTD`; absent means uncompressed). No
+   message body is read. `--inspect-only` and the build both print the codec count over all
+   batches, the sum of the batches' header row lengths against the pandas `stop`, and any
+   footer/header body-length mismatch, and the manifest records them (`weight_file_header.
+   ipc_headers`). A fixture test writes the same table under `lz4`, `zstd` and no compression
+   and requires the three names. On the real files (revision 2.1, headers only): the weight file
+   is `LZ4_FRAME` in all 2,318 batches, whose header lengths sum to 151,856,684; the annotation
+   file is `LZ4_FRAME` in its 4 batches.
 
 **No GPU.** The build fits nothing. It is one read of 1.05 GB with integer sums, bounded by
 reading, not arithmetic. **Cost: not timed.**
@@ -624,6 +768,22 @@ byte-identical, except for the sealed files' sha256. The sealed files themselves
 their byte sizes must be equal (the fixed width above). If any printed or written line depends on
 a block row, the test fails. This is the builder's version of knockout machine check 6 ("BLOCK LEAKS INTO TRAINING").
 
+**How the comparison is made (revision 2.1; Ark).** The fields allowed to differ are **declared**
+as a named list in the test, and the test prints it. They are the hashes that must differ: the
+weight file's sha256 (its block rows differ), the two sealed files' sha256, and the sha256 of the
+two files that print those (the manifest, `BUILD.md`). Declared as: in stdout and `BUILD.md`, the
+hash group of four line patterns (the weight file's pin line, the two sealed files' sha256 lines,
+the manifest's sha256 line); in the manifest, the keys `inputs/janelia/<weight file>/sha256` and
+`outputs/<sealed file>/sha256`; in `SHA256SUMS.txt`, the entries of the two sealed files, the
+manifest and `BUILD.md`. The comparison is **line by line** for stdout and `BUILD.md`, **key by
+key** for the manifest (flattened), and **entry by entry** for `SHA256SUMS.txt`. A line that
+differs passes only if it matches one declared pattern in both worlds and is equal outside the
+hash group; there is no global replacement of hash strings. **Positive controls:** (1) a number
+computed from the block rows (the count of non-empty block cells), appended to
+`pair_stats_outside.csv`, must fail the test; (2) the same number written into a non-masked key
+of `bank.meta.json`, into a non-masked line of the report (stdout and `BUILD.md`), or into a
+masked line outside its hash group, must each fail it.
+
 ## 10. Outputs, pins, environment and modes
 
 ### 10.1 Files
@@ -658,11 +818,32 @@ outside keys, cross-lobe weight of outside type pairs; peak memory and runtime; 
 file's sha256 and, **except for the sealed files, its size** (the sealed files by sha256 only,
 §9).
 
+**Revision 2.1 (the reviewers of the inspect output).**
+
+- **sha256 convention.** The builder's, the tests' and the registration's sha256 are
+  LF-normalised, as the flyvis pins (§1.1) and `knockout_regrow.py` record theirs
+  (`builder_sha256_lf`, `tests_sha256_lf`, `registration_sha256_lf`).
+- **`builder_environment`** replaces the field `versions`, so that it cannot be taken for the
+  instrument's environment (`tools/.venv`, python 3.10.20 / numpy 2.2.6). It holds the versions
+  found, the four compared with the pins (python, numpy, pandas, pyarrow), psutil as reported
+  and not compared, the `uv` command line, and a note that it is not the instrument's.
+- **`machine_record.blas_at_run_time`** is the literal `not recorded (no BLAS path in the
+  builder)`. The builder does integer sums and calls no BLAS routine, so it does not probe for
+  one (no `threadpoolctl`). **No exception text is written into any field:** if
+  `numpy.show_config` fails, `numpy_build` is the literal `not recorded
+  (numpy.show_config(mode='dicts') failed)`.
+- The lobe-consistency record per type adds the cross-lobe rows as source and as target, the
+  rows of each, and the cross-lobe weight (§4); `population_rows_at_c_star` holds R1's and
+  CT1(M10)'s present row and column cells per lobe (§4); `weight_file_header.ipc_headers` holds
+  the codec (§6.6); `type_map.annotation_controls` holds the whole file's status by side, the
+  R7/R8 control and the `R1-R6` / `R1-6` identity (§3.1, §4).
+
 ### 10.3 Modes
 
 - **`--self-test`**: runs the fixture tests (§11) and reads no real data.
 - **`--inspect-only`** (the dry run): checks the pins, reads the weight file's **schema and
-  metadata only**, reads the annotations, applies the map and the side rule, runs the §3.3
+  metadata only** (from revision 2.1 also the flatbuffer headers of its record batches, for the
+  codec, §6.6), reads the annotations, applies the map and the side rule, runs the §3.3
   self-test, and prints the per-type counts. **It reads no weight column.** Its output is what the
   reviewers use to confirm the exact map strings (§3.2) before the build. A string that differs
   from the registered map sends the map back to review. It is not patched.
@@ -670,6 +851,13 @@ file's sha256 and, **except for the sealed files, its size** (the sealed files b
   `docs/plans/` unless `--allow-dirty` is given, and a build made with `--allow-dirty` is marked
   "NOT THE REGISTERED BUILD" in its manifest and `BUILD.md` (as `knockout_regrow.py` marks its runs).
   It refuses an existing output folder.
+- **Both modes, from revision 2.1 (the reviewers of the inspect output).** The inspect output of
+  commit `2af21e5` was run from a dirty tree, before the builder was committed. So
+  **`--inspect-only` now refuses a dirty tree exactly as the build does**: it stops with
+  "REFUSED" unless `--allow-dirty` is given, and a run with `--allow-dirty` on a dirty tree prints
+  "NOT THE REGISTERED INSPECT-ONLY RUN". The header of both modes prints the git head, the
+  tree's state, the **LF-normalised sha256 of the builder file and of this registration**, and
+  the `builder_environment` (§10.4).
 
 ### 10.4 Environment
 
@@ -688,12 +876,24 @@ The builder stops if the versions it finds differ from the pins. It imports noth
 harness, because the harness refuses on changed pins and needs no pyarrow. It reads `types.csv` and
 `offsets.csv` directly (§1.1).
 
+**Revision 2.1 (the reviewers of the inspect output).** "VERSIONS DIFFER" compares **only the
+four pinned versions** (python, numpy, pandas, pyarrow) and says so; psutil is reported, not
+compared (the inspect run of commit `2af21e5` found psutil 7.2.2). The header line and the
+manifest field are named **`builder_environment`**, because this environment is not the
+instrument's (`tools/.venv`: python 3.10.20, numpy 2.2.6), which the builder does not use.
+"DENSITY TARGET DIFFERS" names the registered pair it compares, "the pooled collapse (D15) x the
+placed 55-type grid, |Omega| = 2961", beside the run's own types and |Omega|. "MEMORY CAP" names
+its measure (§6.4).
+
 ### 10.5 Order of work
 
 1. This registration is reviewed by Ark, Johnny and Zcode, and Mike gives his word. The builder
    and tests are written against it, `--self-test` passes, and everything is committed.
 2. `--inspect-only` on the real files (annotations and schema only). The reviewers confirm the map
-   strings and read the per-lobe body counts.
+   strings and read the per-lobe body counts. **Done once (commit `2af21e5`, from a dirty tree;
+   votes §13.4).** After revision 2.1 and its instrument edits are committed, it is **rerun on
+   the clean tree** (it now refuses a dirty one, §10.3), and its output replaces the committed
+   one.
 3. The build, on Mike's word. It writes the private outputs and prints `c*` and the outside-block
    diagnostics. The sealed files stay sealed.
 4. The male-CNS arm's registration is drafted with the outside-block tables in hand (knockout
@@ -720,6 +920,31 @@ harness, because the harness refuses on changed pins and needs no pyarrow. It re
 7. **One index per population:** R2–R6 and CT1(Lo1) never appear in the bank files, and R1 and
    CT1(M10) carry the pooled populations.
 
+**Added or changed in revision 2.1** (`--self-test`: 22 of 22 in the registered environment):
+
+- **1 (blindness)** compares against a declared, printed list of masked fields, line by line and
+  key by key (§9). **1b:** positive control 1, a block-derived number in
+  `pair_stats_outside.csv`, must fail. **1c:** positive control 2, the same number in a
+  non-masked key of the manifest, in a non-masked report line, or in a masked line outside its
+  hash group, must each fail.
+- **2 (flip)** also requires the per-type inconsistency counts to be printed before the stop,
+  with CT1(M10) marked below 0.5 (§4).
+- **4 (chunked equals whole)** also compares the per-type cross-lobe row counts.
+- **7** also compares R1's printed row and column counts with the bank files.
+- **8. Inspect header and dirty tree** (§10.3): the header prints the LF sha256 of the builder
+  and of the registration and the `builder_environment`; `--inspect-only` refuses a dirty tree,
+  runs with `--allow-dirty` and says "NOT THE REGISTERED INSPECT-ONLY RUN", and says nothing of
+  the kind on a clean tree.
+- **9. Annotation controls** (§3.1, §4): the R7/R8 variant sets equal the `flywireType` roll-ups
+  and `R1-R6` equals `R1-6` in the fixture; one body moved out of a variant set shows as a
+  symmetric difference of 1.
+- **10. Codec** (§6.6): the same table written with `lz4`, `zstd` and no compression is named
+  `LZ4_FRAME`, `ZSTD` and `uncompressed`, with batch count and header row sum.
+- **11. Stop messages** (§10.4, §6.4): "VERSIONS DIFFER" names the four compared pins and says
+  psutil is not compared; "DENSITY TARGET DIFFERS" names the registered pair and the run's type
+  count; "MEMORY CAP" names the peak working set and says it does not bound the batch size;
+  `blas_at_run_time` is the literal.
+
 ## 12. What this builder cannot show, and what it hands on
 
 - **Whether block A is a board on the male CNS.** Knockout machine check 3 (32 present, 16 + 16,
@@ -732,8 +957,21 @@ harness, because the harness refuses on changed pins and needs no pyarrow. It re
 - **Its own synthetic worlds.** Knockout §8 proposes rebuilding the §3.6 worlds on the male bank's
   degree terms, "decided with the builder". **Handed on (D13):** it is the arm's decision, because
   it is a property of the instrument on this bank, not of the bank.
-- **The L/R reading (D12).** It has two explanations, variation within the animal and
-  incompleteness of the left lobe (§4). The rule that separates them is registered by the arm.
+- **The L/R reading (D12).** It has two explanations, variation within the animal and a
+  difference of reconstruction between the lobes (§4). The rule that separates them is
+  registered by the arm. **Revision 2.1:** the second explanation is not "the left lobe is less
+  complete" (refuted in that form, §4, §13.3); it is specific to R1–R6 (1,112 L / 2,265 R,
+  1 : 2.04), while R7, R8 and the whole file are nearly even.
+- **The R1 row and column (obligation of the arm; revision 2.1, Johnny, Ark, Zcode).** R1 is
+  one index carrying all R1–R6 bodies, and its left row and column have about half the bodies
+  of the right. Under the shared cut `c*` the left bank is **expected** to be sparser in R1's row
+  and column, so the lobe comparison there is not a clean within-animal null. This is registered
+  as an expectation, not a defect. The arm's registration must say, before its data, how it
+  treats R1's row and column in any lobe comparison (for example, whether a lobe difference
+  confined to them counts). What it has for this: K_L and K_R, the per-lobe present counts in
+  R1's row and column (`population_rows_at_c_star`), `c*_L` and `c*_R` (§5.4), and the first
+  question put to the build, how much larger the R1-row asymmetry is than 1 : 2.04 in bodies.
+  `c*_L < c*_R` would read as a consequence of the R1–R6 asymmetry.
 - **The grid (obligation of the arm; revision 2, Johnny and Ark).** The arm restricts its cells
   by replacing `H.ALL_CELLS` (precedent: `results/genome/c6/checks/flywire_bf_p3.py:74-76`,
   `restrict_to_30_grid`), and it states whether it trains and scores on the 2,961 placed cells or
@@ -793,7 +1031,7 @@ recommendation.
 | **D9** | One cut for both lobes | (i) **one `c*` from the pooled lobes**: same cut, so a lobe difference is the animal's. (ii) `c*_ℓ` per lobe: equal densities, different cuts. | **(i)**, (ii) printed |
 | **D10** | Block A sealed | (i) **a separate sealed file per lobe, 64 rows each, never read before the arm's review; blindness test** (§9). (ii) one bank file with a do-not-read rule: simpler, but any look at the bank shows the block. | **(i)** |
 | **D11** | Where the banks live | (i) **outside the repository; the manifest and `BUILD.md` committed**, as for FlyWire. (ii) commit the outside bank files too (CC-BY allows it, per `SOURCE.md`): easier to reuse, but the committed tree would then hold per-pair male data, and the sealed files must stay outside anyway. | **(i)** |
-| **D12** | The L/R reading (**handed to the arm's registration**) | (i) R on the male CNS needs R in both lobes. (ii) the right lobe primary (the side of FIB-19 and of the male optic lobe v1.1), the left lobe the null. **Revision 2 (Johnny, Ark):** a disagreement has two explanations, variation within the animal and incompleteness of the left lobe (R1–R6: 2,265 right, 1,112 left), and the pooled cut makes the lobe densities differ by construction (§4). The rule that separates the two explanations must be registered by the arm, before its data. | **(i)** as one ingredient there; the separating rule is the arm's |
+| **D12** | The L/R reading (**handed to the arm's registration**) | (i) R on the male CNS needs R in both lobes. (ii) the right lobe primary (the side of FIB-19 and of the male optic lobe v1.1), the left lobe the null. **Revision 2 (Johnny, Ark):** a disagreement has two explanations, variation within the animal and incompleteness of the left lobe (R1–R6: 2,265 right, 1,112 left), and the pooled cut makes the lobe densities differ by construction (§4). The rule that separates the two explanations must be registered by the arm, before its data. **Revision 2.1 (Johnny, Ark, Zcode):** "incompleteness of the left lobe" is refuted in its general form (`Traced` L 81,362 / R 82,738, 1 : 1.02); the deficit is R1–R6-specific (1 : 2.04; R7 1 : 1.14, R8 1 : 1.13); the R1 row and column are an expected asymmetry the arm must treat (§4, §12). | **(i)** as one ingredient there; the separating rule is the arm's |
 | **D13** | Synthetic worlds on the male bank (**handed to the arm's registration**) | knockout §8: "decided with the builder". It is a property of the instrument on this bank. | decide in the arm's registration |
 | **D14** | File date | `2026-09-26-…` (the local day) vs `2026-09-25-…` (the UTC day of drafting, per GLOSSARY) | **Closed in revision 2:** renamed to `2026-09-25-…` with `git mv` (the reviewers agreed) |
 | **D15** | **The collapse of flyvis-65 onto the placed grid** (new in revision 2, Zcode), which sets T and K | (i) restrict-only: unplaced types dropped, and R1 is flyvis's R1 alone; 497 of 2,961, T = 0.167849, K = 994. (ii) **pooled**: the index that carries a population carries it in flyvis-65 too, as a logical OR (R1 from R1–R6; CT1(M10) from both CT1 compartments); 511, T = 0.172577, K = 1,022. Pooling R1–R6 alone gives 498 (T = 0.168186, K = 996). All verified for this draft (§5.3). Both are printed, and the "DENSITY TARGET DIFFERS" stop is keyed to the registered one. | **(ii)**, R1–R6 and CT1 pooled, matching D4 |
@@ -806,7 +1044,10 @@ recommendation.
 | Ark | 05:00 | yes, with edits |
 | Zcode | 05:08 | yes, with edits |
 
-Revision 2 has not been voted on.
+Revision 2 has not been voted on. **(Revision 2.1 note:** that stays true. Revision 2 applied the
+edits these three votes asked for (§13.2, commit `8591491`); no separate vote on its text was
+taken. The builder was written from it on Mike's word in the chat, 2026-09-26 07:39 UTC ("do 1").
+The next votes are those on the builder's inspect-only output, §13.4.)
 
 ### 13.2 The edits of revision 2, who asked, and where each is applied
 
@@ -831,7 +1072,75 @@ populations, which is also what D4 places. For edit 2, Ark's alternative "K = 81
 is 0.137467 × 5,922 = 814.08, so about 407.04 per lobe (verified). For edit 8, the brief cited
 `harness.py:883`; the cap is defined at `:881` and used at `:883`.
 
+### 13.3 The edits of revision 2.1, who asked, and where each is applied
+
+From the reviews of the inspect-only output (§13.4), as relayed in CC's brief. The type map, the
+side rule, D1–D15 and the density target are not changed by any of them.
+
+| # | edit | asked by | applied in |
+|---|---|---|---|
+| 1 | The left/right asymmetry in its measured form: whole-file `Traced` L 81,362 / R 82,738 (1 : 1.02), so "the left lobe is less complete" is refuted in its general form; the deficit is R1–R6-specific (1,112 / 2,265, 1 : 2.04; `Traced` 501 / 893, null 611 / 1,372), R7 608 / 692 (1 : 1.14) and R8 625 / 704 (1 : 1.13) nearly even; mechanism not established; the Nern et al. 2025 source statement kept, with what it does not explain. The R1 row and column as an expectation handed to the arm | Johnny, Ark, Zcode | §4, §12, D12 |
+| 2 | Whether the side columns are filled for R1–R8: now checked, with the inspect numbers; the photoreceptor side is a transfer through `rootSide`, not a measurement | the reviewers | §1.2, §4 |
+| 3 | `R1-R6` / `R1-6` are two spellings of the same 3,377 bodies; "under flywireType [0, 0]; disagree 3377" is a string artefact; `flywireType` alone would cover R1–R6, R7 and R8, so the D3 mix is redundant there (map unchanged); 59 % null status in R1–R6 as the mark of an aggregate label, and L4's one null body named | Johnny, Zcode | §3.1, §3.2, §3.3 |
+| 4 | R7/R8 sides counted from the `type` variants, independent of `flywireType`: same bodies, 608 / 692 and 625 / 704; printed by `--inspect-only` | Ark | §4, builder `print_controls` |
+| 5 | `assignedOlHex1` as an independent lobe carrier: it is a hex column coordinate shared by both lobes, so it cannot carry a side; no check built | Ark (proposal) | §1.2, §4 |
+| 6 | The refuted claim recorded with its six fields (below); this registration has no error ledger of its own | the brief | §13.3 |
+| a | `--inspect-only` prints the LF sha256 of the builder and of the registration and the git head, and refuses a dirty tree exactly as the build does | the reviewers | §10.3; builder `run` |
+| b | `blas_at_run_time` is the literal `not recorded (no BLAS path in the builder)`; no exception text in any measurement field | the reviewers | §10.2; builder `machine_record` |
+| c | The blindness test: a declared, printed list of masked fields; line-by-line and key-by-key comparison; a second positive control (a leak into the manifest or the report must fail) | the reviewers | §9, §11; tests |
+| d | Stop messages name what they compare: "DENSITY TARGET DIFFERS" the registered pair; "VERSIONS DIFFER" the four compared pins; "MEMORY CAP" its measure (the process's peak working set, probed per batch; it bounds nothing) | the reviewers | §6.4, §10.4; builder |
+| e | The builder's environment is the field `builder_environment`, named apart from the instrument's (python 3.10.20 / numpy 2.2.6) | the reviewers | §10.2, §10.4; builder |
+| f | "LOBE ASSIGNMENT INCONSISTENT": per-type counts of the inconsistencies printed before a stop and on a pass; computed on outside-block pairs only | the reviewers | §4; builder `stream_weights`, `lobe_consistency` |
+| g | The codec named without decoding a value, from the IPC flatbuffer headers; recorded in the inspect output and the manifest | Ark (against deferral) | §1.2, §6.6; builder `ipc_body_codecs` |
+| 7 | This table and §13.4 | CC's brief | §13.3, §13.4 |
+
+**Where revision 2.1 differs from the brief.** (i) The brief's whole-file `Traced` counts,
+81,362 L / 82,738 R, are reproduced exactly with `somaSide` then `rootSide`. Under the full
+registered side rule, which adds the `instance` step, they are 81,378 / 82,753 (991 unassigned).
+The ratio is 1 : 1.02 either way; §4 gives both. (ii) The brief asked to split `R7R8_unclear` by
+its `flywireType`; all 85 such bodies have a null `flywireType`, so they enter neither roll-up,
+and the variant sets still equal the roll-ups. (iii) Every other number of the brief matched:
+R1–R6 1,112 / 2,265, `Traced` 501 / 893, null 611 / 1,372; R7 608 / 692; R8 625 / 704; the side
+steps of R1–R8; `R1-R6` and `R1-6` both 3,377 and the same bodies; 59 % null (1,983 / 3,377); L4
+one null body. (iv) The expectation of edit 1 asks for "present counts in R1 rows per lobe"; the
+build did not print them, so revision 2.1 adds that print (`population_rows_at_c_star`, §4).
+
+**The refuted claim (error-ledger form; this registration has no ledger of its own).**
+
+| field | entry |
+|---|---|
+| item | the reading of a lobe disagreement, explanation 2 (§4) |
+| was | "the left lobe may be less completely reconstructed or typed. This file's own counts point that way: R1–R6 has 2,265 bodies on the right and 1,112 on the left"; and "So the left lobe may be less complete" |
+| correct | the whole left lobe is not less complete: whole-file `Traced` L 81,362 / R 82,738 (1 : 1.02). The deficit is specific to R1–R6 (1 : 2.04); R7 (1 : 1.14) and R8 (1 : 1.13), sided through the same `rootSide` step, are nearly even. Mechanism not established |
+| where it lived | `docs/plans/2026-09-25-male-cns-bank-builder-registration.md:302-305` and `:317` at revision 2 (commit `8591491`); echoed at `:736` (§12) and `:796` (D12) |
+| what refuted it | the annotation file itself (pin §1.1): `status` by side over the whole file and the per-type side counts of the inspect output (`results/genome/c6/checks/male_cns_bank_builder_inspect_only.txt`, commit `2af21e5`), recounted for revision 2.1 |
+| who caught | Johnny, DPC Research chat, 2026-09-26 08:10 UTC (Ark and Zcode asked for the same edit) |
+
+### 13.4 Votes on the inspect-only output (DPC Research chat, 2026-09-26 UTC; as relayed by CC)
+
+On `results/genome/c6/checks/male_cns_bank_builder_inspect_only.txt` (commit `2af21e5`), before
+the build.
+
+| reviewer | time (UTC) | vote |
+|---|---|---|
+| Johnny | 08:10 | yes, with edits |
+| Zcode | 08:11 | yes, with edits |
+| Ark | 08:19 | yes, with edits |
+
+Revision 2.1 has not been voted on. The inspect-only run is to be repeated on the clean tree
+after it is committed (§10.5).
+
 ## 14. Not verified at drafting
+
+**Revision 2.1: what the list below no longer holds, and what it still does.** Settled since
+revision 2: the side columns of R1–R8, CT1 and the 16 block types, and the exact map strings
+(inspect output, commit `2af21e5`; §1.2, §4); the review's counts R7/R8 1,300 / 1,329, 931
+`_unclear` (404 + 442 + 85), R1–R6 2,265 / 1,112, CT1 and Am1 n = 1 per lobe, and T4d 1,709 /
+1,710 (the inspect table; recounted for revision 2.1 where §4 quotes them); the compression codec
+and the sum of the batch lengths (§6.6; per-batch sizes are read but not printed). Still open:
+key uniqueness and autapse rows (the weight stream); whether `rootSide` means the lobe for the
+photoreceptors (the lobe-consistency check, in the build); the mechanism of the R1–R6
+asymmetry (§4); CT1_L's 100 % and the backlog's counts; and the rest of the list.
 
 - Which of `somaSide`, `rootSide` and the `instance` suffix carries the side for R1–R8, CT1 and
   the 16 block types; the exact strings of R1–R6, the R7/R8 roll-ups, `CT1`, `Am1` and `TmY9q`
@@ -876,3 +1185,9 @@ is 0.137467 × 5,922 = 814.08, so about 407.04 per lobe (verified). For edit 8, 
   verdict, §0 only).
 - `connectome-seed-data/Janelia/SOURCE.md`, `SHA256SUMS.txt`, and the two feather files' schemas
   and metadata (§1.2).
+- Revision 2.1: `results/genome/c6/checks/male_cns_bank_builder_inspect_only.txt` (commit
+  `2af21e5`); the annotation file's `status`, `statusLabel`, `somaSide`, `rootSide`, `instance`,
+  `type`, `flywireType`, `superclass` and `assignedOlHex1/2` columns (scratch scripts outside the
+  repository and the builder's own `print_controls`); the IPC footer and record batch headers
+  of both files (`ipc_body_codecs`; no message body read); the Arrow format's `Footer.fbs` and
+  `Message.fbs` (`Block`, `RecordBatch`, `BodyCompression`, `CompressionType`).

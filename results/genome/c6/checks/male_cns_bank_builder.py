@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """The male CNS bank builder: two existence banks, one per optic lobe, from the Janelia male CNS
 v1.0 flat connectome. Implements docs/plans/2026-09-25-male-cns-bank-builder-registration.md,
-revision 2, with each decision's recommended option (its section 13); section numbers below
+revision 2.1, with each decision's recommended option (its section 13); section numbers below
 refer to it.
 
 Modes (section 10.3): --self-test runs the fixture tests of section 11; --inspect-only is the
-dry run (pins, the weight file's schema and metadata, the annotations, the map, the side rule,
-the section 3.3 self-test; no weight column is read); no flag is the build.
+dry run (pins, the weight file's schema, metadata and record batch headers, the annotations,
+the map, the side rule, the section 3.3 self-test; no weight column is read); no flag is the
+build. Both refuse a dirty tree unless --allow-dirty is given (section 10.3).
 
 Block A is sealed (section 9): its cells go only to the fixed-width sealed files, and nothing
 else printed or written is computed from a block row.
@@ -29,6 +30,7 @@ import json
 import math
 import platform
 import re
+import struct
 import subprocess
 import sys
 import time
@@ -45,7 +47,7 @@ HERE = Path(__file__).resolve().parent
 C6 = HERE.parent
 ROOT = C6.parents[2]                                   # the repository root
 REGISTRATION = "docs/plans/2026-09-25-male-cns-bank-builder-registration.md"
-REGISTRATION_REVISION = "2"
+REGISTRATION_REVISION = "2.1"
 TEST_FILE = HERE / "test_male_cns_bank_builder.py"
 
 # Section 1.1: inputs and pins.
@@ -67,8 +69,16 @@ FLYVIS_PINS = {  # LF-normalised sha256
         "237a195a36f62ce182fee8486394c27d2beb9825bc029cb215c39c0fa323a477"}
 WEIGHT_ROWS = 151_856_684                              # section 1.2: the pandas metadata `stop`
 WEIGHT_SCHEMA = (("body_pre", "int64"), ("body_post", "int64"), ("weight", "int64"))
+# Section 10.4: the builder's own throwaway uv environment. Only these four are compared;
+# psutil is reported, not compared. It is not the instrument's environment (tools/.venv).
 VERSIONS = {"python": "3.13.14", "numpy": "2.5.3", "pandas": "3.0.6", "pyarrow": "25.0.1"}
-MEMORY_CAP = 4 * 1024 ** 3                             # section 6.4
+BUILDER_RUNNER = ("uv run --no-project --python 3.13.14 --with pyarrow==25.0.1 --with numpy==2.5.3 "
+                  "--with pandas==3.0.6 --with psutil")
+INSTRUMENT_ENVIRONMENT_NOTE = ("not the instrument's environment (tools/.venv: python 3.10.20, "
+                               "numpy 2.2.6), which this builder does not use")
+# Section 6.4: a stop on the process's peak working set (psutil peak_wset; the current RSS
+# where the platform reports no peak), probed after each record batch. It limits nothing.
+MEMORY_CAP = 4 * 1024 ** 3
 
 # Section 3: the type map. Canonical column `type`; a closed override table of three flyvis
 # names reads `flywireType`. Section 3.2 leaves the R1-R6 string to the dry run, which prints it.
@@ -87,12 +97,22 @@ FLIP = frozenset({"CT1"})                              # section 4: declared, no
 SIDE_COLUMNS = ("somaSide", "rootSide", "instance")
 SUFFIX_RE = re.compile(r"(?s).+_(L|R)")                # section 4: ends in _L/_R, not "_L" alone
 LOBES = ("L", "R")
+# Section 4 (revision 2.1, Ark): the R7/R8 sides counted independently of flywireType, from the
+# `type` variants; R7R8_unclear bodies are split by their flywireType. Printed; decides nothing.
+ROLLUP_CONTROL = {"R7": ("R7d", "R7p", "R7y", "R7_unclear"),
+                  "R8": ("R8d", "R8p", "R8y", "R8_unclear")}
+ROLLUP_SPLIT = "R7R8_unclear"
+# Section 3.1 (revision 2.1, Johnny, Zcode): two spellings of one object. Printed; decides nothing.
+SPELLING_CONTROL = ((("type", "R1-R6"), ("flywireType", "R1-6")),)
+# Arrow format (Message.fbs): BodyCompression.codec; a record batch without it is uncompressed.
+IPC_CODECS = {0: "LZ4_FRAME", 1: "ZSTD"}
 
 # The block (knockout registration section 1.2): sources x targets, row-major.
 ON, OFF = ("Mi1", "Tm3", "Mi4", "Mi9"), ("Tm1", "Tm2", "Tm4", "Tm9")
 T4, T5 = ("T4a", "T4b", "T4c", "T4d"), ("T5a", "T5b", "T5c", "T5d")
 SOURCES, TARGETS = ON + OFF, T4 + T5
 BLOCK_NAMES = [(s, t) for s in SOURCES for t in TARGETS]
+REGISTERED_PLACED_TYPES = 55                           # section 3.2: the placed grid
 INFERABLE_MIN = 2                                      # Johnny's rule, knockout section 1.4
 
 # Section 5.3: the registered targets.
@@ -175,15 +195,22 @@ def dirty_listing(root=ROOT):
 
 
 def peak_memory_bytes():
-    """Peak working set where the platform reports it (Windows), else the current resident
-    size; the caller keeps the maximum over its probes."""
+    """The process's peak working set where the platform reports one (psutil `peak_wset`,
+    Windows), else its current resident set size. Both count the pages of the memory-mapped
+    weight file that the process has touched, not only its own allocations. The caller keeps
+    the maximum over its probes (section 6.4)."""
     mi = psutil.Process().memory_info()
     return int(getattr(mi, "peak_wset", 0) or mi.rss)
 
 
+BLAS_NOT_RECORDED = "not recorded (no BLAS path in the builder)"
+
+
 def machine_record():
-    """As knockout_regrow.machine_record: build and run-time BLAS (library file name only), the
-    machine and CPU (no host name), the four thread variables as found and as in effect."""
+    """As knockout_regrow.machine_record, except that the run-time BLAS is not probed: the
+    builder does integer sums and calls no BLAS routine (section 10.2). The numpy build, the
+    machine and CPU (no host name), the four thread variables as found and as in effect. No
+    exception text is written into a field."""
     rec = {}
     try:
         cfg = np.show_config(mode="dicts")
@@ -191,14 +218,9 @@ def machine_record():
                               for k in ("blas", "lapack")}
         rec["numpy_machine_information"] = cfg.get("Machine Information")
         rec["numpy_simd"] = cfg.get("SIMD Extensions")
-    except Exception as e:                             # recorded, never fatal
-        rec["numpy_build"] = {"error": repr(e)}
-    try:
-        import threadpoolctl
-        rec["blas_at_run_time"] = [{**i, "filepath": os.path.basename(i.get("filepath") or "")}
-                                   for i in threadpoolctl.threadpool_info()]
-    except Exception as e:
-        rec["blas_at_run_time"] = {"error": repr(e)}
+    except Exception:                                  # recorded, never fatal
+        rec["numpy_build"] = "not recorded (numpy.show_config(mode='dicts') failed)"
+    rec["blas_at_run_time"] = BLAS_NOT_RECORDED
     rec["machine"] = {"machine": platform.machine(),
                       "processor": platform.processor(), "platform": platform.platform(),
                       "cpu_count": os.cpu_count(),
@@ -213,13 +235,25 @@ def versions_found():
             "pandas": pd.__version__, "pyarrow": pa.__version__, "psutil": psutil.__version__}
 
 
+def builder_environment():
+    """Section 10.4: the builder's own environment, named so that it cannot be taken for the
+    instrument's."""
+    return {"versions": versions_found(), "compared_with_pins": sorted(VERSIONS),
+            "reported_not_compared": ["psutil"], "runner": BUILDER_RUNNER,
+            "note": INSTRUMENT_ENVIRONMENT_NOTE}
+
+
 def check_versions(R):
-    v = versions_found()
-    bad = {k: (v[k], VERSIONS[k]) for k in VERSIONS if v[k] != VERSIONS[k]}
-    R.say(f"versions: {v} (psutil not pinned, section 10.4)")
+    env = builder_environment()
+    v = env["versions"]
+    bad = {k: {"found": v[k], "pinned": VERSIONS[k]} for k in VERSIONS if v[k] != VERSIONS[k]}
+    R.say(f"builder_environment (section 10.4; {INSTRUMENT_ENVIRONMENT_NOTE}): {v}; "
+          f"compared with the pins: {', '.join(VERSIONS)}; psutil reported, not compared")
     if bad:
-        raise Stop(f"VERSIONS DIFFER (section 10.4): {bad}")
-    return v
+        raise Stop(f"VERSIONS DIFFER (section 10.4): compared set = the pinned "
+                   f"{', '.join(VERSIONS)} of the builder's environment (psutil is reported, not "
+                   f"compared); differing: {bad}")
+    return env
 
 
 # ------------------------------------------------------------------------------------------
@@ -255,6 +289,76 @@ def check_pins(cfg, R):
 # ------------------------------------------------------------------------------------------
 # Section 1.2: the weight file's schema and metadata (no weight column read)
 
+def _fb_table(buf, pos):
+    """A flatbuffer table at `pos` of `buf`: returns field(i) -> the absolute position of field
+    i, or None when the field is absent (a scalar at its default is absent)."""
+    vt = pos - struct.unpack_from("<i", buf, pos)[0]
+    vt_size = struct.unpack_from("<H", buf, vt)[0]
+
+    def field(i):
+        o = 4 + 2 * i
+        if o + 2 > vt_size:
+            return None
+        off = struct.unpack_from("<H", buf, vt + o)[0]
+        return pos + off if off else None
+    return field
+
+
+def _fb_deref(buf, at):
+    return at + struct.unpack_from("<I", buf, at)[0]
+
+
+def ipc_body_codecs(path):
+    """Sections 1.2 and 6 (revision 2.1, Ark): the body compression codec of every record batch
+    of an Arrow IPC file, read from the flatbuffer headers only. The file footer (Footer.fbs)
+    lists each record batch's Block (offset, metaDataLength, bodyLength); the Message header at
+    each offset (Message.fbs) is a RecordBatch whose optional `compression` table names the
+    codec. Only the footer and the metaDataLength bytes at each offset are read; no message
+    body, so no value, is touched."""
+    with open(path, "rb") as fh:
+        fh.seek(0, 2)
+        size = fh.tell()
+        fh.seek(size - 10)
+        tail = fh.read(10)
+        if tail[4:] != b"ARROW1":
+            raise Stop(f"IPC FILE UNREADABLE: {Path(path).name} does not end with ARROW1")
+        flen = struct.unpack_from("<i", tail, 0)[0]
+        fh.seek(size - 10 - flen)
+        footer = fh.read(flen)
+        foot = _fb_table(footer, _fb_deref(footer, 0))
+        at = foot(3)                                   # Footer.recordBatches: [Block]
+        blocks = []
+        if at is not None:
+            vec = _fb_deref(footer, at)
+            n = struct.unpack_from("<I", footer, vec)[0]
+            for i in range(n):                         # struct Block: int64, int32, pad, int64
+                off, mlen, _, blen = struct.unpack_from("<qiiq", footer, vec + 4 + 24 * i)
+                blocks.append((off, mlen, blen))
+        codecs, rows, body_mismatch = {}, 0, 0
+        for off, mlen, blen in blocks:
+            fh.seek(off)
+            meta = fh.read(mlen)
+            start = 8 if struct.unpack_from("<I", meta, 0)[0] == 0xFFFFFFFF else 4
+            fb = meta[start:]
+            msg = _fb_table(fb, _fb_deref(fb, 0))
+            if msg(1) is None or fb[msg(1)] != 3:      # MessageHeader.RecordBatch
+                raise Stop(f"IPC FILE UNREADABLE: a footer block of {Path(path).name} is not a "
+                           "record batch")
+            if msg(3) is None or struct.unpack_from("<q", fb, msg(3))[0] != blen:
+                body_mismatch += 1
+            rb = _fb_table(fb, _fb_deref(fb, msg(2)))
+            rows += struct.unpack_from("<q", fb, rb(0))[0] if rb(0) is not None else 0
+            if rb(3) is None:
+                name = "uncompressed"
+            else:
+                comp = _fb_table(fb, _fb_deref(fb, rb(3)))
+                code = struct.unpack_from("<b", fb, comp(0))[0] if comp(0) is not None else 0
+                name = IPC_CODECS.get(code, f"unknown code {code}")
+            codecs[name] = codecs.get(name, 0) + 1
+    return {"codecs": codecs, "record_batches": len(blocks), "rows_in_headers": rows,
+            "footer_body_length_mismatches": body_mismatch}
+
+
 def weight_file_header(cfg, R):
     p = cfg.data_dir / cfg.weights
     reader = pa.ipc.open_file(pa.memory_map(str(p), "r"))
@@ -271,11 +375,22 @@ def weight_file_header(cfg, R):
           f"{reader.num_record_batches} record batches; pandas metadata stop {stop}; "
           f"written by {md.get('creator')}")
     R.say(f"  uncompressed int64 data would be {stop * 24} bytes; the file is "
-          f"{p.stat().st_size} bytes (the codec is not read: that needs a record batch)")
+          f"{p.stat().st_size} bytes")
+    codec = ipc_body_codecs(p)
+    ann_codec = ipc_body_codecs(cfg.data_dir / cfg.annotations)
+    R.say(f"  body compression codec per record batch, from the flatbuffer headers only (no "
+          f"message body read): {codec['codecs']}; footer blocks {codec['record_batches']} "
+          f"(reader: {reader.num_record_batches}); header row lengths sum to "
+          f"{codec['rows_in_headers']} (pandas stop {stop}); footer/header body-length "
+          f"mismatches {codec['footer_body_length_mismatches']}")
+    R.say(f"annotation file: body compression codec per record batch {ann_codec['codecs']}; "
+          f"{ann_codec['record_batches']} record batches, {ann_codec['rows_in_headers']} rows "
+          f"in their headers")
     if stop != cfg.weight_rows:
         raise Stop(f"ROW COUNT DIFFERS: pandas metadata stop {stop}, registered {cfg.weight_rows}")
     return {"schema": [list(x) for x in schema], "num_record_batches": reader.num_record_batches,
-            "metadata_stop": stop, "creator": md.get("creator")}
+            "metadata_stop": stop, "creator": md.get("creator"), "ipc_headers": codec,
+            "annotation_ipc_headers": ann_codec}
 
 
 # ------------------------------------------------------------------------------------------
@@ -377,8 +492,12 @@ def density_targets(present65, names, pops, cfg, R):
               f"registered {reg}{tag}")
     reg, got = cfg.registered_targets[cfg.collapse], out[cfg.collapse]
     if any(got[k] != reg[k] for k in reg):
-        raise Stop(f"DENSITY TARGET DIFFERS: {cfg.collapse} {got} vs registered {reg} "
-                   "(section 5.2: a map changed without an amendment)")
+        shown = {k: v for k, v in got.items() if k != "T_exact"}
+        raise Stop(f"DENSITY TARGET DIFFERS: the registered pair is the {cfg.collapse} collapse "
+                   f"(D15) x the placed {REGISTERED_PLACED_TYPES}-type grid, |Omega| = "
+                   f"{reg.get('omega')}, with {reg}; this run's map places {len(placed)} types, "
+                   f"|Omega| = {n_omega}, and gives {shown} (section 5.2: a map changed without "
+                   "an amendment)")
     return out, B
 
 
@@ -504,20 +623,33 @@ def apply_map(cols, pops, cfg, R):
         in_type = np.asarray(cols["type"] == p["string"], bool)
         in_fw = np.asarray(cols["flywireType"] == p["string"], bool)
         under_type, under_fw = per_lobe(in_type), per_lobe(in_fw)
-        disagree = int(sum(1 for i in np.flatnonzero(in_type | in_fw)
-                           if cols["type"][i] != cols["flywireType"][i]))
+        pairs = {}
+        for i in np.flatnonzero(in_type | in_fw):
+            a, b = cols["type"][i], cols["flywireType"][i]
+            if a != b:
+                key = f"type={a!r} / flywireType={b!r}"
+                pairs[key] = pairs.get(key, 0) + 1
+        disagree = sum(pairs.values())
         where = np.flatnonzero(m)
         st = {}
         for i in where:
             key = cols["status"][i] if cols["status"][i] is not None else "null"
             st[key] = st.get(key, 0) + 1
+        st_lobe = {}
+        for i in where:
+            if lobe[i] >= 0:
+                key = cols["status"][i] if cols["status"][i] is not None else "null"
+                st_lobe.setdefault(key, [0, 0])[int(lobe[i])] += 1
         hex1 = int(sum(1 for i in where if cols["assignedOlHex1"][i] is not None))
         table.append({"type": p["name"], "carries": p["members"], "column": p["column"],
                       "string": p["string"], "flip": p["string"] in cfg.flip,
                       "bodies_L": int(n_tar[0, k]), "bodies_R": int(n_tar[1, k]),
                       "claimed": int(m.sum()), "side_rule": steps,
                       "type_col_L_R": under_type, "flywireType_col_L_R": under_fw,
-                      "type_ne_flywireType": disagree, "status": dict(sorted(st.items())),
+                      "type_ne_flywireType": disagree,
+                      "disagreeing_values": dict(sorted(pairs.items())),
+                      "status": dict(sorted(st.items())),
+                      "status_by_lobe_L_R": dict(sorted(st_lobe.items())),
                       "assignedOlHex1_nonnull": hex1})
     R.say("")
     R.say("type map as applied (section 3.2). L, R: bodies per lobe after the side rule and the "
@@ -532,13 +664,77 @@ def apply_map(cols, pops, cfg, R):
               f"under type {r['type_col_L_R']}, under flywireType {r['flywireType_col_L_R']}; "
               f"disagree {r['type_ne_flywireType']}; assignedOlHex1 non-null "
               f"{r['assignedOlHex1_nonnull']}; status {r['status']}")
+    R.say("the two name columns where they disagree (section 3.1; bodies where either column "
+          "equals the mapped string; a different spelling of one object shows here, not as an "
+          "absence):")
+    for r in table:
+        if r["disagreeing_values"]:
+            R.say(f"  {r['type']:9s} {r['disagreeing_values']}")
+    R.say("status per lobe, [L, R] after the side rule and the flip (types with any status "
+          "other than Traced):")
+    for r in table:
+        if set(r["status"]) != {"Traced"}:
+            R.say(f"  {r['type']:9s} {r['status_by_lobe_L_R']}")
     R.say(f"placed types: {P}; mapped flyvis names: {sum(len(p['members']) for p in pops)}")
     empty = [(pops[k]["name"], LOBES[li]) for li in (0, 1) for k in range(P) if n_tar[li, k] == 0]
     if empty:
         raise Stop(f"TYPE WITH NO CELLS: {empty} (section 3.3)")
     R.say("self-test of the map (section 3.3): ZERO NAME MATCHES, MAP STRING NOT FOUND, BODY IN "
           "TWO TYPES, TYPE WITH NO CELLS: all pass")
-    return {"pop_of": pop_of, "lobe": lobe, "n_tar": n_tar, "table": table}
+    return {"pop_of": pop_of, "lobe": lobe, "n_tar": n_tar, "table": table, "side": side,
+            "step": step}
+
+
+def print_controls(cols, mp, cfg, R):
+    """Revision 2.1 (the reviewers of the inspect output): annotation counts that decide
+    nothing. The whole file's status by side under the registered side rule; the R7/R8 sides
+    from the `type` variants, independent of flywireType (Ark); the two spellings of R1-R6
+    (Johnny, Zcode)."""
+    side, step = mp["side"], mp["step"]
+    status = np.array([s if s is not None else "null" for s in cols["status"]], object)
+    sd = np.array([s if s is not None else "unassigned" for s in side], object)
+    out = {"status_by_side": {}}
+    R.say("")
+    R.say(f"whole file, status x side under the registered side rule of section 4 (all "
+          f"{len(sd)} bodies, before any flip) [L, R, unassigned]:")
+    for s in sorted(set(status.tolist())):
+        m = status == s
+        row = [int((m & (sd == L)).sum()) for L in (*LOBES, "unassigned")]
+        out["status_by_side"][s] = row
+        R.say(f"  {s:12s} {row}")
+    tr = status == "Traced"
+    two = [int((tr & (sd == L) & (step != "instance")).sum()) for L in LOBES]
+    out["traced_soma_root_only"] = two
+    R.say(f"  Traced, somaSide then rootSide only (the instance step left out): L {two[0]}, "
+          f"R {two[1]}")
+    R.say("R7/R8 sides from the `type` variants, independent of flywireType (section 4; "
+          f"{ROLLUP_SPLIT} split by its flywireType):")
+    split = np.asarray(cols["type"] == ROLLUP_SPLIT, bool)
+    fw_of_split = {}
+    for i in np.flatnonzero(split):
+        k = str(cols["flywireType"][i])
+        fw_of_split[k] = fw_of_split.get(k, 0) + 1
+    R.say(f"  {ROLLUP_SPLIT}: {int(split.sum())} bodies, flywireType {dict(sorted(fw_of_split.items()))}")
+    for r, variants in ROLLUP_CONTROL.items():
+        vs = set(variants)
+        mv = np.array([v in vs for v in cols["type"]], bool) | (split & np.asarray(
+            cols["flywireType"] == r, bool))
+        mf = np.asarray(cols["flywireType"] == r, bool)
+        per_var = {v: int(np.asarray(cols["type"] == v, bool).sum()) for v in variants}
+        by_side = [int((mv & (sd == L)).sum()) for L in LOBES]
+        same = bool(np.array_equal(mv, mf))
+        out[r] = {"variants": per_var, "sides_L_R": by_side, "same_bodies_as_flywireType": same,
+                  "symmetric_difference": int((mv ^ mf).sum())}
+        R.say(f"  {r}: type variants {per_var}; sides [L, R] {by_side}; the same bodies as "
+              f"flywireType={r!r}: {same} (symmetric difference {int((mv ^ mf).sum())})")
+    R.say("two spellings of one object (section 3.1):")
+    for (ca, sa), (cb, sb) in SPELLING_CONTROL:
+        ma, mb = np.asarray(cols[ca] == sa, bool), np.asarray(cols[cb] == sb, bool)
+        same = bool(np.array_equal(ma, mb))
+        out[f"{ca}={sa}|{cb}={sb}"] = {"bodies": [int(ma.sum()), int(mb.sum())], "same": same}
+        R.say(f"  {ca}={sa!r}: {int(ma.sum())} bodies; {cb}={sb!r}: {int(mb.sum())} bodies; the "
+              f"same bodyIds: {same} (symmetric difference {int((ma ^ mb).sum())})")
+    return out
 
 
 # ------------------------------------------------------------------------------------------
@@ -577,6 +773,8 @@ def stream_weights(cfg, lk, B, memory=peak_memory_bytes):
     cross = np.zeros((P, P), np.int64)                          # outside, across lobes
     tot_src, same_src = np.zeros(P, np.int64), np.zeros(P, np.int64)
     tot_tar, same_tar = np.zeros(P, np.int64), np.zeros(P, np.int64)
+    rows_src, cross_rows_src = np.zeros(P, np.int64), np.zeros(P, np.int64)
+    rows_tar, cross_rows_tar = np.zeros(P, np.int64), np.zeros(P, np.int64)
     Wb = np.zeros((2, P, P), np.int64)                          # block, same lobe (sealed)
     cross_b = 0                                                 # block, across lobes (sealed)
     bits = np.zeros((lk["n_bsrc"] * lk["n_btar"] + 7) // 8, np.uint8)
@@ -609,6 +807,10 @@ def stream_weights(cfg, lk, B, memory=peak_memory_bytes):
         same_src += np.bincount(so[sm], weights=wo[sm], minlength=P).astype(np.int64)
         tot_tar += np.bincount(to, weights=wo, minlength=P).astype(np.int64)
         same_tar += np.bincount(to[sm], weights=wo[sm], minlength=P).astype(np.int64)
+        rows_src += np.bincount(so, minlength=P)
+        rows_tar += np.bincount(to, minlength=P)
+        cross_rows_src += np.bincount(so[~sm], minlength=P)
+        cross_rows_tar += np.bincount(to[~sm], minlength=P)
         m = o & same
         out_same_rows += int(m.sum())
         flat = (la[m] * P + s[m]) * P + t[m]
@@ -635,7 +837,10 @@ def stream_weights(cfg, lk, B, memory=peak_memory_bytes):
             np.bitwise_or.at(bits, byte, bit)
         peak = max(peak, memory())
         if peak > cfg.memory_cap:
-            raise Stop(f"MEMORY CAP: peak resident memory above {cfg.memory_cap} bytes "
+            raise Stop(f"MEMORY CAP: the process's peak working set (psutil peak_wset; the "
+                       f"current RSS where the platform reports no peak), probed after record "
+                       f"batch {bi + 1} of {nb}, is above {cfg.memory_cap} bytes. The cap stops "
+                       "the build; it does not bound the batch size or any allocation "
                        "(section 6.4)")
     if batches != nb:
         raise Stop(f"ROW COUNT DIFFERS: {batches} batches read of {nb}")
@@ -647,7 +852,9 @@ def stream_weights(cfg, lk, B, memory=peak_memory_bytes):
     del keys, out_keys
     peak = max(peak, memory())
     return {"W": W, "cross": cross, "tot_src": tot_src, "same_src": same_src,
-            "tot_tar": tot_tar, "same_tar": same_tar, "rows_read": rows, "batches_read": batches,
+            "tot_tar": tot_tar, "same_tar": same_tar, "rows_src": rows_src,
+            "rows_tar": rows_tar, "cross_rows_src": cross_rows_src,
+            "cross_rows_tar": cross_rows_tar, "rows_read": rows, "batches_read": batches,
             "num_record_batches": nb, "metadata_stop": meta_stop, "autapse_rows_dropped": autapse,
             "outside_rows_same_lobe": out_same_rows, "outside_rows_across_lobes": out_cross_rows,
             "duplicate_outside_keys": dup_out, "peak_memory_bytes": peak,
@@ -658,23 +865,36 @@ def stream_weights(cfg, lk, B, memory=peak_memory_bytes):
 # Section 4: the lobe-consistency check
 
 def lobe_consistency(st, pops, cfg, R):
+    """Section 4. Every number here comes from outside-block type pairs only (the stream's
+    `o = ~blk` rows), so no block-A pair enters a share or a count."""
     shares, bad = {}, []
     ratio = lambda a, b: int(a) / int(b) if b else None
     for k, p in enumerate(pops):
         tot = int(st["tot_src"][k] + st["tot_tar"][k])
-        sh = ratio(st["same_src"][k] + st["same_tar"][k], tot)
+        same = int(st["same_src"][k] + st["same_tar"][k])
+        sh = ratio(same, tot)
         shares[p["name"]] = {"share": sh, "as_source": ratio(st["same_src"][k], st["tot_src"][k]),
                              "as_target": ratio(st["same_tar"][k], st["tot_tar"][k]),
-                             "weight": tot, "flip": p["string"] in cfg.flip}
+                             "weight": tot, "cross_lobe_weight": tot - same,
+                             "cross_lobe_rows_as_source": int(st["cross_rows_src"][k]),
+                             "rows_as_source": int(st["rows_src"][k]),
+                             "cross_lobe_rows_as_target": int(st["cross_rows_tar"][k]),
+                             "rows_as_target": int(st["rows_tar"][k]),
+                             "flip": p["string"] in cfg.flip}
         if sh is not None and sh < 0.5:
             bad.append(p["name"])
     R.say("")
-    R.say("lobe consistency (section 4): same-lobe share of each placed type's outside weight, "
-          "as source and target together (as source / as target)")
+    R.say("lobe consistency (section 4; outside-block type pairs only): same-lobe share of each "
+          "placed type's weight, as source and target together (as source / as target); the "
+          "inconsistencies: neuron-pair rows whose partner is in the other lobe, of all rows, as "
+          "source and as target, and their weight")
     f = lambda v: "n/a" if v is None else f"{v:.4f}"
     for n, r in shares.items():
-        R.say(f"  {n:9s} {f(r['share'])} ({f(r['as_source'])} / {f(r['as_target'])})"
-              f"{'  FLIP' if r['flip'] else ''}")
+        R.say(f"  {n:9s} {f(r['share'])} ({f(r['as_source'])} / {f(r['as_target'])}); "
+              f"cross-lobe rows {r['cross_lobe_rows_as_source']}/{r['rows_as_source']} as "
+              f"source, {r['cross_lobe_rows_as_target']}/{r['rows_as_target']} as target; "
+              f"cross-lobe weight {r['cross_lobe_weight']} of {r['weight']}"
+              f"{'  FLIP' if r['flip'] else ''}{'  BELOW 0.5' if n in bad else ''}")
     if bad:
         raise Stop(f"LOBE ASSIGNMENT INCONSISTENT: same-lobe share below 0.5 for {bad} "
                    f"(FLIP = {sorted(cfg.flip)})")
@@ -837,14 +1057,18 @@ def run(cfg, mode, allow_dirty=False, out_dir=None, clock=time.perf_counter,
     head = git("rev-parse", "HEAD")
     dirty = dirty_listing()
     registered = not dirty
+    builder_sha = sha256_lf(Path(__file__))
+    registration_sha = sha256_lf(ROOT / REGISTRATION)
     R.say(f"git head {head}; tree under results/genome/c6/ and docs/plans/: "
           f"{'clean' if not dirty else 'DIRTY'}")
-    if mode == "build" and dirty and not allow_dirty:
+    R.say(f"builder sha256 (LF) {builder_sha}; registration sha256 (LF) {registration_sha}")
+    if dirty and not allow_dirty:                      # section 10.3: both modes
         raise Stop("REFUSED: uncommitted changes under results/genome/c6/ or docs/plans/ "
                    "(section 10.3); commit first or pass --allow-dirty\n" + dirty)
-    if mode == "build" and dirty:
-        R.say("NOT THE REGISTERED BUILD (--allow-dirty on a dirty tree)")
-    versions = check_versions(R)
+    if dirty:
+        R.say(f"NOT THE REGISTERED {'BUILD' if mode == 'build' else 'INSPECT-ONLY RUN'} "
+              "(--allow-dirty on a dirty tree)")
+    env = check_versions(R)
     inputs = check_pins(cfg, R)
     header = weight_file_header(cfg, R)
 
@@ -859,8 +1083,10 @@ def run(cfg, mode, allow_dirty=False, out_dir=None, clock=time.perf_counter,
     cols = read_annotations(cfg, R)
     specials = print_special_strings(cols, cfg, R)
     mp = apply_map(cols, pops, cfg, R)
+    controls = print_controls(cols, mp, cfg, R)
     summary = {"placed": placed, "targets": targets, "specials": specials,
-               "type_table": mp["table"], "header": header, "lines": R.lines}
+               "type_table": mp["table"], "controls": controls, "header": header,
+               "lines": R.lines}
     if mode == "inspect":
         R.say("--inspect-only: stopping before any weight column is read (section 10.3)")
         return summary
@@ -900,6 +1126,21 @@ def run(cfg, mode, allow_dirty=False, out_dir=None, clock=time.perf_counter,
     for li, L in enumerate(LOBES):
         R.say(f"  lobe {L}: present outside cells {int(present[li].sum())} of {n_omega}, "
               f"density {dens[L]:.6f}")
+    # Section 4 (revision 2.1): the expectation for a population's row and column (R1 carries
+    # R1-R6). Neither R1-R6 nor CT1 is a block type, so these cells are all outside block A.
+    pop_rows = {}
+    for k, p in enumerate(pops):
+        if len(p["members"]) > 1:
+            pop_rows[p["name"]] = {L: {"bodies": int(n_tar[li, k]),
+                                       "row_present": int(present[li, k, :].sum()),
+                                       "column_present": int(present[li, :, k].sum())}
+                                   for li, L in enumerate(LOBES)}
+            r = pop_rows[p["name"]]
+            R.say(f"  {p['name']} (carries {len(p['members'])} flyvis names): present cells at c* "
+                  f"in its row / column: lobe L {r['L']['row_present']} / "
+                  f"{r['L']['column_present']} ({r['L']['bodies']} bodies), lobe R "
+                  f"{r['R']['row_present']} / {r['R']['column_present']} "
+                  f"({r['R']['bodies']} bodies)")
     diag = diagnostics(x_all, omega, B, placed, targets, K, R)
 
     out.mkdir(parents=True)
@@ -919,25 +1160,27 @@ def run(cfg, mode, allow_dirty=False, out_dir=None, clock=time.perf_counter,
     peak = max(st["peak_memory_bytes"], memory())
     manifest = {
         "registration": REGISTRATION, "registration_revision": REGISTRATION_REVISION,
-        "registration_sha256_lf": sha256_lf(ROOT / REGISTRATION),
+        "registration_sha256_lf": registration_sha,
         "registered_build": registered,
         "note": None if registered else "NOT THE REGISTERED BUILD",
         "git_head": head, "dirty_listing": dirty.splitlines(),
-        "builder_sha256": sha256_file(Path(__file__)),
-        "tests_sha256": sha256_file(TEST_FILE) if TEST_FILE.exists() else None,
+        "builder_sha256_lf": builder_sha,
+        "tests_sha256_lf": sha256_lf(TEST_FILE) if TEST_FILE.exists() else None,
         "inputs": inputs, "weight_file_header": header,
-        "versions": versions, "machine_record": machine_record(),
+        "builder_environment": env, "machine_record": machine_record(),
         "type_map": {"canonical": cfg.canonical,
                      "special": {n: list(v) for n, v in cfg.special.items()},
                      "absent": list(cfg.absent), "placed": placed,
                      "not_placed": [n for n in names if n not in placed],
-                     "per_type": mp["table"], "special_strings": specials},
+                     "per_type": mp["table"], "special_strings": specials,
+                     "annotation_controls": controls},
         "flip": sorted(cfg.flip), "lobe_consistency": shares,
         "collapse": cfg.collapse, "density_targets": {
             k: {kk: vv for kk, vv in v.items() if kk != "T_exact"} for k, v in targets.items()},
         "w_min": W_MIN, "K": K, "c_star": c_star, "cut": cut,
         "outside_density": dens,
         "outside_present": {L: int(present[li].sum()) for li, L in enumerate(LOBES)},
+        "population_rows_at_c_star": pop_rows,
         "diagnostics": diag,
         "stream": {k: st[k] for k in ("rows_read", "batches_read", "num_record_batches",
                                       "metadata_stop", "autapse_rows_dropped",

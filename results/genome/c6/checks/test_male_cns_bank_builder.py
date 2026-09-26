@@ -11,6 +11,7 @@ import contextlib
 import hashlib
 import io
 import json
+import re
 import shutil
 import sys
 import tempfile
@@ -226,13 +227,90 @@ def build_both_worlds(tmp):
     return res["board"], res["random"]
 
 
+# The declared masked fields (section 9, revision 2.1): the only places where the two worlds'
+# prints and manifests may differ. Each is a hash that must differ, because the weight file's
+# block rows differ (its sha256), because the sealed files differ (theirs), or because a file
+# that prints those hashes differs (the manifest's, BUILD.md's). Everything else is compared
+# line by line (stdout, BUILD.md), key by key (the manifest) or entry by entry
+# (SHA256SUMS.txt). A differing line is accepted only if it matches one of these patterns in
+# both worlds and is equal outside the named group `h`.
+HASH = r"(?P<h>[0-9a-f]{64})"
+MASKED_LINES = {                                       # stdout and BUILD.md
+    "weight file pin, its sha256": rf"  {re.escape(WTS)}: \d+ bytes, sha256 {HASH}, "
+                                   r"downloaded .*",
+    **{f"{f} sha256": rf"  {re.escape(f)}: sha256 {HASH}" for f in SEALED},
+    "bank.meta.json sha256": rf"  bank\.meta\.json: sha256 {HASH}",
+}
+MASKED_KEYS = (("inputs", "janelia", WTS, "sha256"),     # bank.meta.json
+               *(("outputs", f, "sha256") for f in SEALED))
+MASKED_SUMS = (*SEALED, "bank.meta.json", "BUILD.md")    # SHA256SUMS.txt entries
+
+
+def masked_fields():
+    return ([f"stdout and BUILD.md: the line '{k}', group h only" for k in MASKED_LINES]
+            + [f"bank.meta.json: key {'/'.join(k)}" for k in MASKED_KEYS]
+            + [f"SHA256SUMS.txt: the entry of {f}" for f in MASKED_SUMS])
+
+
+def compare_lines(where, a, b):
+    la, lb = a.splitlines(), b.splitlines()
+    if len(la) != len(lb):
+        return [f"{where}: {len(la)} lines against {len(lb)}"]
+    diffs = []
+    for i, (x, y) in enumerate(zip(la, lb), 1):
+        if x == y:
+            continue
+        for rx in MASKED_LINES.values():
+            mx, my = re.fullmatch(rx, x), re.fullmatch(rx, y)
+            if mx and my and (x[:mx.start("h")], x[mx.end("h"):]) == \
+                    (y[:my.start("h")], y[my.end("h"):]):
+                break
+        else:
+            diffs.append(f"{where}: line {i} differs outside the masked fields")
+    return diffs
+
+
+def flatten(x, path=()):
+    if isinstance(x, dict) and x:
+        out = {}
+        for k, v in x.items():
+            out.update(flatten(v, path + (k,)))
+        return out
+    if isinstance(x, list) and x:
+        out = {}
+        for i, v in enumerate(x):
+            out.update(flatten(v, path + (i,)))
+        return out
+    return {path: x}
+
+
+def compare_manifests(a, b):
+    fa, fb = flatten(json.loads(a)), flatten(json.loads(b))
+    diffs = [f"bank.meta.json: key {'/'.join(map(str, k))} in one world only"
+             for k in sorted(set(fa) ^ set(fb), key=str)]
+    diffs += [f"bank.meta.json: key {'/'.join(map(str, k))} differs"
+              for k in sorted(set(fa) & set(fb), key=str)
+              if fa[k] != fb[k] and k not in MASKED_KEYS]
+    return diffs
+
+
+def compare_sums(a, b):
+    sa = dict(reversed(ln.split(" *", 1)) for ln in a.splitlines())
+    sb = dict(reversed(ln.split(" *", 1)) for ln in b.splitlines())
+    if set(sa) != set(sb):
+        return ["SHA256SUMS.txt: the file names differ"]
+    return [f"SHA256SUMS.txt: {f} differs" for f in sorted(sa)
+            if sa[f] != sb[f] and f not in MASKED_SUMS]
+
+
 def world_differences(A, Bw):
-    """Every difference between the two worlds' prints and outputs other than the sealed files'
-    bytes and the hashes that necessarily differ: the weight file's (its block rows differ), the
-    sealed files', and the two files that print those hashes (the manifest, BUILD.md)."""
+    """Every difference between the two worlds' prints and outputs outside the declared masked
+    fields, and the conditions on the sealed files (they differ; their sizes are equal)."""
     diffs = []
     if A["wsize"] != Bw["wsize"]:
         diffs.append("weight file sizes differ")
+    if set(A["files"]) != set(Bw["files"]):
+        diffs.append("file sets differ")
     for f in SEALED:
         if A["files"][f] == Bw["files"][f]:
             diffs.append(f"{f}: identical (the worlds do not differ in the block)")
@@ -241,32 +319,13 @@ def world_differences(A, Bw):
     for f in PLAIN:
         if A["files"][f] != Bw["files"][f]:
             diffs.append(f"{f}: bytes differ")
-    if set(A["files"]) != set(Bw["files"]):
-        diffs.append("file sets differ")
-
-    def tokens(r):
-        t = {r["wsha"]: "<WEIGHTS>"}
-        for f in SEALED:
-            t[hashlib.sha256(r["files"][f]).hexdigest()] = f"<{f}>"
-        t[hashlib.sha256(r["files"]["bank.meta.json"]).hexdigest()] = "<MANIFEST>"
-        return t
-
-    def norm(text, r, extra=()):
-        for k, v in list(tokens(r).items()) + list(extra):
-            text = text.replace(k, v)
-        return text
-
-    for key, ta, tb in [("stdout", A["stdout"], Bw["stdout"]),
-                        ("bank.meta.json", A["files"]["bank.meta.json"].decode(),
-                         Bw["files"]["bank.meta.json"].decode()),
-                        ("BUILD.md", A["files"]["BUILD.md"].decode(),
-                         Bw["files"]["BUILD.md"].decode())]:
-        if norm(ta, A) != norm(tb, Bw):
-            diffs.append(f"{key}: differs beyond the named hashes")
-    bm = [(hashlib.sha256(r["files"]["BUILD.md"]).hexdigest(), "<BUILD>") for r in (A, Bw)]
-    if norm(A["files"]["SHA256SUMS.txt"].decode(), A, [bm[0]]) != \
-            norm(Bw["files"]["SHA256SUMS.txt"].decode(), Bw, [bm[1]]):
-        diffs.append("SHA256SUMS.txt: differs beyond the named hashes")
+    diffs += compare_lines("stdout", A["stdout"], Bw["stdout"])
+    diffs += compare_lines("BUILD.md", A["files"]["BUILD.md"].decode(),
+                           Bw["files"]["BUILD.md"].decode())
+    diffs += compare_manifests(A["files"]["bank.meta.json"].decode(),
+                               Bw["files"]["bank.meta.json"].decode())
+    diffs += compare_sums(A["files"]["SHA256SUMS.txt"].decode(),
+                          Bw["files"]["SHA256SUMS.txt"].decode())
     for r in (A, Bw):
         man = json.loads(r["files"]["bank.meta.json"])
         for f in SEALED:
@@ -276,32 +335,81 @@ def world_differences(A, Bw):
 
 
 def test_blindness():
+    print("blindness test, the declared masked fields (the only places the worlds may differ):")
+    for m in masked_fields():
+        print(f"  {m}")
     with tempfile.TemporaryDirectory() as tmp:
         A, Bw = build_both_worlds(tmp)
         assert A["wsha"] != Bw["wsha"]
         assert world_differences(A, Bw) == []
 
 
-def test_blindness_test_catches_a_leak():
-    """Positive control: one number computed from the block rows (the count of non-empty block
-    cells), written into pair_stats_outside.csv, must make the comparison fail."""
-    orig_sealed, orig_stats, leak = B.write_sealed, B.write_pair_stats, []
+@contextlib.contextmanager
+def block_leak():
+    """Captures one number computed from the block rows (the count of non-empty block cells of
+    both lobes), which differs between the two worlds."""
+    orig, leak = B.write_sealed, []
 
     def leaky_sealed(path, lobe_i, sealed, *a):
         leak.append(int((sealed["Wb"] > 0).sum()))
-        return orig_sealed(path, lobe_i, sealed, *a)
-
-    def leaky_stats(path, *a):
-        orig_stats(path, *a)
-        with open(path, "a", encoding="utf-8") as fh:
-            fh.write(f"# {leak[-1]}\n")
-    B.write_sealed, B.write_pair_stats = leaky_sealed, leaky_stats
+        return orig(path, lobe_i, sealed, *a)
+    B.write_sealed = leaky_sealed
     try:
-        with tempfile.TemporaryDirectory() as tmp:
-            A, Bw = build_both_worlds(tmp)
+        yield leak
     finally:
-        B.write_sealed, B.write_pair_stats = orig_sealed, orig_stats
+        B.write_sealed = orig
+
+
+def test_blindness_test_catches_a_leak():
+    """Positive control 1: the leaked number, written into pair_stats_outside.csv, must make the
+    comparison fail."""
+    orig_stats = B.write_pair_stats
+    with block_leak() as leak:
+        def leaky_stats(path, *a):
+            orig_stats(path, *a)
+            with open(path, "a", encoding="utf-8") as fh:
+                fh.write(f"# {leak[-1]}\n")
+        B.write_pair_stats = leaky_stats
+        try:
+            with tempfile.TemporaryDirectory() as tmp:
+                A, Bw = build_both_worlds(tmp)
+        finally:
+            B.write_pair_stats = orig_stats
     assert "pair_stats_outside.csv: bytes differ" in world_differences(A, Bw)
+
+
+def test_blindness_test_catches_a_leak_in_manifest_and_build_md():
+    """Positive control 2: the leaked number written into a non-masked key of bank.meta.json,
+    into a non-masked line of the report (stdout and BUILD.md), or into a masked line outside
+    its hash group, must each make the comparison fail."""
+    orig_json, orig_say = B.json_safe, B.Report.say
+    cases = {"manifest key": "bank.meta.json: key lobe_note differs",
+             "report line": "BUILD.md: line",
+             "masked line, outside its hash": "BUILD.md: line"}
+    for case, want in cases.items():
+        with block_leak() as leak:
+            def leaky_json(x, case=case, leak=leak):
+                if case == "manifest key" and isinstance(x, dict) and "outputs" in x and leak:
+                    x = {**x, "lobe_note": leak[-1]}
+                return orig_json(x)
+
+            def leaky_say(self, m="", case=case, leak=leak):
+                m = str(m)
+                if leak and ((case == "report line" and m.startswith("peak memory"))
+                             or (case == "masked line, outside its hash"
+                                 and m.startswith("  bank.meta.json: sha256"))):
+                    m += f" {leak[-1]}"
+                return orig_say(self, m)
+            B.json_safe, B.Report.say = leaky_json, leaky_say
+            try:
+                with tempfile.TemporaryDirectory() as tmp:
+                    A, Bw = build_both_worlds(tmp)
+            finally:
+                B.json_safe, B.Report.say = orig_json, orig_say
+        diffs = world_differences(A, Bw)
+        assert any(d.startswith(want) for d in diffs), (case, diffs)
+        if case != "manifest key":
+            assert any(d.startswith("stdout: line") for d in diffs), (case, diffs)
 
 
 # ------------------------------------------------------------------------------------------
@@ -333,6 +441,17 @@ def test_flip():
         msg = expect_stop(lambda: run_world(cfg_for(d, n), out=d / "out"),
                           "LOBE ASSIGNMENT INCONSISTENT")
         assert "CT1(M10)" in msg
+        # revision 2.1: the per-type counts of the inconsistencies are printed before the stop
+        buf = io.StringIO()
+        try:
+            B.run(cfg_for(d, n), "build", allow_dirty=True, out_dir=d / "out3",
+                  clock=lambda: 0.0, memory=lambda: 0, stream=buf)
+        except B.Stop:
+            pass
+        lines = [ln for ln in buf.getvalue().splitlines()
+                 if ln.startswith("  CT1(M10) ") and "cross-lobe rows" in ln]
+        assert len(lines) == 1 and "BELOW 0.5" in lines[0]
+        assert sum("cross-lobe rows" in ln for ln in buf.getvalue().splitlines()) == 55
 
 
 # ------------------------------------------------------------------------------------------
@@ -375,6 +494,106 @@ def test_inspect_passes_and_reads_no_weight():
             B.stream_weights = orig
         assert "all pass" in out and "--inspect-only: stopping" in out
         assert len(s["placed"]) == 55
+        # revision 2.1: the header names the builder, the registration and the environment
+        want = (f"builder sha256 (LF) {B.sha256_lf(Path(B.__file__))}; registration sha256 "
+                f"(LF) {B.sha256_lf(B.ROOT / B.REGISTRATION)}")
+        assert want in out.splitlines()
+        assert any(ln.startswith("builder_environment (section 10.4; not the instrument's")
+                   for ln in out.splitlines())
+        assert "body compression codec per record batch" in out
+
+
+def test_inspect_refuses_a_dirty_tree():
+    """Section 10.3 (revision 2.1): --inspect-only refuses a dirty tree as the build does, and
+    with --allow-dirty it runs and says that it is not the registered run."""
+    with tempfile.TemporaryDirectory() as tmp:
+        d, n, _, _ = world(tmp)
+        orig = B.dirty_listing
+        try:
+            B.dirty_listing = lambda root=B.ROOT: " M results/genome/c6/checks/x.py"
+            buf = io.StringIO()
+            try:
+                B.run(cfg_for(d, n), "inspect", allow_dirty=False, stream=buf)
+                raise AssertionError("no stop on a dirty tree")
+            except B.Stop as e:
+                assert str(e).startswith("REFUSED: uncommitted changes")
+            _, out = run_world(cfg_for(d, n), "inspect")
+            assert "NOT THE REGISTERED INSPECT-ONLY RUN (--allow-dirty on a dirty tree)" in out
+            B.dirty_listing = lambda root=B.ROOT: ""
+            buf = io.StringIO()
+            B.run(cfg_for(d, n), "inspect", allow_dirty=False, stream=buf)
+            assert "NOT THE REGISTERED" not in buf.getvalue()
+        finally:
+            B.dirty_listing = orig
+
+
+def test_annotation_controls():
+    """Section 4 and 3.1 (revision 2.1): the R7/R8 sides from the `type` variants and the
+    two spellings of R1-R6 are printed; a body that leaves a variant set shows as a
+    difference."""
+    with tempfile.TemporaryDirectory() as tmp:
+        d, n, ann, _ = world(Path(tmp) / "a")
+        s, out = run_world(cfg_for(d, n), "inspect")
+        c = s["controls"]
+        assert c["R7"]["same_bodies_as_flywireType"] and c["R8"]["same_bodies_as_flywireType"]
+        assert c["type=R1-R6|flywireType=R1-6"] == {"bodies": [9, 9], "same": True}
+        assert sum(c["R7"]["sides_L_R"]) == 6 and c["R7"]["sides_L_R"] == [3, 3]
+        assert c["status_by_side"]["Traced"][0] > 0
+        d2 = Path(tmp) / "b"
+        d2.mkdir()
+        shutil.copy(d / WTS, d2 / WTS)
+        ann2 = ann.copy()
+        ann2.loc[ann2.index[ann2["type"] == "R7p"][0], "type"] = "R7x"
+        pf.write_feather(pa.Table.from_pandas(ann2, preserve_index=False), d2 / ANN,
+                         compression="uncompressed")
+        s2, _ = run_world(cfg_for(d2, n), "inspect")
+        assert not s2["controls"]["R7"]["same_bodies_as_flywireType"]
+        assert s2["controls"]["R7"]["symmetric_difference"] == 1
+
+
+def test_ipc_body_codecs():
+    """Section 6 (revision 2.1, Ark): the codec is named from the flatbuffer headers alone, and
+    the reader tells the three worlds apart."""
+    df = pd.DataFrame({"body_pre": np.arange(500, dtype=np.int64),
+                       "body_post": np.arange(500, dtype=np.int64)[::-1].copy(),
+                       "weight": np.ones(500, np.int64)})
+    with tempfile.TemporaryDirectory() as tmp:
+        for comp, name in (("lz4", "LZ4_FRAME"), ("zstd", "ZSTD"),
+                           ("uncompressed", "uncompressed")):
+            p = Path(tmp) / f"{comp}.feather"
+            pf.write_feather(df, p, compression=comp, chunksize=64)
+            got = B.ipc_body_codecs(p)
+            assert got == {"codecs": {name: 8}, "record_batches": 8, "rows_in_headers": 500,
+                           "footer_body_length_mismatches": 0}, (comp, got)
+
+
+def test_stop_messages_name_what_they_compare():
+    """Revision 2.1: VERSIONS DIFFER names the compared set, DENSITY TARGET DIFFERS the
+    registered pair, MEMORY CAP what it measures; no exception text in a machine field."""
+    orig = B.VERSIONS
+    try:
+        B.VERSIONS = {**orig, "numpy": "0.0.0"}
+        msg = expect_stop(lambda: B.check_versions(B.Report(io.StringIO())), "VERSIONS DIFFER")
+        assert "the pinned python, numpy, pandas, pyarrow" in msg and "psutil is reported" in msg
+    finally:
+        B.VERSIONS = orig
+    names, birth, present, _ = flyvis()
+    cfg2 = B.Config(absent=B.ABSENT + ("TmY9",))
+    _, pops2 = B.build_map(names, birth, cfg2)
+    msg = expect_stop(lambda: B.density_targets(present, names, pops2, cfg2,
+                                                B.Report(io.StringIO())),
+                      "DENSITY TARGET DIFFERS")
+    assert "the pooled collapse (D15) x the placed 55-type grid, |Omega| = 2961" in msg
+    assert "places 54 types" in msg
+    with tempfile.TemporaryDirectory() as tmp:
+        d, n, _, _ = world(tmp)
+        msg = expect_stop(lambda: B.run(cfg_for(d, n), "build", allow_dirty=True,
+                                        out_dir=d / "out", clock=lambda: 0.0,
+                                        memory=lambda: 5 * 1024 ** 3,
+                                        stream=io.StringIO()), "MEMORY CAP")
+        assert "peak working set" in msg and "does not bound the batch size" in msg
+    rec = B.machine_record()
+    assert rec["blas_at_run_time"] == "not recorded (no BLAS path in the builder)"
 
 
 # ------------------------------------------------------------------------------------------
@@ -410,7 +629,9 @@ def whole_table(d, cfg):
     Wb = np.zeros((2, P, P), np.int64)
     for (la, s, t), v in df[(df.la == df.lc) & df.blk].groupby(["la", "s", "t"]).weight.sum().items():
         Wb[la, s, t] = v
-    return W, cross, Wb, (cols, mp, placed, Bm)
+    xo = df[(df.la != df.lc) & ~df.blk]                 # the lobe-consistency counts
+    xrows = (np.bincount(xo.s, minlength=P), np.bincount(xo.t, minlength=P))
+    return W, cross, Wb, (cols, mp, placed, Bm), xrows
 
 
 def test_chunked_equals_whole():
@@ -418,9 +639,11 @@ def test_chunked_equals_whole():
         for chunk in (7, 97, 1_000_000):
             d, n, _, _ = world(Path(tmp) / str(chunk), chunk=chunk)
             cfg = cfg_for(d, n)
-            W, cross, Wb, (cols, mp, placed, Bm) = whole_table(d, cfg)
+            W, cross, Wb, (cols, mp, placed, Bm), xrows = whole_table(d, cfg)
             st = B.stream_weights(cfg, B.make_lookup(cols, mp, placed), Bm, memory=lambda: 0)
             assert np.array_equal(st["W"], W) and np.array_equal(st["cross"], cross)
+            assert np.array_equal(st["cross_rows_src"], xrows[0])
+            assert np.array_equal(st["cross_rows_tar"], xrows[1]) and xrows[0].sum() > 0
             assert np.array_equal(st["_sealed"]["Wb"], Wb)
             assert W[0].sum() > 0 and cross.sum() > 0
             assert st["autapse_rows_dropped"] == 3 and st["duplicate_outside_keys"] == 0
@@ -520,4 +743,12 @@ def test_one_index_per_population():
         mine = mine[[lobe[a] == lobe[b] for a, b in zip(mine.body_pre, mine.body_post)]]
         got = stats[(stats.src == "R1") & (stats.tar == "R1")].W_wmin1.sum()
         assert got == mine.weight.sum()
+        # revision 2.1: the R1 row and column per lobe, as the bank files hold them
+        rows = s["manifest"]["population_rows_at_c_star"]
+        assert set(rows) == {"R1", "CT1(M10)"}
+        for li, L in enumerate(B.LOBES):
+            bank = pd.read_csv(d / "out" / f"male_cns_{L}_outside.csv")
+            assert rows["R1"][L] == {"bodies": R16_PER_LOBE[li],
+                                     "row_present": int((bank.src == "R1").sum()),
+                                     "column_present": int((bank.tar == "R1").sum())}
         assert s["placed"].count("R1") == 1 and "CT1(M10)" in s["placed"]
