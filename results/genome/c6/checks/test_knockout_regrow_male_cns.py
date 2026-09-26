@@ -23,6 +23,9 @@ T12  the p_S print (S28).
 T13  revision 1.2 (section 3.3.1): the registered references of both lobes verify in reference
      mode (their pins, smallest_passing_auc, ko1 count and manifests); only A's amended hash is
      still a placeholder. Reads the reference folders (synthetic worlds), never a sealed file.
+T14  revision 1.3: S29 (the male U reading with an empty band), S30 (the pre-run's and this
+     run's code), S31 (the instrument's numbers beside a male G), S32 (the two notions of split),
+     on fixtures and, where the reference folders exist, on the registered references.
 
 The fits of T3's flows are replaced by a deterministic fake (_fit_one, in-process, workers = 1);
 T4 and T5 make real fits. Run: tools/.venv/Scripts/python.exe -m pytest -p no:cacheprovider -v
@@ -578,6 +581,9 @@ def real_arm_setup(fixture_sealed, monkeypatch, tmp_path):
         monkeypatch.setitem(K.PRERUN_WORLDS_CSV_SHA256, lobe, sums["synthetic_worlds.csv"])
     monkeypatch.setattr(K, "A_REGISTRATION_SHA256_LF_AMENDED",
                         K.sha256_lf(K.ROOT / K.A_REGISTRATION))
+    # S30: the fixture references were made at this head by this script
+    monkeypatch.setattr(K, "PRERUN_GIT_HEAD", K.git("rev-parse", "HEAD"))
+    monkeypatch.setattr(K, "PRERUN_SCRIPT_SHA256_LF", K.sha256_lf(Path(K.__file__)))
     monkeypatch.setattr(K, "PRIVATE_ROOT", tmp_path / "private")
     monkeypatch.setattr(K, "OUT", tmp_path / "committed")
     monkeypatch.setattr(K, "refuse_if_dirty", lambda: "")
@@ -614,6 +620,14 @@ def test_T3_real_arm_unseals_only_after_both_lobes_gates(real_arm_setup, seal_gu
     committed = (tmp_path / "committed" / "summary.json").read_text(encoding="utf-8")
     assert '"x_L_in_band"' not in committed            # per-cell band flags stay private
     assert sys.stdout.__class__.__name__ != "_Tee"
+    # revision 1.3: S30's provenance is recorded and printed; S32's two notions are printed
+    prov = summary["manifest"]["prerun_provenance"]
+    assert set(prov) == {"L", "R"} and all(prov[lobe]["passed"] for lobe in K.LOBES)
+    assert prov["L"]["this_run_script_sha256_lf"] == K.sha256_lf(Path(K.__file__))
+    assert summary["split_notions"]["by_block"]["k"] == 4
+    md = (tmp_path / "committed" / "RESULT.md").read_text(encoding="utf-8")
+    assert "Code (S30): lobe L: pre-run made by head " in md
+    assert "The two notions of split (S32): Split by reading (section 4.2, D3): " in md
 
 
 def test_T3_a_failed_synthetic_step_keeps_both_seals(real_arm_setup, seal_guard, monkeypatch):
@@ -1023,6 +1037,145 @@ def test_T13_the_registered_references_verify():
     assert len(left) == 1 and left[0].startswith("A_REGISTRATION_SHA256_LF_AMENDED")
     with pytest.raises(SystemExit, match="still placeholders: A_REGISTRATION_SHA256_LF_AMENDED"):
         K.check_registered_constants()
+
+
+# ------------------------------------------------------------------------------------------
+# T14 (revision 1.3): S29-S32.
+
+def male_like_worlds():
+    """Dense-grid worlds shaped like lobe L's pre-run: gamma*_P = gamma_R = family limit = 0.75
+    (the band is empty); U at 0.5 (3), 0.6 (3), 0.75 (1); one W and one G at 0.85."""
+    labels = {"M0.5": "GUUGU", "M0.6": "GURUU", "M0.75": "RRRUR", "M0.85": "RRRWG",
+              "M1.0": "RRRRR"}
+    seen = {"M0.5": 0, "M0.6": 2, "M0.75": 5, "M0.85": 4, "M1.0": 5}
+    fam_i = {f[0]: i for i, f in enumerate(K.FAMILIES)}
+    out = []
+    for fam, labs in labels.items():
+        for j, lab in enumerate(labs):
+            p = 0.0001 if j < seen[fam] else 0.5
+            rows = {pk: {"p_P": p, "auc": 0.525390625 if lab == "G" else 0.8, "lambda_ko": 3.0,
+                         "n_ge": 1 if lab == "W" else 0, "n_valid_shuffles": 99}
+                    for pk in K.LIMIT_KEYS}
+            out.append({"family": fam, "j": j, "seed": 92100 + 10 * fam_i[fam] + j,
+                        "board": "z", "label": lab, "rows": rows,
+                        "U_reasons": [LEGS] if lab == "U" else []})
+    return out
+
+
+def _reference_json(lobe):
+    d = K.PRERUN_DIR[lobe]
+    if not d.is_dir():
+        pytest.skip(f"the reference folder {d} is not on this machine")
+    return json.loads((d / "synthetic_only.json").read_text(encoding="utf-8"))
+
+
+def test_T14_S29_u_reading_with_an_empty_band():
+    ws = male_like_worlds()
+    dl = K.detection_limits(ws, 10)
+    assert dl["leg_P"]["gamma"] == dl["R"]["gamma"] == dl["family"]["gamma"] == 0.75
+    assert dl["band"]["steps"] == 0
+    u = {"label": "U", "U_reasons": [LEGS]}
+    line = K.male_u_reading_line(u, "L", dl, U_KEPT, ws)
+    assert "7 dense-grid U worlds lie at gamma 0.5: 3, 0.6: 3, 0.75: 1" in line
+    assert ": 1 at it, 0 above it)" in line and "The band is empty" in line
+    assert "\"not detected at the R level: the two legs, or the two D1 candidates, disagree\"" in line
+    assert "does not hold on this lobe" in line
+    # other U kinds keep their own texts; a renamed U, a G or an R gets no line
+    assert K.male_u_reading_line({"label": "U", "U_reasons": [K.ceiling_block_reason(0.5)]},
+                                 "L", dl, U_KEPT, ws) is None
+    assert K.male_u_reading_line({"label": "U", "U_reasons": [K.not_readable_reason(1)]},
+                                 "L", dl, U_KEPT, ws) is None
+    assert K.male_u_reading_line(u, "L", dl, U_RENAMED, ws) is None
+    assert K.male_u_reading_line({"label": "G", "U_reasons": []}, "L", dl, U_KEPT, ws) is None
+    # A's shape (a one-step band): the frozen male reading is not claimed
+    a_line = K.male_u_reading_line(u, "L", DL, U_KEPT, fake_worlds())
+    assert "The band is not empty on this lobe" in a_line and "does not hold" not in a_line
+
+
+def test_T14_S29_on_the_registered_references():
+    want = {"L": "7 dense-grid U worlds lie at gamma 0.5: 3, 0.6: 3, 0.75: 1",
+            "R": "5 dense-grid U worlds lie at gamma 0.5: 2, 0.6: 1, 0.75: 2"}
+    for lobe in K.LOBES:
+        so = _reference_json(lobe)
+        line = K.male_u_reading_line({"label": "U", "U_reasons": [LEGS]}, lobe, so["limits"],
+                                     so["u_rule"], so["worlds"])
+        assert want[lobe] in line and "The band is empty" in line, line
+
+
+def test_T14_S31_instrument_line_beside_a_male_g():
+    ws = male_like_worlds()
+    syn = {"limits": K.detection_limits(ws, 10), "worlds": ws}
+    line = K.male_g_instrument_line("L", syn)
+    assert "0.5: 0/5, 0/5; 0.6: 2/5, 1/5; 0.75: 5/5, 4/5; 0.85: 4/5, 3/5; 1.0: 5/5, 5/5" in line
+    assert f"(A: {K.A_CURVE_TEXT})" in line and "gamma*_P = 0.75 (A 0.6)" in line
+    assert "M0.85 seed 92184 (rule #2.1 AUC 0.5254, p_P 0.5000)" in line
+    assert "M0.85 seed 92183 (rule #2.1 n_ge = 1 of 99)" in line
+
+
+def test_T14_S31_on_the_registered_references():
+    want = {"L": ("0.5: 0/5, 0/5; 0.6: 2/5, 1/5; 0.75: 5/5, 4/5; 0.85: 4/5, 3/5; 1.0: 5/5, 5/5",
+                  "M0.85 seed 92184 (rule #2.1 AUC 0.5254, p_P 0.3695)",
+                  "read W: M0.85 seed 92183 (rule #2.1 n_ge = 1 of 99)"),
+            "R": ("0.5: 1/5, 1/5; 0.6: 2/5, 2/5; 0.75: 5/5, 3/5; 0.85: 4/5, 4/5; 1.0: 5/5, 5/5",
+                  "M0.85 seed 92184 (rule #2.1 AUC 0.5420, p_P 0.2872)", "read W: none")}
+    for lobe in K.LOBES:
+        so = _reference_json(lobe)
+        line = K.male_g_instrument_line(lobe, so)
+        assert all(x in line for x in want[lobe]), line
+
+
+def _pair_syn(lab_L, lab_R):
+    def worlds(labs):
+        return [{"family": fam, "seed": sd, "board": b, "label": lab}
+                for (fam, sd, b), lab in zip(SEEDS_T14, labs)]
+    return {"L": {"worlds": worlds(lab_L)}, "R": {"worlds": worlds(lab_R)}}
+
+
+SEEDS_T14 = [("R", 92100, "z"), ("No", 92120, "z'"), ("M0.5", 92142, "z"), ("M0.85", 92183, "z")]
+
+
+def test_T14_S32_two_notions_of_split():
+    syn = _pair_syn("RGUW", "RGRR")
+    reading = K.male_reading({"L": st("U"), "R": st("R")})
+    yL = board("z")
+    same = K.lobe_split_class(yL, yL, np.where(yL, 9.0, 0.2), np.where(yL, 9.0, 0.2))
+    n = K.split_notions(reading, same, syn)
+    assert n["by_reading"]["split"] and n["by_block"]["class"] == "S0"
+    assert n["by_block"]["blocks_differ"] is False and n["by_block"]["k"] == 0
+    assert ("2 of 2 dense-grid world pairs split by reading (seed 92142 U/R, seed 92183 W/R), "
+            "0 of 2 axis-family pairs; every world pair has k = 0") in n["text"]
+    assert n["text"].startswith("Split by reading (section 4.2, D3): yes: split: lobe L reads U")
+    assert "Block difference (section 4.3, by block): class S0, k = 0 of 64 cells differ" in n["text"]
+    agree = K.split_notions(K.male_reading({"L": st("G"), "R": st("G")}), None, syn)
+    assert not agree["by_reading"]["split"] and agree["by_block"]["class"] is None
+
+
+def test_T14_S32_on_the_registered_references():
+    syn = {lobe: _reference_json(lobe) for lobe in K.LOBES}
+    n = K.split_notions(K.male_reading({"L": st("G"), "R": st("G")}), None, syn)
+    assert n["worlds"]["text"] == (
+        "5 of 25 dense-grid world pairs split by reading (seed 92142 U/R, seed 92161 U/G, seed "
+        "92164 U/R, seed 92172 R/U, seed 92183 W/R), 0 of 20 axis-family pairs; every world pair "
+        "has k = 0 (the same board in both lobes)")
+
+
+def test_T14_S30_prerun_provenance(monkeypatch):
+    for lobe in K.LOBES:
+        if not K.PRERUN_DIR[lobe].is_dir():
+            pytest.skip(f"the reference folder {K.PRERUN_DIR[lobe]} is not on this machine")
+        pv = K.prerun_provenance(lobe, "f" * 40, "e" * 64)
+        assert pv["passed"] and not pv["same_script"]
+        assert pv["prerun_git_head"] == K.PRERUN_GIT_HEAD == (
+            "a0e16b696389fb796a9f3b95c308358b52dd9dc8")
+        assert pv["prerun_script_sha256_lf"] == K.PRERUN_SCRIPT_SHA256_LF == (
+            "7a09f9fdfee38d93596fe0be9ffd4daab5b82cb287acdfa4a16bbdd4a3a281fc")
+        assert pv["text"].startswith(f"lobe {lobe}: pre-run made by head a0e16b6, script "
+                                     "7a09f9fd (LF sha256 7a09f9fd")
+        assert "; this run by head fffffff, script eeeeeeee (LF sha256 " in pv["text"]
+        assert "different code" in pv["text"]
+    monkeypatch.setattr(K, "PRERUN_SCRIPT_SHA256_LF", "0" * 64)
+    bad = K.prerun_provenance("L", "f" * 40, "e" * 64)
+    assert not bad["passed"] and "registered" in bad["reason"]
 
 
 if __name__ == "__main__":

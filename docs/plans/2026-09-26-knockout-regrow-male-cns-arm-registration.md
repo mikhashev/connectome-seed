@@ -1,6 +1,23 @@
 ---
-**Status: DRAFT, revision 1.2, 2026-09-27 UTC, for review (D15 step 3). Not voted on. No sealed
-file opened.** Revision 1.2 registers the values read from the two pinned pre-run references
+**Status: DRAFT, revision 1.3, 2026-09-27 UTC. No sealed file opened.** Revision 1.2 was
+reviewed in the DPC Research chat on 2026-09-26 UTC by Ark (18:10, "yes, with edits") and Zcode
+(18:13, "yes", with edits) (§9.4). Revision 1.3 applies those edits (§9.5). **Three reading
+rules are frozen before unsealing:** on the male banks a threshold U reads "not detected at the R
+level", with no position on a threshold, because the transition band is empty (§4.1 (5), §6);
+the instrument's weakness on the male banks is named with its numbers beside every male G (§5,
+§6); "split" names two objects, a split by reading (§4.2) and a block difference (§4.3), and one
+is never read as the other (§4.3). Also: the z / z′ order (§3.3.1 (c)); `n_deg` inert, with its
+cause (§3.3.1 (d)); the `ko1` wording (§3.3.1 (a)); the link copy ← original (§3.3.1 (b), D17);
+the pre-run and the registered run are made by different code, both recorded (S30), and the
+`--from-raw` check after the merge is registered and was run (§3.3.1 (h)); a clarification of the
+GPU census counts (§7.1, chat-only); the form of the amendment to A decided (Appendix A). Script
+changes S29–S32 and test T14 (§7.2, §7.3). No gate, cut, seed, world or option of D1–D17
+changes. Step 4 (A amended, its hash set in the script) and step 5 (the registered run, on Mike's
+word) are next; before step 5, the check of §3.3.1 (h) is repeated at the merged head. Drafted by
+a CC subagent; CC checks it.
+
+**Status of revision 1.2, as written then: DRAFT, revision 1.2, 2026-09-27 UTC, for review (D15
+step 3). Not voted on. No sealed file opened.** Revision 1.2 registers the values read from the two pinned pre-run references
 (§3.3.1) and sets the script's placeholders for them (S17); it decides where the references live
 (D17, new) and drafts the amendment to A (Appendix A; A itself is not edited). It changes no gate,
 cut, reading rule, seed, world or option of D1–D16. **Where the order of work stands:** step 1,
@@ -65,7 +82,9 @@ loaded, counted, summarised, plotted or diffed `male_cns_L_blockA.sealed.csv` or
 not open either file. The prior exposure of block A of the male CNS through other channels is
 declared in §1.5. **At revision 1.2: intact.** The pre-run read the outside files only (§3.3.1
 (a)); the revision 1.2 agent did not open, hash, count, size or list either sealed file, and read
-their names and hashes only from this file and the script.
+their names and hashes only from this file and the script. **At revision 1.3: intact.** The
+revision 1.3 agent read the reference folders and the pre-run folders (synthetic worlds only)
+and did not open, hash, count, size or list either sealed file.
 ---
 
 # Registration: knock out and regrow, the male CNS arm (the animal control of block A)
@@ -377,6 +396,19 @@ counts only), and both stdout logs (whole); A's pinned `synthetic_rev3_prerun/SY
 hashed, counted, sized or listed), anything under `chat/`, the main worktree (where V8 runs). The
 GPU V8 lobe L result is known from CC's brief only (§7.1).
 
+**Read declaration, revision 1.3 (a fourth CC subagent, in the worktree `cs-v8`).** Read: this
+file whole; the arm's script and tests (whole where changed); A §8 (lines 1716–1760) and the
+heading list of A; the GPU instrument's `census.py` whole and `validation.py` lines 660–830. From
+both reference folders: `synthetic_worlds.csv` (every row, by script), `synthetic_only.json`
+(the manifest, `fits`, `limits`, `u_rule`, the worlds' labels and U reasons), `raw_fits.json.gz`
+(every record, by script: the shuffled blocks' present counts, the `ko1` provenance, the census
+of §7.1); `sha256sum` of the five files of each reference and of each pre-run folder. From A's
+pinned `synthetic_rev3_prerun/`: `synthetic_worlds.csv` (rule #2.1 rows: the power curve) and
+`raw_fits.json.gz` (the `ko1` provenance and the census, by script). **Not opened:** either sealed
+file (not read, hashed, counted, sized or listed), the Janelia build folder beyond the pinned
+outside files that the script's check 1 hashes, anything under `chat/`, the main worktree. The
+reviews of revision 1.2 are known from CC's brief only.
+
 ## 2. The predictors (delta on A §2)
 
 - **Unchanged:** rule #2.1 (`RANK = 1`, `STARTS = 10`) is the primary, with R/W read on both D1
@@ -538,7 +570,7 @@ its byte copy `connectome-seed-data/knockout_regrow/synthetic_malecns_<lobe>_pre
 | pre-run mode | `reference_mode` false: made the reference, checked none | the same | manifest; log line 9 ("PRE-RUN MODE (lobe L) …") |
 | exit and runtime | exit 0; 8,001 s (2 h 13 min) | exit 0; 7,890 s (2 h 11 min 30 s) | the log's last line; CC's brief (exit codes); manifest `runtime_s` 7,996.3 / 7,886.0 (taken before the outputs were written) |
 | world fits | 28,440 in 7,981 s (3.56 fits per second) | 28,440 in 7,873 s (3.61 fits per second) | the log, `[synthetic worlds] 5490 groups, 28440 fits` and `… done in 7981s` / `7873s` |
-| fixed λ = 1 (`ko1`) | path check on `world:W:0`: 5 fits, identical for rule #2.1 and BF_1–BF_4; 46 records copied from the `ko` fit, 174 fitted | the same path check; 49 copied, 171 fitted | the log ("fixed-lambda path check", "Fits: …"); `synthetic_only.json` `fits` |
+| fixed λ = 1 (`ko1`) | path check on `world:W:0`: 5 fits, identical for rule #2.1 and BF_1–BF_4; **main pass: 46 copied, 174 fitted** (220); with the 5 path-check fits the store holds **46 copied and 179 fitted** (225; row (c)) | the same path check; **main pass: 49 copied, 171 fitted** (220); in the store **49 copied, 176 fitted** (225) | the log ("fixed-lambda path check", "Fits: …"); `synthetic_only.json` `fits.fixed_lambda` (main pass) and `fits.ko1_count.counted` (store). **Revision 1.3 (Zcode):** the two pairs are one count at two scopes. The 5 path-check fits are the `ko1` records of `world:W:0`, refitted by the fixed-λ path and unflagged, so they count as fitted in the store and not in the main pass: verified on `raw_fits.json.gz`, 51 (L) and 54 (R) base `ko` fits of rule #2.1 and BF_r selected λ = 1, 5 of them `world:W:0`'s, and 46 / 49 `ko1` records carry `reused_from_ko`. **As in A:** 52 base fits at λ = 1, 5 of them `world:W:0`'s, 47 flagged; 173 + 5 = 178 fitted |
 | records in the store | 28,665 = 45 × 637: `ko` 270, `full` 270, `block` 270, `ko1` 225, shuffles 26,730, permuted-block ceilings 900 | the same counts | `raw_fits.json.gz`, read with the script's `read_raw` |
 | machine | AMD64 Family 26 Model 68, 32 logical CPUs, Windows 10.0.26200; Python 3.10.20, numpy 2.2.6 (scipy-openblas 0.3.29); the four BLAS thread variables 1 (none set before launch) | the same | manifest `machine_record`; the log's "machine record" line |
 | mean seconds per knockout fit | rule #2.1 13.5, BF_1 4.5, BF_2 8.6, BF_3 10.5, BF_4 12.5, N1 0.03 | 13.3, 4.5, 8.5, 10.3, 12.3, 0.03 | `synthetic_only.json` `mean_seconds_per_knockout_fit` |
@@ -566,6 +598,22 @@ R `5495bedf642d33a41ba71001f5492aa9f2c24c294f0b723f0f172dc89ed24521`, equal in o
 The pre-run folders were not modified; the copies hold exactly the five files (no stdout log, no
 other entry), so `check_prerun_files` reports nothing unlisted.
 
+**The link copy ← original (revision 1.3, D17; Ark, Zcode).** `synthetic_malecns_<lobe>_prerun/`
+is a byte copy of `malecns_prerun_<lobe>_20260926T131249Z/`: **all five sha256 equal** in each
+lobe. Recomputed on 2026-09-27 UTC by this revision, in `connectome-seed-data/knockout_regrow/`:
+
+```
+for l in L R; do for f in SHA256SUMS.txt SYNTHETIC.md raw_fits.json.gz synthetic_only.json synthetic_worlds.csv; do
+  sha256sum malecns_prerun_${l}_20260926T131249Z/$f synthetic_malecns_${l}_prerun/$f; done
+  (cd synthetic_malecns_${l}_prerun && sha256sum -c SHA256SUMS.txt); done
+```
+
+Every pair equal (the four listed values are row (c)'s pins; `SHA256SUMS.txt` itself L
+`d28ead5e…deec64f`, R `5495bedf…ed24521`), and `sha256sum -c` OK on all four listed files in
+each copy. The link is recorded here only: the copies hold no note of it, since a file added to a
+pinned folder would be an unlisted entry of `check_prerun_files` (reported, not failed) and would
+break T13's "nothing unlisted"; the originals are not written either.
+
 **(c) The registered values (the script's S17 constants, and what the registered run reads from
 the references).**
 
@@ -578,13 +626,17 @@ the references).**
 | `PRERUN_SHA256["synthetic_worlds.csv"]` = `PRERUN_WORLDS_CSV_SHA256` | `506576312638005e5bd09876c9da0ffe9a8a753641a59a2b354c0c59bed25d91` | `e8476a936356d3965aa5715d7f04a82c3587ff0795569db81071822fbca9cae0` | the same; also the log's "pre-run table (section 7): … recomputed sha256" line |
 | `smallest_passing_auc`, board `z` (40 worlds: every family but No) | **0.671875** (688 / 1024) | **0.671875** | `synthetic_only.json` `worlds[*].smallest_passing_auc` by `board` (`derive_smallest_passing_auc`); the log's "smallest_passing_auc registered values" line |
 | `smallest_passing_auc`, board `z'` (5 worlds: No) | **0.669921875** (686 / 1024) | **0.669921875** | the same |
-| `ko1` count (registered control) | 225 records: 46 copied from `ko`, 179 fitted (5 of them by the path check on `world:W:0`) | 225: 49 copied, 176 fitted (5 by the path check) | `registered_ko1_count` on `raw_fits.json.gz`; `synthetic_only.json` `fits.ko1_count.counted`; the log's "ko1 records" line |
+| `ko1` count (registered control) | 225 records: 46 copied from `ko`, 179 fitted (5 of them by the path check on `world:W:0`; main pass 174, row (a)) | 225: 49 copied, 176 fitted (5 by the path check; main pass 171) | `registered_ko1_count` on `raw_fits.json.gz`; `synthetic_only.json` `fits.ko1_count.counted`; the log's "ko1 records" line |
+| code that made the reference (S30, revision 1.3) | head `a0e16b6` (`a0e16b696389fb796a9f3b95c308358b52dd9dc8`), script LF sha256 `7a09f9fdfee38d93596fe0be9ffd4daab5b82cb287acdfa4a16bbdd4a3a281fc` | the same | the manifest's `git_head` and `script_sha256_lf`; the script's `PRERUN_GIT_HEAD` and `PRERUN_SCRIPT_SHA256_LF` |
 
 **L = R board by board, as §3.3 asserts for the worlds:** both lobes give 0.671875 for `z` and
 0.669921875 for `z'`, and so does `board_smallest_passing_auc()`, which computes them from the
 boards' labels and `uniform_perms()` alone. The registered run asserts the equality before
 unsealing. They differ from A's registered values (0.666015625 for `z`, 0.6728515625 for `z'`,
 A §3.2) because the leg-P seed differs (92000 against 90000; D7 (ii)): expected, not a surprise.
+**The order is reversed (revision 1.3; Ark, Zcode):** on A, z < z′ (0.666015625 < 0.6728515625);
+on the male banks, z > z′ (0.671875 > 0.669921875). A value is compared with its own board's
+value in its own arm, never across arms by board name.
 **The null-input digests** (equal in both lobes; the log's "null-input digests" line; manifest
 `null_input_digests`): `uniform_perms` sha256 `d1377913384e3409576620a8ae9e531e8a630c751a6b0942378f2e986db0ee3d`
 (int64, 9,999 × 64, seed 92000, computed in the main process); `rc_patterns` (seed 92001), one per
@@ -616,7 +668,7 @@ the three limits" and "U rule" sections, and `synthetic_only.json` keys `two_wor
 | transition band [γ\*_P, γ_R) | empty (0 grid steps) | empty | [0.6, 0.75), one step |
 | majority seen / R at every grid γ above the limit | true / true | true / true | true / true |
 | grid complete | true | true | true |
-| rule #2.1 seen / R per γ: 0.5 | 0/5, 0/5 | 1/5, 1/5 | 1/5, 1/5 |
+| rule #2.1 seen / R per γ (revision 1.3: in each pair, the first number is the worlds at that γ whose rule #2.1 `p_P` <= 0.01, "seen"; the second, the worlds whose label is R; of 5; verified on each `synthetic_worlds.csv`, rule #2.1 rows): 0.5 | 0/5, 0/5 | 1/5, 1/5 | 1/5, 1/5 |
 | 0.6 | 2/5, 1/5 | 2/5, 2/5 | 3/5, 2/5 |
 | 0.75 | 5/5, 4/5 | 5/5, 3/5 | 5/5, 5/5 |
 | 0.85 | 4/5, 3/5 | 4/5, 4/5 | 5/5, 5/5 |
@@ -626,6 +678,7 @@ the three limits" and "U rule" sections, and `synthetic_only.json` keys `two_wor
 | U rule | U stays (7 of 25 dense-grid worlds) | U stays (5 of 25) | U stays (3 of 25) |
 | M worlds reading G at or above γ\*_P / γ_R | 1 / 1 (M0.85, seed 92184) | 1 / 1 (M0.85, seed 92184) | none |
 | `n_deg` | 0 in all 270 rows | 0 in all 270 rows | 0 in all 270 rows |
+| **why `n_deg` is 0 (revision 1.3, Ark)** | **inert because no shuffle gives present ∈ {0, 64}**: the 26,730 shuffled-bank records hold 9 to 37 present block cells (the 17,820 BF `ko` shuffle fits the same) | 12 to 36 | not recounted |
 | `ceiling_block` of rule #2.1 and BF_1–BF_4 | 1.0 in all 225 rows | 1.0 in all 225 rows | 1.0 in all 225 rows |
 | `rc_patterns` (the attempt cap, D9) | complete in all 45 worlds; at most 4,614 attempts per chain against the cap of 64,000 | the same | no cap in A |
 | Nf worlds' outside density (the lobe's: 0.1675 / 0.1776) | 0.1724 (0.1662–0.1749) | 0.1812 (0.1746–0.1841) | 0.1365 (A's bank 0.1375) |
@@ -637,7 +690,13 @@ pair of labels. Both lobes read R in 0 of 5 pairs at γ = 0.5, 1 of 5 at 0.6, 3 
 92142 U/R, 92161 U/G, 92164 U/R, 92172 R/U, 92183 W/R; lobe L first); none among the 25 others.
 This is the first measurement of what §4.2 said was not measured: on 32/32 boards near the limit,
 one pair in four splits, and the male R's majority is reached at γ = 0.75 with 3 of 5, against 4
-and 3 of 5 per lobe.
+and 3 of 5 per lobe. **Revision 1.3 (verified on the two CSVs and the stores):** the five pairs
+are seeds 92142 (M0.5, U/R), 92161 (M0.6, U/G), 92164 (M0.6, U/R), 92172 (M0.75, R/U) and 92183
+(M0.85, W/R), 5 of the 25 dense-grid pairs; none of the 20 pairs of the axis families (R, Nf,
+No, W). **Every one of the 45 world pairs has the same block in both lobes** (the same board by
+seed; the base `ko` records' labels are equal in all 45), so all five splits are **splits by
+reading at k = 0**: the lobes' labels differ while their blocks are identical (§4.3, "two
+objects").
 
 **Surprises, stated plainly (compared with §3.6, §10 and A's pre-run as history):**
 
@@ -653,7 +712,12 @@ and 3 of 5 per lobe.
    pre-run; on the male instrument U worlds sit at γ = 0.5–0.75, up to two grid steps below
    γ\*_P. The quoted row keeps A's literals; the line after it names them and gives the lobe's
    own values (§4.1, difference 3). No reading rule changes (frozen); the reviewers may want the
-   U row's printed band to be read with this in mind.
+   U row's printed band to be read with this in mind. **Revision 1.3 (Ark, Zcode): a reading rule
+   is frozen from this, before unsealing** (§4.1 (5), §6; S29): on the male arm a threshold U
+   reads "not detected at the R level", with no position on a threshold. The U reasons, read from
+   each `synthetic_only.json`: in all 12 U worlds rule #2.1 passes leg S (`n_ge` = 0 of 99); in 5
+   the legs disagree (leg P `p_P` 0.0117–0.0332) and in 7 the two D1 candidates disagree, one of
+   them reading R (L 92142, 92144, 92163: BF_1 R; L 92164, 92173, R 92172, 92173: rule #2.1 R).
 3. **One M world above both limits reads G in each lobe:** M0.85, seed 92184 (rule #2.1 AUC
    0.5254, `p_P` 0.3695, `n_ge` 10 in lobe L; AUC 0.5420, `p_P` 0.2872, `n_ge` 1 in lobe R;
    `ceiling_block` 1.0, so the G gate passes). A's pre-run had no G at or above γ_R. The G label
@@ -721,7 +785,40 @@ consequence outside this arm:** the GPU instrument's V8 refuses a male store mad
 version of this script (`validation.py` `check_male_store`: "the store was made by the male
 script …, this head's is …"); the pre-run stores were made by `7a09f9fd…`, and this revision's
 script is `42b83ddc…`, so V8 cannot be rerun at a head that contains this revision without a
-change on its side. V8 decides nothing for this arm (D13 (iii)).
+change on its side. V8 decides nothing for this arm (D13 (iii)). **Revision 1.3 (S30):** a
+`--synthetic-only` run in reference mode and the registered run read each reference's manifest
+(after `check_prerun_files`) and stop with "PRE-RUN PROVENANCE DIFFERS" unless it names head
+`a0e16b6` and script `7a09f9fd…` (`PRERUN_GIT_HEAD`, `PRERUN_SCRIPT_SHA256_LF`); both print, and
+the registered run records in its manifest (`prerun_provenance`) and in `RESULT.md`, "lobe ℓ:
+pre-run made by head a0e16b6, script 7a09f9fd (LF sha256 …); this run by head <head>, script
+<sha> (LF sha256 …)", with "different code" when the two scripts differ.
+
+**(h) The `--from-raw` check after the merge (revision 1.3, registered; Zcode's proposal, Ark).**
+The pre-run was made by the script at `a0e16b6` (LF `7a09f9fd…`); the registered run will be made
+by the script after this branch is merged (another hash; S30). **Registered:** after the merge
+and before the registered run, a `--synthetic-only --lobe L|R --starts 10 --workers 5
+--from-raw <reference>/raw_fits.json.gz` pass (no `--out`; it writes nothing) is run with the
+merged script against each pinned store, from the merged head with the tree clean. **It must
+re-derive each lobe's worlds table byte for byte** (outcome 1, byte-identical, recomputed sha256
+equal to `PRERUN_WORLDS_CSV_SHA256`), with the `smallest_passing_auc` check 45 of 45, the `ko1`
+count equal to the registered one and the fixed-λ path check identical. **If it does in both
+lobes, re-running the pre-run is not needed**: the new code reads the old references as
+registered, and the registered run's own refit is still gated by the reproduction gate (outcome
+1 or 2). **If it does not in either lobe, the registered run does not start**; the difference is
+reported, and what follows is decided in a new revision. Its log is kept beside the registered
+run's (§7.4 (6)).
+
+**Run by this revision (2026-09-27 UTC), with this revision's final script** (LF sha256
+`1b952ca6aca7c5026061a5db21e27aef2176ecd255e8c19f4b658437495af7a9`), from the uncommitted tree
+at `af11d31` that became this revision's commit (`--allow-dirty`, so marked NOT A REFERENCE; it
+writes nothing): **both lobes re-derive their worlds table byte for byte** (outcome 1,
+byte-identical; recomputed sha256 L `50657631…c59bed25d91`, R `e8476a93…c9cae0` = the pins; 0 rows
+missing either way; `mechanism_description` equal on every row); `smallest_passing_auc` 45 of
+45; `ko1` 225 (46 / 179 L, 49 / 176 R), equal to the registered count; the fixed-λ path check
+identical for all five predictors on `world:W:0`; the per-fit diagnostic 28,665 compared, 0
+differing (the store against itself, plus 5 fresh fits); S30's line printed "different code"
+(`7a09f9fd` against `1b952ca6`); exit 0 in 8 s (L) and 9 s (R). The check is repeated at the
+merged head (the merge changes no byte of the script, but the head changes).
 
 ### 3.4 Machine checks (delta on A §3.4)
 
@@ -851,19 +948,22 @@ meet none of the untouched, reused, block-A or block-B seeds.
   its outside bank plus, in the real run only, its present block cells.
 - **Sealed**, **unsealing:** the builder §9 rule; unsealing is the first opening of a sealed file,
   in the registered real run (§7.4).
-- **Split:** the two lobes read different letters (§4.2).
+- **Split:** the two lobes read different letters (§4.2). **Revision 1.3:** this is the **split
+  by reading**. The **block difference** is another object: `k`, the number of the 64 cells whose
+  presence differs between the lobes' blocks, with the class S0/S1/S2a/S2b of §4.3. The two are
+  printed apart (S32), and one is never read as the other (§4.3, "Two objects").
 - **Present in the block:** A §3.8's two carriers, with 32 in every synthetic world and the real
   count unknown before the run.
 
 ## 4. Reading rule
 
-### 4.1 Per lobe: A §4, verbatim, with four stated differences
+### 4.1 Per lobe: A §4, verbatim, with five stated differences
 
 A §4 applies **verbatim** to each lobe: the four branches in order, R and W on both D1 candidates,
 the cuts (`P_R` = 0.01, `P_W` = 0.0125, `P_G` = 0.10, `GATE_CUT` = 0.90, `MECHANISM_CUT` = 0.90),
 the U rule's naming (per lobe, on that lobe's dense grid), the verdict line's contents, λ on the
 verdict line, the No contingency (per lobe). No condition, cut or existing label string changes.
-Four differences (D12):
+Five differences (D12; the fifth added by revision 1.3, frozen before unsealing):
 
 1. **A lobe prefix.** Each verdict line starts "male CNS, lobe ℓ (existence bank at c* = 2.99436):".
 2. **A new U text** for a block on which leg P cannot pass (§3.2): "U: not readable: leg P cannot
@@ -880,12 +980,29 @@ Four differences (D12):
 4. **"Failed fit" on a male block** keeps its text ("failed fit: rule #2.1 cannot hold the block
    even when trained on it alone"), which states the measurement; it is read as "a failed fit or a
    rank limit, not separated", since the male block is not known to be rank 1 (B's D9).
+5. **A threshold U on the male banks (revision 1.3, frozen before unsealing; Ark, Zcode).** On
+   both male banks γ\*_P = γ_R = the family limit = 0.75, so the transition band [γ\*_P, γ_R) is
+   **empty by construction**, and every U world of the pre-run lies at or below the limit (lobe L
+   7: 3 at γ 0.5, 3 at 0.6, 1 at 0.75; lobe R 5: 2 at 0.5, 1 at 0.6, 2 at 0.75; none above;
+   §3.3.1 (d)). A's reading of U, "the signature of the leg-P detection limit γ\*_P" (A §4,
+   revisions 3.1, 3.2; A's three U worlds sat on γ\*_P = 0.6, inside a one-step band), does not
+   hold here. **On the male arm a threshold U reads "not detected at the R level: the two legs,
+   or the two D1 candidates, disagree", with no position on a threshold** (not "at the
+   threshold"). It is not read as "below the limit" either: it says only that R was not reached
+   and that the evidence is split; in the worlds that happened at γ from 0.5 up to the limit. The
+   label string stays A's ("U: on the detection threshold; cannot be separated", with the lobe's
+   limits); the script prints, after the quoted row and the A-literals line, one line with this
+   reading and the lobe's band, the γ of its U worlds and how many lie at and above the family
+   limit (S29). It applies to a threshold U only: a failed-fit U, a not-measured U, the "not
+   readable" U and a renamed U keep their own texts. If the registered run's synthetic step gave
+   a non-empty band (it cannot while it reproduces the references), the line says so and claims
+   nothing.
 
 **Leg S in every branch (revision 1.1, frozen before unsealing; Ark, Zcode).** "The primary passes
 leg S" means the count, `n_ge = 0` of the `99 − n_deg` shuffles with an AUC (A §4's own wording;
 `knockout_regrow.py:1067`), never `p_S <= 0.01`. `p_S` is printed beside it as information, with
-four decimals and a mark when `n_deg` >= 1 (§3.2, S28). This is not a fifth difference: A's rule is
-the count; the arm only prints `p_S` so that it cannot be misread as the deciding quantity.
+four decimals and a mark when `n_deg` >= 1 (§3.2, S28). This is not a further difference: A's rule
+is the count; the arm only prints `p_S` so that it cannot be misread as the deciding quantity.
 
 ### 4.2 The two lobes: one run, two labels, one male reading (proposals, D2, D3)
 
@@ -902,7 +1019,7 @@ run is fixed. Each lobe gets its own label by §4.1.
 | W | W | **W** in both lobes; the ranks that passed are printed per lobe |
 | G | G | **G** in both lobes, each with its own limits |
 | U | U | **U** in both lobes, each with its own U text |
-| any other pair | | **split: "lobe L reads X, lobe R reads Y"**, with the classification of §4.3. A split is not R, W or G on the male CNS |
+| any other pair | | **split: "lobe L reads X, lobe R reads Y"**, with the classification of §4.3. A split is not R, W or G on the male CNS. **Revision 1.3:** a split by reading, not a block difference; the two are printed apart (§4.3, "Two objects"; S32) |
 | a lobe with no AUC or "not readable" | | **one lobe only: "lobe ℓ reads X; lobe ℓ′ cannot be read (reason)"**. Not a male R even if X is R |
 
 **The male R is a conjunction of two A criteria (revision 1.1, frozen before unsealing; Johnny,
@@ -987,6 +1104,28 @@ decides no label. It separates "a block-specific difference" (S2a) from "a lobe-
 and from "a difference at the threshold" (S2b). It does not separate variation within the animal
 from reconstruction; nothing in one animal's two lobes can (§6).
 
+**Two objects called "split" (revision 1.3, frozen before unsealing; Ark, Zcode; Ark's class
+154).** D3's split (§4.2) is **by reading**: the two lobe labels differ. The classes above are
+**by block**: `k` of the 64 cells differ in presence. They are different objects, and each can
+occur without the other:
+
+- **Labels can differ at k = 0.** It is measured now, on the worlds, where both lobes carry the
+  same board by seed (k = 0 in all 45 world pairs): **5 of the 25 dense-grid world pairs split
+  by reading** (seeds 92142 U/R, 92161 U/G, 92164 U/R, 92172 R/U, 92183 W/R; lobe L first),
+  **none of the 20 pairs of the axis families** (R, Nf, No, W) (§3.3.1 (d); verified on both
+  `synthetic_worlds.csv`). With identical blocks, the instrument alone splits one dense-grid pair
+  in five (5 of the 20 at γ 0.5–0.85, 0 of 5 at 1.0).
+- **S2 may never fire even when the labels disagree**, and an S1 or S2 block difference can
+  come with equal labels.
+- **After unsealing, a split by reading is not read as "the lobes' blocks differ"** unless the
+  class of this section says so (S1, S2a or S2b, with its own text); with S0 it reads "the same
+  block, read differently", as S0's text says.
+
+The script prints both, separately and each with its own name, after the male reading (S32):
+"Split by reading (section 4.2, D3): yes/no …. Block difference (section 4.3, by block): class …,
+k = … of 64 cells differ", followed by the worlds' reference counts computed from the registered
+run's own synthetic steps.
+
 ## 5. What each outcome means, and the joint reading with flyvis-65 (delta on A §5, §8)
 
 **A's D13 table stands** (A §8, voted "as written" by Ark and Johnny on 2026-09-24): R on both =
@@ -1008,6 +1147,33 @@ A's D13 and adds its reading):**
 **Per lobe**, A §5's table applies to each lobe's label, with "the block" meaning that lobe's
 block and "on flyvis's averaged template" replaced by "in lobe ℓ of one male, on an existence bank
 at `c*`".
+
+**The instrument is weaker on the male banks, named with its numbers beside any male G
+(revision 1.3, frozen before unsealing; Ark, Zcode).** A G on the male arm, in a lobe or as the
+male reading, is stated against an instrument that the pre-run measured to be weaker than A's
+(§3.3.1 (d); verified on both `synthetic_worlds.csv`, rule #2.1 rows):
+
+| γ | lobe L: seen, R | lobe R: seen, R | A: seen, R |
+|---|---|---|---|
+| 0.5 | 0/5, 0/5 | 1/5, 1/5 | 1/5, 1/5 |
+| 0.6 | 2/5, 1/5 | 2/5, 2/5 | 3/5, 2/5 |
+| 0.75 | 5/5, 4/5 | 5/5, 3/5 | 5/5, 5/5 |
+| 0.85 | 4/5, 3/5 | 4/5, 4/5 | 5/5, 5/5 |
+| 1.0 | 5/5, 5/5 | 5/5, 5/5 | 5/5, 5/5 |
+
+In each pair the first number is the worlds at that γ in which rule #2.1 is **seen** (`p_P` <=
+0.01), the second the worlds whose label is **R**, of 5. So rule #2.1 is seen at γ 0.6 in 2 of 5
+worlds in each lobe (A 3 of 5), which moves γ\*_P to 0.75 (A 0.6); above the limit, R is read in
+4/5 and 3/5 worlds at γ 0.75 and 0.85 in lobe L and 3/5 and 4/5 in lobe R (A 5/5 and 5/5).
+**One M world above γ_R reads G in both lobes:** M0.85, seed 92184 (rule #2.1 AUC 0.5254, `p_P`
+0.3695 in lobe L; AUC 0.5420, `p_P` 0.2872 in lobe R). **One M world above the limit reads W in
+lobe L:** M0.85, seed 92183 (rule #2.1 `n_ge` = 1 of 99; lobe R reads it R). A has neither. The
+script prints this beside every G of a lobe and beside a male G, computed from that lobe's
+synthetic step in the registered run (S31): "The instrument on lobe ℓ is weaker than A's …: per
+gamma, rule #2.1 seen (p_P <= 0.01) / read R, of the worlds at that gamma: … (A: …); gamma\*_P = …
+(A 0.6), gamma_R = …; M worlds that read G at or above gamma_R: …; M worlds that read W: …. This
+G is stated against these limits." It adds to the male G sentence of the G row above; it changes
+no label.
 
 ## 6. What the test cannot show (delta on A §6)
 
@@ -1033,6 +1199,18 @@ A §6 applies, except its male-CNS item, which this arm replaces, and in additio
   boards (§3.6). If the male block has another count or shape, its G is still stated against those
   limits, in M-world units, on the lobe's degree terms.
 - **The G gate is not automatic,** since the male block is not known to be rank 1 (§2).
+- **A weaker instrument (revision 1.3; Ark, Zcode).** On the male banks rule #2.1 is seen at
+  γ 0.6 in 2 of 5 worlds per lobe (A 3 of 5), R is read in 4/5 and 3/5 (L) and 3/5 and 4/5 (R)
+  worlds at γ 0.75 and 0.85 (A 5/5), one world at γ 0.85 (seed 92184) reads G in both lobes and
+  one (seed 92183) reads W in lobe L (§5, the table). A male G is stated against this instrument,
+  and the script says so beside it (S31).
+- **A U has no position on a threshold (revision 1.3; Ark, Zcode).** On the male banks the
+  transition band is empty and the U worlds lie at γ 0.5–0.75, at or below the limit; a threshold
+  U reads "not detected at the R level: the two legs, or the two D1 candidates, disagree", not
+  "at the detection limit γ\*_P" (§4.1 (5); S29).
+- **A split by reading is not a block difference (revision 1.3; Ark, Zcode).** With identical
+  blocks (k = 0) the lobes' labels differed in 5 of 25 dense-grid world pairs; a split by reading
+  says nothing about the blocks unless §4.3's class says so (§4.3, "Two objects"; S32).
 - **No parity or degree argument protects the male block** (§0).
 - **The side of the photoreceptors is a transfer** through `rootSide` (builder §1.2); R1, R7 and R8
   are training endpoints only. The lobe-consistency check passed trivially (§0) and did not test
@@ -1076,6 +1254,35 @@ this revision was written. Its output is an input to no gate, reference or regis
 this arm (§3.3.1). See §3.3.1 (g) for why V8 cannot be rerun at a head containing this revision
 without a change on the GPU instrument's side.
 
+**Revision 1.3, a chat-only clarification for the GPU track (decides nothing for this arm, D13
+(iii)).** Ark reported at-risk counts A 12, L 1, R 11 "at threshold 2·2^-23 = 2.384e-7". The
+GPU instrument's registered band (its registration, revision 1.4, E2-III; `census.py` `BAND`) is
+**2^-23 = 1.192e-7**. Recounted by this revision on both male stores (`raw_fits.json.gz` of each
+reference) with the registered definition, through `census.census_fit` itself: the census pair
+set S(f) is the present × absent pairs by the fit's own labels (the auc columns) on every record,
+and all 2,016 pairs only on a base view's `ko`/`ko1` record (the auc_null columns); a fit is at
+risk when the smallest gap between **distinct** values of `p` on S(f) is below the band; exact
+ties are not gaps and are counted apart, as tied pairs.
+
+| scope (fits per store) | lobe L: < 2^-23 / < 2·2^-23 | lobe R: < 2^-23 / < 2·2^-23 | tied pairs on S(f), L / R |
+|---|---|---|---|
+| every fit (28,665) | 1 / 2 | 3 / 11 | 846,270 in 26,966 fits / 814,576 in 27,067 fits |
+| `ko` and `ko1` records, base views and shuffles (27,225) | 0 / 1 | 3 / 11 | 788,910 / 758,387 |
+| D1 subset: BF_1–BF_4 `ko`, base views and shuffles (18,000; V8's composition) | **0 / 1** | **1 / 8** | 475,457 / 456,929 |
+
+**The D1 subsets by name.** Lobe L, at 2·2^-23 only: `world:M1.0:4 ko BF:4` (a base view, all
+pairs; gap 1.97e-7; two absent cells). Lobe R, at 2^-23: `world:M0.5:0|sh:98 ko BF:1` (gap
+1.06e-7); at 2·2^-23 also `world:R:1|sh:29 ko BF:1`, `BF:2`, `BF:3`, `BF:4` (gap 1.33e-7 each, the
+same pair), `world:R:2|sh:37 ko BF:1` (2.20e-7), `world:R:4|sh:12 ko BF:1` (1.78e-7) and
+`world:M1.0:0|sh:67 ko BF:1` (2.23e-7): 8. The fits outside D1 that make up the rest: L, a
+permuted-block ceiling of rule #2.1 (`full`, below both bands); R, one rule #2.1 `ko` shuffle
+and the base `ko1` record of BF_4 (all pairs), both below both bands, and at 2·2^-23 also one N1
+`ko` shuffle (3 + 8 = 11). **Ark's L 1 and R 11 are the counts at 2·2^-23 on the `ko`/`ko1`
+scope** (both reproduced exactly; R's also on every fit); at the registered band they are L 0 and
+R 3 (D1: 0 and 1). A's store, the same definition, as a cross-reference: 6 / 14 (every fit),
+6 / 13 (`ko`/`ko1`), 4 / 8 (D1); Ark's A 12 is not reproduced by any of these three scopes. This
+belongs to the GPU track; nothing in this arm reads it.
+
 ### 7.2 Script changes (listed; none is made by this draft; D14)
 
 | # | where (A's script, lines at `74db080`) | change |
@@ -1107,6 +1314,10 @@ without a change on the GPU instrument's side.
 | S25 | `print_bank`, `md_bank_table`, `summary.json` (the D7 fields, :1077) | the offset, count and sign fields printed under "meaningless on an existence bank" |
 | S26 | `SEAL_RECORD`, new | a constant, "intact" in this revision; if a registered amendment records a break of the seal before review, the verdict lines end with the builder's note "block A of the male CNS was read before its registration was reviewed" (builder §9) |
 | S27 | tests | §7.3 |
+| S29 | new (revision 1.3; Ark, Zcode): `male_u_reading_line`, called in `real_arm_lobe`, printed in `_finish_real_arm` and `RESULT.md` after the A-literals line | with a lobe's **threshold** U only: the male U reading of §4.1 (5), with the lobe's band, the γ of its dense-grid U worlds and how many lie at and above the family limit, computed from the lobe's synthetic step; if the band is not empty, a line saying so that claims nothing; `None` for R, W, G and for a failed-fit, not-measured, not-readable or renamed U. No label string changes |
+| S30 | new (revision 1.3; Ark, Zcode): `PRERUN_GIT_HEAD`, `PRERUN_SCRIPT_SHA256_LF`, `prerun_provenance`; `run_synthetic_only` (reference mode) and `_run_real_arm` | the head and script that made each reference (`a0e16b6`, `7a09f9fd…`, read from each reference's manifest after `check_prerun_files`); a mismatch stops with "PRE-RUN PROVENANCE DIFFERS" before any fit; both codes printed and recorded in the manifest (`prerun_provenance`) and in `RESULT.md`'s header ("pre-run made by …; this run by …"). The `--from-raw` check after the merge (§3.3.1 (h)) is a procedure, not code |
+| S31 | new (revision 1.3; Ark, Zcode): `A_CURVE_TEXT`, `male_g_instrument_line`, called in `real_arm_lobe` (a lobe G) and `_finish_real_arm` (a male G, both lobes) | the instrument's numbers of §5 beside every G: the power curve (seen, R) per γ against A's, γ\*_P against A's 0.6, γ_R, the M worlds that read G at or above γ_R with rule #2.1's AUC and `p_P`, and the M worlds that read W with `n_ge`; computed from the lobe's synthetic step |
+| S32 | new (revision 1.3; Ark, Zcode): `split_notions`, called in `_finish_real_arm`; `summary.json` `split_notions`; `RESULT.md`'s lobe comparison | the split by reading and the block difference printed apart, each with its own name, the rule that one is not read as the other, and the worlds' reference: world pairs whose labels differ on the dense grid and on the axis families, with each pair's `k` (0: the same board) |
 | S28 | the `p_S` prints: the verdict line (:1252), `print_bank` (:2083), `md_check_and_curve` (:2162, the synthetic table), `md_bank_table` (:2393); `N_DEG_SENTENCE` (:310-311) (revision 1.1; Ark, Zcode) | when `n_deg` >= 1, `p_S` is printed with four decimals and the mark "[leg S decided by the count: n_ge = 0 of n_valid]" (or "n_ge = k of n_valid" when it fails); when `n_deg` = 0, as A; no decision reads `p_S` (leg S stays `n_valid >= 1 and n_ge == 0`, :1067) |
 
 ### 7.3 Tests (fixtures and synthetic banks only; no sealed file)
@@ -1153,6 +1364,19 @@ without a change on the GPU instrument's side.
   and at the pre-run folder it was copied from; the only placeholder left is A's amended hash, and
   `check_registered_constants` refuses on it. T3's `--synthetic-only` test now sets lobe L's pins
   to `None` for its duration, so that it keeps testing pre-run mode on fixture fits.
+- **T14, revision 1.3 (S29–S32):** S29 on fixture worlds shaped like lobe L's pre-run (empty
+  band; the line gives "0.5: 3, 0.6: 3, 0.75: 1", "1 at it, 0 above it" and the frozen reading)
+  and on A's shape (a one-step band: the line claims nothing); no line for a failed-fit, not
+  readable or renamed U, or for a G; and on both registered references (L 3/3/1, R 2/1/2). S31 on
+  fixtures and on both references: lobe L's curve "0.5: 0/5, 0/5; 0.6: 2/5, 1/5; 0.75: 5/5, 4/5;
+  0.85: 4/5, 3/5; 1.0: 5/5, 5/5", seed 92184 with AUC 0.5254 and `p_P` 0.3695, seed 92183 W with
+  `n_ge` = 1 of 99; lobe R's curve, 92184 with 0.5420 and 0.2872, no W. S32 on fixtures (a split by
+  reading with class S0, k = 0) and on both references ("5 of 25 dense-grid world pairs … 0 of 20
+  axis-family pairs; every world pair has k = 0"). S30 on both references (head `a0e16b6`, script
+  `7a09f9fd…`, "different code"; a wrong constant fails). T3's real-arm flow also checks that the
+  manifest carries both lobes' provenance and that `RESULT.md` prints S30's and S32's lines; its
+  fixture references set `PRERUN_GIT_HEAD` and `PRERUN_SCRIPT_SHA256_LF` to the head and script
+  that made them.
 
 ### 7.4 The unseal protocol (proposal, D10)
 
@@ -1189,6 +1413,17 @@ tools/.venv/Scripts/python.exe results/genome/c6/checks/knockout_regrow_male_cns
 arguments and `private_outputs`, §3.3.1 (a)), from `a0e16b6` with the tree clean. The registered
 run is the third command, unchanged, from the committed head that carries A's amended hash (D15
 steps 4 and 5).
+
+**Revision 1.3: the check before the registered run** (§3.3.1 (h)), from the merged head with
+the tree clean, both lobes, before the third command:
+
+```
+tools/.venv/Scripts/python.exe results/genome/c6/checks/knockout_regrow_male_cns.py --synthetic-only --lobe L --starts 10 --workers 5 --from-raw ../connectome-seed-data/knockout_regrow/synthetic_malecns_L_prerun/raw_fits.json.gz
+tools/.venv/Scripts/python.exe results/genome/c6/checks/knockout_regrow_male_cns.py --synthetic-only --lobe R --starts 10 --workers 5 --from-raw ../connectome-seed-data/knockout_regrow/synthetic_malecns_R_prerun/raw_fits.json.gz
+```
+
+Each must print "outcome 1: every deciding column equal; byte-identical" with the recomputed
+sha256 equal to the lobe's pin, else the registered run does not start.
 
 **Outputs:** committed aggregates in `results/genome/c6/checks/knockout_regrow_male_cns/`
 (`RESULT.md`, `summary.json`, `per_shuffle_L.csv`, `per_shuffle_R.csv`, `synthetic_worlds_L.csv`,
@@ -1237,12 +1472,12 @@ The body is written with the recommendation of each row.
 | **D9** | The row-and-column variant's attempt cap (builder §12) | **(i) a cap of 100 × 640 attempts per chain; a hit stops a synthetic step (a malfunction on a 32/32 board) and prints "n/a (attempt cap reached: …)" on a real block, which goes on**; the no-checkerboard pre-check prints "n/a". (ii) a hit stops everywhere, as B's D7: on the real block the stop would come after the seal is broken, forfeiting the run for a diagnostic that decides nothing; a sparse real block can hit the cap although swappable (§3.2). (iii) no cap: a real block with no reachable swap would never end | **(i)** |
 | **D10** | The unseal protocol (builder §9) | **(i) §7.4: the sealed files are opened only by the registered real run, after every gate that does not need them; `--allow-dirty` refused with the male arm; a failure after unsealing is recorded, and a second run only on Mike's word.** (ii) A's rule, a dirty real-arm run allowed and marked "not the registered run": such a run opens the sealed files, which builder §9 allows only in the registered run | **(i)** |
 | **D11** | Where the bank pins live (A §8; builder §10.5 step 4) | **(i) amend A, append-only, with the four bank pins, as both documents promise, and pin them in the arm's script too.** A's LF sha256 then changes from `409184de…`: the flyvis-65 run's manifest keeps the old value as the text it ran under; **block B's S2, which pins A "by its LF sha256 at `74db080`", must pin the amended hash or read A from git at `74db080`** (B is not yet implemented). (ii) pin only here and leave A unedited, recording here that A §8's promise is discharged here: A's text would keep a promise that A itself never shows fulfilled. **Revision 1.1 (Johnny, Ark, Zcode):** the amendment's content is specified in §9.3: the four bank pins; the cancellation of A's seeds for this arm (D7); and the line `git show 74db080:docs/plans/2026-09-24-knockout-regrow-registration.md` as the way to recover the text under which the flyvis-65 verdict was made (Johnny). Every place that cites A by its LF hash or "at `74db080`" is listed there, with which is updated and which stays history (Ark), checked by grep | **(i)**, kept, with §9.3 |
-| **D12** | Verdict-line strings | **(i) A's rows quoted verbatim, then the four differences of §4.1** (lobe prefix; the "not readable" U; a line naming A's literals; "failed fit" read as fit failure or rank limit). (ii) restate §4 with the male's literals: a new text of a reading rule, reviewed as such. **Revision 1.1 (Johnny, Zcode):** the rows are quoted from the **amended A**, not from this file. `quote_row` takes the first line starting with the key (`knockout_regrow.py:2373-2379`); in A the U and G keys already match two rows each (§4's and §5's; A lines 1327–1328 and 1381–1382), and the quote is §4's only because §4 comes first. This file has zero such rows, so quoting from it would raise `StopIteration`. The amendment is appended after A's last line, below both tables, so it cannot capture the first match (S2) | **(i)** |
+| **D12** | Verdict-line strings | **(i) A's rows quoted verbatim, then the four differences of §4.1** (lobe prefix; the "not readable" U; a line naming A's literals; "failed fit" read as fit failure or rank limit); **revision 1.3 adds a fifth**, the male reading of a threshold U with an empty band (§4.1 (5), S29), printed as a line of its own; no label string changes. (ii) restate §4 with the male's literals: a new text of a reading rule, reviewed as such. **Revision 1.1 (Johnny, Zcode):** the rows are quoted from the **amended A**, not from this file. `quote_row` takes the first line starting with the key (`knockout_regrow.py:2373-2379`); in A the U and G keys already match two rows each (§4's and §5's; A lines 1327–1328 and 1381–1382), and the quote is §4's only because §4 comes first. This file has zero such rows, so quoting from it would raise `StopIteration`. The amendment is appended after A's last line, below both tables, so it cannot capture the first match (S2) | **(i)** |
 | **D13** | Instrument | **(i) the pinned CPU harness, as A and B**: about 8 h 52 min of wall time in all (revision 1.1, with the `ko1` fits). (ii) the GPU instrument of `cdbde9e`: separate and unreviewed, BF about 2.3 times faster, rule #2.1 not faster, base views not all bit-equal; by A §7 it needs its own registration and synthetic worlds. **(iii) (revision 1.1; Johnny, Ark):** (i), and the GPU instrument may run the male worlds during the pre-run as a second, **unregistered** cross-check: it decides nothing, and its output is an input to no gate, reference or registered value. **Revision 1.1 (all three reviewers):** (i) is kept, because the pinned pre-run must be made by the same instrument as the registered run, and the GPU instrument has no registration yet; it gets its own registration on a separate track (Mike, 09:13 UTC: "review the GPU instrument"). Ark's and Zcode's economics: the hybrid saves about 38 % of a pass (4,870 s against 7,846 s), not ×2.3; rule #2.1 is not faster on GPU; the ceilings, fixed λ and the permutations are not ported (§7.1) | **(i)**, kept; (iii) allowed |
 | **D14** | Script form | **(i) a new file, a copy of A's, reviewed as a diff; A's untouched** (as B's D13 (i)). (ii) a `--arm malecns` inside A's file: the file that A's run and its blind review cite would change. (iii) import A's module and override its constants: `BLOCK`, `MASKS`, `MIRROR_IDX`, `NONBLOCK_CELLS`, `OTHERS` and the world arrays are computed at import (B's D13) | **(i)** |
-| **D15** | Order of work | **(i) the header's order**: the script and this draft committed; the pre-run of both lobes from that committed head on Mike's word; a revision registering the values read from the pinned references, reviewed; A amended (D11); the registered run on Mike's word. Each reference has a producer in git. (ii) A's D11 order (pre-run before commit): repeats the provenance gap of A §3.3 | **(i)** |
+| **D15** | Order of work | **(i) the header's order**: the script and this draft committed; the pre-run of both lobes from that committed head on Mike's word; a revision registering the values read from the pinned references, reviewed; A amended (D11); the registered run on Mike's word. Each reference has a producer in git. **Revision 1.3:** between the merge (with A's amended hash) and the registered run, the `--from-raw` check of §3.3.1 (h) in both lobes; if either lobe's worlds table is not re-derived byte for byte, the registered run does not start. (ii) A's D11 order (pre-run before commit): repeats the provenance gap of A §3.3 | **(i)** |
 | **D16** | The joint reading with flyvis-65's G | **(i) A's D13 table as voted, and the readings of §5** for male R (a flag with a registered list, examined under a new registration, overturning neither verdict), W, G, U and split. (ii) A's D13 table alone, with no reading written before data for the cases it leaves as "any other pair" | **(i)** |
-| **D17** (revision 1.2) | Where the pinned references live. The pre-run wrote to `malecns_prerun_<lobe>_20260926T131249Z/`; the script refuses `--out` at the proposed `synthetic_malecns_<lobe>_prerun/` (S18), so the pre-run could not write there. §3.3 proposes those names; the script's `PRERUN_DIR` already holds them, its comment says the reference "is moved to PRERUN_DIR[lobe] in that reviewed change", and each reference's manifest records them as `prerun_dir`; A copied its outputs to its reference folder (A §7, "have been copied to") | **(i) copy the five files byte for byte to `synthetic_malecns_<lobe>_prerun/`, leave the pre-run folders untouched, `PRERUN_DIR` unchanged:** follows §3.3, A's precedent and the script's constant; the pre-run folders stay where the stdout logs name them and where the GPU instrument's V8 reads them (`instrument.py` `MALE_PRERUN_STORES`); the originals then hold a byte copy of a pinned reference, so `--out` there is refused by the content guard (S18), and the copies by the path guard; the cost is a second copy of about 8.9 MB per lobe. (ii) point `PRERUN_DIR` at the pre-run folders: no copy, but the manifest's `prerun_dir` would name a folder that does not hold the reference, and the path guard would then protect the V8 input folders as the references (harmless, but two roles in one folder). (iii) move (rename) the folders, as the script's comment says: one copy, but the stdout logs and V8's `MALE_PRERUN_STORES` would name folders that no longer exist, and V8 on lobe R, whose input is lobe R's pre-run folder, was running when this revision was written | **(i)**, done (§3.3.1 (b)) |
+| **D17** (revision 1.2) | Where the pinned references live. The pre-run wrote to `malecns_prerun_<lobe>_20260926T131249Z/`; the script refuses `--out` at the proposed `synthetic_malecns_<lobe>_prerun/` (S18), so the pre-run could not write there. §3.3 proposes those names; the script's `PRERUN_DIR` already holds them, its comment says the reference "is moved to PRERUN_DIR[lobe] in that reviewed change", and each reference's manifest records them as `prerun_dir`; A copied its outputs to its reference folder (A §7, "have been copied to") | **(i) copy the five files byte for byte to `synthetic_malecns_<lobe>_prerun/`, leave the pre-run folders untouched, `PRERUN_DIR` unchanged:** follows §3.3, A's precedent and the script's constant; the pre-run folders stay where the stdout logs name them and where the GPU instrument's V8 reads them (`instrument.py` `MALE_PRERUN_STORES`); the originals then hold a byte copy of a pinned reference, so `--out` there is refused by the content guard (S18), and the copies by the path guard; the cost is a second copy of about 8.9 MB per lobe. (ii) point `PRERUN_DIR` at the pre-run folders: no copy, but the manifest's `prerun_dir` would name a folder that does not hold the reference, and the path guard would then protect the V8 input folders as the references (harmless, but two roles in one folder). (iii) move (rename) the folders, as the script's comment says: one copy, but the stdout logs and V8's `MALE_PRERUN_STORES` would name folders that no longer exist, and V8 on lobe R, whose input is lobe R's pre-run folder, was running when this revision was written | **(i)**, done (§3.3.1 (b)). **Revision 1.3 (Ark, Zcode):** the link copy ← original recorded here with its verification command (all five sha256 equal; §3.3.1 (b)); no file is added to either folder |
 
 ### 9.1 Votes on revision 1 (DPC Research chat, 2026-09-26 UTC; as relayed by CC)
 
@@ -1285,7 +1520,14 @@ This revision does not edit A. It fixes what the amendment will contain, so that
 vote on it with this file.
 
 1. **Where:** appended after A's last line, as a new section; nothing above it changes. It lies
-   below A's §4 and §5 tables, so `quote_row` still returns §4's rows (S2, D12).
+   below A's §4 and §5 tables, so `quote_row` still returns §4's rows (S2, D12). **Its form
+   (revision 1.3, decided by CC):** a new section, "## 13. Amendment 1" (Zcode's position: A's
+   §12 holds the changelog and the error ledger, whose rows have their own six-field format and
+   should not carry a normative change; the new section carries both addresses, A §8 lines
+   1725–1726 (the promise to pin) and 1749–1750 (the seeds), and the pins). **The single pointer
+   line Ark asked for is the first line inside §13 itself**, so no line above the amendment
+   changes and item 5 ("nothing else") holds. Ark's alternative, a subsection §12.x, is recorded
+   and not taken, for Zcode's reason (Appendix A).
 2. **The four bank pins** (A §8: "amended, before that arm runs, to pin the built bank's sha256";
    builder §10.1, §10.5 step 4): the sha256 values of `male_cns_L_outside.csv`,
    `male_cns_R_outside.csv`, `male_cns_L_blockA.sealed.csv` and `male_cns_R_blockA.sealed.csv`,
@@ -1332,6 +1574,36 @@ it; the rows above stand:
 | the GPU instrument's registration (`docs/plans/2026-09-26-gpu-instrument-registration.md` lines 30, 132, 287, 303, 547, 911, 918, 957, 1007, 1076, 1083 at `e50bf74`) | A's text (lines 30, 918, 1076: A §7 lines 1473–1476, A §12 lines 2392–2395, A §3.3 and §7) and A's script's lines at `74db080` | history, unchanged: the amendment is appended after A's last line, so every line number above it stays true |
 | the arm's two pre-run references and their stdout logs (`synthetic_only.json` manifest `a_registration_sha256_lf`, and the logs' check 1 line), in both the pre-run folders and the copies | `409184de…`, recorded (pre-run mode) | **history, untouched**: the pinned references are never edited; the registered run records the amended hash in its own manifest |
 
+### 9.4 Votes on revision 1.2 (DPC Research chat, 2026-09-26 UTC; as relayed by CC)
+
+| reviewer | time (UTC) | vote |
+|---|---|---|
+| Ark | 18:10 | yes, with edits |
+| Zcode | 18:13 | yes, with edits |
+
+No other vote on revision 1.2 is relayed. Revision 1.3 has not been voted on.
+
+### 9.5 The edits of revision 1.3, who asked, and where each is applied
+
+Items 1–3 are reading rules, **frozen before unsealing**: fixed in this revision, before either
+sealed file is opened; no later revision changes them after the seal is broken. None changes a
+gate, cut, seed, world or option of D1–D17. Every number was verified on the files named in the
+"applied in" column's sections.
+
+| # | edit | asked by | applied in | where this revision differs from CC's brief |
+|---|---|---|---|---|
+| 1 | U with an empty band: γ\*_P = γ_R = family limit = 0.75, the band empty by construction, the U worlds at or below the limit (L 7: 3 at 0.5, 3 at 0.6, 1 at 0.75; R 5: 2, 1, 2); A's "signature of γ\*_P" does not hold; on the male arm a U is not "at the threshold" | Ark, Zcode | §4.1 (5), §6, §3.3.1 (d) surprise 2; S29; T14 | The brief's wording "U reads 'signal not detected'" is written as **"not detected at the R level: the two legs, or the two D1 candidates, disagree"**: in all 12 U worlds rule #2.1 passes leg S (`n_ge` = 0), 5 have the legs disagreeing and 7 have one D1 candidate reading R, so "signal not detected" would say more than the worlds show. It applies to a threshold U only; the label string stays A's |
+| 2 | The instrument is weaker on the male banks, named with its numbers beside any male G: seen at γ 0.6 in 2/5 (A 3/5); the power curves; M0.85 seed 92184 G in both lobes (AUC 0.525/0.542, `p_P` 0.3695/0.2872); seed 92183 W in L (`n_ge` = 1 of 99), R in R | Ark, Zcode | §5 (new paragraph and table), §6; S31; T14 | Verified: in each pair the first number is the worlds whose rule #2.1 `p_P` <= 0.01 ("seen"), the second the worlds labelled R, of 5; A's 3/5 at 0.6 read from A's pinned CSV. The line is printed beside a lobe's G and beside a male G, computed from the registered run's own synthetic step rather than typed as constants |
+| 3 | Split: two objects (by reading, D3; by block, §4.3); labels can differ at k = 0; measured now: 5 of 25 dense-grid pairs, none on the axis families; S2 may never fire when labels differ; after unsealing a split is not read as "the blocks differ" unless §4.3's class says so; printed apart | Ark, Zcode (Ark's class 154) | §4.3 ("Two objects"), §3.8, §4.2 table, §6, §3.3.1 (d); S32; T14 | Verified: the five seeds and letters as in the brief (92142 U/R, 92161 U/G, 92164 U/R, 92172 R/U, 92183 W/R), 0 of 20 axis pairs. Added: every one of the 45 world pairs has the same block in both lobes (base labels equal), so all five are splits by reading **at k = 0** |
+| 4 | z / z′ order: on A z < z′, on the male banks z > z′ | Ark, Zcode | §3.3.1 (c), after the L = R paragraph | none |
+| 5 | `n_deg` inert, signed by its cause | Ark | §3.3.1 (d), new row | `n_deg` = 0 in all 540 rows verified. **The present counts differ from the brief's "19…33":** the shuffled blocks hold 9–37 (L) and 12–36 (R) present cells over all 26,730 shuffle records per lobe (the 17,820 BF `ko` shuffle fits the same); the cause stands (never 0 or 64) |
+| 6 | `ko1` wording: "main pass: 46 copied, 174 fitted" (220); the full 179 / 176 include the 5 path-check fits on `world:W:0`, as in A | Zcode | §3.3.1 (a), (c) | Verified on the stores: 51 (L) and 54 (R) base fits at λ = 1, 5 of them `world:W:0`'s (unflagged `ko1`), 46 / 49 flagged; A: 52, 5, 47, 173 + 5 = 178 |
+| 7 | D17: the link copy ← original, all five sha256 equal, with the command | Ark, Zcode | §3.3.1 (b), D17 | Recorded in this file only; no file added to either folder (`check_prerun_files` would report it as unlisted and T13 requires none) |
+| 8 | The pre-run and the registered run are made by different code: `PRERUN_SCRIPT_SHA256_LF`, both codes recorded and printed; Zcode's `--from-raw` check after the merge registered; run now | Ark, Zcode (the check: Zcode) | S30 (`PRERUN_GIT_HEAD`, `PRERUN_SCRIPT_SHA256_LF`, `prerun_provenance`); §3.3.1 (c) row, (g), (h); §7.5; D15; T14 | Also a `PRERUN_GIT_HEAD` constant, and a mismatch of either stops the run. The check run by this revision re-derived both worlds tables byte for byte (§3.3.1 (h)) |
+| 9 | Ark's census numbers (A 12, L 1, R 11 at 2·2^-23): recount at the registered 2^-23 and at 2·2^-23, with the D1 subsets | CC (a caution on Ark's numbers) | §7.1, a chat-only clarification | L 0 / 1 and R 3 / 11 on the `ko`/`ko1` scope (Ark's L 1 and R 11 reproduced at 2·2^-23); D1: L 0 / 1, R 1 / 8, named; A's 12 not reproduced by any of three scopes (6 / 14, 6 / 13, 4 / 8). Decides nothing for the arm |
+| 10 | The form of the amendment to A | Ark (§12.x, a pointer line), Zcode (a new §13); decided by CC | §9.3 item 1, Appendix A | none: "## 13. Amendment 1" kept; Ark's pointer line is the first line inside §13; Ark's alternative recorded |
+| 11 | The votes and this table | CC's brief | §9.4, §9.5, header, §12 | none |
+
 ## 10. Not verified at drafting
 
 - **That rule #2.1's offset path, `eb_tables` and `data_bits` run on one distinct offset set** (§2).
@@ -1367,6 +1639,14 @@ it; the rows above stand:
   only that each reference is consistent with its own store); the joint R on the real blocks (the
   worlds' pair count of §3.3.1 (d) is on 32/32 boards); the V8 result on lobe R and everything
   about V8 beyond CC's relay (§7.1); every other item above.
+- **Revision 1.3.** The reviews of revision 1.2 are known from CC's brief, not read in the chat.
+  Not reproduced: the "19…33" present counts relayed with edit 5 (the stores give 9–37 and
+  12–36; §9.5) and Ark's A count of 12 at-risk fits (§7.1); where those numbers came from is not
+  known here. The `--from-raw` check of §3.3.1 (h) was run on the uncommitted tree that became
+  this revision's commit; it is repeated at the merged head before the registered run. The GPU
+  instrument's tests were not run by this revision (its `male_arm.py` imports the arm's script,
+  whose changes S29–S32 are additions that no function of `male_arm.py` calls; checked with the
+  code graph and grep).
 
 ## 11. Error ledger (working rules inherited from A §12)
 
@@ -1392,6 +1672,7 @@ an error and not a narrowing: a different object").
 | item | clarification |
 |---|---|
 | C1 (revision 1's ledger row M(1)) | Three objects, none a correction of another. **A's row:** "male CNS v1.0: 64 / 64 at every pair threshold tried (Zcode, preliminary graph)" (A §1.4 at `74db080`; `knockout_regrow.py:205-208`; `knockout_regrow/RESULT.md` line 56; builder §0), which the reviewers describe as 64 / 64 at every flyvis-65 pair threshold tried on the 65 grid; the thresholds are in no file. **This arm:** 64 / 64 at `c*` in each lobe (`BUILD.md` lines 189–190). **The (b′) diagnostic, at another cut and on this bank:** 56 / 64 in lobe L at `w_min` 2 and 3 (`BUILD.md` lines 210, 227). Revision 1 called A's row a wording that "reads as general"; it is a statement about other thresholds, and it stays in A as written |
+| C2 (revision 1.3, Zcode) | Revision 1.2's §3.3.1 (a) gave the `ko1` split as "46 records copied from the `ko` fit, 174 fitted" and row (c) as "46 copied, 179 fitted". Both were true, at two scopes: the main pass (220 records) and the store (225, with the 5 path-check fits of `world:W:0`, fitted and unflagged). Not a wrong number, so not a ledger row; (a) now names both scopes |
 
 **Registered expectations and what the build showed** (not wrong wordings; recorded so that no one
 reads them as met):
@@ -1403,11 +1684,11 @@ reads them as met):
 | "the first question put to the build: how much larger the R1-row asymmetry is than 1 : 2.04 in bodies" (builder §4) | answered: at `c*` there is no R1-row asymmetry in presence (1 : 1 against 1 : 2.04 in bodies) | `BUILD.md` line 185 |
 | "On a denser bank the M worlds may be seen at lower γ" (§3.6, revision 1) | not borne out: γ\*_P = 0.75 in both lobes against A's 0.6 (seen 2 of 5 at γ = 0.6 in each lobe, A 3 of 5); within one grid step, the binomial note's resolution (revision 1.2) | §3.3.1 (d) |
 | "The expectations of A §3.6 (R reads R, Nf reads G, No reads G, W reads W) carry over" (§3.6) | met in both lobes: every stop row passed, labels as A's in the four stop families | §3.3.1 (d) |
-| A's U reading, written on A's pre-run: U worlds in the band, at γ\*_P (A §4, revisions 3.1, 3.2; quoted by this arm as A's literals, §4.1) | on the male worlds the band is empty and the U worlds lie at γ 0.5–0.75, below or at the limits (L 7, R 5) | §3.3.1 (d) |
+| A's U reading, written on A's pre-run: U worlds in the band, at γ\*_P (A §4, revisions 3.1, 3.2; quoted by this arm as A's literals, §4.1) | on the male worlds the band is empty and the U worlds lie at γ 0.5–0.75, below or at the limits (L 7, R 5) | §3.3.1 (d) **Revision 1.3:** a reading rule is frozen from it, §4.1 (5) |
 | "At γ = 0 a world's outside density is then near the lobe's" (§3.6) | met: Nf worlds 0.1724 (L; lobe 0.1675) and 0.1812 (R; lobe 0.1776) | §3.3.1 (d) |
 | cost: about 2 h 11 min per lobe per pass (§3.6) | 2 h 13 min (L) and 2 h 11 min (R) | §3.3.1 (a) |
 
-**The seal record:** intact at revision 1, at revision 1.1 and at revision 1.2 (header). A break
+**The seal record:** intact at revision 1, at revision 1.1, at revision 1.2 and at revision 1.3 (header). A break
 before review is recorded here, and S26 carries it to the verdict lines.
 
 ## 12. Changelog
@@ -1449,6 +1730,25 @@ this revision: two `--from-raw` passes (about 9 s each, 5 fits each, §3.3.1 (f)
 No gate, cut, reading rule, seed, world or option of D1–D16 changes. No sealed file opened; A, the
 builder registration and B not edited.
 
+**Revision 1.3 (2026-09-27 UTC): the reviewers' edits on revision 1.2, CC subagent.** Votes of Ark
+(18:10) and Zcode (18:13 UTC), "yes, with edits" (§9.4); the edits, who asked and where each is
+applied in §9.5. Reading rules frozen before unsealing: a threshold U on the male banks, with an
+empty band, reads "not detected at the R level", with no position on a threshold (§4.1 (5), §6;
+S29); the instrument's weakness named with its numbers beside every male G (§5, §6; S31); the two
+objects called "split", printed apart, one never read as the other (§4.3, §3.8, §4.2, §6; S32).
+Also: §3.3.1 (a) the `ko1` scopes, (b) the link copy ← original with its command, (c) the z / z′
+order and the code that made the references, (d) the meaning of the curve's pairs, `n_deg` with
+its cause and the world pairs at k = 0, (g) and (h) the pre-run's and this run's code (S30) and
+the `--from-raw` check after the merge, registered and run; §7.1 a chat-only clarification of the
+GPU census counts; §7.2 S29–S32; §7.3 T14; §7.5 the check's commands; D12, D15, D17; §9.3 item 1
+and Appendix A (the amendment's form decided; Ark's pointer line inside §13); §10, §11 (C2, the U
+expectation row, the seal record). In the script: `REGISTRATION_REVISION` = "1.3", S29–S32; in
+the tests: T14 (7 tests) and two assertions in T3's real-arm flow; 46 tests pass. Run by this
+revision: the two `--from-raw` passes (§3.3.1 (h)), the census and the checks of §9.5 by scratch
+scripts (not committed), the tests. No gate, cut, seed, world or option of D1–D17 changes. No
+sealed file opened; A, the builder registration and B not edited; no file added to or changed in
+the reference or pre-run folders.
+
 ## 13. Sources
 
 - [`2026-09-24-knockout-regrow-registration.md`](2026-09-24-knockout-regrow-registration.md),
@@ -1476,9 +1776,15 @@ builder registration and B not edited.
   `synthetic_only.json`); `docs/plans/2026-09-26-gpu-instrument-registration.md` (header, at
   `e50bf74`); `results/genome/c6/gpu_instrument/instrument.py` and `validation.py` (how V8 reads
   the male stores); CC's brief (the pre-run's exit codes, the V8 lobe L relay).
+- Revision 1.3: both references' `synthetic_worlds.csv`, `synthetic_only.json` and
+  `raw_fits.json.gz`, and the five files of each pre-run folder (sha256 only); A's pinned
+  `synthetic_rev3_prerun/synthetic_worlds.csv` and `raw_fits.json.gz`;
+  `results/genome/c6/gpu_instrument/census.py` (the census definition, used as is) and
+  `validation.py` (V8's composition); A §8 at `74db080` (lines 1725–1726, 1749–1750); CC's brief
+  (the two reviews of revision 1.2 and CC's decision on the amendment's form).
 - `idea.md` (the project goal; context).
 
-## Appendix A. Draft of the amendment to A (revision 1.2; to be made in D15 step 4)
+## Appendix A. Draft of the amendment to A (revisions 1.2, 1.3; to be made in D15 step 4)
 
 The text below is a **draft** for the reviewers. It is appended, as one new section, after A's
 last line (`- \`REGISTRATION_REVISION\` = "3.4.1". Header line, §10, §12.`, line 2,495 at
@@ -1492,6 +1798,10 @@ header citation (§9.3 table, first two rows), and records the commit here.
 
 ~~~markdown
 ## 13. Amendment 1 (append-only): the male CNS arm's bank pins and seeds
+
+**Pointer.** This section amends §8 of revision 3.4.1 at two addresses: the promise to pin the
+built bank (§8, lines 1725–1726) and the sentence on seeds (§8, lines 1749–1750, bullet "The same
+block by name"); no line above this section is changed.
 
 **What this section is.** The amendment that §8 promises ("This registration will be amended,
 before that arm runs, to pin the built bank's sha256, and nothing else in it changes"; §8,
@@ -1535,13 +1845,17 @@ That text is recovered with
 
 **Notes for the reviewers on the draft.**
 
-- **Its heading number.** A's last section is "## 12. Changelog"; the draft names itself
-  "## 13." Whether the amendment is a new section or a subsection of §12 is a choice of form; a
-  new section keeps A's changelog as it was at the verdict.
+- **Its heading number (revision 1.3: decided by CC).** A's last section is "## 12. Changelog";
+  the draft names itself "## 13." **Kept: a new section, "## 13. Amendment 1"** (Zcode's
+  position): A's §12 holds the changelog and the error ledger, whose rows have their own
+  six-field format and should not carry a normative change; a new section keeps A's §12 as it was
+  at the verdict and carries both addresses (§8 lines 1725–1726 and 1749–1750) and the pins.
+  **Ark's alternative, a subsection §12.x, is recorded and not taken**, for that reason.
 - **A's status header is not touched,** so after the amendment A's header still reads "revision
-  3.4.1" while its text has an appended section. The amendment's own heading says what it is;
-  the reviewers may prefer one line in A's header too, which §9.3 item 5 ("nothing else") would
-  then have to allow.
+  3.4.1" while its text has an appended section. **Revision 1.3:** the single pointer line Ark
+  asked for is placed as **the first line inside §13 itself** ("**Pointer.** This section amends
+  §8 …"), not in A's header, so no line above the amendment changes and §9.3 item 5 ("nothing
+  else") holds. It starts with none of `quote_row`'s four keys.
 - **Its LF sha256 cannot be computed before the text is final;** step 4 computes it after the
   commit and sets it in the script (the registered run refuses until then, §3.3.1 (g)).
 - **Block B** pins A "by its LF sha256 at `74db080`" (B's S2, line 576); the amendment changes
