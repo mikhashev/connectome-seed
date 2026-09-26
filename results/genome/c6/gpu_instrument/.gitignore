@@ -1,3 +1,6 @@
 __pycache__/
 # run2.log: the first validation pass, with the key and cell-order bug described in README; kept locally, not committed
 run2.log
+# full per-fit validation dumps (~6 MB each); the summaries are in the run logs and README
+validation_pipeline_all45.json
+validation_shuffles_all45.json

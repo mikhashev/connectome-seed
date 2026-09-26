@@ -1,0 +1,101 @@
+BF_1: 4500 banks in 286.8s (near-ties 1586)
+BF_2: 4500 banks in 627.1s (near-ties 1665)
+BF_3: 4500 banks in 645.4s (near-ties 1689)
+BF_4: 4500 banks in 661.7s (near-ties 1678)
+{
+ "banks": 4500,
+ "fits": 18000,
+ "y_mismatch": 0,
+ "lam_mismatches": 0,
+ "p_bit_equal": 17995,
+ "max_abs_p_diff": 5.6323528063728645e-08,
+ "max_auc_diff": 0.0,
+ "label_mismatches": 0,
+ "labels_total": 1152000,
+ "near_ties_by_rank": {
+  "1": 1586,
+  "2": 1665,
+  "3": 1689,
+  "4": 1678
+ },
+ "secs": {
+  "setup_before_prep": 2.1970455646514893,
+  "prep": 137.81262946128845,
+  "upload": 0.7932336330413818,
+  "gpu_ranks": {
+   "1": 286.8357982635498,
+   "2": 627.1344439983368,
+   "3": 645.3887279033661,
+   "4": 661.6820638179779
+  },
+  "gpu_total": 2221.083566427231,
+  "decode_tail_after_gpu": 0.19856691360473633,
+  "prep_to_last_decode": 2359.94918012619,
+  "end_to_end_wall": 2362.286931991577
+ },
+ "cpu_ref_fit_secs_sum": 158851.53838944435,
+ "prep_arrays_mib": 2209.277629852295,
+ "ram_used_increase_peak_mib": 6088.30078125,
+ "main_peak_wset_mib": 5424.171875,
+ "vram_torch_peak_alloc_mib": 12526.20703125,
+ "gpu_util": {
+  "prep": {
+   "n_samples": 271,
+   "util_mean": 0.0036900369003690036,
+   "util_median": 0.0,
+   "share_below_20pct": 1.0,
+   "share_at_least_90pct": 0.0,
+   "mem_used_max_mib": 3075.0
+  },
+  "gpu": {
+   "n_samples": 4363,
+   "util_mean": 98.38253495301399,
+   "util_median": 99.0,
+   "share_below_20pct": 0.0006876002750401101,
+   "share_at_least_90pct": 0.9977079990831996,
+   "mem_used_max_mib": 18176.0
+  },
+  "decode_tail": null
+ },
+ "workers": 24,
+ "row_chunk": 40000,
+ "gpu_name": "NVIDIA RTX PRO 4500 Blackwell",
+ "by_rank": {
+  "1": {
+   "fits": 4500,
+   "lam_mismatches": 0,
+   "p_bit_equal": 4495,
+   "max_abs_p_diff": 5.6323528063728645e-08,
+   "label_mismatches": 0
+  },
+  "2": {
+   "fits": 4500,
+   "lam_mismatches": 0,
+   "p_bit_equal": 4500,
+   "max_abs_p_diff": 0.0,
+   "label_mismatches": 0
+  },
+  "3": {
+   "fits": 4500,
+   "lam_mismatches": 0,
+   "p_bit_equal": 4500,
+   "max_abs_p_diff": 0.0,
+   "label_mismatches": 0
+  },
+  "4": {
+   "fits": 4500,
+   "lam_mismatches": 0,
+   "p_bit_equal": 4500,
+   "max_abs_p_diff": 0.0,
+   "label_mismatches": 0
+  }
+ }
+}
+worst: world:M0.85:2||ko||BF:1 3.0 3.0 5.632e-08 0 0.0
+worst: world:M1.0:4||ko||BF:1 3.0 3.0 3.156e-08 0 0.0
+worst: world:M0.85:0||ko||BF:1 1.0 1.0 2.937e-08 0 0.0
+worst: world:M1.0:0||ko||BF:1 1.0 1.0 2.333e-08 0 0.0
+worst: world:M0.75:0||ko||BF:1 3.0 3.0 1.631e-08 0 0.0
+worst: world:R:0|sh:0||ko||BF:1 100.0 100.0 0.000e+00 0 0.0
+worst: world:R:0|sh:1||ko||BF:1 100.0 100.0 0.000e+00 0 0.0
+worst: world:R:0|sh:2||ko||BF:1 100.0 100.0 0.000e+00 0 0.0

@@ -1,0 +1,71 @@
+99 banks (R:0..R:0): prep 4.5s, existence 33.8s (GPU bf_als 25.3s, ridge 7.0s), rest of fit 2.9s; bit-equal 99/99, lam mismatches 0, max|dp| 0.00e+00
+99 banks (R:1..R:1): prep 3.5s, existence 35.5s (GPU bf_als 25.2s, ridge 8.7s), rest of fit 2.8s; bit-equal 99/99, lam mismatches 0, max|dp| 0.00e+00
+99 banks (R:2..R:2): prep 3.6s, existence 36.2s (GPU bf_als 25.1s, ridge 9.3s), rest of fit 2.9s; bit-equal 99/99, lam mismatches 0, max|dp| 0.00e+00
+99 banks (R:3..R:3): prep 3.4s, existence 37.3s (GPU bf_als 25.4s, ridge 10.1s), rest of fit 2.8s; bit-equal 99/99, lam mismatches 0, max|dp| 0.00e+00
+99 banks (R:4..R:4): prep 3.9s, existence 38.9s (GPU bf_als 25.9s, ridge 11.1s), rest of fit 3.0s; bit-equal 99/99, lam mismatches 0, max|dp| 0.00e+00
+99 banks (Nf:0..Nf:0): prep 3.3s, existence 38.1s (GPU bf_als 25.2s, ridge 11.1s), rest of fit 2.1s; bit-equal 99/99, lam mismatches 0, max|dp| 0.00e+00
+99 banks (Nf:1..Nf:1): prep 3.3s, existence 38.5s (GPU bf_als 25.3s, ridge 11.3s), rest of fit 2.1s; bit-equal 99/99, lam mismatches 0, max|dp| 0.00e+00
+99 banks (Nf:2..Nf:2): prep 3.3s, existence 38.8s (GPU bf_als 25.3s, ridge 11.6s), rest of fit 2.0s; bit-equal 99/99, lam mismatches 0, max|dp| 0.00e+00
+99 banks (Nf:3..Nf:3): prep 3.3s, existence 38.5s (GPU bf_als 25.2s, ridge 11.3s), rest of fit 2.1s; bit-equal 99/99, lam mismatches 0, max|dp| 0.00e+00
+99 banks (Nf:4..Nf:4): prep 3.2s, existence 38.7s (GPU bf_als 25.2s, ridge 11.6s), rest of fit 2.2s; bit-equal 99/99, lam mismatches 0, max|dp| 0.00e+00
+99 banks (No:0..No:0): prep 3.9s, existence 39.9s (GPU bf_als 25.9s, ridge 12.0s), rest of fit 2.9s; bit-equal 99/99, lam mismatches 0, max|dp| 0.00e+00
+99 banks (No:1..No:1): prep 3.9s, existence 39.3s (GPU bf_als 25.6s, ridge 11.8s), rest of fit 2.9s; bit-equal 99/99, lam mismatches 0, max|dp| 0.00e+00
+99 banks (No:2..No:2): prep 3.5s, existence 38.9s (GPU bf_als 25.7s, ridge 11.3s), rest of fit 2.9s; bit-equal 99/99, lam mismatches 0, max|dp| 0.00e+00
+99 banks (No:3..No:3): prep 3.8s, existence 39.3s (GPU bf_als 25.7s, ridge 11.6s), rest of fit 2.8s; bit-equal 99/99, lam mismatches 0, max|dp| 0.00e+00
+99 banks (No:4..No:4): prep 3.8s, existence 38.7s (GPU bf_als 25.6s, ridge 11.2s), rest of fit 2.8s; bit-equal 99/99, lam mismatches 0, max|dp| 0.00e+00
+99 banks (W:0..W:0): prep 3.7s, existence 39.2s (GPU bf_als 25.6s, ridge 11.7s), rest of fit 3.2s; bit-equal 99/99, lam mismatches 0, max|dp| 0.00e+00
+99 banks (W:1..W:1): prep 3.8s, existence 39.3s (GPU bf_als 25.8s, ridge 11.6s), rest of fit 3.2s; bit-equal 99/99, lam mismatches 0, max|dp| 0.00e+00
+99 banks (W:2..W:2): prep 3.9s, existence 38.7s (GPU bf_als 25.6s, ridge 11.2s), rest of fit 3.3s; bit-equal 99/99, lam mismatches 0, max|dp| 0.00e+00
+99 banks (W:3..W:3): prep 3.9s, existence 39.2s (GPU bf_als 26.0s, ridge 11.3s), rest of fit 3.2s; bit-equal 99/99, lam mismatches 0, max|dp| 0.00e+00
+99 banks (W:4..W:4): prep 3.7s, existence 38.9s (GPU bf_als 25.8s, ridge 11.2s), rest of fit 3.3s; bit-equal 99/99, lam mismatches 0, max|dp| 0.00e+00
+99 banks (M0.5:0..M0.5:0): prep 3.3s, existence 38.4s (GPU bf_als 25.0s, ridge 11.4s), rest of fit 2.2s; bit-equal 99/99, lam mismatches 0, max|dp| 0.00e+00
+99 banks (M0.5:1..M0.5:1): prep 3.2s, existence 38.0s (GPU bf_als 24.9s, ridge 11.2s), rest of fit 2.1s; bit-equal 99/99, lam mismatches 0, max|dp| 0.00e+00
+99 banks (M0.5:2..M0.5:2): prep 3.3s, existence 38.3s (GPU bf_als 25.0s, ridge 11.4s), rest of fit 2.0s; bit-equal 99/99, lam mismatches 0, max|dp| 0.00e+00
+99 banks (M0.5:3..M0.5:3): prep 3.4s, existence 38.1s (GPU bf_als 24.9s, ridge 11.3s), rest of fit 2.3s; bit-equal 99/99, lam mismatches 0, max|dp| 0.00e+00
+99 banks (M0.5:4..M0.5:4): prep 3.2s, existence 38.7s (GPU bf_als 25.0s, ridge 11.6s), rest of fit 2.2s; bit-equal 99/99, lam mismatches 0, max|dp| 0.00e+00
+99 banks (M1.0:0..M1.0:0): prep 3.4s, existence 38.0s (GPU bf_als 25.1s, ridge 10.9s), rest of fit 2.3s; bit-equal 99/99, lam mismatches 0, max|dp| 0.00e+00
+99 banks (M1.0:1..M1.0:1): prep 3.5s, existence 39.1s (GPU bf_als 25.2s, ridge 11.8s), rest of fit 2.4s; bit-equal 99/99, lam mismatches 0, max|dp| 0.00e+00
+99 banks (M1.0:2..M1.0:2): prep 3.3s, existence 38.5s (GPU bf_als 25.0s, ridge 11.5s), rest of fit 2.3s; bit-equal 99/99, lam mismatches 0, max|dp| 0.00e+00
+99 banks (M1.0:3..M1.0:3): prep 3.4s, existence 38.7s (GPU bf_als 25.1s, ridge 11.5s), rest of fit 2.3s; bit-equal 99/99, lam mismatches 0, max|dp| 0.00e+00
+99 banks (M1.0:4..M1.0:4): prep 3.4s, existence 38.6s (GPU bf_als 25.1s, ridge 11.5s), rest of fit 2.3s; bit-equal 99/99, lam mismatches 0, max|dp| 0.00e+00
+99 banks (M0.6:0..M0.6:0): prep 3.4s, existence 38.9s (GPU bf_als 25.0s, ridge 11.9s), rest of fit 2.1s; bit-equal 99/99, lam mismatches 0, max|dp| 0.00e+00
+99 banks (M0.6:1..M0.6:1): prep 3.2s, existence 39.4s (GPU bf_als 25.2s, ridge 12.1s), rest of fit 2.0s; bit-equal 99/99, lam mismatches 0, max|dp| 0.00e+00
+99 banks (M0.6:2..M0.6:2): prep 3.2s, existence 39.2s (GPU bf_als 25.1s, ridge 12.0s), rest of fit 2.2s; bit-equal 99/99, lam mismatches 0, max|dp| 0.00e+00
+99 banks (M0.6:3..M0.6:3): prep 3.3s, existence 39.3s (GPU bf_als 25.2s, ridge 11.9s), rest of fit 2.0s; bit-equal 99/99, lam mismatches 0, max|dp| 0.00e+00
+99 banks (M0.6:4..M0.6:4): prep 3.3s, existence 39.8s (GPU bf_als 25.2s, ridge 12.5s), rest of fit 2.1s; bit-equal 99/99, lam mismatches 0, max|dp| 0.00e+00
+99 banks (M0.75:0..M0.75:0): prep 3.3s, existence 40.4s (GPU bf_als 25.3s, ridge 13.0s), rest of fit 2.3s; bit-equal 99/99, lam mismatches 0, max|dp| 0.00e+00
+99 banks (M0.75:1..M0.75:1): prep 3.5s, existence 40.3s (GPU bf_als 25.3s, ridge 12.7s), rest of fit 2.3s; bit-equal 99/99, lam mismatches 0, max|dp| 0.00e+00
+99 banks (M0.75:2..M0.75:2): prep 3.4s, existence 41.5s (GPU bf_als 25.4s, ridge 13.9s), rest of fit 2.2s; bit-equal 99/99, lam mismatches 0, max|dp| 0.00e+00
+99 banks (M0.75:3..M0.75:3): prep 3.4s, existence 41.7s (GPU bf_als 25.5s, ridge 13.9s), rest of fit 2.4s; bit-equal 99/99, lam mismatches 0, max|dp| 0.00e+00
+99 banks (M0.75:4..M0.75:4): prep 3.5s, existence 41.3s (GPU bf_als 25.6s, ridge 13.4s), rest of fit 2.3s; bit-equal 99/99, lam mismatches 0, max|dp| 0.00e+00
+99 banks (M0.85:0..M0.85:0): prep 3.3s, existence 40.9s (GPU bf_als 25.5s, ridge 13.0s), rest of fit 2.2s; bit-equal 99/99, lam mismatches 0, max|dp| 0.00e+00
+99 banks (M0.85:1..M0.85:1): prep 3.3s, existence 42.2s (GPU bf_als 25.6s, ridge 14.3s), rest of fit 2.2s; bit-equal 99/99, lam mismatches 0, max|dp| 0.00e+00
+99 banks (M0.85:2..M0.85:2): prep 3.3s, existence 41.6s (GPU bf_als 25.6s, ridge 13.5s), rest of fit 2.2s; bit-equal 99/99, lam mismatches 0, max|dp| 0.00e+00
+99 banks (M0.85:3..M0.85:3): prep 3.3s, existence 43.0s (GPU bf_als 25.7s, ridge 14.9s), rest of fit 2.2s; bit-equal 99/99, lam mismatches 0, max|dp| 0.00e+00
+99 banks (M0.85:4..M0.85:4): prep 3.3s, existence 43.1s (GPU bf_als 26.0s, ridge 14.5s), rest of fit 2.0s; bit-equal 99/99, lam mismatches 0, max|dp| 0.00e+00
+{
+ "fits": 4455,
+ "y_mismatch": 0,
+ "lam_mismatches": 0,
+ "p_bit_equal": 4455,
+ "max_abs_p_diff": 0.0,
+ "max_auc_diff": 0.0,
+ "label_mismatches": 0,
+ "labels_total": 285120,
+ "score_equal": 4455,
+ "total_secs": 2030.4854760169983,
+ "wall_secs": 2032.1847832202911,
+ "cpu_ref_fit_secs_sum": 59379.300642728806,
+ "workers": 24,
+ "gpu_name": "NVIDIA RTX PRO 4500 Blackwell"
+}
+worst: world:R:0|sh:0 100.0 100.0 0.000e+00 0 0.0 True
+worst: world:R:0|sh:1 100.0 100.0 0.000e+00 0 0.0 True
+worst: world:R:0|sh:2 100.0 100.0 0.000e+00 0 0.0 True
+worst: world:R:0|sh:3 100.0 100.0 0.000e+00 0 0.0 True
+worst: world:R:0|sh:4 100.0 100.0 0.000e+00 0 0.0 True
+worst: world:R:0|sh:5 100.0 100.0 0.000e+00 0 0.0 True
+worst: world:R:0|sh:6 100.0 100.0 0.000e+00 0 0.0 True
+worst: world:R:0|sh:7 100.0 100.0 0.000e+00 0 0.0 True
+worst: world:R:0|sh:8 100.0 100.0 0.000e+00 0 0.0 True
+worst: world:R:0|sh:9 100.0 100.0 0.000e+00 0 0.0 True
