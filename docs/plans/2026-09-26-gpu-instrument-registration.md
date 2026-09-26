@@ -1,19 +1,23 @@
 ---
-**Status: DRAFT, revision 1.3, 2026-09-26 UTC (revision 1 was begun at 10:26 UTC and committed
-as `fedeec5`; revision 1.1 as `345acf2`; revision 1.2 as `5983385`).** Revision 1.1 applied the
-reviewers' edits of 10:52–10:54 UTC. Revision 1.2 applied the decision of 11:15–11:25 UTC (Ark,
-Zcode: options (a)/(b)/(c) for E2a rejected; E2 replaced by a tie census, §5). Revision 1.3
-applies the reviews of revision 1.2 (Zcode 11:42 UTC, confirmed in full with text fixes (a)–(d);
-Ark 11:43 UTC, yes with edits 1–6): the at-risk band of E2-III becomes 2^-23, E2-III is a named
-list and not a gate, the census is written per column family, and the census numbers carry their
-pair-set definitions (§5, M19, M20, §15.3). Johnny is out (Mike, 11:00 UTC); Johnny reads the
-current revision in a new session. **Not committed; Mike's
-word is not given. Nothing was fitted for it: no GPU run of the instrument, no CPU fit. The only
-runs made while drafting are listed in §12 (a 20-second environment probe on random tensors, and
-read-only counts and checksums over the pinned and the flyvis-65 run's synthetic stores, the
-pinned `synthetic_worlds.csv` and the instrument's JSON dumps).** Drafted by a CC
-subagent; CC checks it, the reviewers (Ark, Johnny, Zcode) review it, and Mike gives his word. The
-design choices are marked **proposal** in the body and listed in §4 (D1–D13), each with its
+**Status: DRAFT, revision 1.4, 2026-09-26 UTC (revision 1 was begun at 10:26 UTC and committed
+as `fedeec5`; revision 1.1 as `345acf2`; revision 1.2 as `5983385`; revision 1.3 as `ec5cbc0`).**
+Revision 1.1 applied the reviewers' edits of 10:52–10:54 UTC. Revision 1.2 applied the decision of
+11:15–11:25 UTC (Ark, Zcode: options (a)/(b)/(c) for E2a rejected; E2 replaced by a tie census,
+§5). Revision 1.3 applied the reviews of revision 1.2 (Zcode 11:42 UTC, confirmed in full with
+text fixes (a)–(d); Ark 11:43 UTC, yes with edits 1–6): the at-risk band of E2-III becomes 2^-23,
+E2-III is a named list and not a gate, the census is written per column family, and the census
+numbers carry their pair-set definitions (§5, M19, M20, §15.3). Revision 1.4 applies Ark's review
+of revision 1.3 (chat, 12:09 UTC: confirms with edits 1–8, §15.4); Zcode has not yet reviewed
+revision 1.3, recorded **pending**. Johnny is out (Mike, 11:00 UTC); Johnny reads the current
+revision in a new session. **Not committed. Mike's word is given** (this session, 2026-09-26,
+~12:15 UTC: Mike gave his word to run the GPU validation, §7, and the male arm). **V1–V8 (§7) run
+from a committed head, after this revision (1.4) is itself committed**; nothing has been fitted
+for this file yet: no GPU run of the instrument, no CPU fit. The only runs made while drafting are
+listed in §12 (a 20-second environment probe on random tensors, and read-only counts and checksums
+over the pinned and the flyvis-65 run's synthetic stores, the pinned `synthetic_worlds.csv` and the
+instrument's JSON dumps), plus the read-only checks of revision 1.4 itself (§12, P9). Drafted by a
+CC subagent; CC checks it, the reviewers (Ark, Johnny, Zcode) review it, and Mike gives his word.
+The design choices are marked **proposal** in the body and listed in §4 (D1–D13), each with its
 options, what each option changes, and a recommendation. The body is written with the
 recommended option, so the draft is complete as it stands.
 
@@ -336,6 +340,29 @@ base `ko` views (270 fits, rule #2.1 and N1 included, CPU fits in D1 (a)): all p
 with a tie, 4,370 tied pairs, smallest gap 1.702e-7 = 2.86 × 2^-24 (`world:R:2||ko||rule`, two
 absent cells), just outside the band of E2-III (Ark's numbers, 11:43 UTC, reproduced).
 
+**The pair set is a property of (column, fit), not of the column family alone (revision 1.4).**
+The `auc` family's columns read a shuffle only through `auc(p, y_sd)` and `M_pk = a_pk − a_n1`
+(`knockout_regrow.py:1030–1049`): the shuffle's own present × absent pairs, never all 2,016. The
+`auc_null` family's columns (`p_P`, `p_P_rowcol`, `p_P_fixed_lambda1`) read only the base `ko` and
+`ko1` fits, over all 2,016 pairs (`auc_null(p, Yu)`, `:1050–1051`, `:1090–1091`; verified from the
+code, §12, P9): no shuffle is ever ranked over all pairs. So "all pairs" in this section never
+applies to a shuffle, and "present × absent" never applies to a base view's `auc_null` columns; a
+record's family membership, not its role (base or shuffle), decides its pair set. One consequence,
+verified against the pinned store (§12, P9): `world:M1.0:2|pc:12||full||rule` is a `|pc:` (ceiling)
+record, so it enters only its own `auc` (present × absent pairs), where its smallest gap is
+1.274e-4 (32/32, ties: 0), not the 6.292e-8 all-pairs gap Ark's count reached (that gap sits on a
+pair of two absent cells, `:1102–1104`, which no output the `|pc:` family reads contains). It is
+therefore not at risk on the pair set that governs it, and the at-risk count on each record's own
+census pair set is **6, not 7**, store-wide (M20; T-G9's reproduction, §10).
+
+**The census denominator is per fit, never the constant 1024 (revision 1.4).** `n_pos · n_neg` is
+computed from that fit's own `y` (`bank.exists` in block cell order), and A's shuffles hold 10 to
+41 present cells (M20), so the present × absent pair count ranges from 540 to 1,024 across the
+18,000 D1 fits, not a fixed 1,024. Verified on `world:M0.85:2|sh:79||ko||BF:1` (§12, P9): 24
+present, 40 absent, 960 present × absent pairs, 12 tied. "1,024 / 1,024 in `block‖N1`" (§5, M20) is
+a property of A's block bank (32 present, 32 absent on every world, by construction), not of the
+census in general.
+
 *Definitions.*
 - **Census pair set S(f)**: the union of the pair sets of the families that read the fit (table
   above). On a shuffle: the present × absent pairs by the record's own `y` (the
@@ -381,8 +408,15 @@ absent cells), just outside the band of E2-III (Ark's numbers, 11:43 UTC, reprod
   risk** if its smallest gap on S(f) is below **2^-23 = 1.192e-7**: both cells of a pair can move,
   each by up to one float32 step on [0.5, 1) (2^-24), so a pair can flip only if its gap is below
   2 · 2^-24 (Ark, 11:43 UTC; this was revision 1.2's addition 2, which contradicted revision 1.2's
-  own threshold 2^-24; the addition was right). The band is a naming threshold, not a guarantee:
-  one float32 step of p is not a bound on Δp (below), and 5.63e-8 is an observed maximum.
+  own threshold 2^-24; the addition was right). **The band is a naming threshold, not a guarantee
+  (stated plainly, revision 1.4): there is no known upper bound on |Δp|.** The observed maximum,
+  5.63e-8, already exceeds one float32 step of the logit at every cell of its fit (at most
+  2.27e-8, §5, E3 reconciliation below): it is the sum of several parameter steps, not one ulp, so
+  "2^-23" bounds a pair's gap under a one-ulp-per-cell model that the data itself does not obey.
+  Nothing in the code caps how many parameters can move together or by how much. **The gates that
+  actually refuse the instrument are E1 and E2-II**, which read the fit's own decoded output, not
+  its distance from the CPU's; E2-III's list is a record of what was exercised, never a promise
+  that no larger Δp can occur.
   **The universal value 2^-24, not the p-dependent spacing s(p), sets the band.** The code gives
   no role to p's own float32 spacing: decode casts the parameters (the N1 terms, U, V) and computes
   p in float64 (`harness.py:273–277`, `decoders/bf_decode.py:10–12`), and on M3's five fits one
@@ -423,6 +457,26 @@ absent cells), just outside the band of E2-III (Ark's numbers, 11:43 UTC, reprod
   fixed from the reference store's λ before the GPU stage starts (on A, 37, 164, 4,299 and 13,500;
   §12, P6; never the GPU run's own λ). A cell whose count rises against V1's is reported in the
   chat.
+
+**BF-active fits, and the scope of "λ = 100 ⇒ p ≡ N1" (revision 1.4, Ark's item 1).** The rule
+that a BF fit at λ = 100 has `p` bit-equal to its view's N1 `p` (M20: 17,641 of the 18,000 D1
+fits) has three exceptions. Cross-tabulating the pinned store's 18,000 D1 fits' own λ against
+whether `p` equals the same shuffle's N1 `p` gives, at λ = 1, 33 of 33 not equal (0 equal); at
+λ = 3, 323 of 323 not equal (0 equal); at λ = 100, 3 of 4,299 not equal, 17,641 equal (verified,
+§12, P9). **BF-active fit**: a D1 fit whose λ is 1 or 3, or one of the three λ = 100 exceptions —
+356 + 3 = **359 fits (2.0 % of D1's 18,000, verified)**. The three exceptions are
+`world:W:4|sh:84||ko||BF:2`, `BF:3` and `BF:4` (verified: `world:W:4|sh:84||ko||BF:1` is itself
+one of M3's five, at λ 3, `p` also not N1's). Every one of the 48 tied present × absent pairs that
+can bear on the `auc` family among the three exceptions' fits lies on those three fits (16 each;
+verified, §12, P9), and all three are `p_bit_equal = true` against the CPU reference in both
+`validation_shuffles_all45.json` and `validation_pipeline_all45.json` (verified, §12, P9). **So the
+BF-specific evidence in D1's scope is 3 fits, 48 pairs, one shuffle of one world; outside them
+D1's census evidences N1, not BF**, whether or not the GPU ever ran (§5, M20; the census reads the
+CPU store alone). The BF-active classification needs no GPU fit: it is computed from the pinned
+store's own `lam` and `p` against its own N1 records, and it is printed, per the diagnostics
+above, before the GPU stage starts (the denominators 37/164/4,299/13,500 are the same
+classification, split by rank; §12, P6). V6 (§7, §7.1) is required to draw its fits from this
+BF-active subset.
 
 *Why Δp and the per-p bound are diagnostics (revision 1.1's analysis, kept as the reason).* Decode
 casts the *parameters* (the N1 terms, U, V) to float32, not p; p is a float64 sigmoid of a float64
@@ -611,11 +665,11 @@ G16 (the census, revisions 1.2, 1.3) first, and V3 needs G10.
 | V3 | A's gate on a hybrid store, E1 and E3 | a hybrid store: V1's BF `ko` records beside the pinned store's other records; A's script, unmodified, `--synthetic-only --from-raw <hybrid> --out <scratch>`, and the same pass over the pinned store for the reference strings | none (CPU, about 15 s each, plus the path check's five CPU refits) | E1 (CSV exact columns, strings, `ko1` count); E3; the path check passes under D9 (b) | an exact column or a string differs; E3 exceeded |
 | V4 | batch sensitivity, a statement, not a gate | (a) the 45 base views as one batch; (b) one world per batch for M1.0:0, M0.85:2, M0.75:0; (c) **required since revision 1.1**: all 45 worlds, the registered key list, at `row_chunk` 100,000, which moves every chunk boundary (D5 rests on it); (d) the probe's `run4` re-shot with a header line (stamp, `det`, script name and hash, `row_chunk`): M1.0:0, M0.85:2, M0.75:0 inside the 45-view batch, under D6 | (a) about 30 s; (b) about 3 min; (c) about 37 min at 26.5 GB (README:301); (d) about 30 s | the report: how many per-fit hashes change against V1, and E1–E3 against the CPU for each composition; for (c), whether `row_chunk` moves any hash | E1 fails under a composition: not a refusal of the registered composition, but it is reported, and D5 (a) is then the only safe option; (c) moves a hash: `row_chunk` returns to the refusal digest (D5) |
 | V5 | the explanation of the base differences (Ark's condition) | (a) CPU only: `harness.fit_bf` on the 180 base views with `OPENBLAS_NUM_THREADS=4` exported before launch (another BLAS reduction order), compared with the pinned store; (b) engine v3 on `torch` CPU device, float64, on M3's five fits and five bit-equal controls | (a) none (CPU, a few minutes); (b) none (CPU, minutes) | written before the run: if the fits that move in (a) are mainly the rank-1, small-λ base fits (M3's five or a set overlapping them) while most of the rest stay bit-equal, the differences are a property of those fits under any change of reduction order, and the Δp that E2's diagnostics print is explained (revision 1.1 read "the tolerance of E2a") | (a) moves none of M3's five and (b) reproduces them: the differences come from the GPU code, not from the fits; the instrument then waits for a fix, whatever the census says |
-| V6 | negative control: the comparator sees a changed stopping rule and reports it correctly (**revised in revision 1.3, for the reviewers**; §7.1) | engine v3 with `harness.BF_TOL` set to 1e-5 (instead of 1e-6) in the GPU process only, R:0 base + 99 shuffles (400 fits) | about 1 min | the comparator's report (E1 differences, flipped pairs of E2-II, the at-risk list, the non-bit-equal fits and their max \|Δp\|) equals an independent brute-force recount from the saved `p`, `lam` and `y` of both sides, fit by fit; and the Δp diagnostic reports at least one non-bit-equal fit. If the looser rule changes no `p` at all, V6 is **uninformative** and says so (not a refusal); T-G4, T-G9 and T-G10 then remain the only tests that the comparator refuses | the comparator's report differs from the recount (it misses or invents a difference): the comparator (G9, G16) is refused, and the instrument waits for its fix |
+| V6 | negative control: the comparator sees a changed stopping rule and reports it correctly (**revised in revision 1.3, for the reviewers; fits fixed to the BF-active subset, revision 1.4**; §7.1) | engine v3 with `harness.BF_TOL` set to 1e-5 (instead of 1e-6) in the GPU process only, on **the BF-active subset (§5): the 33 λ = 1 and 323 λ = 3 D1 fits, plus the three λ = 100 exceptions**, 359 fits, not a fixed world's base + shuffles | about 1 min (359 fits against the reference `harness.bf_als`) | the comparator's report (E1 differences, flipped pairs of E2-II, the at-risk list, the non-bit-equal fits and their max \|Δp\|) equals an independent brute-force recount from the saved `p`, `lam` and `y` of both sides, fit by fit; and the Δp diagnostic reports at least one non-bit-equal fit. **If the looser rule changes no `p` on the BF-active subset, V6 is recorded as uninformative in the validation table (revision 1.4: a recorded outcome, never a silent pass)**; T-G4, T-G9 and T-G10 then remain the only tests that the comparator refuses | the comparator's report differs from the recount (it misses or invents a difference): the comparator (G9, G16) is refused, and the instrument waits for its fix |
 | V7 | the poisoned-block test (T-G5) | R:0 base + 99 shuffles, with the block cells of `harness.REAL` flipped in the GPU process and in every prep worker | about 1 min | every per-fit hash equal to the unpoisoned run | any hash changes: a code path reads a real block cell |
 | V8 | cross-check on the male worlds, **unregistered** | the male arm's 45 worlds per lobe, BF `ko`, base + 99 shuffles; needs that arm's script (its S1, S4, S5, S14) and its CPU pre-run store | about 40 min per lobe if A's rate holds on the placed grid (not measured), 80 min for both | E1, E2 and E3 against the male CPU pre-run store, reported in the chat as a cross-check. **Revision 1.2 (Ark): the census is repeated on the male worlds, during that arm's pre-run and before it unseals**, since tie structure depends on the bank and 0 flips in 18,000 is a fact about A (§5): ties, gaps, the at-risk list, the flips counted against the male CPU store, and how many of the fits that differ carry ties (which is what separates "by construction" from "luck") | nothing for the male arm, which stays on the CPU (its D13 (iii)). For this instrument: a flipped pair (E2-II) or an E1 difference (an at-risk fit's included) refuses it for every arm that would name it; a statement about the GPU instrument, not an input to a male gate. Printed as well (revision 1.3): how many male at-risk fits have a `p` that differs from their N1's, since on A none did (M20) |
 
-### 7.1 V6 read from the code (revision 1.3; Ark's item 6)
+### 7.1 V6 read from the code (revision 1.3; Ark's item 6; revision 1.4: scope and item 7)
 
 - **Where `BF_TOL` acts.** `harness.BF_TOL = 1e-6` (`harness.py:538`). On the CPU its only use is
   the stop of `_newton_rows` (`harness.py:652`: break when the largest row-gradient norm of the
@@ -663,6 +717,41 @@ G16 (the census, revisions 1.2, 1.3) first, and V3 needs G10.
   an independent brute-force recount from the saved `p` of both sides. The tests that the
   comparator refuses are T-G4, T-G9 and T-G10, on fixtures. Ark's item 6 asked for the expected
   outcome, not for this change, so the change is proposed, not decided.
+- **Why V6 is fixed to the BF-active subset, not to R:0 (revision 1.4, item 5).** R:0's 400 fits
+  are themselves almost all λ = 100 with `p` bit-equal to N1's: the paragraph above found only 2
+  present × absent or same-label pairs below 1e-5 inside them, and 98 % of D1's fits store-wide
+  carry the same property (M20, §5). A negative control drawn from a set that is mostly
+  BF-inactive risks the same structural problem revision 1.3 removed from the pass rule: it would
+  most likely report nothing, and "nothing changed" is not the same claim as "the comparator
+  works." Revision 1.4 therefore draws V6's 400-fit budget from **the BF-active subset (§5): the
+  33 λ = 1 and the 323 λ = 3 D1 fits, plus the three λ = 100 exceptions**, 359 fits in all (all of
+  D1's BF-active fits fit inside the 400-fit budget). Every one of these fits' `p` already depends
+  on a nonzero BF term (by definition of BF-active, §5), so a looser Newton stop is far more likely
+  to move at least one `p`, and the comparator has more to report on. If it still moves none, V6
+  is recorded as **uninformative** in the validation table (its own row, §7), not silently passed:
+  the outcome is that the looser tolerance did not exercise the comparator's difference-reporting
+  path, and only T-G4, T-G9 and T-G10 (fixtures) tested it.
+- **Item 7 (Ark's open question): ridge residue, or another branch, at λ = 100 (revision 1.4).**
+  Read from the code, on both sides. The CPU harness has one path for every λ: `fit_bf`
+  (`harness.py:710–728`) calls `bf_als` (`:666`) with `lam` set in turn to each of `BF_LAMBDAS = [1,
+  3, 10, 30, 100]` (`:535`); `bf_als` and `_newton_rows` (`:645–655`) take no branch on the value of
+  `lam` beyond using it as the ridge coefficient in the gradient (`+ lam * U`, `:649`) and the
+  Hessian (`+ lam * np.eye(r)`, `:655`). Engine v3 mirrors this exactly: `fit_bf_all`
+  (`gpu_bf3.py:167–195`) and `solve_problems` (`:125–163`) run the same `newton_rows_v3`
+  (`:78–106`) and `_objective_v3` (`:107–110`) for every λ in `lambdas`, with `lam` entering only
+  the same two places (`+ la * Ua`, `:92`; `+ la.unsqueeze(-1) * eye`, `:103`). **No line of either
+  path reads `lam == 100` or takes a different branch at λ = 100**; grep over `harness.py` and
+  `gpu_bf3.py` for a λ-valued conditional finds none beyond the tie rule that *chooses* λ
+  (`harness.py:728`; `gpu_bf3.py:187–191`), which is common to every λ. So the answer is a **ridge
+  residue, mathematically expected, not a branch**: at λ = 100 the ridge term dominates both the
+  gradient and the Hessian, driving the Newton solution toward `U = V = 0` (where the fit reduces to
+  the N1 logit grid `O` alone), and `_newton_rows`/`newton_rows_v3` stop once the row-gradient norm
+  is below `BF_TOL` (`harness.py:538`, `1e-6`), not once `U, V` are exactly zero. The three
+  exceptions are therefore fits whose stopped-early `U, V` left a product `U @ V.T` too large to
+  vanish under the float32 cast on 48 of the 960 present × absent pairs of one shuffle (item 1,
+  above), not fits that took another code path. This is read from the code, not measured by a run:
+  no test isolates the residual's size as a function of λ, and V1–V6 (§7) are the runs that would
+  exercise it.
 
 **Totals.** V0–V7: about **2 h 50 min of GPU time** with V4 (c), now required (2 h 10 min without
 it), mostly V1; CPU minutes. V8: about 80 min more, after the male pre-run's store exists and
@@ -877,6 +966,17 @@ such cases beside the ledger rather than in it (A §12, line 2379), five cases a
 
 ## 12. Runs made while drafting, and what was not verified
 
+**Working rule (revision 1.4, from Ark's withdrawn "not recomputed" claim, §15.4 item 2).**
+"Not recomputed" is read from a run's own log (`fitted_this_pass`, `p_differ`, `secs`), never from
+the store's provenance (a file's timestamp, its folder name, or which revision last touched it).
+The flyvis-65 run's log states, per key, whether it was fitted this pass and whether its `p`
+differed from the file it read (line 94: `fitted_this_pass` 19,110 + 9,555, `p_differ` 0); that is
+what "recomputed and matched" means in this file (M16; §11, the clarification note on Ark's
+claim). A store's provenance (when it was written, by what script) says nothing about whether a
+given key was refitted the last time the store's owning run touched it. Ark withdraws the "not
+recomputed" claim of 11:43 UTC (§15.3 item 2, §15.4) and does not ask for a ledger row under his
+name.
+
 **Runs made (all read-only on the repository and the data folders; outputs in the drafter's
 scratchpad only).**
 - **P1, environment probe** (the torch venv, about 20 s): versions of §1.3; with
@@ -921,6 +1021,20 @@ scratchpad only).**
   (`harness.py:538`, `:652`; `gpu_bf3.py:78–106`, `:154–156`, `:185–194`), of `auc_null`,
   `smallest_passing_auc` and `evaluate_bank` (`knockout_regrow.py:513–537`, `:924–937`,
   `:1015–1100`), and A §3.3 fact (c). Outputs in the drafter's scratchpad only.
+- **P9, revision 1.4 (CPU reads only, `tools/.venv`; no fit, no GPU):** the cross-table of the
+  18,000 D1 fits' λ against `p`-bit-equal-to-N1, confirming λ1 0/33, λ3 0/323, λ100 17,641/3, and
+  the three exceptions `world:W:4|sh:84||ko||BF:2`–`BF:4` (item 1); the 48 present × absent tied
+  pairs on those three fits (16 each) and their `p_bit_equal` rows in
+  `validation_shuffles_all45.json` and `validation_pipeline_all45.json` (both `true`); the pair
+  set read from `evaluate_bank` for `n_ge`/`p_S`/`M_pk` (`:1030–1049`) and for `p_P`/`p_P_rowcol`/
+  the fixed-λ `p_P` (`:1050–1051`, `:1085–1092`); `world:M1.0:2|pc:12||full||rule`'s present ×
+  absent gap (1.274e-4, 0 ties) against its all-pairs gap (6.292e-8, on cells 21 and 51, both
+  absent); the store-wide at-risk count on each record's own census pair set (6, not 7); the
+  present/absent split and tie count of `world:M0.85:2|sh:79||ko||BF:1` (24, 40, 960 pairs, 12
+  ties); the code of `fit_bf`/`bf_als`/`_newton_rows` (`harness.py:535`, `:645–655`, `:710–728`)
+  and of `fit_bf_all`/`solve_problems`/`newton_rows_v3`/`_objective_v3`
+  (`gpu_bf3.py:78–110`, `:125–163`, `:167–195`), for item 7. Outputs in the drafter's scratchpad
+  only.
 
 **Not verified.**
 - That the determinism settings leave the engine's bits unchanged, or its speed (V0).
@@ -1004,6 +1118,28 @@ scratchpad only).**
   its pass rule revised (for the reviewers). Also updated: D3, §5 (outcomes), §6, V2, V8, Totals,
   Order, §8 (`smallest_passing_auc`), G9, G16, T-G9 (v), T-G10 and ledger row G-(5); ledger row
   G-(9) and two clarification notes added (§11); §12 P8. No run's cost changes. By a CC subagent.
+- **Revision 1.4, 2026-09-26 UTC:** Ark's review of revision 1.3 (§15.4, chat 12:09 UTC); Zcode's
+  review of revision 1.3 is **pending**. Mike's word is given (this session, ~12:15 UTC), recorded
+  in the status header with the rule that V1–V8 run from a committed head after this revision.
+  **BF-active fits** defined (33 λ = 1 + 323 λ = 3 D1 fits, plus the three λ = 100 exceptions,
+  `world:W:4|sh:84||ko||BF:2`–`BF:4` = 359, 2.0 % of D1's scope): the BF-specific evidence in D1's
+  scope is those 3 fits and 48 tied pairs of one shuffle of one world; outside them D1's census
+  evidences N1, not BF (§5). The pair set is stated as a property of (column, fit): the `auc`
+  family never reads a shuffle over all pairs and `auc_null` never reads a base view over present
+  × absent pairs alone; the store-wide at-risk count on each record's own census pair set is
+  confirmed 6, not 7, and `world:M1.0:2|pc:12||full||rule`'s present × absent gap (1.274e-4)
+  against its all-pairs gap (6.292e-8, two absent cells) is given (§5). A line on the census
+  denominator being per fit, never the constant 1,024, is added with a verified example (§5). A
+  working rule on "not recomputed" (read from a run's log, not the store's provenance) is added
+  (§12); Ark withdraws his "not recomputed" claim of revision 1.3, no ledger row under his name.
+  E2-III's band is stated plainly as having no known upper bound on |Δp|; the gates are E1 and
+  E2-II (§5). V6 is fixed to draw its 400-fit budget from the BF-active subset, not from a single
+  world's base and shuffles, and "uninformative" is made a recorded table outcome, not a silent
+  pass (§7, §7.1). Ark's open question (ridge residue or another branch at λ = 100) is answered
+  from the code: no branch on `lam == 100` exists in either `harness.bf_als`/`_newton_rows` or
+  `gpu_bf3`'s Newton path; the three exceptions are a ridge residue that the Newton stop leaves
+  large enough to survive the float32 cast, not another code path (§7.1). No run's cost changes.
+  By a CC subagent.
 
 ## 15. Reviews (DPC Research chat, 2026-09-26 UTC)
 
@@ -1126,3 +1262,32 @@ and why.
 | **5** E2-III is vacuous as a gate; say whether E2-II adds refusal beyond E1 | Ark | §5 E2-II, E2-III, Outcomes; D3; V2; V8; T-G10 | Applied. E2-II does add refusal: cancelling flips on one fit, and a same-label flip on a base view that does not move the count behind `p_P` or `p_P_rowcol`. **Drafter's addition:** T-G9 (v) tests the first case (E1 passes, E2-II refuses) |
 | **6** V6 on R:0; read where `BF_TOL` acts | Ark | §7.1; V6 | Ark's counts reproduce on all pairs: R:0 has 4 records and 6 pairs below 1e-5; the store has 675 records and 1,629 pairs. Only 2 of those pairs are inside V6's 400 fits, both same-label pairs on base views. `BF_TOL` acts only in the Newton stop, in every sweep of the inner (λ-choosing) and the final problems. **Drafter's additions, for the reviewers:** E3 cannot flag V6 by construction. Revision 1.2's V6 would refuse the instrument for a run that D3 (b) accepts by design. V6 is recast as a check of the comparator against a brute-force recount, uninformative (not a refusal) if no `p` moves |
 | **Johnny** | Mike (11:00 UTC) | header | none |
+
+### 15.4 Review of revision 1.3 (12:09 UTC)
+
+**Votes.**
+
+| reviewer | time (UTC) | vote | what it rests on |
+|---|---|---|---|
+| Ark | 12:09 | **confirms, with edits 1–8** | the cross-table of D1's 18,000 fits' λ against `p`-bit-equal-to-N1 (item 1); the pair-set-per-(column, fit) reading and the at-risk count 6 (item 3); the per-fit census denominator (item 4); the withdrawal of his "not recomputed" claim (item 2); V6 fixed to the BF-active subset (item 5); the honest statement on |Δp| (item 6); a reading of `bf_als`'s λ path (item 7) |
+| Zcode | — | **pending** | has not yet reviewed revision 1.3 |
+| Johnny | — | **out** | Mike, 11:00 UTC; reads the current revision in a new session |
+| Mike | 12:15 | **word given** | this session: runs the GPU validation (§7) and the male arm |
+
+Every number in Ark's review was recomputed from the pinned files and the code at drafting
+(§12, P9), and agrees, to the digits given, with the one exception the edits table states.
+
+**Edits.** "Differs" says where this revision departs from the edit as relayed to the drafter, and
+why.
+
+| edit | asked by | applied in | differs |
+|---|---|---|---|
+| **1** the three λ = 100 exceptions: are they a ridge residue or another branch? Verify the cross-table (λ1 0/33, λ3 0/323, λ100 17,641/3) and that the 48 pairs lie on those three fits, `p_bit_equal = true` in the v2/v3 JSONs | Ark | §5 (BF-active fits); §12 P9 | Reproduced exactly: 33 λ1 (0 equal to N1), 323 λ3 (0 equal), 4,299 λ100 (17,641 store-wide, 3 not equal — the three exceptions are `world:W:4\|sh:84\|\|ko\|\|BF:2`–`BF:4`); each carries 16 present × absent ties (48 total); all three `p_bit_equal = true` in both `validation_shuffles_all45.json` and `validation_pipeline_all45.json`. **Addition:** "BF-active" is defined and given a count (359, 2.0 %), and V6 (edit 5) is scoped to it |
+| **2** "not recomputed" is read from the run's log, not the store's provenance; withdrawn, no ledger row under Ark's name | Ark (withdraws his revision-1.3 claim) | §12 (working rule) | none |
+| **3** the pair set is a property of (column, fit), not of the family alone; `M_pk = a_pk − a_n1` reads only the `auc` channel on a shuffle; `world:M1.0:2\|pc:12` is at risk only on all pairs, not on its own (present × absent) pair set, gap 1.274e-4; the at-risk count is 6, not 7 | Ark | §5 (new paragraph before *Definitions*) | Reproduced exactly (present 32, absent 32, gap 1.274e-4, 0 ties on `M1.0:2\|pc:12`'s own pair set; store-wide at-risk on each record's own set, 6). This restates and cites the code for what revision 1.3's edit 1 (§15.3) already concluded; no number changes |
+| **4** the census denominator is per fit, never the constant 1,024; verify `world:M0.85:2\|sh:79\|\|ko\|\|BF:1`: 24 present, 40 absent, 960 pairs, 12 ties | Ark | §5 (new paragraph before *Definitions*) | Reproduced exactly. "1,024 / 1,024 in `block‖N1`" is restated as a property of the block bank, not of the census in general |
+| **5** V6 must draw from the BF-active subset, since 98 % of D1 has p ≡ N1; "uninformative" must be a recorded table outcome | Ark | §7 (V6 row); §7.1 | Applied: V6's 400-fit budget is now the 359 BF-active D1 fits (all fit inside 400), not R:0's base + shuffles. **Addition:** the reason R:0 alone was a weak choice is stated (it is itself mostly BF-inactive) |
+| **6** state honestly that there is no upper bound on \|Δp\|; the gates are E1 + E2-II | Ark | §5 (E2-III paragraph) | Applied, with the reasoning that "2^-23" assumes one ulp per cell, which the observed 5.63e-8 (a sum of several parameter steps) already does not obey |
+| **7** read the code (`bf_als`/the λ path, `gpu_bf3.py`) for the ridge-residue question | Ark | §7.1 (new bullet, "Item 7") | Answered with line citations on both sides (`harness.py:535`, `:645–655`, `:710–728`; `gpu_bf3.py:78–110`, `:125–163`, `:167–195`): no branch on `lam == 100`; a ridge residue left by the Newton stop, not another path. Not measured by a run |
+| **8** update the changelog | Ark (implicit, closing the review) | §14 | Applied |
+| **Zcode** | — | header | recorded pending, not yet reviewed |
