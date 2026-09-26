@@ -1,0 +1,4501 @@
+{
+ "registration": "docs/plans/2026-09-25-male-cns-bank-builder-registration.md",
+ "registration_revision": "2.1",
+ "registration_sha256_lf": "5bcb4bc00bd6357ab50db196dcc727e8ac0ea73497050e2a569aba35c1a9dbf2",
+ "registered_build": true,
+ "note": null,
+ "git_head": "e0a3cd744c39903bcdcbb218c10eafa3ed1b048c",
+ "dirty_listing": [],
+ "builder_sha256_lf": "a29cf45825271e32019d6441b276a351479dea5788360d223e245e3ac451b2ca",
+ "tests_sha256_lf": "9506398f062394a8de95b0d9177666ab13de28c0984873bcb65d51c0925e83af",
+ "inputs": {
+  "flyvis": {
+   "results/genome/bank/offsets.csv": {
+    "sha256_lf": "8c45e8508d8f6ae45e9ab3f9d95d58e4521894ccfa51954f6d77d41e550fa5f0"
+   },
+   "results/genome/bank/types.csv": {
+    "sha256_lf": "237a195a36f62ce182fee8486394c27d2beb9825bc029cb215c39c0fa323a477"
+   }
+  },
+  "janelia": {
+   "body-annotations-male-cns-v1.0-minconf-0.5.feather": {
+    "size_bytes": 14483314,
+    "sha256": "2177e246113e4cfbf1e7772ec37c6da1955ff22e8063d0b1f833101f99a9a3b2",
+    "downloaded": "2026-09-23 UTC",
+    "source": "Male CNS v1.0 (Berg et al. 2026), flat connectome files from https://storage.googleapis.com/flyem-male-cns/v1.0/connectome-data/flat-connectome/; licence CC-BY (SOURCE.md)"
+   },
+   "connectome-weights-male-cns-v1.0-minconf-0.5.feather": {
+    "size_bytes": 1051241946,
+    "sha256": "e35da783d1c686b2b58b3b87cd6a403ae43bfcfba8bff28e08ef752c1a56afc1",
+    "downloaded": "2026-09-23 UTC",
+    "source": "Male CNS v1.0 (Berg et al. 2026), flat connectome files from https://storage.googleapis.com/flyem-male-cns/v1.0/connectome-data/flat-connectome/; licence CC-BY (SOURCE.md)"
+   }
+  }
+ },
+ "weight_file_header": {
+  "schema": [
+   [
+    "body_pre",
+    "int64"
+   ],
+   [
+    "body_post",
+    "int64"
+   ],
+   [
+    "weight",
+    "int64"
+   ]
+  ],
+  "num_record_batches": 2318,
+  "metadata_stop": 151856684,
+  "creator": {
+   "library": "pyarrow",
+   "version": "19.0.1"
+  },
+  "ipc_headers": {
+   "codecs": {
+    "LZ4_FRAME": 2318
+   },
+   "record_batches": 2318,
+   "rows_in_headers": 151856684,
+   "footer_body_length_mismatches": 0
+  },
+  "annotation_ipc_headers": {
+   "codecs": {
+    "LZ4_FRAME": 4
+   },
+   "record_batches": 4,
+   "rows_in_headers": 211577,
+   "footer_body_length_mismatches": 0
+  }
+ },
+ "builder_environment": {
+  "versions": {
+   "python": "3.13.14",
+   "numpy": "2.5.3",
+   "pandas": "3.0.6",
+   "pyarrow": "25.0.1",
+   "psutil": "7.2.2"
+  },
+  "compared_with_pins": [
+   "numpy",
+   "pandas",
+   "pyarrow",
+   "python"
+  ],
+  "reported_not_compared": [
+   "psutil"
+  ],
+  "runner": "uv run --no-project --python 3.13.14 --with pyarrow==25.0.1 --with numpy==2.5.3 --with pandas==3.0.6 --with psutil",
+  "note": "not the instrument's environment (tools/.venv: python 3.10.20, numpy 2.2.6), which this builder does not use"
+ },
+ "machine_record": {
+  "numpy_build": {
+   "blas": {
+    "name": "scipy-openblas",
+    "found": true,
+    "version": "0.3.34.106.0",
+    "detection method": "pkgconfig",
+    "include directory": "C:/Users/runneradmin/AppData/Local/Temp/cibw-run-hg727bee/cp313-win_amd64/build/venv/Lib/site-packages/scipy_openblas64/include",
+    "lib directory": "C:/Users/runneradmin/AppData/Local/Temp/cibw-run-hg727bee/cp313-win_amd64/build/venv/Lib/site-packages/scipy_openblas64/lib",
+    "openblas configuration": "OpenBLAS 0.3.34.106.0  USE64BITINT DYNAMIC_ARCH NO_AFFINITY Haswell MAX_THREADS=24",
+    "pc file directory": "D:/a/numpy-release/numpy-release/.openblas"
+   },
+   "lapack": {
+    "name": "scipy-openblas",
+    "found": true,
+    "version": "0.3.34.106.0",
+    "detection method": "pkgconfig",
+    "include directory": "C:/Users/runneradmin/AppData/Local/Temp/cibw-run-hg727bee/cp313-win_amd64/build/venv/Lib/site-packages/scipy_openblas64/include",
+    "lib directory": "C:/Users/runneradmin/AppData/Local/Temp/cibw-run-hg727bee/cp313-win_amd64/build/venv/Lib/site-packages/scipy_openblas64/lib",
+    "openblas configuration": "OpenBLAS 0.3.34.106.0  USE64BITINT DYNAMIC_ARCH NO_AFFINITY Haswell MAX_THREADS=24",
+    "pc file directory": "D:/a/numpy-release/numpy-release/.openblas"
+   }
+  },
+  "numpy_machine_information": {
+   "host": {
+    "cpu": "x86_64",
+    "family": "x86_64",
+    "endian": "little",
+    "system": "windows"
+   },
+   "build": {
+    "cpu": "x86_64",
+    "family": "x86_64",
+    "endian": "little",
+    "system": "windows"
+   }
+  },
+  "numpy_simd": {
+   "baseline": [
+    "X86_V2"
+   ],
+   "found": [
+    "X86_V3"
+   ]
+  },
+  "blas_at_run_time": "not recorded (no BLAS path in the builder)",
+  "machine": {
+   "machine": "AMD64",
+   "processor": "AMD64 Family 26 Model 68 Stepping 0, AuthenticAMD",
+   "platform": "Windows-11-10.0.26200-SP0",
+   "cpu_count": 32,
+   "PROCESSOR_IDENTIFIER": "AMD64 Family 26 Model 68 Stepping 0, AuthenticAMD"
+  },
+  "thread_env": {
+   "OMP_NUM_THREADS": {
+    "found": null,
+    "in_effect": "1"
+   },
+   "OPENBLAS_NUM_THREADS": {
+    "found": null,
+    "in_effect": "1"
+   },
+   "MKL_NUM_THREADS": {
+    "found": null,
+    "in_effect": "1"
+   },
+   "NUMEXPR_NUM_THREADS": {
+    "found": null,
+    "in_effect": "1"
+   }
+  }
+ },
+ "type_map": {
+  "canonical": "type",
+  "special": {
+   "R1": [
+    "type",
+    "R1-R6"
+   ],
+   "R2": [
+    "type",
+    "R1-R6"
+   ],
+   "R3": [
+    "type",
+    "R1-R6"
+   ],
+   "R4": [
+    "type",
+    "R1-R6"
+   ],
+   "R5": [
+    "type",
+    "R1-R6"
+   ],
+   "R6": [
+    "type",
+    "R1-R6"
+   ],
+   "R7": [
+    "flywireType",
+    "R7"
+   ],
+   "R8": [
+    "flywireType",
+    "R8"
+   ],
+   "TmY9": [
+    "flywireType",
+    "TmY9q"
+   ],
+   "CT1(Lo1)": [
+    "type",
+    "CT1"
+   ],
+   "CT1(M10)": [
+    "type",
+    "CT1"
+   ],
+   "Am": [
+    "type",
+    "Am1"
+   ]
+  },
+  "absent": [
+   "Mi3",
+   "Mi11",
+   "Mi12",
+   "Tm28"
+  ],
+  "placed": [
+   "Tm5Y",
+   "T4d",
+   "Tm2",
+   "TmY15",
+   "Tm3",
+   "Tm5c",
+   "Lawf1",
+   "TmY14",
+   "T2",
+   "L2",
+   "Lawf2",
+   "T4c",
+   "TmY5a",
+   "T3",
+   "T5b",
+   "T5c",
+   "Mi15",
+   "Tm20",
+   "Mi10",
+   "Tm5b",
+   "TmY3",
+   "C3",
+   "CT1(M10)",
+   "Tm1",
+   "Mi9",
+   "Tm16",
+   "TmY9",
+   "L4",
+   "Mi4",
+   "T1",
+   "Mi13",
+   "TmY4",
+   "R8",
+   "Mi2",
+   "T4b",
+   "Tm4",
+   "R1",
+   "T5a",
+   "T4a",
+   "C2",
+   "L1",
+   "Am",
+   "Mi1",
+   "Mi14",
+   "L5",
+   "Tm9",
+   "TmY10",
+   "TmY18",
+   "Tm5a",
+   "T2a",
+   "TmY13",
+   "R7",
+   "T5d",
+   "Tm30",
+   "L3"
+  ],
+  "not_placed": [
+   "Mi3",
+   "Tm28",
+   "Mi12",
+   "CT1(Lo1)",
+   "R3",
+   "R2",
+   "R5",
+   "R4",
+   "R6",
+   "Mi11"
+  ],
+  "per_type": [
+   {
+    "type": "Tm5Y",
+    "carries": [
+     "Tm5Y"
+    ],
+    "column": "type",
+    "string": "Tm5Y",
+    "flip": false,
+    "bodies_L": 435,
+    "bodies_R": 463,
+    "claimed": 898,
+    "side_rule": {
+     "somaSide": [
+      435,
+      463
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     435,
+     463
+    ],
+    "flywireType_col_L_R": [
+     0,
+     0
+    ],
+    "type_ne_flywireType": 898,
+    "disagreeing_values": {
+     "type='Tm5Y' / flywireType='Tm5f'": 898
+    },
+    "status": {
+     "Traced": 898
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      435,
+      463
+     ]
+    },
+    "assignedOlHex1_nonnull": 0
+   },
+   {
+    "type": "T4d",
+    "carries": [
+     "T4d"
+    ],
+    "column": "type",
+    "string": "T4d",
+    "flip": false,
+    "bodies_L": 850,
+    "bodies_R": 859,
+    "claimed": 1709,
+    "side_rule": {
+     "somaSide": [
+      850,
+      859
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     850,
+     859
+    ],
+    "flywireType_col_L_R": [
+     850,
+     860
+    ],
+    "type_ne_flywireType": 1,
+    "disagreeing_values": {
+     "type='T4_unclear' / flywireType='T4d'": 1
+    },
+    "status": {
+     "Traced": 1709
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      850,
+      859
+     ]
+    },
+    "assignedOlHex1_nonnull": 0
+   },
+   {
+    "type": "Tm2",
+    "carries": [
+     "Tm2"
+    ],
+    "column": "type",
+    "string": "Tm2",
+    "flip": false,
+    "bodies_L": 883,
+    "bodies_R": 883,
+    "claimed": 1766,
+    "side_rule": {
+     "somaSide": [
+      883,
+      883
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     883,
+     883
+    ],
+    "flywireType_col_L_R": [
+     883,
+     883
+    ],
+    "type_ne_flywireType": 0,
+    "disagreeing_values": {},
+    "status": {
+     "Traced": 1766
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      883,
+      883
+     ]
+    },
+    "assignedOlHex1_nonnull": 1758
+   },
+   {
+    "type": "TmY15",
+    "carries": [
+     "TmY15"
+    ],
+    "column": "type",
+    "string": "TmY15",
+    "flip": false,
+    "bodies_L": 99,
+    "bodies_R": 110,
+    "claimed": 209,
+    "side_rule": {
+     "somaSide": [
+      99,
+      110
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     99,
+     110
+    ],
+    "flywireType_col_L_R": [
+     99,
+     110
+    ],
+    "type_ne_flywireType": 0,
+    "disagreeing_values": {},
+    "status": {
+     "Traced": 209
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      99,
+      110
+     ]
+    },
+    "assignedOlHex1_nonnull": 0
+   },
+   {
+    "type": "Tm3",
+    "carries": [
+     "Tm3"
+    ],
+    "column": "type",
+    "string": "Tm3",
+    "flip": false,
+    "bodies_L": 1017,
+    "bodies_R": 1037,
+    "claimed": 2054,
+    "side_rule": {
+     "somaSide": [
+      1017,
+      1037
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     1017,
+     1037
+    ],
+    "flywireType_col_L_R": [
+     1017,
+     1037
+    ],
+    "type_ne_flywireType": 0,
+    "disagreeing_values": {},
+    "status": {
+     "Traced": 2054
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      1017,
+      1037
+     ]
+    },
+    "assignedOlHex1_nonnull": 0
+   },
+   {
+    "type": "Tm5c",
+    "carries": [
+     "Tm5c"
+    ],
+    "column": "type",
+    "string": "Tm5c",
+    "flip": false,
+    "bodies_L": 376,
+    "bodies_R": 374,
+    "claimed": 750,
+    "side_rule": {
+     "somaSide": [
+      376,
+      374
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     376,
+     374
+    ],
+    "flywireType_col_L_R": [
+     376,
+     374
+    ],
+    "type_ne_flywireType": 0,
+    "disagreeing_values": {},
+    "status": {
+     "Traced": 750
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      376,
+      374
+     ]
+    },
+    "assignedOlHex1_nonnull": 0
+   },
+   {
+    "type": "Lawf1",
+    "carries": [
+     "Lawf1"
+    ],
+    "column": "type",
+    "string": "Lawf1",
+    "flip": false,
+    "bodies_L": 177,
+    "bodies_R": 184,
+    "claimed": 361,
+    "side_rule": {
+     "somaSide": [
+      177,
+      184
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     177,
+     184
+    ],
+    "flywireType_col_L_R": [
+     177,
+     184
+    ],
+    "type_ne_flywireType": 0,
+    "disagreeing_values": {},
+    "status": {
+     "Traced": 361
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      177,
+      184
+     ]
+    },
+    "assignedOlHex1_nonnull": 0
+   },
+   {
+    "type": "TmY14",
+    "carries": [
+     "TmY14"
+    ],
+    "column": "type",
+    "string": "TmY14",
+    "flip": false,
+    "bodies_L": 243,
+    "bodies_R": 234,
+    "claimed": 477,
+    "side_rule": {
+     "somaSide": [
+      243,
+      234
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     243,
+     234
+    ],
+    "flywireType_col_L_R": [
+     243,
+     234
+    ],
+    "type_ne_flywireType": 0,
+    "disagreeing_values": {},
+    "status": {
+     "Traced": 477
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      243,
+      234
+     ]
+    },
+    "assignedOlHex1_nonnull": 0
+   },
+   {
+    "type": "T2",
+    "carries": [
+     "T2"
+    ],
+    "column": "type",
+    "string": "T2",
+    "flip": false,
+    "bodies_L": 808,
+    "bodies_R": 822,
+    "claimed": 1630,
+    "side_rule": {
+     "somaSide": [
+      808,
+      822
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     808,
+     822
+    ],
+    "flywireType_col_L_R": [
+     808,
+     822
+    ],
+    "type_ne_flywireType": 0,
+    "disagreeing_values": {},
+    "status": {
+     "Traced": 1630
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      808,
+      822
+     ]
+    },
+    "assignedOlHex1_nonnull": 0
+   },
+   {
+    "type": "L2",
+    "carries": [
+     "L2"
+    ],
+    "column": "type",
+    "string": "L2",
+    "flip": false,
+    "bodies_L": 886,
+    "bodies_R": 893,
+    "claimed": 1779,
+    "side_rule": {
+     "somaSide": [
+      886,
+      893
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     886,
+     893
+    ],
+    "flywireType_col_L_R": [
+     886,
+     893
+    ],
+    "type_ne_flywireType": 0,
+    "disagreeing_values": {},
+    "status": {
+     "Traced": 1779
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      886,
+      893
+     ]
+    },
+    "assignedOlHex1_nonnull": 1767
+   },
+   {
+    "type": "Lawf2",
+    "carries": [
+     "Lawf2"
+    ],
+    "column": "type",
+    "string": "Lawf2",
+    "flip": false,
+    "bodies_L": 195,
+    "bodies_R": 188,
+    "claimed": 383,
+    "side_rule": {
+     "somaSide": [
+      195,
+      188
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     195,
+     188
+    ],
+    "flywireType_col_L_R": [
+     195,
+     188
+    ],
+    "type_ne_flywireType": 0,
+    "disagreeing_values": {},
+    "status": {
+     "Traced": 383
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      195,
+      188
+     ]
+    },
+    "assignedOlHex1_nonnull": 0
+   },
+   {
+    "type": "T4c",
+    "carries": [
+     "T4c"
+    ],
+    "column": "type",
+    "string": "T4c",
+    "flip": false,
+    "bodies_L": 895,
+    "bodies_R": 883,
+    "claimed": 1778,
+    "side_rule": {
+     "somaSide": [
+      895,
+      883
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     895,
+     883
+    ],
+    "flywireType_col_L_R": [
+     895,
+     883
+    ],
+    "type_ne_flywireType": 0,
+    "disagreeing_values": {},
+    "status": {
+     "Traced": 1778
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      895,
+      883
+     ]
+    },
+    "assignedOlHex1_nonnull": 0
+   },
+   {
+    "type": "TmY5a",
+    "carries": [
+     "TmY5a"
+    ],
+    "column": "type",
+    "string": "TmY5a",
+    "flip": false,
+    "bodies_L": 686,
+    "bodies_R": 678,
+    "claimed": 1364,
+    "side_rule": {
+     "somaSide": [
+      686,
+      678
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     686,
+     678
+    ],
+    "flywireType_col_L_R": [
+     686,
+     678
+    ],
+    "type_ne_flywireType": 0,
+    "disagreeing_values": {},
+    "status": {
+     "Traced": 1364
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      686,
+      678
+     ]
+    },
+    "assignedOlHex1_nonnull": 0
+   },
+   {
+    "type": "T3",
+    "carries": [
+     "T3"
+    ],
+    "column": "type",
+    "string": "T3",
+    "flip": false,
+    "bodies_L": 964,
+    "bodies_R": 976,
+    "claimed": 1940,
+    "side_rule": {
+     "somaSide": [
+      964,
+      976
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     964,
+     976
+    ],
+    "flywireType_col_L_R": [
+     964,
+     976
+    ],
+    "type_ne_flywireType": 0,
+    "disagreeing_values": {},
+    "status": {
+     "Traced": 1940
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      964,
+      976
+     ]
+    },
+    "assignedOlHex1_nonnull": 0
+   },
+   {
+    "type": "T5b",
+    "carries": [
+     "T5b"
+    ],
+    "column": "type",
+    "string": "T5b",
+    "flip": false,
+    "bodies_L": 863,
+    "bodies_R": 852,
+    "claimed": 1715,
+    "side_rule": {
+     "somaSide": [
+      863,
+      852
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     863,
+     852
+    ],
+    "flywireType_col_L_R": [
+     863,
+     852
+    ],
+    "type_ne_flywireType": 0,
+    "disagreeing_values": {},
+    "status": {
+     "Traced": 1715
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      863,
+      852
+     ]
+    },
+    "assignedOlHex1_nonnull": 0
+   },
+   {
+    "type": "T5c",
+    "carries": [
+     "T5c"
+    ],
+    "column": "type",
+    "string": "T5c",
+    "flip": false,
+    "bodies_L": 862,
+    "bodies_R": 858,
+    "claimed": 1720,
+    "side_rule": {
+     "somaSide": [
+      862,
+      858
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     862,
+     858
+    ],
+    "flywireType_col_L_R": [
+     862,
+     858
+    ],
+    "type_ne_flywireType": 0,
+    "disagreeing_values": {},
+    "status": {
+     "Traced": 1720
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      862,
+      858
+     ]
+    },
+    "assignedOlHex1_nonnull": 0
+   },
+   {
+    "type": "Mi15",
+    "carries": [
+     "Mi15"
+    ],
+    "column": "type",
+    "string": "Mi15",
+    "flip": false,
+    "bodies_L": 569,
+    "bodies_R": 582,
+    "claimed": 1151,
+    "side_rule": {
+     "somaSide": [
+      569,
+      582
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     569,
+     582
+    ],
+    "flywireType_col_L_R": [
+     569,
+     582
+    ],
+    "type_ne_flywireType": 0,
+    "disagreeing_values": {},
+    "status": {
+     "Traced": 1151
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      569,
+      582
+     ]
+    },
+    "assignedOlHex1_nonnull": 0
+   },
+   {
+    "type": "Tm20",
+    "carries": [
+     "Tm20"
+    ],
+    "column": "type",
+    "string": "Tm20",
+    "flip": false,
+    "bodies_L": 886,
+    "bodies_R": 876,
+    "claimed": 1762,
+    "side_rule": {
+     "somaSide": [
+      886,
+      876
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     886,
+     876
+    ],
+    "flywireType_col_L_R": [
+     886,
+     876
+    ],
+    "type_ne_flywireType": 0,
+    "disagreeing_values": {},
+    "status": {
+     "Traced": 1762
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      886,
+      876
+     ]
+    },
+    "assignedOlHex1_nonnull": 1732
+   },
+   {
+    "type": "Mi10",
+    "carries": [
+     "Mi10"
+    ],
+    "column": "type",
+    "string": "Mi10",
+    "flip": false,
+    "bodies_L": 222,
+    "bodies_R": 222,
+    "claimed": 444,
+    "side_rule": {
+     "somaSide": [
+      222,
+      222
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     222,
+     222
+    ],
+    "flywireType_col_L_R": [
+     222,
+     222
+    ],
+    "type_ne_flywireType": 0,
+    "disagreeing_values": {},
+    "status": {
+     "Traced": 444
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      222,
+      222
+     ]
+    },
+    "assignedOlHex1_nonnull": 0
+   },
+   {
+    "type": "Tm5b",
+    "carries": [
+     "Tm5b"
+    ],
+    "column": "type",
+    "string": "Tm5b",
+    "flip": false,
+    "bodies_L": 260,
+    "bodies_R": 262,
+    "claimed": 522,
+    "side_rule": {
+     "somaSide": [
+      260,
+      262
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     260,
+     262
+    ],
+    "flywireType_col_L_R": [
+     260,
+     262
+    ],
+    "type_ne_flywireType": 0,
+    "disagreeing_values": {},
+    "status": {
+     "Traced": 522
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      260,
+      262
+     ]
+    },
+    "assignedOlHex1_nonnull": 0
+   },
+   {
+    "type": "TmY3",
+    "carries": [
+     "TmY3"
+    ],
+    "column": "type",
+    "string": "TmY3",
+    "flip": false,
+    "bodies_L": 415,
+    "bodies_R": 409,
+    "claimed": 824,
+    "side_rule": {
+     "somaSide": [
+      415,
+      409
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     415,
+     409
+    ],
+    "flywireType_col_L_R": [
+     415,
+     409
+    ],
+    "type_ne_flywireType": 0,
+    "disagreeing_values": {},
+    "status": {
+     "Traced": 824
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      415,
+      409
+     ]
+    },
+    "assignedOlHex1_nonnull": 0
+   },
+   {
+    "type": "C3",
+    "carries": [
+     "C3"
+    ],
+    "column": "type",
+    "string": "C3",
+    "flip": false,
+    "bodies_L": 887,
+    "bodies_R": 892,
+    "claimed": 1779,
+    "side_rule": {
+     "somaSide": [
+      887,
+      892
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     887,
+     892
+    ],
+    "flywireType_col_L_R": [
+     887,
+     892
+    ],
+    "type_ne_flywireType": 0,
+    "disagreeing_values": {},
+    "status": {
+     "Traced": 1779
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      887,
+      892
+     ]
+    },
+    "assignedOlHex1_nonnull": 1770
+   },
+   {
+    "type": "CT1(M10)",
+    "carries": [
+     "CT1(M10)",
+     "CT1(Lo1)"
+    ],
+    "column": "type",
+    "string": "CT1",
+    "flip": true,
+    "bodies_L": 1,
+    "bodies_R": 1,
+    "claimed": 2,
+    "side_rule": {
+     "somaSide": [
+      1,
+      1
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     1,
+     1
+    ],
+    "flywireType_col_L_R": [
+     1,
+     1
+    ],
+    "type_ne_flywireType": 0,
+    "disagreeing_values": {},
+    "status": {
+     "Traced": 2
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      1,
+      1
+     ]
+    },
+    "assignedOlHex1_nonnull": 0
+   },
+   {
+    "type": "Tm1",
+    "carries": [
+     "Tm1"
+    ],
+    "column": "type",
+    "string": "Tm1",
+    "flip": false,
+    "bodies_L": 887,
+    "bodies_R": 890,
+    "claimed": 1777,
+    "side_rule": {
+     "somaSide": [
+      887,
+      890
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     887,
+     890
+    ],
+    "flywireType_col_L_R": [
+     887,
+     890
+    ],
+    "type_ne_flywireType": 0,
+    "disagreeing_values": {},
+    "status": {
+     "Traced": 1777
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      887,
+      890
+     ]
+    },
+    "assignedOlHex1_nonnull": 1767
+   },
+   {
+    "type": "Mi9",
+    "carries": [
+     "Mi9"
+    ],
+    "column": "type",
+    "string": "Mi9",
+    "flip": false,
+    "bodies_L": 886,
+    "bodies_R": 889,
+    "claimed": 1775,
+    "side_rule": {
+     "somaSide": [
+      886,
+      889
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     886,
+     889
+    ],
+    "flywireType_col_L_R": [
+     886,
+     889
+    ],
+    "type_ne_flywireType": 0,
+    "disagreeing_values": {},
+    "status": {
+     "Traced": 1775
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      886,
+      889
+     ]
+    },
+    "assignedOlHex1_nonnull": 1760
+   },
+   {
+    "type": "Tm16",
+    "carries": [
+     "Tm16"
+    ],
+    "column": "type",
+    "string": "Tm16",
+    "flip": false,
+    "bodies_L": 199,
+    "bodies_R": 197,
+    "claimed": 396,
+    "side_rule": {
+     "somaSide": [
+      199,
+      197
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     199,
+     197
+    ],
+    "flywireType_col_L_R": [
+     199,
+     197
+    ],
+    "type_ne_flywireType": 0,
+    "disagreeing_values": {},
+    "status": {
+     "Traced": 396
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      199,
+      197
+     ]
+    },
+    "assignedOlHex1_nonnull": 0
+   },
+   {
+    "type": "TmY9",
+    "carries": [
+     "TmY9"
+    ],
+    "column": "flywireType",
+    "string": "TmY9q",
+    "flip": false,
+    "bodies_L": 249,
+    "bodies_R": 266,
+    "claimed": 515,
+    "side_rule": {
+     "somaSide": [
+      249,
+      266
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     0,
+     0
+    ],
+    "flywireType_col_L_R": [
+     249,
+     266
+    ],
+    "type_ne_flywireType": 515,
+    "disagreeing_values": {
+     "type='TmY9b' / flywireType='TmY9q'": 515
+    },
+    "status": {
+     "Traced": 515
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      249,
+      266
+     ]
+    },
+    "assignedOlHex1_nonnull": 0
+   },
+   {
+    "type": "L4",
+    "carries": [
+     "L4"
+    ],
+    "column": "type",
+    "string": "L4",
+    "flip": false,
+    "bodies_L": 879,
+    "bodies_R": 891,
+    "claimed": 1770,
+    "side_rule": {
+     "somaSide": [
+      879,
+      891
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     879,
+     891
+    ],
+    "flywireType_col_L_R": [
+     879,
+     891
+    ],
+    "type_ne_flywireType": 0,
+    "disagreeing_values": {},
+    "status": {
+     "Traced": 1769,
+     "null": 1
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      878,
+      891
+     ],
+     "null": [
+      1,
+      0
+     ]
+    },
+    "assignedOlHex1_nonnull": 0
+   },
+   {
+    "type": "Mi4",
+    "carries": [
+     "Mi4"
+    ],
+    "column": "type",
+    "string": "Mi4",
+    "flip": false,
+    "bodies_L": 883,
+    "bodies_R": 889,
+    "claimed": 1772,
+    "side_rule": {
+     "somaSide": [
+      883,
+      889
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     883,
+     889
+    ],
+    "flywireType_col_L_R": [
+     883,
+     889
+    ],
+    "type_ne_flywireType": 0,
+    "disagreeing_values": {},
+    "status": {
+     "Traced": 1772
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      883,
+      889
+     ]
+    },
+    "assignedOlHex1_nonnull": 1758
+   },
+   {
+    "type": "T1",
+    "carries": [
+     "T1"
+    ],
+    "column": "type",
+    "string": "T1",
+    "flip": false,
+    "bodies_L": 885,
+    "bodies_R": 892,
+    "claimed": 1777,
+    "side_rule": {
+     "somaSide": [
+      885,
+      892
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     885,
+     892
+    ],
+    "flywireType_col_L_R": [
+     885,
+     892
+    ],
+    "type_ne_flywireType": 0,
+    "disagreeing_values": {},
+    "status": {
+     "Traced": 1777
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      885,
+      892
+     ]
+    },
+    "assignedOlHex1_nonnull": 1764
+   },
+   {
+    "type": "Mi13",
+    "carries": [
+     "Mi13"
+    ],
+    "column": "type",
+    "string": "Mi13",
+    "flip": false,
+    "bodies_L": 457,
+    "bodies_R": 453,
+    "claimed": 910,
+    "side_rule": {
+     "somaSide": [
+      457,
+      453
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     457,
+     453
+    ],
+    "flywireType_col_L_R": [
+     457,
+     453
+    ],
+    "type_ne_flywireType": 0,
+    "disagreeing_values": {},
+    "status": {
+     "Traced": 910
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      457,
+      453
+     ]
+    },
+    "assignedOlHex1_nonnull": 0
+   },
+   {
+    "type": "TmY4",
+    "carries": [
+     "TmY4"
+    ],
+    "column": "type",
+    "string": "TmY4",
+    "flip": false,
+    "bodies_L": 274,
+    "bodies_R": 288,
+    "claimed": 562,
+    "side_rule": {
+     "somaSide": [
+      274,
+      288
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     274,
+     288
+    ],
+    "flywireType_col_L_R": [
+     274,
+     288
+    ],
+    "type_ne_flywireType": 0,
+    "disagreeing_values": {},
+    "status": {
+     "Traced": 562
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      274,
+      288
+     ]
+    },
+    "assignedOlHex1_nonnull": 0
+   },
+   {
+    "type": "R8",
+    "carries": [
+     "R8"
+    ],
+    "column": "flywireType",
+    "string": "R8",
+    "flip": false,
+    "bodies_L": 625,
+    "bodies_R": 704,
+    "claimed": 1329,
+    "side_rule": {
+     "somaSide": [
+      14,
+      0
+     ],
+     "rootSide": [
+      611,
+      704
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     0,
+     0
+    ],
+    "flywireType_col_L_R": [
+     625,
+     704
+    ],
+    "type_ne_flywireType": 1329,
+    "disagreeing_values": {
+     "type='R8_unclear' / flywireType='R8'": 442,
+     "type='R8d' / flywireType='R8'": 76,
+     "type='R8p' / flywireType='R8'": 330,
+     "type='R8y' / flywireType='R8'": 481
+    },
+    "status": {
+     "Traced": 1329
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      625,
+      704
+     ]
+    },
+    "assignedOlHex1_nonnull": 0
+   },
+   {
+    "type": "Mi2",
+    "carries": [
+     "Mi2"
+    ],
+    "column": "type",
+    "string": "Mi2",
+    "flip": false,
+    "bodies_L": 494,
+    "bodies_R": 492,
+    "claimed": 986,
+    "side_rule": {
+     "somaSide": [
+      494,
+      492
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     494,
+     492
+    ],
+    "flywireType_col_L_R": [
+     494,
+     492
+    ],
+    "type_ne_flywireType": 0,
+    "disagreeing_values": {},
+    "status": {
+     "Traced": 986
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      494,
+      492
+     ]
+    },
+    "assignedOlHex1_nonnull": 0
+   },
+   {
+    "type": "T4b",
+    "carries": [
+     "T4b"
+    ],
+    "column": "type",
+    "string": "T4b",
+    "flip": false,
+    "bodies_L": 844,
+    "bodies_R": 846,
+    "claimed": 1690,
+    "side_rule": {
+     "somaSide": [
+      844,
+      846
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     844,
+     846
+    ],
+    "flywireType_col_L_R": [
+     844,
+     846
+    ],
+    "type_ne_flywireType": 0,
+    "disagreeing_values": {},
+    "status": {
+     "Traced": 1690
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      844,
+      846
+     ]
+    },
+    "assignedOlHex1_nonnull": 0
+   },
+   {
+    "type": "Tm4",
+    "carries": [
+     "Tm4"
+    ],
+    "column": "type",
+    "string": "Tm4",
+    "flip": false,
+    "bodies_L": 837,
+    "bodies_R": 833,
+    "claimed": 1670,
+    "side_rule": {
+     "somaSide": [
+      837,
+      833
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     837,
+     833
+    ],
+    "flywireType_col_L_R": [
+     837,
+     833
+    ],
+    "type_ne_flywireType": 0,
+    "disagreeing_values": {},
+    "status": {
+     "Traced": 1670
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      837,
+      833
+     ]
+    },
+    "assignedOlHex1_nonnull": 833
+   },
+   {
+    "type": "R1",
+    "carries": [
+     "R1",
+     "R3",
+     "R2",
+     "R5",
+     "R4",
+     "R6"
+    ],
+    "column": "type",
+    "string": "R1-R6",
+    "flip": false,
+    "bodies_L": 1112,
+    "bodies_R": 2265,
+    "claimed": 3377,
+    "side_rule": {
+     "somaSide": [
+      4,
+      9
+     ],
+     "rootSide": [
+      1108,
+      2256
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     1112,
+     2265
+    ],
+    "flywireType_col_L_R": [
+     0,
+     0
+    ],
+    "type_ne_flywireType": 3377,
+    "disagreeing_values": {
+     "type='R1-R6' / flywireType='R1-6'": 3377
+    },
+    "status": {
+     "Traced": 1394,
+     "null": 1983
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      501,
+      893
+     ],
+     "null": [
+      611,
+      1372
+     ]
+    },
+    "assignedOlHex1_nonnull": 0
+   },
+   {
+    "type": "T5a",
+    "carries": [
+     "T5a"
+    ],
+    "column": "type",
+    "string": "T5a",
+    "flip": false,
+    "bodies_L": 826,
+    "bodies_R": 838,
+    "claimed": 1664,
+    "side_rule": {
+     "somaSide": [
+      826,
+      838
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     826,
+     838
+    ],
+    "flywireType_col_L_R": [
+     826,
+     838
+    ],
+    "type_ne_flywireType": 0,
+    "disagreeing_values": {},
+    "status": {
+     "Traced": 1664
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      826,
+      838
+     ]
+    },
+    "assignedOlHex1_nonnull": 0
+   },
+   {
+    "type": "T4a",
+    "carries": [
+     "T4a"
+    ],
+    "column": "type",
+    "string": "T4a",
+    "flip": false,
+    "bodies_L": 835,
+    "bodies_R": 849,
+    "claimed": 1684,
+    "side_rule": {
+     "somaSide": [
+      835,
+      849
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     835,
+     849
+    ],
+    "flywireType_col_L_R": [
+     835,
+     849
+    ],
+    "type_ne_flywireType": 0,
+    "disagreeing_values": {},
+    "status": {
+     "Traced": 1684
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      835,
+      849
+     ]
+    },
+    "assignedOlHex1_nonnull": 0
+   },
+   {
+    "type": "C2",
+    "carries": [
+     "C2"
+    ],
+    "column": "type",
+    "string": "C2",
+    "flip": false,
+    "bodies_L": 871,
+    "bodies_R": 874,
+    "claimed": 1745,
+    "side_rule": {
+     "somaSide": [
+      871,
+      874
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     871,
+     874
+    ],
+    "flywireType_col_L_R": [
+     871,
+     874
+    ],
+    "type_ne_flywireType": 0,
+    "disagreeing_values": {},
+    "status": {
+     "Traced": 1745
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      871,
+      874
+     ]
+    },
+    "assignedOlHex1_nonnull": 874
+   },
+   {
+    "type": "L1",
+    "carries": [
+     "L1"
+    ],
+    "column": "type",
+    "string": "L1",
+    "flip": false,
+    "bodies_L": 884,
+    "bodies_R": 892,
+    "claimed": 1776,
+    "side_rule": {
+     "somaSide": [
+      884,
+      892
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     884,
+     892
+    ],
+    "flywireType_col_L_R": [
+     884,
+     892
+    ],
+    "type_ne_flywireType": 0,
+    "disagreeing_values": {},
+    "status": {
+     "Traced": 1776
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      884,
+      892
+     ]
+    },
+    "assignedOlHex1_nonnull": 1767
+   },
+   {
+    "type": "Am",
+    "carries": [
+     "Am"
+    ],
+    "column": "type",
+    "string": "Am1",
+    "flip": false,
+    "bodies_L": 1,
+    "bodies_R": 1,
+    "claimed": 2,
+    "side_rule": {
+     "somaSide": [
+      1,
+      1
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     1,
+     1
+    ],
+    "flywireType_col_L_R": [
+     1,
+     1
+    ],
+    "type_ne_flywireType": 0,
+    "disagreeing_values": {},
+    "status": {
+     "Traced": 2
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      1,
+      1
+     ]
+    },
+    "assignedOlHex1_nonnull": 0
+   },
+   {
+    "type": "Mi1",
+    "carries": [
+     "Mi1"
+    ],
+    "column": "type",
+    "string": "Mi1",
+    "flip": false,
+    "bodies_L": 886,
+    "bodies_R": 887,
+    "claimed": 1773,
+    "side_rule": {
+     "somaSide": [
+      886,
+      887
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     886,
+     887
+    ],
+    "flywireType_col_L_R": [
+     886,
+     887
+    ],
+    "type_ne_flywireType": 0,
+    "disagreeing_values": {},
+    "status": {
+     "Traced": 1773
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      886,
+      887
+     ]
+    },
+    "assignedOlHex1_nonnull": 1762
+   },
+   {
+    "type": "Mi14",
+    "carries": [
+     "Mi14"
+    ],
+    "column": "type",
+    "string": "Mi14",
+    "flip": false,
+    "bodies_L": 160,
+    "bodies_R": 155,
+    "claimed": 315,
+    "side_rule": {
+     "somaSide": [
+      160,
+      155
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     160,
+     155
+    ],
+    "flywireType_col_L_R": [
+     160,
+     155
+    ],
+    "type_ne_flywireType": 0,
+    "disagreeing_values": {},
+    "status": {
+     "Traced": 315
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      160,
+      155
+     ]
+    },
+    "assignedOlHex1_nonnull": 0
+   },
+   {
+    "type": "L5",
+    "carries": [
+     "L5"
+    ],
+    "column": "type",
+    "string": "L5",
+    "flip": false,
+    "bodies_L": 889,
+    "bodies_R": 898,
+    "claimed": 1787,
+    "side_rule": {
+     "somaSide": [
+      889,
+      898
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     889,
+     898
+    ],
+    "flywireType_col_L_R": [
+     890,
+     898
+    ],
+    "type_ne_flywireType": 1,
+    "disagreeing_values": {
+     "type=None / flywireType='L5'": 1
+    },
+    "status": {
+     "Traced": 1787
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      889,
+      898
+     ]
+    },
+    "assignedOlHex1_nonnull": 1773
+   },
+   {
+    "type": "Tm9",
+    "carries": [
+     "Tm9"
+    ],
+    "column": "type",
+    "string": "Tm9",
+    "flip": false,
+    "bodies_L": 884,
+    "bodies_R": 887,
+    "claimed": 1771,
+    "side_rule": {
+     "somaSide": [
+      884,
+      887
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     884,
+     887
+    ],
+    "flywireType_col_L_R": [
+     884,
+     887
+    ],
+    "type_ne_flywireType": 0,
+    "disagreeing_values": {},
+    "status": {
+     "Traced": 1771
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      884,
+      887
+     ]
+    },
+    "assignedOlHex1_nonnull": 1743
+   },
+   {
+    "type": "TmY10",
+    "carries": [
+     "TmY10"
+    ],
+    "column": "type",
+    "string": "TmY10",
+    "flip": false,
+    "bodies_L": 274,
+    "bodies_R": 278,
+    "claimed": 552,
+    "side_rule": {
+     "somaSide": [
+      274,
+      278
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     274,
+     278
+    ],
+    "flywireType_col_L_R": [
+     274,
+     278
+    ],
+    "type_ne_flywireType": 0,
+    "disagreeing_values": {},
+    "status": {
+     "Traced": 552
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      274,
+      278
+     ]
+    },
+    "assignedOlHex1_nonnull": 0
+   },
+   {
+    "type": "TmY18",
+    "carries": [
+     "TmY18"
+    ],
+    "column": "type",
+    "string": "TmY18",
+    "flip": false,
+    "bodies_L": 673,
+    "bodies_R": 694,
+    "claimed": 1367,
+    "side_rule": {
+     "somaSide": [
+      673,
+      694
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     673,
+     694
+    ],
+    "flywireType_col_L_R": [
+     0,
+     0
+    ],
+    "type_ne_flywireType": 1367,
+    "disagreeing_values": {
+     "type='TmY18' / flywireType='Tm27'": 1367
+    },
+    "status": {
+     "Traced": 1367
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      673,
+      694
+     ]
+    },
+    "assignedOlHex1_nonnull": 0
+   },
+   {
+    "type": "Tm5a",
+    "carries": [
+     "Tm5a"
+    ],
+    "column": "type",
+    "string": "Tm5a",
+    "flip": false,
+    "bodies_L": 317,
+    "bodies_R": 307,
+    "claimed": 624,
+    "side_rule": {
+     "somaSide": [
+      317,
+      307
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     317,
+     307
+    ],
+    "flywireType_col_L_R": [
+     317,
+     307
+    ],
+    "type_ne_flywireType": 0,
+    "disagreeing_values": {},
+    "status": {
+     "Traced": 624
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      317,
+      307
+     ]
+    },
+    "assignedOlHex1_nonnull": 0
+   },
+   {
+    "type": "T2a",
+    "carries": [
+     "T2a"
+    ],
+    "column": "type",
+    "string": "T2a",
+    "flip": false,
+    "bodies_L": 933,
+    "bodies_R": 939,
+    "claimed": 1872,
+    "side_rule": {
+     "somaSide": [
+      933,
+      939
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     933,
+     939
+    ],
+    "flywireType_col_L_R": [
+     933,
+     939
+    ],
+    "type_ne_flywireType": 0,
+    "disagreeing_values": {},
+    "status": {
+     "Traced": 1872
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      933,
+      939
+     ]
+    },
+    "assignedOlHex1_nonnull": 0
+   },
+   {
+    "type": "TmY13",
+    "carries": [
+     "TmY13"
+    ],
+    "column": "type",
+    "string": "TmY13",
+    "flip": false,
+    "bodies_L": 221,
+    "bodies_R": 211,
+    "claimed": 432,
+    "side_rule": {
+     "somaSide": [
+      221,
+      211
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     221,
+     211
+    ],
+    "flywireType_col_L_R": [
+     0,
+     0
+    ],
+    "type_ne_flywireType": 432,
+    "disagreeing_values": {
+     "type='TmY13' / flywireType='TmY11'": 432
+    },
+    "status": {
+     "Traced": 432
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      221,
+      211
+     ]
+    },
+    "assignedOlHex1_nonnull": 0
+   },
+   {
+    "type": "R7",
+    "carries": [
+     "R7"
+    ],
+    "column": "flywireType",
+    "string": "R7",
+    "flip": false,
+    "bodies_L": 608,
+    "bodies_R": 692,
+    "claimed": 1300,
+    "side_rule": {
+     "somaSide": [
+      1,
+      1
+     ],
+     "rootSide": [
+      607,
+      691
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     0,
+     0
+    ],
+    "flywireType_col_L_R": [
+     608,
+     692
+    ],
+    "type_ne_flywireType": 1300,
+    "disagreeing_values": {
+     "type='R7_unclear' / flywireType='R7'": 404,
+     "type='R7d' / flywireType='R7'": 82,
+     "type='R7p' / flywireType='R7'": 332,
+     "type='R7y' / flywireType='R7'": 482
+    },
+    "status": {
+     "Anchor": 1,
+     "Traced": 1299
+    },
+    "status_by_lobe_L_R": {
+     "Anchor": [
+      1,
+      0
+     ],
+     "Traced": [
+      607,
+      692
+     ]
+    },
+    "assignedOlHex1_nonnull": 0
+   },
+   {
+    "type": "T5d",
+    "carries": [
+     "T5d"
+    ],
+    "column": "type",
+    "string": "T5d",
+    "flip": false,
+    "bodies_L": 812,
+    "bodies_R": 808,
+    "claimed": 1620,
+    "side_rule": {
+     "somaSide": [
+      812,
+      808
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     812,
+     808
+    ],
+    "flywireType_col_L_R": [
+     812,
+     808
+    ],
+    "type_ne_flywireType": 0,
+    "disagreeing_values": {},
+    "status": {
+     "Traced": 1620
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      812,
+      808
+     ]
+    },
+    "assignedOlHex1_nonnull": 0
+   },
+   {
+    "type": "Tm30",
+    "carries": [
+     "Tm30"
+    ],
+    "column": "type",
+    "string": "Tm30",
+    "flip": false,
+    "bodies_L": 63,
+    "bodies_R": 61,
+    "claimed": 124,
+    "side_rule": {
+     "somaSide": [
+      63,
+      61
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     63,
+     61
+    ],
+    "flywireType_col_L_R": [
+     0,
+     0
+    ],
+    "type_ne_flywireType": 124,
+    "disagreeing_values": {
+     "type='Tm30' / flywireType='Tm31'": 124
+    },
+    "status": {
+     "Traced": 124
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      63,
+      61
+     ]
+    },
+    "assignedOlHex1_nonnull": 0
+   },
+   {
+    "type": "L3",
+    "carries": [
+     "L3"
+    ],
+    "column": "type",
+    "string": "L3",
+    "flip": false,
+    "bodies_L": 880,
+    "bodies_R": 892,
+    "claimed": 1772,
+    "side_rule": {
+     "somaSide": [
+      880,
+      892
+     ],
+     "rootSide": [
+      0,
+      0
+     ],
+     "instance": [
+      0,
+      0
+     ],
+     "unassigned": 0
+    },
+    "type_col_L_R": [
+     880,
+     892
+    ],
+    "flywireType_col_L_R": [
+     880,
+     892
+    ],
+    "type_ne_flywireType": 0,
+    "disagreeing_values": {},
+    "status": {
+     "Traced": 1772
+    },
+    "status_by_lobe_L_R": {
+     "Traced": [
+      880,
+      892
+     ]
+    },
+    "assignedOlHex1_nonnull": 892
+   }
+  ],
+  "special_strings": {
+   "type": {
+    "Am1": 2,
+    "CT1": 2,
+    "R1-R6": 3377,
+    "R7R8_unclear": 85,
+    "R7_unclear": 404,
+    "R7d": 82,
+    "R7p": 332,
+    "R7y": 482,
+    "R8_unclear": 442,
+    "R8d": 76,
+    "R8p": 330,
+    "R8y": 481,
+    "TmY9a": 471,
+    "TmY9b": 515
+   },
+   "flywireType": {
+    "Am1": 2,
+    "CT1": 2,
+    "R1-6": 3377,
+    "R7": 1300,
+    "R8": 1329,
+    "TmY9q": 515,
+    "TmY9q__perp": 471
+   },
+   "absent:Mi3": {
+    "type": 0,
+    "flywireType": 0
+   },
+   "absent:Mi11": {
+    "type": 0,
+    "flywireType": 0
+   },
+   "absent:Mi12": {
+    "type": 0,
+    "flywireType": 0
+   },
+   "absent:Tm28": {
+    "type": 0,
+    "flywireType": 0
+   }
+  },
+  "annotation_controls": {
+   "status_by_side": {
+    "Anchor": [
+     137,
+     63,
+     411
+    ],
+    "Assign": [
+     1,
+     0,
+     1831
+    ],
+    "Glia": [
+     0,
+     0,
+     11864
+    ],
+    "Orphan": [
+     1390,
+     686,
+     13849
+    ],
+    "Traced": [
+     81378,
+     82753,
+     991
+    ],
+    "Unimportant": [
+     0,
+     0,
+     10751
+    ],
+    "null": [
+     854,
+     1985,
+     2633
+    ]
+   },
+   "traced_soma_root_only": [
+    81362,
+    82738
+   ],
+   "R7": {
+    "variants": {
+     "R7d": 82,
+     "R7p": 332,
+     "R7y": 482,
+     "R7_unclear": 404
+    },
+    "sides_L_R": [
+     608,
+     692
+    ],
+    "same_bodies_as_flywireType": true,
+    "symmetric_difference": 0
+   },
+   "R8": {
+    "variants": {
+     "R8d": 76,
+     "R8p": 330,
+     "R8y": 481,
+     "R8_unclear": 442
+    },
+    "sides_L_R": [
+     625,
+     704
+    ],
+    "same_bodies_as_flywireType": true,
+    "symmetric_difference": 0
+   },
+   "type=R1-R6|flywireType=R1-6": {
+    "bodies": [
+     3377,
+     3377
+    ],
+    "same": true
+   }
+  }
+ },
+ "flip": [
+  "CT1"
+ ],
+ "lobe_consistency": {
+  "Tm5Y": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 199399,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 25214,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 48026,
+   "flip": false
+  },
+  "T4d": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 201776,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 45614,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 39115,
+   "flip": false
+  },
+  "Tm2": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 710392,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 72070,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 41599,
+   "flip": false
+  },
+  "TmY15": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 467621,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 64456,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 53537,
+   "flip": false
+  },
+  "Tm3": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 1169044,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 129360,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 107556,
+   "flip": false
+  },
+  "Tm5c": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 170504,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 27010,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 25202,
+   "flip": false
+  },
+  "Lawf1": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 137397,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 18447,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 29210,
+   "flip": false
+  },
+  "TmY14": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 384650,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 15217,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 65917,
+   "flip": false
+  },
+  "T2": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 657782,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 55760,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 124988,
+   "flip": false
+  },
+  "L2": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 1233848,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 42465,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 22007,
+   "flip": false
+  },
+  "Lawf2": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 79577,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 3036,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 34399,
+   "flip": false
+  },
+  "T4c": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 230259,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 54766,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 41117,
+   "flip": false
+  },
+  "TmY5a": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 579013,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 42825,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 123477,
+   "flip": false
+  },
+  "T3": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 342229,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 23451,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 41835,
+   "flip": false
+  },
+  "T5b": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 265488,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 51052,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 36221,
+   "flip": false
+  },
+  "T5c": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 192460,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 47859,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 33536,
+   "flip": false
+  },
+  "Mi15": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 145746,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 24372,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 22752,
+   "flip": false
+  },
+  "Tm20": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 371482,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 44219,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 53236,
+   "flip": false
+  },
+  "Mi10": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 203784,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 39256,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 25569,
+   "flip": false
+  },
+  "Tm5b": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 73852,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 9993,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 19365,
+   "flip": false
+  },
+  "TmY3": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 548972,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 39335,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 97780,
+   "flip": false
+  },
+  "C3": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 684155,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 61809,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 46264,
+   "flip": false
+  },
+  "CT1(M10)": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 403235,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 18723,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 22296,
+   "flip": true
+  },
+  "Tm1": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 750445,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 72118,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 42529,
+   "flip": false
+  },
+  "Mi9": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 710381,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 75297,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 61337,
+   "flip": false
+  },
+  "Tm16": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 247979,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 52838,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 33796,
+   "flip": false
+  },
+  "TmY9": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 157569,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 23445,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 43306,
+   "flip": false
+  },
+  "L4": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 290619,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 64605,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 21531,
+   "flip": false
+  },
+  "Mi4": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 745027,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 91439,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 66087,
+   "flip": false
+  },
+  "T1": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 295188,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 3521,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 16950,
+   "flip": false
+  },
+  "Mi13": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 293421,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 60091,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 25655,
+   "flip": false
+  },
+  "TmY4": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 218310,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 20453,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 67021,
+   "flip": false
+  },
+  "R8": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 161146,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 17209,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 3793,
+   "flip": false
+  },
+  "Mi2": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 268084,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 43715,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 39639,
+   "flip": false
+  },
+  "T4b": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 280875,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 57257,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 42481,
+   "flip": false
+  },
+  "Tm4": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 935327,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 92745,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 108881,
+   "flip": false
+  },
+  "R1": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 270466,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 14136,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 12991,
+   "flip": false
+  },
+  "T5a": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 190556,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 43506,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 28706,
+   "flip": false
+  },
+  "T4a": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 220714,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 52583,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 37587,
+   "flip": false
+  },
+  "C2": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 363482,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 30190,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 30846,
+   "flip": false
+  },
+  "L1": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 879794,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 26664,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 25297,
+   "flip": false
+  },
+  "Am": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 161309,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 16226,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 9046,
+   "flip": false
+  },
+  "Mi1": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 1151809,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 110070,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 61366,
+   "flip": false
+  },
+  "Mi14": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 149460,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 31827,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 27973,
+   "flip": false
+  },
+  "L5": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 989171,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 92100,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 35720,
+   "flip": false
+  },
+  "Tm9": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 231978,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 12673,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 38124,
+   "flip": false
+  },
+  "TmY10": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 161470,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 30481,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 32744,
+   "flip": false
+  },
+  "TmY18": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 364329,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 39838,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 81528,
+   "flip": false
+  },
+  "Tm5a": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 72648,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 8948,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 17161,
+   "flip": false
+  },
+  "T2a": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 408732,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 48531,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 70565,
+   "flip": false
+  },
+  "TmY13": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 232764,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 25788,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 39220,
+   "flip": false
+  },
+  "R7": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 83325,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 8859,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 3046,
+   "flip": false
+  },
+  "T5d": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 189425,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 45108,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 31289,
+   "flip": false
+  },
+  "Tm30": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 17820,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 2688,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 4882,
+   "flip": false
+  },
+  "L3": {
+   "share": 1.0,
+   "as_source": 1.0,
+   "as_target": 1.0,
+   "weight": 470980,
+   "cross_lobe_weight": 0,
+   "cross_lobe_rows_as_source": 0,
+   "rows_as_source": 61622,
+   "cross_lobe_rows_as_target": 0,
+   "rows_as_target": 16779,
+   "flip": false
+  }
+ },
+ "collapse": "pooled",
+ "density_targets": {
+  "pooled": {
+   "omega": 2961,
+   "present": 511,
+   "T": 0.172577,
+   "K": 1022
+  },
+  "restrict": {
+   "omega": 2961,
+   "present": 497,
+   "T": 0.167849,
+   "K": 994
+  },
+  "full_grid_b_prime": {
+   "omega_full": 4161,
+   "present_full": 572,
+   "T": 0.137467,
+   "K": 814
+  }
+ },
+ "w_min": 1,
+ "K": 1022,
+ "c_star": 2.994356659142212,
+ "cut": {
+  "c": 2.994356659142212,
+  "present": 1022,
+  "excess": 0,
+  "shortfall": 0
+ },
+ "outside_density": {
+  "L": 0.16751097602161433,
+  "R": 0.17764268828098614
+ },
+ "outside_present": {
+  "L": 496,
+  "R": 526
+ },
+ "population_rows_at_c_star": {
+  "CT1(M10)": {
+   "L": {
+    "bodies": 1,
+    "row_present": 9,
+    "column_present": 31
+   },
+   "R": {
+    "bodies": 1,
+    "row_present": 9,
+    "column_present": 30
+   }
+  },
+  "R1": {
+   "L": {
+    "bodies": 1112,
+    "row_present": 3,
+    "column_present": 1
+   },
+   "R": {
+    "bodies": 2265,
+    "row_present": 3,
+    "column_present": 1
+   }
+  }
+ },
+ "diagnostics": [
+  {
+   "w_min": 1,
+   "cut": "c* (pooled collapse, registered)",
+   "c": 2.994356659142212,
+   "lobe": "L",
+   "present": 496,
+   "density": 0.16751097602161433,
+   "inferable": 64,
+   "mirrors": 3,
+   "smallest_endpoint_keep": [
+    "T5a",
+    4
+   ]
+  },
+  {
+   "w_min": 1,
+   "cut": "c* (pooled collapse, registered)",
+   "c": 2.994356659142212,
+   "lobe": "R",
+   "present": 526,
+   "density": 0.17764268828098614,
+   "inferable": 64,
+   "mirrors": 3,
+   "smallest_endpoint_keep": [
+    "T5a",
+    4
+   ]
+  },
+  {
+   "w_min": 1,
+   "cut": "c* (restrict-only collapse)",
+   "c": 3.271356783919598,
+   "lobe": "L",
+   "present": 481,
+   "density": 0.1624451198919284,
+   "inferable": 64,
+   "mirrors": 2,
+   "smallest_endpoint_keep": [
+    "T4c",
+    4
+   ]
+  },
+  {
+   "w_min": 1,
+   "cut": "c* (restrict-only collapse)",
+   "c": 3.271356783919598,
+   "lobe": "R",
+   "present": 513,
+   "density": 0.17325227963525835,
+   "inferable": 64,
+   "mirrors": 2,
+   "smallest_endpoint_keep": [
+    "T5a",
+    4
+   ]
+  },
+  {
+   "w_min": 1,
+   "cut": "c* (b', full-grid density)",
+   "c": 5.402061855670103,
+   "lobe": "L",
+   "present": 392,
+   "density": 0.13238770685579196,
+   "inferable": 64,
+   "mirrors": 0,
+   "smallest_endpoint_keep": [
+    "Tm9",
+    2
+   ]
+  },
+  {
+   "w_min": 1,
+   "cut": "c* (b', full-grid density)",
+   "c": 5.402061855670103,
+   "lobe": "R",
+   "present": 422,
+   "density": 0.1425194191151638,
+   "inferable": 64,
+   "mirrors": 1,
+   "smallest_endpoint_keep": [
+    "T4c",
+    3
+   ]
+  },
+  {
+   "w_min": 1,
+   "cut": "c*_L (left lobe alone)",
+   "c": 2.694533762057878,
+   "lobe": "L",
+   "present": 511,
+   "density": 0.17257683215130024,
+   "inferable": 64,
+   "mirrors": 3,
+   "smallest_endpoint_keep": [
+    "T5a",
+    4
+   ]
+  },
+  {
+   "w_min": 1,
+   "cut": "c*_L (left lobe alone)",
+   "c": 2.694533762057878,
+   "lobe": "R",
+   "present": 541,
+   "density": 0.18270854441067208,
+   "inferable": 64,
+   "mirrors": 3,
+   "smallest_endpoint_keep": [
+    "T5a",
+    4
+   ]
+  },
+  {
+   "w_min": 1,
+   "cut": "c*_R (right lobe alone)",
+   "c": 3.393371757925072,
+   "lobe": "L",
+   "present": 474,
+   "density": 0.160081053698075,
+   "inferable": 64,
+   "mirrors": 2,
+   "smallest_endpoint_keep": [
+    "T4c",
+    4
+   ]
+  },
+  {
+   "w_min": 1,
+   "cut": "c*_R (right lobe alone)",
+   "c": 3.393371757925072,
+   "lobe": "R",
+   "present": 511,
+   "density": 0.17257683215130024,
+   "inferable": 64,
+   "mirrors": 2,
+   "smallest_endpoint_keep": [
+    "T5a",
+    4
+   ]
+  },
+  {
+   "w_min": 1,
+   "cut": "c = 0.5",
+   "c": 0.5,
+   "lobe": "L",
+   "present": 946,
+   "density": 0.31948665991219183,
+   "inferable": 64,
+   "mirrors": 4,
+   "smallest_endpoint_keep": [
+    "T5a",
+    8
+   ]
+  },
+  {
+   "w_min": 1,
+   "cut": "c = 0.5",
+   "c": 0.5,
+   "lobe": "R",
+   "present": 964,
+   "density": 0.32556568726781493,
+   "inferable": 64,
+   "mirrors": 4,
+   "smallest_endpoint_keep": [
+    "T5a",
+    8
+   ]
+  },
+  {
+   "w_min": 1,
+   "cut": "c = 1",
+   "c": 1.0,
+   "lobe": "L",
+   "present": 739,
+   "density": 0.24957784532252617,
+   "inferable": 64,
+   "mirrors": 4,
+   "smallest_endpoint_keep": [
+    "T5a",
+    6
+   ]
+  },
+  {
+   "w_min": 1,
+   "cut": "c = 1",
+   "c": 1.0,
+   "lobe": "R",
+   "present": 787,
+   "density": 0.2657885849375211,
+   "inferable": 64,
+   "mirrors": 4,
+   "smallest_endpoint_keep": [
+    "T5a",
+    6
+   ]
+  },
+  {
+   "w_min": 1,
+   "cut": "c = 2",
+   "c": 2.0,
+   "lobe": "L",
+   "present": 553,
+   "density": 0.1867612293144208,
+   "inferable": 64,
+   "mirrors": 3,
+   "smallest_endpoint_keep": [
+    "T5a",
+    4
+   ]
+  },
+  {
+   "w_min": 1,
+   "cut": "c = 2",
+   "c": 2.0,
+   "lobe": "R",
+   "present": 589,
+   "density": 0.198919284025667,
+   "inferable": 64,
+   "mirrors": 3,
+   "smallest_endpoint_keep": [
+    "T5a",
+    4
+   ]
+  },
+  {
+   "w_min": 1,
+   "c_equals_1_rank": 1526,
+   "pooled_values": 5922
+  },
+  {
+   "w_min": 2,
+   "cut": "c* (pooled collapse, registered)",
+   "c": 1.975,
+   "lobe": "L",
+   "present": 496,
+   "density": 0.16751097602161433,
+   "inferable": 64,
+   "mirrors": 3,
+   "smallest_endpoint_keep": [
+    "T5a",
+    4
+   ]
+  },
+  {
+   "w_min": 2,
+   "cut": "c* (pooled collapse, registered)",
+   "c": 1.975,
+   "lobe": "R",
+   "present": 526,
+   "density": 0.17764268828098614,
+   "inferable": 64,
+   "mirrors": 3,
+   "smallest_endpoint_keep": [
+    "T5a",
+    4
+   ]
+  },
+  {
+   "w_min": 2,
+   "cut": "c* (restrict-only collapse)",
+   "c": 2.075,
+   "lobe": "L",
+   "present": 477,
+   "density": 0.16109422492401215,
+   "inferable": 64,
+   "mirrors": 3,
+   "smallest_endpoint_keep": [
+    "Tm9",
+    3
+   ]
+  },
+  {
+   "w_min": 2,
+   "cut": "c* (restrict-only collapse)",
+   "c": 2.075,
+   "lobe": "R",
+   "present": 517,
+   "density": 0.1746031746031746,
+   "inferable": 64,
+   "mirrors": 3,
+   "smallest_endpoint_keep": [
+    "T5a",
+    4
+   ]
+  },
+  {
+   "w_min": 2,
+   "cut": "c* (b', full-grid density)",
+   "c": 3.9199614271938286,
+   "lobe": "L",
+   "present": 389,
+   "density": 0.13137453562985477,
+   "inferable": 56,
+   "mirrors": 1,
+   "smallest_endpoint_keep": [
+    "Tm9",
+    1
+   ]
+  },
+  {
+   "w_min": 2,
+   "cut": "c* (b', full-grid density)",
+   "c": 3.9199614271938286,
+   "lobe": "R",
+   "present": 425,
+   "density": 0.14353259034110097,
+   "inferable": 64,
+   "mirrors": 1,
+   "smallest_endpoint_keep": [
+    "T4c",
+    3
+   ]
+  },
+  {
+   "w_min": 2,
+   "cut": "c*_L (left lobe alone)",
+   "c": 1.8386004514672687,
+   "lobe": "L",
+   "present": 511,
+   "density": 0.17257683215130024,
+   "inferable": 64,
+   "mirrors": 3,
+   "smallest_endpoint_keep": [
+    "T5a",
+    4
+   ]
+  },
+  {
+   "w_min": 2,
+   "cut": "c*_L (left lobe alone)",
+   "c": 1.8386004514672687,
+   "lobe": "R",
+   "present": 534,
+   "density": 0.18034447821681865,
+   "inferable": 64,
+   "mirrors": 3,
+   "smallest_endpoint_keep": [
+    "T5a",
+    4
+   ]
+  },
+  {
+   "w_min": 2,
+   "cut": "c*_R (right lobe alone)",
+   "c": 2.2420924574209247,
+   "lobe": "L",
+   "present": 469,
+   "density": 0.15839243498817968,
+   "inferable": 64,
+   "mirrors": 3,
+   "smallest_endpoint_keep": [
+    "Tm9",
+    3
+   ]
+  },
+  {
+   "w_min": 2,
+   "cut": "c*_R (right lobe alone)",
+   "c": 2.2420924574209247,
+   "lobe": "R",
+   "present": 511,
+   "density": 0.17257683215130024,
+   "inferable": 64,
+   "mirrors": 3,
+   "smallest_endpoint_keep": [
+    "T4a",
+    4
+   ]
+  },
+  {
+   "w_min": 2,
+   "cut": "c = 0.5",
+   "c": 0.5,
+   "lobe": "L",
+   "present": 713,
+   "density": 0.2407970280310706,
+   "inferable": 64,
+   "mirrors": 3,
+   "smallest_endpoint_keep": [
+    "T5a",
+    5
+   ]
+  },
+  {
+   "w_min": 2,
+   "cut": "c = 0.5",
+   "c": 0.5,
+   "lobe": "R",
+   "present": 749,
+   "density": 0.25295508274231676,
+   "inferable": 64,
+   "mirrors": 3,
+   "smallest_endpoint_keep": [
+    "T5a",
+    4
+   ]
+  },
+  {
+   "w_min": 2,
+   "cut": "c = 1",
+   "c": 1.0,
+   "lobe": "L",
+   "present": 575,
+   "density": 0.19419115163796014,
+   "inferable": 64,
+   "mirrors": 3,
+   "smallest_endpoint_keep": [
+    "T5a",
+    4
+   ]
+  },
+  {
+   "w_min": 2,
+   "cut": "c = 1",
+   "c": 1.0,
+   "lobe": "R",
+   "present": 614,
+   "density": 0.20736237757514353,
+   "inferable": 64,
+   "mirrors": 3,
+   "smallest_endpoint_keep": [
+    "T5a",
+    4
+   ]
+  },
+  {
+   "w_min": 2,
+   "cut": "c = 2",
+   "c": 2.0,
+   "lobe": "L",
+   "present": 491,
+   "density": 0.16582235731171902,
+   "inferable": 64,
+   "mirrors": 3,
+   "smallest_endpoint_keep": [
+    "Tm9",
+    3
+   ]
+  },
+  {
+   "w_min": 2,
+   "cut": "c = 2",
+   "c": 2.0,
+   "lobe": "R",
+   "present": 525,
+   "density": 0.1773049645390071,
+   "inferable": 64,
+   "mirrors": 3,
+   "smallest_endpoint_keep": [
+    "T5a",
+    4
+   ]
+  },
+  {
+   "w_min": 2,
+   "c_equals_1_rank": 1189,
+   "pooled_values": 5922
+  },
+  {
+   "w_min": 3,
+   "cut": "c* (pooled collapse, registered)",
+   "c": 1.1572904707233065,
+   "lobe": "L",
+   "present": 498,
+   "density": 0.16818642350557245,
+   "inferable": 64,
+   "mirrors": 3,
+   "smallest_endpoint_keep": [
+    "T5a",
+    3
+   ]
+  },
+  {
+   "w_min": 3,
+   "cut": "c* (pooled collapse, registered)",
+   "c": 1.1572904707233065,
+   "lobe": "R",
+   "present": 524,
+   "density": 0.17696724079702802,
+   "inferable": 64,
+   "mirrors": 3,
+   "smallest_endpoint_keep": [
+    "T4a",
+    4
+   ]
+  },
+  {
+   "w_min": 3,
+   "cut": "c* (restrict-only collapse)",
+   "c": 1.2871287128712872,
+   "lobe": "L",
+   "present": 482,
+   "density": 0.16278284363390746,
+   "inferable": 64,
+   "mirrors": 3,
+   "smallest_endpoint_keep": [
+    "T5a",
+    3
+   ]
+  },
+  {
+   "w_min": 3,
+   "cut": "c* (restrict-only collapse)",
+   "c": 1.2871287128712872,
+   "lobe": "R",
+   "present": 512,
+   "density": 0.1729145558932793,
+   "inferable": 64,
+   "mirrors": 3,
+   "smallest_endpoint_keep": [
+    "T5a",
+    3
+   ]
+  },
+  {
+   "w_min": 3,
+   "cut": "c* (b', full-grid density)",
+   "c": 2.8325842696629215,
+   "lobe": "L",
+   "present": 395,
+   "density": 0.13340087808172915,
+   "inferable": 56,
+   "mirrors": 1,
+   "smallest_endpoint_keep": [
+    "Tm9",
+    1
+   ]
+  },
+  {
+   "w_min": 3,
+   "cut": "c* (b', full-grid density)",
+   "c": 2.8325842696629215,
+   "lobe": "R",
+   "present": 419,
+   "density": 0.1415062478892266,
+   "inferable": 64,
+   "mirrors": 1,
+   "smallest_endpoint_keep": [
+    "T4c",
+    3
+   ]
+  },
+  {
+   "w_min": 3,
+   "cut": "c*_L (left lobe alone)",
+   "c": 1.0495495495495495,
+   "lobe": "L",
+   "present": 511,
+   "density": 0.17257683215130024,
+   "inferable": 64,
+   "mirrors": 3,
+   "smallest_endpoint_keep": [
+    "Tm9",
+    3
+   ]
+  },
+  {
+   "w_min": 3,
+   "cut": "c*_L (left lobe alone)",
+   "c": 1.0495495495495495,
+   "lobe": "R",
+   "present": 529,
+   "density": 0.17865585950692334,
+   "inferable": 64,
+   "mirrors": 3,
+   "smallest_endpoint_keep": [
+    "T4a",
+    4
+   ]
+  },
+  {
+   "w_min": 3,
+   "cut": "c*_R (right lobe alone)",
+   "c": 1.2989195678271308,
+   "lobe": "L",
+   "present": 480,
+   "density": 0.16210739614994935,
+   "inferable": 64,
+   "mirrors": 3,
+   "smallest_endpoint_keep": [
+    "T5a",
+    3
+   ]
+  },
+  {
+   "w_min": 3,
+   "cut": "c*_R (right lobe alone)",
+   "c": 1.2989195678271308,
+   "lobe": "R",
+   "present": 511,
+   "density": 0.17257683215130024,
+   "inferable": 64,
+   "mirrors": 3,
+   "smallest_endpoint_keep": [
+    "T5a",
+    3
+   ]
+  },
+  {
+   "w_min": 3,
+   "cut": "c = 0.5",
+   "c": 0.5,
+   "lobe": "L",
+   "present": 585,
+   "density": 0.19756838905775076,
+   "inferable": 64,
+   "mirrors": 3,
+   "smallest_endpoint_keep": [
+    "T5a",
+    4
+   ]
+  },
+  {
+   "w_min": 3,
+   "cut": "c = 0.5",
+   "c": 0.5,
+   "lobe": "R",
+   "present": 609,
+   "density": 0.20567375886524822,
+   "inferable": 64,
+   "mirrors": 3,
+   "smallest_endpoint_keep": [
+    "T5a",
+    4
+   ]
+  },
+  {
+   "w_min": 3,
+   "cut": "c = 1",
+   "c": 1.0,
+   "lobe": "L",
+   "present": 518,
+   "density": 0.17494089834515367,
+   "inferable": 64,
+   "mirrors": 3,
+   "smallest_endpoint_keep": [
+    "Tm9",
+    3
+   ]
+  },
+  {
+   "w_min": 3,
+   "cut": "c = 1",
+   "c": 1.0,
+   "lobe": "R",
+   "present": 532,
+   "density": 0.17966903073286053,
+   "inferable": 64,
+   "mirrors": 3,
+   "smallest_endpoint_keep": [
+    "T4a",
+    4
+   ]
+  },
+  {
+   "w_min": 3,
+   "cut": "c = 2",
+   "c": 2.0,
+   "lobe": "L",
+   "present": 423,
+   "density": 0.14285714285714285,
+   "inferable": 64,
+   "mirrors": 2,
+   "smallest_endpoint_keep": [
+    "Tm9",
+    2
+   ]
+  },
+  {
+   "w_min": 3,
+   "cut": "c = 2",
+   "c": 2.0,
+   "lobe": "R",
+   "present": 456,
+   "density": 0.1540020263424519,
+   "inferable": 64,
+   "mirrors": 2,
+   "smallest_endpoint_keep": [
+    "T5a",
+    3
+   ]
+  },
+  {
+   "w_min": 3,
+   "c_equals_1_rank": 1050,
+   "pooled_values": 5922
+  }
+ ],
+ "stream": {
+  "rows_read": 151856684,
+  "batches_read": 2318,
+  "num_record_batches": 2318,
+  "metadata_stop": 151856684,
+  "autapse_rows_dropped": 2,
+  "outside_rows_same_lobe": 2332880,
+  "outside_rows_across_lobes": 0,
+  "duplicate_outside_keys": 0
+ },
+ "cross_lobe_weight_outside_pairs": 0,
+ "peak_memory_mib": 1261,
+ "runtime_s": 7.3,
+ "out_folder": "male_cns_v1_20260926T084555Z_e0a3cd744c39",
+ "outputs": {
+  "male_cns_L_outside.csv": {
+   "sha256": "16c5752a241b2e61d4caeaa23bc4b9b9385011c2bfa6a2db504195199bfe9fb0",
+   "size_bytes": 15602
+  },
+  "male_cns_R_outside.csv": {
+   "sha256": "27a9079b656d1aeb1943702e173d2fa3009f7d8257a78f9e8b5c0f3712b4cf36",
+   "size_bytes": 16789
+  },
+  "pair_stats_outside.csv": {
+   "sha256": "dd71e686c50c127fa9b3bf9f05f957adbd1340d579c839361d16c6c0f0db421f",
+   "size_bytes": 263279
+  },
+  "male_cns_L_blockA.sealed.csv": {
+   "sha256": "eb611f6805484c4f54c22f072a2ca74219a97b3265c6bfb8a4639e45108e8b8e"
+  },
+  "male_cns_R_blockA.sealed.csv": {
+   "sha256": "c53a44670b784f7af1c8c3973ba440961b24bff08b039a0cf4c73bd32414da84"
+  }
+ },
+ "order_of_files": "the sealed files, the outside banks and pair_stats are written before this manifest; BUILD.md (the printed report, which ends with this manifest's sha256) and SHA256SUMS.txt after it"
+}
