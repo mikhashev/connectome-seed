@@ -2,8 +2,9 @@
 CPU side (tools/.venv): key refusals, the batch-composition digest, the environment-stamp
 comparison, the output guard, file and array hashes, the degree-term digest, store I/O.
 
-Registration: docs/plans/2026-09-26-gpu-instrument-registration.md, revision 1.3 (ec5cbc0), with
-Ark's review of revision 1.3 (chat 12:09 UTC, points 1-3) applied ahead of revision 1.4.
+Registration: docs/plans/2026-09-26-gpu-instrument-registration.md, revision 1.4 (e2fab47; its
+section 15.5, Zcode's vote, added in a0e16b6). Ark's review of revision 1.3 (chat 12:09 UTC, points
+1-3), applied in the code ahead of revision 1.4, is part of revision 1.4 (section 15.4).
   * R6 / G7 / T-G2: check_key accepts only "world:<family>:<j>" and "world:<family>:<j>|sh:<sd>".
   * R4 / D5 / G3 / T-G3: composition_digest over (ordered keys, starts, rank order); row_chunk and
     the chunk boundaries are recorded beside it (composition_record), outside the digest.
@@ -31,14 +32,17 @@ for _p in (str(HERE), str(C6), str(C6 / "checks")):
     if _p not in sys.path:
         sys.path.insert(0, _p)
 REGISTRATION = "docs/plans/2026-09-26-gpu-instrument-registration.md"
-REGISTRATION_REVISION = "1.3"
-REGISTRATION_COMMIT = "ec5cbc0"
-APPLIED_AHEAD = ("Ark's review of revision 1.3 (chat 12:09 UTC), points 1-3, applied ahead of "
-                 "revision 1.4: (1) the BF-active subset (fits whose p differs from their own "
-                 "view's N1 p) is classified and printed by the comparator; (2) the census "
-                 "denominator is per fit (n_pos*n_neg on the auc family; 2,016 only on base ko/ko1 "
-                 "fits for the auc_null family), never a constant 1,024; (3) V6 draws its fits "
-                 "from the BF-active subset, and 'uninformative' is a recorded outcome")
+# Printed by the driver and the validation runner and recorded in manifests and validation rows;
+# no digest and no refusal reads these strings (the composition digest covers keys, starts and
+# ranks; the degree-term digest c, a, b; G13 compares file hashes at one head).
+REGISTRATION_REVISION = "1.4"
+REGISTRATION_COMMIT = "e2fab47"
+REGISTRATION_NOTE = "section 15.5 (Zcode's vote on revisions 1.3 and 1.4) added in a0e16b6"
+APPLIED_AHEAD = ("none: Ark's review of revision 1.3 (chat 12:09 UTC), points 1-3 (the BF-active "
+                 "classification printed by the comparator; the per-fit census denominator; V6 on "
+                 "the BF-active subset with 'uninformative' a recorded outcome), applied in the "
+                 "code ahead of revision 1.4, is part of revision 1.4 (section 15.4, edits 1, 4 "
+                 "and 5)")
 
 # Section 1.3 / D7: the two environments.
 TORCH_PY = ROOT.parent / "autoresearch-win-rtx" / ".venv" / "Scripts" / "python.exe"
@@ -274,13 +278,25 @@ def tree_dirty_paths(exclude_validation=False):
 # ------------------------------------------------------------------------------------------
 # G11: the output guard.
 
+# V8's inputs: the male arm's CPU pre-run stores, one per lobe (the male script's --synthetic-only
+# --lobe L|R --out <folder>, started 2026-09-26 13:12:49 UTC; the male script's store format:
+# raw_fits.json.gz, synthetic_only.json, synthetic_worlds.csv, SYNTHETIC.md, SHA256SUMS.txt).
+MALE_PRIVATE_ROOT = ROOT.parent / "connectome-seed-data" / "knockout_regrow"
+MALE_PRERUN_STORES = {lobe: MALE_PRIVATE_ROOT / f"malecns_prerun_{lobe}_20260926T131249Z"
+                      for lobe in ("L", "R")}
+# The male arm's registered reference folders (its PRERUN_DIR, S17), whatever their pins.
+MALE_PRERUN_DIRS = [MALE_PRIVATE_ROOT / f"synthetic_malecns_{lobe}_prerun" for lobe in ("L", "R")]
+
+
 def reference_dirs():
-    """The pinned reference folders no GPU run writes at or in: A's pinned pre-run folder, and
-    the registered flyvis-65 run's private folder (the store the unregistered v2/v3 runs read).
-    An arm that registers a pre-run folder of its own adds it here in that revision."""
+    """The reference folders no GPU run writes at or in: A's pinned pre-run folder, the
+    registered flyvis-65 run's private folder (the store the unregistered v2/v3 runs read), and
+    the male arm's pre-run folders (V8's inputs and the male PRERUN_DIR of both lobes). An arm
+    that registers a pre-run folder of its own adds it here in that revision."""
     import knockout_regrow as K
-    return [pathlib.Path(K.PRERUN_DIR),
-            pathlib.Path(K.PRIVATE_ROOT) / "flyvis65_20260925T171656Z_74de0401a21f"]
+    return ([pathlib.Path(K.PRERUN_DIR),
+             pathlib.Path(K.PRIVATE_ROOT) / "flyvis65_20260925T171656Z_74de0401a21f"]
+            + list(MALE_PRERUN_STORES.values()) + list(MALE_PRERUN_DIRS))
 
 
 def out_dir_refusal(out):

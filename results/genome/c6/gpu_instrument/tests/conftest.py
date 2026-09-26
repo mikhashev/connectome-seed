@@ -6,12 +6,21 @@ The GPU tests (T-G1, T-G5, T-G6's subprocess part, T-G7) launch the torch venv
 (instrument.TORCH_PY) as subprocesses; they are skipped if that interpreter or CUDA is absent.
 Nothing here reads a real block or a sealed file: the fixtures are A's pinned synthetic store
 (read-only, after check_prerun_files) and synthetic GPU runs.
-"""
-import pathlib
-import subprocess
-import sys
 
-import pytest
+One BLAS thread per process, set here before any test module imports numpy, as the instrument's
+processes set it (prep, gpu_env, A's and the male script): a CPU fit made in the test process
+(N1's degree terms, for one) differs in its last bits under another BLAS thread count.
+"""
+import os
+
+for _v in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS", "NUMEXPR_NUM_THREADS"):
+    os.environ.setdefault(_v, "1")
+
+import pathlib  # noqa: E402
+import subprocess  # noqa: E402
+import sys  # noqa: E402
+
+import pytest  # noqa: E402
 
 HERE = pathlib.Path(__file__).resolve().parent
 GI = HERE.parent

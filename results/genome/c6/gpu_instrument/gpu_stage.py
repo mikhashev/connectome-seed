@@ -1,6 +1,6 @@
 """The registered GPU stage of the hybrid synthetic step (engine v3 only); entry: run_registered.py.
 
-docs/plans/2026-09-26-gpu-instrument-registration.md, revision 1.3 (ec5cbc0): D1 (a), D2 (a),
+docs/plans/2026-09-26-gpu-instrument-registration.md, revision 1.4 (e2fab47): D1 (a), D2 (a),
 D5 (a), D6 (a), D7 (i), D8 (I2), D10 (a); R1-R7 of section 6; G1-G8, G11, G15, G16 of section 10.
 The GPU stage fits BF_1..BF_4 on the ko mask of synthetic base views and shuffles and writes:
   raw_fits_gpu.json.gz   the BF ko records in A's store schema (G4): p, y, lam, score,
@@ -23,6 +23,9 @@ Run kinds:
   --kind validation  V0-V8 of section 7 (launched by validation.py): --label names the run;
                      --stamp-unregistered is accepted while no stamp is registered (the manifest
                      says so); the overrides below are accepted only for their run.
+The arm module (G7): --arm-module knockout_regrow (A's, the default) or, for V8 only (D11: the
+male arm stays on the CPU; its D13 (iii)), --arm-module knockout_regrow_male_cns --lobe L|R, reached
+through the adapter male_arm.py; refused in an arm run and under any other validation label.
 Overrides (validation only): GPU_INSTRUMENT_FLAGS_OFF=1 (label V0-off: V0's flag-free comparison
 run); --bf-tol 1e-5 (label V6); --poison-real-block (labels V7, T-G5); GPU_INSTRUMENT_DEVICE=cpu
 (label V5b); --allow-dirty (the run is marked NOT FROM A COMMITTED HEAD).
@@ -92,6 +95,7 @@ import gpu_bf3  # noqa: E402  (engine v3; imports gpu_common, not gpu_bf2 or gpu
 
 assert_no_unregistered_engine()
 
+MALE_ARM_LABELS = ("V8", "smoke")
 VALIDATION_LABELS = ("V0", "V0-off", "V1", "V4a", "V4b", "V4c", "V4d", "V5b", "V6", "V7", "V8",
                      "T-G5", "T-G5-poison", "T-G7", "smoke")
 
@@ -163,6 +167,14 @@ def refusals(a):
     """Which run may use which override (validation only), and the arm run's requirements."""
     why = []
     lab = a.label
+    if a.arm_module in prep.ARM_ADAPTERS:
+        # D11, V8: the male arm stays on the CPU; its worlds run here only as V8's unregistered
+        # cross-check (and the adapter's smoke test).
+        if a.kind != "validation" or lab not in MALE_ARM_LABELS:
+            why.append(f"--arm-module {a.arm_module} outside validation labels {MALE_ARM_LABELS} "
+                       "(D11: the male arm stays on the CPU; V8 is an unregistered cross-check)")
+        if a.lobe is None:
+            why.append(f"--arm-module {a.arm_module} needs --lobe L or R")
     if a.kind == "arm":
         if gpu_env.FLAGS_OFF:
             why.append("GPU_INSTRUMENT_FLAGS_OFF in an arm run")
@@ -247,7 +259,8 @@ def main():
     except ValueError as e:
         raise SystemExit(str(e))
     log(f"GPU instrument, registered driver (engine v3): {a.kind} {a.label}; registration "
-        f"{I.REGISTRATION} revision {I.REGISTRATION_REVISION} ({I.REGISTRATION_COMMIT}); "
+        f"{I.REGISTRATION} revision {I.REGISTRATION_REVISION} ({I.REGISTRATION_COMMIT}; "
+        f"{I.REGISTRATION_NOTE}); "
         f"head {head[:12]}{' (DIRTY: NOT FROM A COMMITTED HEAD)' if dirty else ''}")
     log(f"R1 stamp: {stamp_check['status']}; {json.dumps(stamp, sort_keys=True)}")
     log(f"R2 settings: {json.dumps(gpu_env.SETTINGS, sort_keys=True)}")
@@ -393,7 +406,8 @@ def main():
     manifest = {
         "instrument": "GPU instrument, engine v3, registered driver run_registered.py",
         "registration": I.REGISTRATION, "revision": I.REGISTRATION_REVISION,
-        "registration_commit": I.REGISTRATION_COMMIT, "applied_ahead": I.APPLIED_AHEAD,
+        "registration_commit": I.REGISTRATION_COMMIT,
+        "registration_note": I.REGISTRATION_NOTE, "applied_ahead": I.APPLIED_AHEAD,
         "kind": a.kind, "label": a.label, "argv": sys.argv[1:],
         "not_from_a_committed_head": bool(dirty), "tree_dirty_paths": dirty,
         "tree_check_excludes": I.VALIDATION_EXCLUDED if a.kind == "validation" else None,
@@ -404,6 +418,7 @@ def main():
         "determinism_settings": gpu_env.SETTINGS, "threads": gpu_env.thread_record(),
         "overrides": overrides,
         "arm": {"module": a.arm_module, "lobe": a.lobe,
+                "adapter": prep.ARM_ADAPTERS.get(a.arm_module),
                 "worker_init": worker_env.get("arm")},
         "composition": comp_rec, "composition_check": comp_check,
         "keys": keys, "planned_record_keys_order": "for each rank in rank order, keys in order",

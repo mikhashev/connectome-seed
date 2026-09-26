@@ -1,6 +1,6 @@
 **Status (2026-09-26): not reviewed. A separate instrument; the registered knockout-and-regrow run does not use it.**
-**Registration:** `docs/plans/2026-09-26-gpu-instrument-registration.md` (revision 1.3, `ec5cbc0`,
-draft; Mike's word not given). Its code changes G1-G16 and tests T-G1-T-G10 are implemented in the
+**Registration:** `docs/plans/2026-09-26-gpu-instrument-registration.md` (revision 1.4, `e2fab47`;
+section 15.5 added in `a0e16b6`). Its code changes G1-G16 and tests T-G1-T-G10 are implemented in the
 files of the section "The registered path" below; the validation runs V0-V8 are launched by
 `validation.py`. Everything above that section describes the unregistered engines v1-v3 as
 measured before the registration.
@@ -343,12 +343,12 @@ pool. It could take the BF share off it.
 - **float32.** Not attempted.
 - **Review.** None of this has been reviewed.
 
-# The registered path (2026-09-26; registration revision 1.3, not yet validated)
+# The registered path (2026-09-26; registration revision 1.4, not yet validated)
 
 The code changes G1-G16 and the tests T-G1-T-G10 of
-`docs/plans/2026-09-26-gpu-instrument-registration.md` (revision 1.3, `ec5cbc0`), with Ark's
-review of revision 1.3 (chat 12:09 UTC, points 1-3) applied ahead of revision 1.4. Nothing here has
-been through V1-V8.
+`docs/plans/2026-09-26-gpu-instrument-registration.md` (revision 1.4, `e2fab47`; section 15.5 added
+in `a0e16b6`); Ark's review of revision 1.3 (chat 12:09 UTC, points 1-3), first applied in the code
+ahead of revision 1.4, is part of revision 1.4 (section 15.4). Nothing here has been through V1-V8.
 
 | file | what | registration |
 |---|---|---|
@@ -361,10 +361,11 @@ been through V1-V8.
 | `hybrid_store.py` | the hybrid store for V3 | G10 |
 | `hybrid_arm.py` | for an arm's new script: the CPU stage's import of a GPU stage (G13) and the fixed-λ path check under D9 (b) (G12) | G12, G13 |
 | `prep.py` | the arm adapter (the arm module and lobe given to the worker initializer; key refusal; the score inputs of a record) | G7 |
+| `male_arm.py` | the male CNS arm's adapter for V8 only: A's interface on top of `knockout_regrow_male_cns` (the lobe, the placed-grid restriction, degree terms on the lobe's knockout view, the male `_w_init` and `build_bank`, `outside_density` over the placed outside cells, the male leg P for the comparator); no sealed-file path | G7, V8 |
 | `recount.py` | V6's brute-force recount, sharing no code with the comparator | V6 |
 | `v5a_cpu_blas4.py` | V5 (a): `harness.fit_bf` on the 180 base views with `OPENBLAS_NUM_THREADS=4` | V5 |
 | `validation.py` | the runner of V0-V8, with each run's outcome coded as section 7 writes it | section 7 |
-| `tests/` | T-G1-T-G10 (pytest in `tools/.venv`; the GPU tests launch the torch venv) | section 10 |
+| `tests/` | T-G1-T-G10 (pytest in `tools/.venv`; the GPU tests launch the torch venv); `test_v8_male_adapter.py`: the male adapter against the male script's own banks, the workers' lobe and grid, the seal, V8's refusals | section 10, V8 |
 
 Run (from the repository root; `TORCH_PY` and `CPU_PY` are in `instrument.py`):
 
@@ -372,6 +373,8 @@ Run (from the repository root; `TORCH_PY` and `CPU_PY` are in `instrument.py`):
 tools/.venv/Scripts/python.exe -m pytest results/genome/c6/gpu_instrument/tests -q
 cd results/genome/c6/gpu_instrument
 ../../../../tools/.venv/Scripts/python.exe validation.py V0      # then V6, V7, V1, V2, V3, V5, V4
+../../../../tools/.venv/Scripts/python.exe validation.py V8 --lobe L   # after lobe L's male pre-run
+../../../../tools/.venv/Scripts/python.exe validation.py V8 --lobe R   # after lobe R's male pre-run
 ```
 
 A GPU run writes to `connectome-seed-data/gpu_instrument/<tag>_<UTC>_<head 12>/`: `raw_fits_gpu.json.gz`

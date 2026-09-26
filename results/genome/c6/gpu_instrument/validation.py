@@ -1,8 +1,8 @@
 """The validation runner for V0-V8 of the GPU instrument registration (tools/.venv).
 
-docs/plans/2026-09-26-gpu-instrument-registration.md, revision 1.3 (ec5cbc0), section 7, with
-Ark's review of revision 1.3 (chat 12:09 UTC), point 3, applied ahead of revision 1.4 (V6 draws
-its fits from the BF-active subset; "uninformative" is a recorded outcome in the table).
+docs/plans/2026-09-26-gpu-instrument-registration.md, revision 1.4 (e2fab47), section 7; Ark's
+review of revision 1.3 (chat 12:09 UTC), point 3 (V6 draws its fits from the BF-active subset;
+"uninformative" is a recorded outcome in the table), is part of revision 1.4.
 
 Each command launches the registered GPU stage (run_registered.py, in the torch venv,
 instrument.TORCH_PY) and/or the CPU side (this venv), and codes each run's outcome as section 7
@@ -11,8 +11,8 @@ validation_index.json there); each run's committed aggregate goes to
 results/genome/c6/gpu_instrument/validation/<run>.json, and the table of outcomes to
 validation/table.json (printed after every run).
 
-Order (section 7): V0; V6 and V7; V1; V2; V3; V5; V4. V8 when the male arm's CPU pre-run store
-exists (refuses cleanly until then).
+Order (section 7): V0; V6 and V7; V1; V2; V3; V5; V4. V8 per lobe when that lobe's male CPU
+pre-run store exists (refuses cleanly, exit 2, until then).
 
   python validation.py V0 [--allow-dirty]   one world (R:0 base + 99 shuffles), settings on, and
                                            the same composition with them off; hashes compared,
@@ -24,7 +24,13 @@ exists (refuses cleanly until then).
   python validation.py V5 [--parts a,b]
   python validation.py V6                  BF_TOL = 1e-5 on the BF-active banks; comparator vs recount
   python validation.py V7                  the poisoned block, against V0's settings-on run
-  python validation.py V8 --male-store <raw_fits.json.gz> --male-store-sha256 <hex> --lobe L
+  python validation.py V8 --lobe L|R [--male-store <folder or raw_fits.json.gz>]
+                          [--male-store-sha256 <hex>] [--inputs-only]
+                                           the male worlds of one lobe (45 worlds, base + 99
+                                           shuffles, BF_1..BF_4 ko) against that lobe's male CPU
+                                           pre-run store (default instrument.MALE_PRERUN_STORES);
+                                           --inputs-only verifies the inputs and prints the
+                                           BF-active classification, without the GPU stage
 """
 import argparse
 import csv
@@ -37,7 +43,16 @@ import subprocess
 import sys
 import time
 
-import numpy as np
+# One BLAS thread before numpy loads, as A's script, the male script and the prep workers set it:
+# the CPU fits made in this process (V3's D9 (b) refits, V8's degree terms through the adapter)
+# depend on the BLAS thread count in their last bits (measured: the male lobe L degree terms under
+# 24 OpenBLAS threads differ from those under 1, and so would the worlds built on them).
+THREAD_VARS = ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS", "NUMEXPR_NUM_THREADS")
+THREAD_ENV_FOUND = {_v: os.environ.get(_v) for _v in THREAD_VARS}
+for _v in THREAD_VARS:
+    os.environ.setdefault(_v, "1")
+
+import numpy as np  # noqa: E402
 
 HERE = pathlib.Path(__file__).resolve().parent
 if str(HERE) not in sys.path:
@@ -106,7 +121,8 @@ def record(run, outcome, text, details):
            "not_from_a_committed_head": bool(dirty),
            "utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
            "registration": f"{I.REGISTRATION} revision {I.REGISTRATION_REVISION} "
-                           f"({I.REGISTRATION_COMMIT})", "applied_ahead": I.APPLIED_AHEAD}
+                           f"({I.REGISTRATION_COMMIT}; {I.REGISTRATION_NOTE})",
+           "applied_ahead": I.APPLIED_AHEAD}
     I.write_json(I.VALIDATION_DIR / f"{run}.json", {**row, "details": details})
     table = json.loads(TABLE.read_text(encoding="utf-8")) if TABLE.is_file() else {}
     table[run] = row
@@ -627,50 +643,181 @@ def v7(a):
 # ------------------------------------------------------------------------------------------
 # V8.
 
+MALE_ARM = "knockout_regrow_male_cns"
+V8_FOR = ("the GPU instrument, for future arms that would name it (D11): a flipped pair (E2-II) or "
+          "an E1 difference refuses it for every such arm (section 7, V8). An unregistered "
+          "cross-check (male D13 (iii)): never an input to a male gate, reference or registered "
+          "value")
+MALE_STORE_MANIFEST_REQUIRED = {"mode": "synthetic-only", "smoke": False, "starts": 10,
+                                "worlds_per_family": 5, "shuffles": 99}
+
+
+def male_store_paths(lobe, store_arg=None):
+    """The lobe's male CPU pre-run folder and its raw_fits.json.gz: --male-store (a folder or the
+    store file) or instrument.MALE_PRERUN_STORES[lobe]."""
+    p = pathlib.Path(store_arg) if store_arg else I.MALE_PRERUN_STORES[lobe]
+    if p.name == "raw_fits.json.gz":
+        return p.parent, p
+    return p, p / "raw_fits.json.gz"
+
+
+def male_keys(M):
+    """V8's composition (run_registered's --worlds all --n-sh 99 --base on the male arm): every
+    world's shuffles 0..98 in the male world_specs() order, then the 45 base views."""
+    worlds = [f"{w['family']}:{w['j']}" for w in M.world_specs()]
+    return ([f"world:{w}|sh:{sd}" for w in worlds for sd in range(99)]
+            + [f"world:{w}" for w in worlds])
+
+
+def check_male_store(folder, store, lobe, sha_arg=None):
+    """V8's reference, before any fit: the folder verifies against its SHA256SUMS.txt (the male
+    write_synthetic_outputs writes it last, so a pre-run still writing has none);
+    raw_fits.json.gz and synthetic_only.json are listed there (raw_fits equal to
+    --male-store-sha256 if given); synthetic_only.json's manifest is a full synthetic-only run of
+    this lobe (starts 10, 5 worlds per family, 99 shuffles, all nine families, no smoke) made by
+    the male script whose LF sha256 equals this head's; the digest (D10) of its degree terms is
+    returned, for the comparison with the adapter's."""
+    why, out = [], {"folder": str(folder), "store": str(store)}
+    ok, detail = I.check_sha256sums(folder)
+    if not ok:
+        why.append(f"the folder does not verify against its SHA256SUMS.txt: {detail}")
+        return {**out, "passed": False, "reasons": why}
+    listed = {}
+    for ln in (pathlib.Path(folder) / "SHA256SUMS.txt").read_text(encoding="utf-8").splitlines():
+        if ln.strip():
+            h, name = ln.split(maxsplit=1)
+            listed[name.lstrip("*")] = h
+    for n in ("raw_fits.json.gz", "synthetic_only.json"):
+        if n not in listed:
+            why.append(f"{n} is not listed in SHA256SUMS.txt")
+    sha = listed.get("raw_fits.json.gz")
+    if sha_arg and sha != sha_arg:
+        why.append(f"raw_fits.json.gz sha256 {sha}, --male-store-sha256 {sha_arg}")
+    if why:
+        return {**out, "passed": False, "reasons": why}
+    man = json.loads((pathlib.Path(folder) / "synthetic_only.json")
+                     .read_text(encoding="utf-8"))["manifest"]
+    for k, v in MALE_STORE_MANIFEST_REQUIRED.items():
+        if man.get(k) != v:
+            why.append(f"manifest {k} = {man.get(k)!r}, V8 needs {v!r}")
+    if man.get("lobes") != [lobe]:
+        why.append(f"manifest lobes {man.get('lobes')!r}, not [{lobe!r}]")
+    families = ["R", "Nf", "No", "W", "M0.5", "M1.0", "M0.6", "M0.75", "M0.85"]
+    if man.get("families") != families:
+        why.append(f"manifest families {man.get('families')!r}, V8 needs all nine")
+    script_now = I.sha256_lf(MALE_SCRIPT)
+    if man.get("script_sha256_lf") != script_now:
+        why.append(f"the store was made by the male script {man.get('script_sha256_lf')}, this "
+                   f"head's is {script_now}: the adapter could build other banks")
+    t = (man.get("degree_terms") or {}).get(lobe)
+    digest = None
+    if t is None:
+        why.append(f"the manifest has no degree terms for lobe {lobe}")
+    else:
+        digest = I.degree_terms_digest((float(t["c"]), np.asarray(t["a"], np.float64),
+                                        np.asarray(t["b"], np.float64)))
+    return {**out, "passed": not why, "reasons": why, "sha256": sha,
+            "degree_terms_digest": digest, "male_script_sha256_lf": script_now,
+            "store_git_head": man.get("git_head"), "not_a_reference": man.get("not_a_reference"),
+            "reference_mode": man.get("reference_mode")}
+
+
 def v8(a):
+    """V8 of section 7 for one lobe: an unregistered cross-check (male D13 (iii); D11)."""
+    run = f"V8_{a.lobe}" if a.lobe in ("L", "R") else "V8"
+
+    def refuse(outcome, why, details):
+        log(f"V8 (lobe {a.lobe}): {outcome}: {'; '.join(why)}")
+        if not a.inputs_only:
+            record(run, outcome, "; ".join(why), {**details, "reasons": why, "for": V8_FOR})
+        sys.exit(2)
+
     why = []
+    if a.lobe not in ("L", "R"):
+        why.append("--lobe L or R is required (V8 runs per lobe)")
     if not MALE_SCRIPT.is_file():
         why.append(f"the male arm's script {MALE_SCRIPT.relative_to(I.ROOT)} does not exist "
                    "(its S1)")
-    else:
-        # G7's adapter drives an arm module with A's interface: set_lobe(lobe), degree_terms(),
-        # build_bank(key, terms, synthetic_only), _w_init(starts, terms, synthetic_only). Read
-        # from the text, without importing the male module.
-        src = MALE_SCRIPT.read_text(encoding="utf-8")
-        missing = [s for s, pat in (("set_lobe(lobe)", r"^def set_lobe\("),
-                                    ("degree_terms()", r"^def degree_terms\(\)"),
-                                    ("build_bank(key, terms, synthetic_only)",
-                                     r"^def build_bank\(key, terms, synthetic_only\)"))
-                   if not re.search(pat, src, re.M)]
-        if missing:
-            why.append(f"the male arm's script does not offer the G7 adapter's interface "
-                       f"({', '.join(missing)} missing); the adapter needs a male shim first")
-    if not a.male_store or not pathlib.Path(a.male_store).is_file():
-        why.append("the male arm's CPU pre-run store is absent (--male-store)")
-    if a.male_store and not a.male_store_sha256:
-        why.append("--male-store-sha256 is required")
-    if not a.lobe:
-        why.append("--lobe is required")
+    folder = store = None
+    if not why:
+        folder, store = male_store_paths(a.lobe, a.male_store)
+        if not store.is_file() or not (folder / "SHA256SUMS.txt").is_file():
+            why.append(f"the male arm's CPU pre-run store of lobe {a.lobe} is absent or not "
+                       f"finished ({store}; its SHA256SUMS.txt is written last)")
     if why:
-        record("V8", "REFUSED CLEANLY: inputs absent", "; ".join(why), {"reasons": why})
-        sys.exit(2)
-    rc, run, _ = run_gpu("V8", a45_args() + ["--arm-module", "knockout_regrow_male_cns",
-                                             "--lobe", a.lobe], tag=f"V8_{a.lobe}",
-                         allow_dirty=a.allow_dirty)
-    if rc != 0 or run is None:
-        record("V8", "ERROR", "the GPU run did not complete", {"rc": rc})
+        refuse("REFUSED CLEANLY: inputs absent", why, {"store": str(store) if store else None})
+
+    chk = check_male_store(folder, store, a.lobe, a.male_store_sha256)
+    if not chk["passed"]:
+        refuse("REFUSED CLEANLY: the male store does not verify", chk["reasons"], {"store": chk})
+    log(f"V8 (lobe {a.lobe}): male CPU pre-run store {store}, sha256 {chk['sha256']} (listed in "
+        f"its SHA256SUMS.txt), made at head {chk['store_git_head']}; male script LF sha256 "
+        f"{chk['male_script_sha256_lf']} (equal to this head's)"
+        + (f"; {chk['not_a_reference']}" if chk.get("not_a_reference") else ""))
+
+    # The adapter in this process: the lobe's degree terms as the GPU stage computes them (the
+    # restriction, then the lobe's outside file, pin-checked), against the store's.
+    import male_arm as MA
+    MA.set_lobe(a.lobe)
+    terms_digest = I.degree_terms_digest(MA.degree_terms())
+    if terms_digest != chk["degree_terms_digest"]:
+        refuse("REFUSED CLEANLY: the adapter's inputs differ from the pre-run's",
+               [f"degree-term digest {terms_digest} (adapter) vs {chk['degree_terms_digest']} "
+                "(the store's manifest): the GPU would fit other banks (one known cause: a BLAS "
+                "thread count other than 1 in this process; thread variables in effect "
+                f"{ {v: os.environ.get(v) for v in THREAD_VARS} })"], {"store": chk})
+    log(f"D10: the adapter's degree terms equal the pre-run's (digest {terms_digest})")
+
+    ref, info = G.load_reference(store, chk["sha256"])
+    keys = male_keys(MA)
+    planned = [I.bf_record_key(k, r) for r in (1, 2, 3, 4) for k in keys]
+    missing = ([rk for rk in planned if rk not in ref]
+               + [f"{k}||ko||N1" for k in keys if f"{k}||ko||N1" not in ref])
+    if missing:
+        refuse("REFUSED CLEANLY: the male store lacks planned records",
+               [f"{len(missing)} records missing, e.g. {missing[:3]}"], {"store": chk})
+    act = G.bf_active(ref, planned)
+    act_sum = G.bf_active_summary(ref, planned, act)
+    log(f"V8 (lobe {a.lobe}), before the GPU stage: the BF-active classification of the male "
+        f"worlds ({len(keys)} banks, {len(planned)} BF ko fits), from the CPU store alone:")
+    G.print_bf_active(act_sum)
+    if a.inputs_only:
+        log(f"V8 (lobe {a.lobe}): inputs verified; --inputs-only: no GPU stage, nothing recorded")
         return
-    ref, info = G.load_reference(a.male_store, a.male_store_sha256)
-    rep = G.compare_run(run, ref, info)
+
+    rc, run_dir, _ = run_gpu("V8", a45_args() + ["--arm-module", MALE_ARM, "--lobe", a.lobe],
+                             tag=run, allow_dirty=a.allow_dirty)
+    details = {"store": chk, "bf_active_before_gpu": act_sum, "for": V8_FOR,
+               "degree_terms_digest_adapter": terms_digest}
+    if rc != 0 or run_dir is None:
+        record(run, "ERROR", "the GPU run did not complete", {**details, "rc": rc})
+        return
+    m = manifest_of(run_dir)
+    details.update(gpu_run=str(run_dir),
+                   gpu_degree_terms_digest_equal=(m["degree_terms_digest"]
+                                                  == chk["degree_terms_digest"]),
+                   gpu_keys_equal_composition=(m["keys"] == keys),
+                   adapter_worker=m["arm"].get("worker_init"),
+                   census_gpu_run=m["census"])
+    rep = G.compare_run(run_dir, ref, info, arm=MA)
     G.print_report(rep)
-    refuses = rep["outcome"] == 3 or rep["n_flipped_pairs"] > 0
-    details = {k: v for k, v in rep.items() if k != "per_fit"}
-    details["note"] = ("unregistered cross-check (male D13 (iii)); an input to no male gate; a "
-                       "flipped pair or an E1 difference refuses this instrument for every arm")
-    record("V8", "CROSS-CHECK: REFUSES THE INSTRUMENT" if refuses else "CROSS-CHECK",
-           f"{rep['outcome_text']}; differing fits that carry ties: "
-           f"{rep['differing_fits_that_carry_ties']}; at-risk fits whose p differs from N1: "
-           f"{rep['at_risk_fits_whose_p_differs_from_n1']}", details)
+    rep_path = I.DATA_ROOT / f"{run}_report_{time.strftime('%Y%m%dT%H%M%SZ', time.gmtime())}.json"
+    I.write_json(rep_path, rep)
+    details.update({k: v for k, v in rep.items() if k != "per_fit"})
+    details["full_report"] = str(rep_path)
+    if not (details["gpu_degree_terms_digest_equal"] and details["gpu_keys_equal_composition"]):
+        outcome = "ERROR: the GPU run's inputs are not the pre-run's"
+    elif rep["outcome"] == 1:
+        outcome = "CROSS-CHECK: EQUIVALENT (outcome 1)"
+    else:
+        outcome = f"CROSS-CHECK: REFUSES THE INSTRUMENT FOR FUTURE ARMS (outcome {rep['outcome']})"
+    record(run, outcome,
+           f"{rep['outcome_text']}; E1 failures {len(rep['e1_failures'])}, flipped pairs "
+           f"{rep['n_flipped_pairs']}, E3 failures {len(rep['e3_failures'])}, at risk "
+           f"{len(rep['at_risk'])}; fits not bit-equal {rep['n_not_bit_equal']}, of which carry "
+           f"ties {rep['differing_fits_that_carry_ties']}; at-risk fits whose p differs from N1 "
+           f"{rep['at_risk_fits_whose_p_differs_from_n1']}; decides nothing for the male arm "
+           "(its D13 (iii))", details)
 
 
 def main():
@@ -682,6 +829,8 @@ def main():
     ap.add_argument("--male-store", default=None)
     ap.add_argument("--male-store-sha256", default=None)
     ap.add_argument("--lobe", default=None)
+    ap.add_argument("--inputs-only", action="store_true",
+                    help="V8: verify the inputs and print the BF-active classification; no GPU")
     a = ap.parse_args()
     {"V0": v0, "V1": v1, "V2": v2, "V3": v3, "V4": v4, "V5": v5, "V6": v6, "V7": v7,
      "V8": v8}[a.run](a)

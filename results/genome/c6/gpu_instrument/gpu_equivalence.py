@@ -1,8 +1,7 @@
 """G9: the equivalence comparator, E1, E2 and E3 of section 5 (tools/.venv; no torch).
 
-docs/plans/2026-09-26-gpu-instrument-registration.md, revision 1.3 (ec5cbc0), sections 5 and 7
-(V2, V8), with Ark's review of revision 1.3 (chat 12:09 UTC), points 1 and 2 applied ahead of
-revision 1.4.
+docs/plans/2026-09-26-gpu-instrument-registration.md, revision 1.4 (e2fab47), sections 5 and 7
+(V2, V8); Ark's review of revision 1.3 (chat 12:09 UTC), points 1 and 2, is part of revision 1.4.
 
 It compares a GPU stage's BF ko records (a run folder written by run_registered.py) with a CPU
 reference store: by default A's pinned pre-run store, read after check_prerun_files (imported
@@ -30,6 +29,15 @@ Ark, point 2: every census count carries its per-fit denominator (census.family_
 
 Outcomes (section 5): 1 = E1, E2-II and E3 hold; 2 = E1 holds, a flipped pair or E3 fails:
 refused; 3 = E1 fails anywhere: refused.
+
+The arm (V8): the AUC, D, logit and leg-P functions of E1, E3 and the at-risk outputs are the arm's
+own. By default A's (knockout_regrow); V8 passes the male adapter (male_arm), whose auc, parity_D,
+logit_of, auc_null, TAU and N_PERM are the male script's and whose null_patterns(y) gives the male
+leg P's own permutations (default_rng(92000)) and row-and-column patterns (default_rng(92001)). The
+pair sets are those of section 5 for every arm: per (column, fit), S(f) = present x absent on a
+shuffle, all 2,016 on a base view's ko fit (census.census_set_of); the male arm's columns read the
+same sets (auc_other_61, per_type_auc and precision_at_n_present are subsets or boundaries of the
+present x absent pairs; p_P and p_P_rowcol rank a base view over all 64 cells).
 
 Usage:
   tools/.venv/Scripts/python.exe gpu_equivalence.py --gpu <run dir> [--json <report path>]
@@ -201,8 +209,9 @@ def e3_check(bounds, D_ref, D_got, ll_ref, ll_got, dp=None):
     return res
 
 
-def D_of(p, y):
-    return K.parity_D(K.logit_of(p), y)
+def D_of(p, y, arm=None):
+    arm = arm_of(arm)
+    return arm.parity_D(arm.logit_of(p), y)
 
 
 # ------------------------------------------------------------------------------------------
@@ -211,28 +220,47 @@ def D_of(p, y):
 _NULLS = {}
 
 
-def p_P_pair(p, y):
-    """p_P and p_P_rowcol of a base-view fit, as evaluate_bank computes them."""
+def arm_of(arm):
+    """The arm whose functions the comparator uses: A's (knockout_regrow) unless given."""
+    return K if arm is None else arm
+
+
+def null_inputs(y, arm=None):
+    """(Yu, Yrc) of a base view's labels, as the arm's evaluate_bank builds them (cached per arm
+    and y). Yrc is None where the arm's row-and-column null has no patterns (the male S13)."""
+    arm = arm_of(arm)
     y = np.asarray(y, bool)
-    key = y.tobytes()
+    key = (getattr(arm, "__name__", repr(arm)), y.tobytes())
     if key not in _NULLS:
-        _NULLS[key] = (y[K.uniform_perms()], K.rc_patterns(y))
-    Yu, Yrc = _NULLS[key]
+        if hasattr(arm, "null_patterns"):
+            _NULLS[key] = arm.null_patterns(y)
+        else:
+            _NULLS[key] = (y[arm.uniform_perms()], arm.rc_patterns(y))
+    return _NULLS[key]
+
+
+def p_P_pair(p, y, arm=None):
+    """p_P and p_P_rowcol of a base-view fit, as the arm's evaluate_bank computes them."""
+    arm = arm_of(arm)
+    y = np.asarray(y, bool)
+    Yu, Yrc = null_inputs(y, arm)
     p = np.asarray(p, np.float64)
-    a = K.auc(p, y)
-    return ((1 + int((K.auc_null(p, Yu) >= a - K.TAU).sum())) / (K.N_PERM + 1),
-            (1 + int((K.auc_null(p, Yrc) >= a - K.TAU).sum())) / (K.N_PERM + 1))
+    a = arm.auc(p, y)
+    return ((1 + int((arm.auc_null(p, Yu) >= a - arm.TAU).sum())) / (arm.N_PERM + 1),
+            None if Yrc is None else
+            (1 + int((arm.auc_null(p, Yrc) >= a - arm.TAU).sum())) / (arm.N_PERM + 1))
 
 
-def compare_fit(rk, got, ref, p_n1_ref=None, e3_base_only=True):
-    """Every quantity of section 5 for one fit."""
+def compare_fit(rk, got, ref, p_n1_ref=None, e3_base_only=True, arm=None):
+    """Every quantity of section 5 for one fit (the arm's AUC, D and leg P)."""
+    arm = arm_of(arm)
     bk, mk, pk = I.split_record_key(rk)
     base = I.is_base_view(bk)
     y = np.asarray(ref["y"], bool)
     yg = np.asarray(got["y"], bool)
     pr = np.asarray(ref["p"], np.float64)
     pg = np.asarray(got["p"], np.float64)
-    a_ref, a_got = K.auc(pr, y), K.auc(pg, y)
+    a_ref, a_got = arm.auc(pr, y), arm.auc(pg, y)
     e1 = {"y_equal": bool(np.array_equal(y, yg)),
           "lam_equal": float(got["lam"]) == float(ref["lam"]),
           "label_diffs": int(np.sum((pg >= 0.5) != (pr >= 0.5))),
@@ -259,7 +287,7 @@ def compare_fit(rk, got, ref, p_n1_ref=None, e3_base_only=True):
     if ent["at_risk"]:
         ar = {"auc_equal": a_got == a_ref}
         if base:
-            pp_ref, pp_got = p_P_pair(pr, y), p_P_pair(pg, y)
+            pp_ref, pp_got = p_P_pair(pr, y, arm), p_P_pair(pg, y, arm)
             ar.update(p_P_equal=pp_ref[0] == pp_got[0], p_P_rowcol_equal=pp_ref[1] == pp_got[1],
                       p_P_ref=pp_ref, p_P_got=pp_got)
         ent["at_risk_outputs"] = ar
@@ -272,7 +300,7 @@ def compare_fit(rk, got, ref, p_n1_ref=None, e3_base_only=True):
     if base or not e3_base_only:
         bounds = None if bit else e3_bounds(pr, y, float(np.max(np.abs(pg - pr))))
         ent["e3_bounds"] = bounds
-        ent["e3"] = e3_check(bounds, D_of(pr, y), D_of(pg, y),
+        ent["e3"] = e3_check(bounds, D_of(pr, y, arm), D_of(pg, y, arm),
                              float(ref["score"]["existence"]), float(got["score"]["existence"]),
                              dp=None if bit else np.abs(pg - pr))
     return ent
@@ -304,9 +332,10 @@ def read_gpu_run(run_dir):
     return run_dir, manifest, planned
 
 
-def compare_run(run_dir, ref=None, ref_info=None, only=None):
+def compare_run(run_dir, ref=None, ref_info=None, only=None, arm=None):
     """V2 / V8: every planned fit of a GPU run against the reference. only: a set of record
-    keys to restrict to (V6: the BF-active subset). Returns the report."""
+    keys to restrict to (V6: the BF-active subset). arm: the arm module whose AUC, D and leg P
+    the comparison uses (None: A's; V8: the male adapter). Returns the report."""
     run_dir, manifest, planned = read_gpu_run(run_dir)
     if ref is None:
         ref, ref_info = load_reference()
@@ -332,8 +361,10 @@ def compare_run(run_dir, ref=None, ref_info=None, only=None):
     for rk in use:
         bk, mk, _ = I.split_record_key(rk)
         n1 = ref.get(f"{bk}||{mk}||N1")
-        ents.append(compare_fit(rk, got[rk], ref[rk], None if n1 is None else n1["p"]))
-    return summarise(ents, cells, groups, act, act_sum, manifest, ref_info, run_dir)
+        ents.append(compare_fit(rk, got[rk], ref[rk], None if n1 is None else n1["p"], arm=arm))
+    rep = summarise(ents, cells, groups, act, act_sum, manifest, ref_info, run_dir)
+    rep["arm"] = getattr(arm_of(arm), "__name__", repr(arm))
+    return rep
 
 
 def summarise(ents, cells, groups, act, act_sum, manifest, ref_info, run_dir):
@@ -397,10 +428,8 @@ def summarise(ents, cells, groups, act, act_sum, manifest, ref_info, run_dir):
     return rep
 
 
-def print_report(rep):
-    log(f"reference: {rep['reference']}")
-    log(f"GPU run: {rep['gpu_run']} (label {rep['gpu_label']}, head {rep['gpu_head']})")
-    a = rep["bf_active"]
+def print_bf_active(a):
+    """The BF-active classification (Ark point 1), from bf_active_summary."""
     log(f"Ark point 1, BF-active classification (reference store alone, no fit): "
         f"{a['bf_active']} of {a['n_fits']} fits have p different from their view's N1 p; "
         f"{a['p_equals_n1']} equal; lambda < 100: {a['lambda_below_100']} fits, all BF-active: "
@@ -408,6 +437,13 @@ def print_report(rep):
     for row in a["table"]:
         log(f"  {row['predictor']} lambda {row['lambda']:g} {row['view']:8s} "
             f"BF-active={row['bf_active']}: {row['fits']}")
+
+
+def print_report(rep):
+    log(f"reference: {rep['reference']}")
+    log(f"GPU run: {rep['gpu_run']} (label {rep['gpu_label']}, head {rep['gpu_head']})"
+        + (f"; arm functions: {rep['arm']}" if rep.get("arm") else ""))
+    print_bf_active(rep["bf_active"])
     log(f"E1: {len(rep['e1_failures'])} fits fail")
     for e in rep["e1_failures"][:50]:
         log(f"  E1 FAIL {e}")

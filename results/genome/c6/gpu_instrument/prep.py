@@ -12,17 +12,24 @@ This module imports numpy, harness and the arm module only (no torch), so pool w
 fast. It sets one BLAS thread per process before numpy loads, as knockout_regrow does.
 
 G7 of the GPU instrument registration (docs/plans/2026-09-26-gpu-instrument-registration.md,
-revision 1.3), the arm adapter: the arm's module (and lobe) is given to the worker initializer
+revision 1.4), the arm adapter: the arm's module (and lobe) is given to the worker initializer
 (init_arm_worker) instead of being imported here directly. Block A's script, knockout_regrow, is
 the default arm, loaded on first use, so the unregistered v2 drivers (validate_shuffles.py,
-validate_rule.py) and run_pipeline.py keep working. For an arm module other than A's:
-  * set_lobe(lobe) is called if a lobe is given (a module without it refuses a lobe);
-  * the module's _w_init(10, terms, True) runs in every worker, as the registered run's workers;
-    the male arm's registration puts its grid restriction there (its S5);
-  * restrict_to_placed_grid() is called as well if the module defines it (idempotent in the
-    male draft), so the restriction holds in every worker whatever _w_init does;
-  * outside_density(bank), if the module defines it (the male S14: the placed outside cells),
-    replaces A's bank.exists[~BLOCK].mean().
+validate_rule.py) and run_pipeline.py keep working. An arm module is driven through A's interface:
+set_lobe(lobe), degree_terms(), build_bank(key, terms, synthetic_only), _w_init(starts, terms,
+synthetic_only), MASKS, BLOCK, BLOCK_CELLS, _pred. An arm whose script has another interface is
+reached through an adapter module named in ARM_ADAPTERS; the male CNS arm's script
+(knockout_regrow_male_cns) is reached through male_arm.py (V8 only), which calls the male script's
+own functions as its own synthetic pool does. For an arm module other than A's:
+  * set_lobe(lobe) is called if a lobe is given (a module without it refuses a lobe; the male
+    adapter refuses no lobe);
+  * the module's _w_init(10, terms, True) runs in every worker, as the registered run's workers
+    (the male adapter: the male _w_init with the lobe, the restriction and no real block);
+  * restrict_to_placed_grid() is called as well if the module defines it (idempotent), so the
+    restriction holds in every worker whatever _w_init does;
+  * outside_density(bank), if the module defines it (the male S6/S14: the placed outside cells),
+    replaces A's bank.exists[~BLOCK].mean();
+  * worker_state(), if the module defines it, is recorded by worker_record (G2).
 The registered path (prepare_key_compact, decode_records) accepts only the keys of R6
 (instrument.check_key): world:<family>:<j> and world:<family>:<j>|sh:<sd>.
 """
@@ -48,19 +55,28 @@ import harness as H          # noqa: E402  (read-only import)
 import instrument as I       # noqa: E402  (torch-free: key refusals, hashes)
 
 _TERMS = {}
-_ARM = {"mod": None, "name": None, "lobe": None, "poisoned": False, "worker_init": None}
+_ARM = {"mod": None, "name": None, "lobe": None, "adapter": None, "poisoned": False,
+        "worker_init": None}
 DEFAULT_ARM = "knockout_regrow"
+# G7: arm scripts whose interface is not A's, and the adapter module that gives them A's. The male
+# CNS arm needs a lobe; its adapter is used by V8 only (gpu_stage.refusals).
+ARM_ADAPTERS = {"knockout_regrow_male_cns": "male_arm"}
+ARMS_NEEDING_A_LOBE = ("knockout_regrow_male_cns",)
 
 
 def set_arm(name=DEFAULT_ARM, lobe=None):
-    """G7: load the arm module by name (read-only import) and select its lobe."""
-    mod = importlib.import_module(name)
+    """G7: load the arm module by name (read-only import; through its adapter if ARM_ADAPTERS
+    names one) and select its lobe."""
+    adapter = ARM_ADAPTERS.get(name)
+    if name in ARMS_NEEDING_A_LOBE and lobe is None:
+        raise RuntimeError(f"REFUSED (G7): arm {name} needs a lobe (--lobe)")
+    mod = importlib.import_module(adapter or name)
     if lobe is not None:
         if not hasattr(mod, "set_lobe"):
             raise RuntimeError(f"REFUSED (G7): arm module {name} has no set_lobe(); the adapter "
                                "cannot select a lobe")
         mod.set_lobe(lobe)
-    _ARM.update(mod=mod, name=name, lobe=lobe)
+    _ARM.update(mod=mod, name=name, lobe=lobe, adapter=adapter)
     return mod
 
 
@@ -119,9 +135,12 @@ def init_arm_worker(arm_name, lobe, terms, poison=False):
     mod._w_init(10, terms, True)
     restricted = restrict_grid(mod)
     flipped = poison_real_block() if poison else None
-    _ARM["worker_init"] = {"arm": arm_name, "lobe": lobe, "grid_restricted": restricted,
+    _ARM["worker_init"] = {"arm": arm_name, "lobe": lobe, "adapter": _ARM["adapter"],
+                           "grid_restricted": restricted,
                            "n_all_cells": int(len(H.ALL_CELLS)), "starts": H.STARTS,
-                           "poisoned": flipped}
+                           "poisoned": flipped,
+                           "arm_state": (mod.worker_state() if hasattr(mod, "worker_state")
+                                         else None)}
 
 
 def worker_record(_=None):
