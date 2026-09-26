@@ -1,4 +1,9 @@
 **Status (2026-09-26): not reviewed. A separate instrument; the registered knockout-and-regrow run does not use it.**
+**Registration:** `docs/plans/2026-09-26-gpu-instrument-registration.md` (revision 1.3, `ec5cbc0`,
+draft; Mike's word not given). Its code changes G1-G16 and tests T-G1-T-G10 are implemented in the
+files of the section "The registered path" below; the validation runs V0-V8 are launched by
+`validation.py`. Everything above that section describes the unregistered engines v1-v3 as
+measured before the registration.
 
 # GPU instrument for BF_r and rule #2.1 fits (knockout-and-regrow synthetic worlds)
 
@@ -8,14 +13,21 @@ this directory was modified. This directory imports `harness.py`, `checks/knocko
 (through `harness.load_rule`) `rules/second_rule_v21/fit.py` read-only. It uses them for bank and
 world construction, the N1 ridge fits, `harness.ridge_logistic`, and the decoders. Those are
 called exactly as the CPU instrument calls them, not reimplemented. The code here re-implements
-only `harness.bf_als`'s ALS/Newton optimisation, as batched float64 PyTorch/CUDA computations
-across many fits at once.
+`harness.bf_als`'s ALS/Newton optimisation, as batched float64 PyTorch/CUDA computations across
+many fits at once, and also `fit_bf`'s choice of λ: the inner held-out log-likelihood (on the GPU
+in v3, `gpu_bf3.py:117-122`), its sum over the folds and the tie rule (on the host in v2 and v3,
+`gpu_bf2.py:147-158`, `gpu_bf3.py:174-195`), and in the rule port `fit_existence`'s λ choice
+(`gpu_rule.py:65-97`). (Corrected 2026-09-26, registration ledger row G-(1): this paragraph said
+"re-implements only `harness.bf_als`'s ALS/Newton optimisation".)
 
 It has never read, fit or scored the real block. It has never run `knockout_regrow.py` as a
 script: the real and `--synthetic-only` arms live under `if __name__ == "__main__":` and are
-never imported. It has never opened `raw_fits_real.json.gz`. Every bank is built through
-`knockout_regrow.build_bank(key, terms, synthetic_only=True)`, which refuses a `real` key, and
-the workers here refuse one too. The only read of the real bank is
+never imported. It has never opened `raw_fits_real.json.gz`. In the v2 and v3 code every bank is
+built through `knockout_regrow.build_bank(key, terms, synthetic_only=True)`, which refuses a
+`real` key, and the workers here refuse one too; the v1 scripts call `make_world` directly
+(`validate.py:50`, `validate_batched.py:43`, `validate_vs_cpu.py:54`), outside that refusal, and
+build world specs only. (Corrected 2026-09-26, ledger row G-(7): this sentence said "Every bank is
+built through" `build_bank`.) The only read of the real bank is
 `knockout_regrow.degree_terms()`, which fits N1 on the real bank's **knockout** view, with block
 cells excluded. That fit is the synthetic worlds' own construction step (registration section
 3.6), not a real-arm computation.
@@ -56,7 +68,10 @@ own decode:
     pool.
 - **Rule #2.1:** the GPU and the CPU pool are about equal.
   - One world's 99 shuffles: 41 s on the GPU, about 45 s on the CPU pool.
-  - All 45 worlds' shuffles: 2,030 s on the GPU, about 1,986 s on the CPU pool.
+  - All 45 worlds' shuffles: 2,030 s wall time on the GPU path, about 1,986 s on the CPU pool.
+    Of the 2,030 s, the GPU `bf_als` is 1,142 s, the ridge steps on the CPU in the GPU process
+    530 s, prep 157 s, the rest of the rule's fit 110 s (`run8_rule_sh_all45.log:1-45`, summed).
+    (Corrected 2026-09-26, ledger row G-(8): this line said "2,030 s on the GPU".)
 
 ## Files
 
@@ -119,7 +134,13 @@ $PY validate_rule.py --worlds all --base --workers 24 --tag base45              
 $PY validate_rule.py --worlds all --n-sh 99 --workers 24 --worlds-per-batch 1 --tag sh_all45
 ```
 
-All scripts set one BLAS thread per process before numpy loads, as `knockout_regrow.py` does.
+The v2/v3 drivers and `prep` set one BLAS thread per process before numpy loads, as
+`knockout_regrow.py` does (`run_pipeline.py:25-26`, `validate_shuffles.py:18-19`,
+`validate_rule.py:16-17`, `prep.py:16-17`); the v1 scripts import numpy with no preamble
+(`validate.py:15`, `validate_vs_cpu.py:22`, `validate_batched.py:14`), and `harness.py`'s
+`setdefault` (:33-34) runs after numpy is loaded, too late for OpenBLAS. (Corrected 2026-09-26,
+ledger row G-(2): this sentence said "All scripts set one BLAS thread per process before numpy
+loads".)
 They also call `knockout_regrow._w_init(10, degree_terms(), True)`, as the registered run's
 workers do, so `harness.STARTS = 10`.
 
@@ -321,6 +342,44 @@ pool. It could take the BF share off it.
   the rule's own CPU code, by design.
 - **float32.** Not attempted.
 - **Review.** None of this has been reviewed.
+
+# The registered path (2026-09-26; registration revision 1.3, not yet validated)
+
+The code changes G1-G16 and the tests T-G1-T-G10 of
+`docs/plans/2026-09-26-gpu-instrument-registration.md` (revision 1.3, `ec5cbc0`), with Ark's
+review of revision 1.3 (chat 12:09 UTC, points 1-3) applied ahead of revision 1.4. Nothing here has
+been through V1-V8.
+
+| file | what | registration |
+|---|---|---|
+| `gpu_env.py` | imported first: thread preamble, `CUBLAS_WORKSPACE_CONFIG=:4096:8` before torch (another value refuses), deterministic algorithms (no `warn_only`), TF32 off, cuDNN deterministic, no benchmark; settings read back; the environment record and the stamp | G1, G2, R1-R3, D6 (a), D7 (i) |
+| `gpu_common.py` | `DEVICE`, `DTYPE`, `H`, `_perturb_draws`, copied verbatim from `gpu_bf.py` / `gpu_bf2.py`, so that engine v3 loads without v1 and v2; `gpu_bf3.py:27` imports from it | G8, D2 |
+| `run_registered.py`, `gpu_stage.py` | the registered driver (engine v3 only; refuses to import `gpu_bf`, `gpu_bf2`, `gpu_rule`): the GPU stage of the hybrid, writing BF ko records in A's schema, per-fit hashes, the census and the manifest | G2-G8, G11, G15, G16, R1-R7, D8 (I2), D10 |
+| `instrument.py` | torch-free: key refusals, the composition digest, the stamp comparison (`REGISTERED_STAMP` is `None` until V1's stamp is registered), the output guard, hashes, the degree-term digest | R1, R4, R6, G3, G11, D10 |
+| `census.py` | the tie census: S(f), tied pairs, smallest gap, flipped pairs, the at-risk list (2^-23), per column family with per-fit denominators | G16, E2 |
+| `gpu_equivalence.py` | the comparator: E1, E2-II, E2-III, E3, diagnostics, the BF-active classification | G9 |
+| `hybrid_store.py` | the hybrid store for V3 | G10 |
+| `hybrid_arm.py` | for an arm's new script: the CPU stage's import of a GPU stage (G13) and the fixed-λ path check under D9 (b) (G12) | G12, G13 |
+| `prep.py` | the arm adapter (the arm module and lobe given to the worker initializer; key refusal; the score inputs of a record) | G7 |
+| `recount.py` | V6's brute-force recount, sharing no code with the comparator | V6 |
+| `v5a_cpu_blas4.py` | V5 (a): `harness.fit_bf` on the 180 base views with `OPENBLAS_NUM_THREADS=4` | V5 |
+| `validation.py` | the runner of V0-V8, with each run's outcome coded as section 7 writes it | section 7 |
+| `tests/` | T-G1-T-G10 (pytest in `tools/.venv`; the GPU tests launch the torch venv) | section 10 |
+
+Run (from the repository root; `TORCH_PY` and `CPU_PY` are in `instrument.py`):
+
+```
+tools/.venv/Scripts/python.exe -m pytest results/genome/c6/gpu_instrument/tests -q
+cd results/genome/c6/gpu_instrument
+../../../../tools/.venv/Scripts/python.exe validation.py V0      # then V6, V7, V1, V2, V3, V5, V4
+```
+
+A GPU run writes to `connectome-seed-data/gpu_instrument/<tag>_<UTC>_<head 12>/`: `raw_fits_gpu.json.gz`
+(A's store schema; `secs` apportioned), `fit_hashes.json` (sha256 of the raw float64 U, V, λ and
+of the decoded p), `census.json.gz`, `manifest.json`, `SHA256SUMS.txt`. Validation aggregates go to
+`validation/` beside this file. Until the revision that registers V1's results, the stamp is not
+registered: validation runs pass `--stamp-unregistered` and their manifests say "STAMP NOT YET
+REGISTERED"; an arm run refuses.
 
 # Engine v1 (2026-09-25), as written then
 

@@ -1291,3 +1291,20 @@ why.
 | **7** read the code (`bf_als`/the λ path, `gpu_bf3.py`) for the ridge-residue question | Ark | §7.1 (new bullet, "Item 7") | Answered with line citations on both sides (`harness.py:535`, `:645–655`, `:710–728`; `gpu_bf3.py:78–110`, `:125–163`, `:167–195`): no branch on `lam == 100`; a ridge residue left by the Newton stop, not another path. Not measured by a run |
 | **8** update the changelog | Ark (implicit, closing the review) | §14 | Applied |
 | **Zcode** | — | header | recorded pending, not yet reviewed |
+
+### 15.5 Zcode's vote on revisions 1.3 and 1.4 (DPC Research chat, 2026-09-26 12:56 UTC)
+
+Zcode confirms revisions 1.3 and 1.4 in full; the carrying numbers were computed twice
+independently (Ark's `gpu_e2_v5/v6`, CC's drafter on the store) and agree. With Ark's review of
+12:09 UTC this closes the review of the text under which V0–V8 run. Johnny: out of the session
+(Mike, 11:00 UTC); he reads the committed revision in a new session.
+
+**Zcode's synthesis, recorded beside "3 fits, 48 pairs" (§5):** inside D1 the at-risk fits and
+the BF-active fits do not intersect. The four at-risk D1 fits (`M0.85:2|sh:79` BF:1–4) are
+N1-equal, so their at-risk pair was made by N1 on the CPU; the three BF-active λ = 100 exceptions
+(`W:4|sh:84`) are not among the six at-risk records, their 48 pairs lying at gaps of at least
+2·ulp. So E2-III cannot be exercised inside D1 on A's worlds at all; a live test can come only
+on the male worlds (V8), where the share of λ = 100 may differ. Zcode also reads the pattern of
+the exceptions (33/33 at λ 1, 323/323 at λ 3, 3 of 17,644 at λ 100, three singletons, no
+clusters) as the quantisation lottery of a decreasing ridge residue, consistent with the code
+reading of §7.1 item 7.

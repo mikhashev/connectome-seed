@@ -1,40 +1,151 @@
 """CPU-side preparation for the GPU instrument, runnable in a small process pool.
 
 For one bank key (synthetic worlds only: "world:<family>:<j>" with an optional "|sh:<sd>"), this
-builds the bank exactly as the CPU instrument does (knockout_regrow.build_bank with
+builds the bank exactly as the CPU instrument does (the arm module's build_bank with
 synthetic_only=True, which refuses any "real" key), takes its knockout view, and computes every
 input that fit_bf (and rule #2.1's fit_existence) derives from the view before the ALS starts:
 N1 on the whole view and on each inner-fold training subview (harness.fit_n1, the exact CPU call),
 the N1 logit grids (harness._n1_logit_grid), the training grids (harness._grid) and the held-out
 masks. These are the same calls, in the same order, as harness.fit_bf; nothing is reimplemented.
 
-This module imports numpy, harness and knockout_regrow only (no torch), so pool workers start
+This module imports numpy, harness and the arm module only (no torch), so pool workers start
 fast. It sets one BLAS thread per process before numpy loads, as knockout_regrow does.
+
+G7 of the GPU instrument registration (docs/plans/2026-09-26-gpu-instrument-registration.md,
+revision 1.3), the arm adapter: the arm's module (and lobe) is given to the worker initializer
+(init_arm_worker) instead of being imported here directly. Block A's script, knockout_regrow, is
+the default arm, loaded on first use, so the unregistered v2 drivers (validate_shuffles.py,
+validate_rule.py) and run_pipeline.py keep working. For an arm module other than A's:
+  * set_lobe(lobe) is called if a lobe is given (a module without it refuses a lobe);
+  * the module's _w_init(10, terms, True) runs in every worker, as the registered run's workers;
+    the male arm's registration puts its grid restriction there (its S5);
+  * restrict_to_placed_grid() is called as well if the module defines it (idempotent in the
+    male draft), so the restriction holds in every worker whatever _w_init does;
+  * outside_density(bank), if the module defines it (the male S14: the placed outside cells),
+    replaces A's bank.exists[~BLOCK].mean().
+The registered path (prepare_key_compact, decode_records) accepts only the keys of R6
+(instrument.check_key): world:<family>:<j> and world:<family>:<j>|sh:<sd>.
 """
 import os
 
 for _v in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS", "NUMEXPR_NUM_THREADS"):
     os.environ.setdefault(_v, "1")
 
+import importlib  # noqa: E402
 import pathlib  # noqa: E402
 import sys  # noqa: E402
+import time  # noqa: E402
 
 import numpy as np  # noqa: E402
 
 HERE = pathlib.Path(__file__).resolve().parent
 C6 = HERE.parent
-for _p in (str(C6), str(C6 / "checks")):
+for _p in (str(HERE), str(C6), str(C6 / "checks")):
     if _p not in sys.path:
         sys.path.insert(0, _p)
 
 import harness as H          # noqa: E402  (read-only import)
-import knockout_regrow as K  # noqa: E402  (read-only import; its arms live under __main__)
+import instrument as I       # noqa: E402  (torch-free: key refusals, hashes)
 
 _TERMS = {}
+_ARM = {"mod": None, "name": None, "lobe": None, "poisoned": False, "worker_init": None}
+DEFAULT_ARM = "knockout_regrow"
+
+
+def set_arm(name=DEFAULT_ARM, lobe=None):
+    """G7: load the arm module by name (read-only import) and select its lobe."""
+    mod = importlib.import_module(name)
+    if lobe is not None:
+        if not hasattr(mod, "set_lobe"):
+            raise RuntimeError(f"REFUSED (G7): arm module {name} has no set_lobe(); the adapter "
+                               "cannot select a lobe")
+        mod.set_lobe(lobe)
+    _ARM.update(mod=mod, name=name, lobe=lobe)
+    return mod
+
+
+def arm():
+    if _ARM["mod"] is None:
+        set_arm(DEFAULT_ARM, None)
+    return _ARM["mod"]
+
+
+def restrict_grid(mod):
+    """The arm's grid restriction (the male draft's S5), if it has one; A's arm has none."""
+    if hasattr(mod, "restrict_to_placed_grid"):
+        mod.restrict_to_placed_grid()
+        return True
+    return False
+
+
+def poison_real_block():
+    """T-G5 / V7 (validation only): flip the 64 block cells of harness.REAL in this process.
+    A present block cell loses its content; an absent one gains a dummy content. Any code path
+    that read a block cell of REAL would change its result (or fail)."""
+    K = arm()
+    content = H.REAL.content                     # the same dict as H.REAL_CONTENT
+    flipped = {"removed": 0, "added": 0}
+    for s, t in K.BLOCK_CELLS.tolist():
+        k = (int(s), int(t))
+        if k in content:
+            del content[k]
+            H.REAL.exists[k] = False
+            flipped["removed"] += 1
+        else:
+            content[k] = {"offsets": {(0, 0): 1.0}, "hull": [], "sign": 1}
+            H.REAL.exists[k] = True
+            flipped["added"] += 1
+    _ARM["poisoned"] = True
+    return flipped
+
+
+def outside_density(bank):
+    K = arm()
+    if hasattr(K, "outside_density"):
+        return float(K.outside_density(bank))
+    return float(bank.exists[~K.BLOCK].mean())
 
 
 def init_worker(terms):
     _TERMS["t"] = terms
+
+
+def init_arm_worker(arm_name, lobe, terms, poison=False):
+    """G7: the registered GPU stage's pool initializer: the arm module (and lobe), its worker
+    init as the registered run's workers (_w_init(10, terms, True): harness.STARTS = 10, rule #2.1
+    loaded through harness.load_rule), its grid restriction, and (V7 / T-G5 only) the poison."""
+    mod = set_arm(arm_name, lobe)
+    _TERMS["t"] = terms
+    mod._w_init(10, terms, True)
+    restricted = restrict_grid(mod)
+    flipped = poison_real_block() if poison else None
+    _ARM["worker_init"] = {"arm": arm_name, "lobe": lobe, "grid_restricted": restricted,
+                           "n_all_cells": int(len(H.ALL_CELLS)), "starts": H.STARTS,
+                           "poisoned": flipped}
+
+
+def worker_record(_=None):
+    """G2: the environment of one prep worker (numpy, BLAS, thread variables, the arm)."""
+    rec = {"python": sys.version.split()[0], "numpy": np.__version__, "pid": os.getpid(),
+           "thread_env_in_effect": {v: os.environ.get(v) for v in
+                                    ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS",
+                                     "NUMEXPR_NUM_THREADS")},
+           "arm": dict(_ARM["worker_init"] or {}),
+           "degree_terms_digest": (I.degree_terms_digest(_TERMS["t"]) if "t" in _TERMS
+                                   else None)}
+    try:
+        cfg = np.show_config(mode="dicts")
+        rec["numpy_build"] = {k: cfg.get("Build Dependencies", {}).get(k)
+                              for k in ("blas", "lapack")}
+    except Exception as e:
+        rec["numpy_build"] = {"error": repr(e)}
+    try:
+        import threadpoolctl
+        rec["blas_at_run_time"] = [{**i, "filepath": os.path.basename(i.get("filepath") or "")}
+                                   for i in threadpoolctl.threadpool_info()]
+    except Exception as e:
+        rec["blas_at_run_time"] = {"error": repr(e)}
+    return rec
 
 
 def prepare_view(view, n1_full=None):
@@ -61,6 +172,7 @@ def prepare_view(view, n1_full=None):
 
 def prepare_key(key, mask="ko"):
     """Worker entry point: build the bank for `key` and prepare its view under `mask`."""
+    K = arm()
     if key.split("|")[0] == "real":
         raise RuntimeError("REFUSED: the GPU instrument never builds the real bank")
     bank = K.build_bank(key, _TERMS["t"], True)
@@ -73,12 +185,13 @@ def prepare_key(key, mask="ko"):
 
 # ------------------------------------------------------------------------------------------
 # Rule #2.1: the CPU part of its fit, after the (GPU) existence fit. Worker side, torch-free.
+# Unregistered (D13); kept for validate_rule.py.
 
 def init_rule_worker(terms):
     """As the registered run's workers: knockout_regrow._w_init(10, terms, True) sets
     harness.STARTS = 10 and loads rule #2.1 through harness.load_rule into this process."""
     _TERMS["t"] = terms
-    K._w_init(10, terms, True)
+    arm()._w_init(10, terms, True)
 
 
 def install_existence(P, ex, cells, exists, starts):
@@ -107,7 +220,7 @@ def install_existence(P, ex, cells, exists, starts):
 def rule_post_key(args):
     """(bank key, existence dict) -> the rule's own fit() with that existence fit, decoded and
     scored exactly as knockout_regrow._w_group does for the 'ko' mask."""
-    import time
+    K = arm()
     key, ex = args
     if key.split("|")[0] == "real":
         raise RuntimeError("REFUSED: the GPU instrument never builds the real bank")
@@ -131,11 +244,11 @@ def rule_post_key(args):
 
 
 # ------------------------------------------------------------------------------------------
-# Compact preparation for the streamed pipeline (gpu_bf3 / run_pipeline.py). Same calls as
-# prepare_view; in addition the SVD start of harness.bf_als is computed here, once per grid:
-# bf_als's E, u, sv, vt depend on (O, Y, M) only, not on r or lambda, so the rank-r start
-# U0 = u[:, :r] * sqrt(sv[:r]) is, element for element, the first r columns of the rank-4 one.
-# Grids are stored as bool where they are 0/1 (M, Y, test) to save memory.
+# Compact preparation for the streamed pipeline (gpu_bf3). Same calls as prepare_view; in
+# addition the SVD start of harness.bf_als is computed here, once per grid: bf_als's E, u, sv,
+# vt depend on (O, Y, M) only, not on r or lambda, so the rank-r start U0 = u[:, :r] * sqrt(sv[:r])
+# is, element for element, the first r columns of the rank-4 one. Grids are stored as bool where
+# they are 0/1 (M, Y, test) to save memory.
 
 def _svd_start4(O, Y, M):
     E = np.where(M > 0, Y - H._sig(O), 0.0)
@@ -144,8 +257,15 @@ def _svd_start4(O, Y, M):
 
 
 def prepare_key_compact(key, mask="ko"):
-    if key.split("|")[0] == "real":
-        raise RuntimeError("REFUSED: the GPU instrument never builds the real bank")
+    """The registered GPU stage's preparation of one bank (R6: world and world|sh keys only).
+    Besides the grids and starts, it returns what the record of A's store schema needs from the
+    bank (G4): the block labels, the content of the present block cells (all harness.score reads
+    of a bank: exists and content on the 64 block cells), outside_density as A's _w_group
+    computes it, and the N1 p on the block (the at-risk list's "p equals its view's N1 p")."""
+    I.check_key(key)
+    if mask != "ko":
+        raise ValueError(f"REFUSED (D1 (a)): mask {mask!r}; the GPU fits the ko mask only")
+    K = arm()
     bank = K.build_bank(key, _TERMS["t"], True)
     view = H.make_view(bank, K.MASKS[mask])
     pv = prepare_view(view)
@@ -156,14 +276,52 @@ def prepare_key_compact(key, mask="ko"):
     for i in range(len(O)):
         A4[i], B4[i] = _svd_start4(O[i], pv["Y"], M[i])
     test = np.concatenate([np.zeros((1, 65, 65), bool), pv["test"]])
+    bc = K.BLOCK_CELLS
+    y_block = bank.exists[bc[:, 0], bc[:, 1]].copy()
+    block_content = {(int(s), int(t)): bank.content[(int(s), int(t))]
+                     for s, t in bc.tolist() if bank.exists[s, t]}
+    p_n1 = np.asarray(K._pred("N1").decode(pv["n1"], bc)["p_exist"], np.float64)
     return {"key": key, "n1": pv["n1"], "O": O, "M": M.astype(bool), "Y": pv["Y"].astype(bool),
             "test": test, "A4": A4, "B4": B4, "n_folds": len(pv["folds"]),
-            "y_block": bank.exists[K.BLOCK_CELLS[:, 0], K.BLOCK_CELLS[:, 1]].copy()}
+            "y_block": y_block, "block_content": block_content,
+            "outside_density": outside_density(bank), "p_n1": p_n1}
+
+
+def decode_records(task):
+    """G4 / G6, pool worker: BF_r fits of the GPU decoded through the harness's own decode
+    (Predictor.decode: the float32 cast of every float array), scored by harness.score exactly
+    as A's _w_group scores a ko fit, as records of A's store schema (p, y, lam, score,
+    outside_density; secs is filled by the driver). Beside each record, outside it: the sha256
+    of the raw float64 U, V, lambda and of the decoded p (G6). The score reads only the 64 block
+    cells of the bank, rebuilt here from their labels and content (a Bank whose other cells are
+    absent gives the same y and the same score)."""
+    r, items = task
+    K = arm()
+    P = K._pred(f"BF:{r}")
+    out = []
+    for key, data, y_block, block_content, od in items:
+        I.check_key(key)
+        dec = P.decode(data, K.BLOCK_CELLS)
+        p = np.asarray(dec["p_exist"], np.float64)
+        sb = H.Bank(f"score.{key}", block_content)
+        y = sb.exists[K.BLOCK_CELLS[:, 0], K.BLOCK_CELLS[:, 1]]
+        assert np.array_equal(y, y_block)
+        sc = H.score(dec, sb, K.BLOCK_CELLS)
+        rec = {"p": p.tolist(), "y": y.tolist(), "lam": float(np.asarray(data["bf_lambda"])[0]),
+               "score": {k: sc[k] for k in ("existence", "offset", "counts", "sign", "sign_n",
+                                            "n_ne")},
+               "outside_density": float(od)}
+        hashes = {"U": I.array_sha256(data["bf_U"]), "V": I.array_sha256(data["bf_V"]),
+                  "lambda": I.array_sha256(data["bf_lambda"]), "p": I.array_sha256(p)}
+        out.append((I.bf_record_key(key, r), rec, hashes))
+    return out
 
 
 def decode_compare(task):
-    """Pool worker: decode BF_r fits through the harness's own decode and compare with the
-    stored reference entries (passed in; the worker never opens a store)."""
+    """Pool worker (unregistered run_pipeline.py): decode BF_r fits through the harness's own
+    decode and compare with the stored reference entries (passed in; the worker never opens a
+    store)."""
+    K = arm()
     r, items = task
     P = K._pred(f"BF:{r}")
     rows = []

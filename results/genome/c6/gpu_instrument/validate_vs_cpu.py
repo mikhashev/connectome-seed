@@ -1,15 +1,13 @@
-"""Validate the GPU batched BF fitter against the CURRENT, on-disk CPU harness (harness.fit_bf),
-run fresh on the SAME synthetically-built worlds -- not against the stale
-connectome-seed-data/knockout_regrow/synthetic_rev3_prerun/raw_fits.json.gz file.
+"""Validate the GPU batched BF fitter (engine v1) against the on-disk CPU harness (harness.fit_bf),
+run fresh on the SAME synthetically-built worlds, in the same process.
 
-Why not the pre-run file: a direct check (see README, "What the pre-run-file comparison found")
-showed harness.fit_n1 (a deterministic, non-ALS ridge fit with no random starts) on a freshly
-built world already disagrees with that file's stored N1 predictions. The registration itself
-(2026-09-24-knockout-regrow-registration.md, section 3.3) says the pre-run numbers may not match
-a clean re-run and requires the registered run to reproduce them as its own gate; it is not
-registered ground truth for an independent instrument to check against. This script instead
-checks the one claim in scope for this task: does the GPU batched fitter reproduce what the
-CURRENT CPU harness.fit_bf computes, on the same inputs.
+Corrected 2026-09-26 (GPU instrument registration, ledger row G-(6)): this docstring used to call
+connectome-seed-data/knockout_regrow/synthetic_rev3_prerun/raw_fits.json.gz "stale" and to say
+that harness.fit_n1 "already disagrees with that file's stored N1 predictions". Both were wrong:
+the store reproduces bit for bit; the claim came from a wrong key and a wrong cell order in the
+comparison script (knockout-and-regrow registration, section 3.3, facts (a) and (c), and its
+section 12, row CC (1); README.md, "v1: Validation"). This script remains what it was: a
+file-free check of engine v1 against a live harness.fit_bf on the same inputs.
 
 Real block: never read. This script only builds synthetic worlds (knockout_regrow.make_world) and
 fits BF_1..BF_4 in the knockout ('ko') arm.

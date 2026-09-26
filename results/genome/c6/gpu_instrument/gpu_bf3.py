@@ -24,7 +24,7 @@ Never reads, fits or scores the real block.
 import numpy as np
 import torch
 
-from gpu_bf2 import DEVICE, DTYPE, H, _perturb_draws
+from gpu_common import DEVICE, DTYPE, H, _perturb_draws  # G8: not gpu_bf2 (was :27)
 
 
 class GridStore:
