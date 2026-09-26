@@ -1,13 +1,16 @@
-male CNS bank builder; registration docs/plans/2026-09-25-male-cns-bank-builder-registration.md, revision 2
-git head cdbde9eef5d9f70ec6fc19916f1c2c32250a34bd; tree under results/genome/c6/ and docs/plans/: DIRTY
-versions: {'python': '3.13.14', 'numpy': '2.5.3', 'pandas': '3.0.6', 'pyarrow': '25.0.1', 'psutil': '7.2.2'} (psutil not pinned, section 10.4)
+male CNS bank builder; registration docs/plans/2026-09-25-male-cns-bank-builder-registration.md, revision 2.1
+git head 476cf9b31c85ce438de383073533a13d335f3c43; tree under results/genome/c6/ and docs/plans/: clean
+builder sha256 (LF) a29cf45825271e32019d6441b276a351479dea5788360d223e245e3ac451b2ca; registration sha256 (LF) 5bcb4bc00bd6357ab50db196dcc727e8ac0ea73497050e2a569aba35c1a9dbf2
+builder_environment (section 10.4; not the instrument's environment (tools/.venv: python 3.10.20, numpy 2.2.6), which this builder does not use): {'python': '3.13.14', 'numpy': '2.5.3', 'pandas': '3.0.6', 'pyarrow': '25.0.1', 'psutil': '7.2.2'}; compared with the pins: python, numpy, pandas, pyarrow; psutil reported, not compared
 pins: flyvis-65 CSVs and both Janelia files equal section 1.1
   results/genome/bank/offsets.csv: sha256 (LF) 8c45e8508d8f6ae45e9ab3f9d95d58e4521894ccfa51954f6d77d41e550fa5f0
   results/genome/bank/types.csv: sha256 (LF) 237a195a36f62ce182fee8486394c27d2beb9825bc029cb215c39c0fa323a477
   body-annotations-male-cns-v1.0-minconf-0.5.feather: 14483314 bytes, sha256 2177e246113e4cfbf1e7772ec37c6da1955ff22e8063d0b1f833101f99a9a3b2, downloaded 2026-09-23 UTC
   connectome-weights-male-cns-v1.0-minconf-0.5.feather: 1051241946 bytes, sha256 e35da783d1c686b2b58b3b87cd6a403ae43bfcfba8bff28e08ef752c1a56afc1, downloaded 2026-09-23 UTC
 weight file: schema ['body_pre: int64', 'body_post: int64', 'weight: int64']; 2318 record batches; pandas metadata stop 151856684; written by {'library': 'pyarrow', 'version': '19.0.1'}
-  uncompressed int64 data would be 3644560416 bytes; the file is 1051241946 bytes (the codec is not read: that needs a record batch)
+  uncompressed int64 data would be 3644560416 bytes; the file is 1051241946 bytes
+  body compression codec per record batch, from the flatbuffer headers only (no message body read): {'LZ4_FRAME': 2318}; footer blocks 2318 (reader: 2318); header row lengths sum to 151856684 (pandas stop 151856684); footer/header body-length mismatches 0
+annotation file: body compression codec per record batch {'LZ4_FRAME': 4}; 4 record batches, 211577 rows in their headers
 map: 61 flyvis names mapped, 55 placed; not placed: ['Mi3', 'Tm28', 'Mi12', 'CT1(Lo1)', 'R3', 'R2', 'R5', 'R4', 'R6', 'Mi11']
 density targets (section 5.3; placed grid 55 types, |Omega| = 2961 outside cells):
   pooled             {'omega': 2961, 'present': 511, 'T': 0.172577, 'K': 1022}; registered {'omega': 2961, 'present': 511, 'T': 0.172577, 'K': 1022} <- registered (D15)
@@ -78,6 +81,37 @@ type map as applied (section 3.2). L, R: bodies per lobe after the side rule and
   T5d       <- type='T5d': L 812, R 808; side rule {'somaSide': [812, 808], 'rootSide': [0, 0], 'instance': [0, 0], 'unassigned': 0}; under type [812, 808], under flywireType [812, 808]; disagree 0; assignedOlHex1 non-null 0; status {'Traced': 1620}
   Tm30      <- type='Tm30': L 63, R 61; side rule {'somaSide': [63, 61], 'rootSide': [0, 0], 'instance': [0, 0], 'unassigned': 0}; under type [63, 61], under flywireType [0, 0]; disagree 124; assignedOlHex1 non-null 0; status {'Traced': 124}
   L3        <- type='L3': L 880, R 892; side rule {'somaSide': [880, 892], 'rootSide': [0, 0], 'instance': [0, 0], 'unassigned': 0}; under type [880, 892], under flywireType [880, 892]; disagree 0; assignedOlHex1 non-null 892; status {'Traced': 1772}
+the two name columns where they disagree (section 3.1; bodies where either column equals the mapped string; a different spelling of one object shows here, not as an absence):
+  Tm5Y      {"type='Tm5Y' / flywireType='Tm5f'": 898}
+  T4d       {"type='T4_unclear' / flywireType='T4d'": 1}
+  TmY9      {"type='TmY9b' / flywireType='TmY9q'": 515}
+  R8        {"type='R8_unclear' / flywireType='R8'": 442, "type='R8d' / flywireType='R8'": 76, "type='R8p' / flywireType='R8'": 330, "type='R8y' / flywireType='R8'": 481}
+  R1        {"type='R1-R6' / flywireType='R1-6'": 3377}
+  L5        {"type=None / flywireType='L5'": 1}
+  TmY18     {"type='TmY18' / flywireType='Tm27'": 1367}
+  TmY13     {"type='TmY13' / flywireType='TmY11'": 432}
+  R7        {"type='R7_unclear' / flywireType='R7'": 404, "type='R7d' / flywireType='R7'": 82, "type='R7p' / flywireType='R7'": 332, "type='R7y' / flywireType='R7'": 482}
+  Tm30      {"type='Tm30' / flywireType='Tm31'": 124}
+status per lobe, [L, R] after the side rule and the flip (types with any status other than Traced):
+  L4        {'Traced': [878, 891], 'null': [1, 0]}
+  R1        {'Traced': [501, 893], 'null': [611, 1372]}
+  R7        {'Anchor': [1, 0], 'Traced': [607, 692]}
 placed types: 55; mapped flyvis names: 61
 self-test of the map (section 3.3): ZERO NAME MATCHES, MAP STRING NOT FOUND, BODY IN TWO TYPES, TYPE WITH NO CELLS: all pass
+
+whole file, status x side under the registered side rule of section 4 (all 211577 bodies, before any flip) [L, R, unassigned]:
+  Anchor       [137, 63, 411]
+  Assign       [1, 0, 1831]
+  Glia         [0, 0, 11864]
+  Orphan       [1390, 686, 13849]
+  Traced       [81378, 82753, 991]
+  Unimportant  [0, 0, 10751]
+  null         [854, 1985, 2633]
+  Traced, somaSide then rootSide only (the instance step left out): L 81362, R 82738
+R7/R8 sides from the `type` variants, independent of flywireType (section 4; R7R8_unclear split by its flywireType):
+  R7R8_unclear: 85 bodies, flywireType {'None': 85}
+  R7: type variants {'R7d': 82, 'R7p': 332, 'R7y': 482, 'R7_unclear': 404}; sides [L, R] [608, 692]; the same bodies as flywireType='R7': True (symmetric difference 0)
+  R8: type variants {'R8d': 76, 'R8p': 330, 'R8y': 481, 'R8_unclear': 442}; sides [L, R] [625, 704]; the same bodies as flywireType='R8': True (symmetric difference 0)
+two spellings of one object (section 3.1):
+  type='R1-R6': 3377 bodies; flywireType='R1-6': 3377 bodies; the same bodyIds: True (symmetric difference 0)
 --inspect-only: stopping before any weight column is read (section 10.3)
