@@ -2,8 +2,9 @@
 """Knock out and regrow, the male CNS arm: block A in each optic lobe of one male (the animal
 control of block A).
 
-Implements docs/plans/2026-09-26-knockout-regrow-male-cns-arm-registration.md, revision 1.1
-("the arm", section numbers below refer to it unless marked "A"), a delta on block A's
+Implements docs/plans/2026-09-26-knockout-regrow-male-cns-arm-registration.md, revision 1.2
+(revision 1.1's text, plus the pre-run references of section 3.3.1 registered in S17's
+constants; "the arm", section numbers below refer to it unless marked "A"), a delta on block A's
 registration docs/plans/2026-09-24-knockout-regrow-registration.md, revision 3.4.1 ("A").
 This file is a copy of A's script results/genome/c6/checks/knockout_regrow.py (at 74db080) with
 the script changes S1-S28 of section 7.2, and is reviewed as a diff against it (D14 (i)); A's
@@ -62,7 +63,7 @@ C6 = HERE.parent
 ROOT = C6.parents[2]                                   # the repository root
 # S2: this arm's registration and revision; the manifest records its LF sha256 at run time.
 REGISTRATION = "docs/plans/2026-09-26-knockout-regrow-male-cns-arm-registration.md"
-REGISTRATION_REVISION = "1.1"
+REGISTRATION_REVISION = "1.2"
 # S2 (D11, D12, section 9.3): A's registration, from which quote_row and the A-literals line
 # quote section 4's rows. It is pinned by its LF sha256 AFTER the amendment of section 9.3 (made
 # in step 4 of D15). PLACEHOLDER: None until that revision registers the amended hash; while it is
@@ -81,17 +82,36 @@ RULE_PATH = C6 / "rules" / "second_rule_v21" / "fit.py"
 # them to PRIVATE_ROOT / "malecns_<UTC stamp>_<git head, 12>" (private_run_dir).
 PRIVATE_ROOT = ROOT.parent / "connectome-seed-data" / "knockout_regrow"
 # S17 (sections 3.3, 7.5; D15): one pinned pre-run reference per lobe, made by the
-# --synthetic-only pre-run of that lobe from a committed head. PLACEHOLDERS: the pins are
-# registered in the revision of the registration that follows the pre-run, and the reference is
-# moved to PRERUN_DIR[lobe] in that reviewed change. While a lobe's PRERUN_SHA256 or
-# PRERUN_WORLDS_CSV_SHA256 is None, --arm malecns refuses, and --synthetic-only runs in pre-run
-# mode (it makes a reference; it checks none). A's revision-2/3 split of its pre-run
-# (PRERUN_REV2_FAMILIES, PRERUN_REV3_FAMILIES) and revision 3.2's rename check (_mech_renamed_32)
-# are A's history and are not carried over (S17).
+# --synthetic-only pre-run of that lobe from a committed head. Registered by revision 1.2
+# (section 3.3.1, D17): the pre-run of 2026-09-26 (started 13:12:49 UTC, head a0e16b6, tree
+# clean) wrote malecns_prerun_<lobe>_20260926T131249Z/; its five files were copied byte for byte
+# (sha256 and cmp equal) to PRERUN_DIR[lobe], the folder names section 3.3 proposed and each
+# reference's own manifest records as prerun_dir. The originals are left in place, untouched:
+# they are the GPU instrument's V8 inputs (instrument.MALE_PRERUN_STORES). While a lobe's
+# PRERUN_SHA256 or PRERUN_WORLDS_CSV_SHA256 is None, --arm malecns refuses, and --synthetic-only
+# runs in pre-run mode (it makes a reference; it checks none). A's revision-2/3 split of its
+# pre-run (PRERUN_REV2_FAMILIES, PRERUN_REV3_FAMILIES) and revision 3.2's rename check
+# (_mech_renamed_32) are A's history and are not carried over (S17).
 PRERUN_DIR = {"L": PRIVATE_ROOT / "synthetic_malecns_L_prerun",
               "R": PRIVATE_ROOT / "synthetic_malecns_R_prerun"}
-PRERUN_SHA256 = {"L": None, "R": None}                 # PLACEHOLDER: {file name: raw sha256}
-PRERUN_WORLDS_CSV_SHA256 = {"L": None, "R": None}      # PLACEHOLDER
+# {file name: raw sha256}, exactly the files listed in each folder's SHA256SUMS.txt (read by
+# check_prerun_files, which requires listed == pinned == read for every one of them).
+PRERUN_SHA256 = {
+    "L": {"SYNTHETIC.md": "97797a5120eab60bdf7c5ea94aaeb5835430f54a3af9c2e27c12b0d81741363f",
+          "raw_fits.json.gz": "e0e1114d9c7fc6bcb316a131aaea572b426ef46e6f1c4f8786fdb63d2783dad2",
+          "synthetic_only.json":
+              "9498de82d33444ff98e090b2cff895d2ab760f433fbf41d22e12e9b67b61f649",
+          "synthetic_worlds.csv":
+              "506576312638005e5bd09876c9da0ffe9a8a753641a59a2b354c0c59bed25d91"},
+    "R": {"SYNTHETIC.md": "6f4b94b1c9096b45a8532395a2e45f47b5484663431d66532548d68db4753e84",
+          "raw_fits.json.gz": "183b9376315dd98bb421015fb721d941cddf2dd1949f96be82055d1f4c5acade",
+          "synthetic_only.json":
+              "8acf217d77fbe21d29561f47cc33373769e74f3cc50150def97eca4f6b49f219",
+          "synthetic_worlds.csv":
+              "e8476a936356d3965aa5715d7f04a82c3587ff0795569db81071822fbca9cae0"}}
+PRERUN_WORLDS_CSV_SHA256 = {
+    "L": "506576312638005e5bd09876c9da0ffe9a8a753641a59a2b354c0c59bed25d91",
+    "R": "e8476a936356d3965aa5715d7f04a82c3587ff0795569db81071822fbca9cae0"}
 PRERUN_FILES = ("SYNTHETIC.md", "raw_fits.json.gz", "synthetic_only.json", "synthetic_worlds.csv")
 # S18: the other arms' references, which --out must never touch. A's is pinned (A section 7);
 # block B's folder is the one B section 3.3 proposes, with no pins yet (B is not implemented), so

@@ -20,6 +20,9 @@ T9   the lobe rules: male_reading on 16 pairs and the one-lobe cases; the split 
 T10  seeds; --allow-dirty with --arm malecns refused; out_dir_refusal on four references.
 T11  checks 3 and 5 are prints.
 T12  the p_S print (S28).
+T13  revision 1.2 (section 3.3.1): the registered references of both lobes verify in reference
+     mode (their pins, smallest_passing_auc, ko1 count and manifests); only A's amended hash is
+     still a placeholder. Reads the reference folders (synthetic worlds), never a sealed file.
 
 The fits of T3's flows are replaced by a deterministic fake (_fit_one, in-process, workers = 1);
 T4 and T5 make real fits. Run: tools/.venv/Scripts/python.exe -m pytest -p no:cacheprovider -v
@@ -505,6 +508,10 @@ SMOKE = ["--starts", "3", "--workers", "1", "--smoke-families", "M0.5", "--smoke
 
 def test_T3_synthetic_only_never_touches_a_sealed_file(seal_guard, monkeypatch, tmp_path):
     monkeypatch.setattr(K, "_fit_one", fake_fit_one)
+    # revision 1.2: the pins are registered; this test keeps exercising pre-run mode (the mode
+    # the pre-run ran in), independent of the real reference folders (T13 covers those).
+    monkeypatch.setitem(K.PRERUN_SHA256, "L", None)
+    monkeypatch.setitem(K.PRERUN_WORLDS_CSV_SHA256, "L", None)
     syn = K.main(["--synthetic-only", "--lobe", "L", *SMOKE, "--out", str(tmp_path / "out")])
     assert syn["lobe"] == "L" and not syn["reference_mode"]
     assert (tmp_path / "out" / "synthetic_worlds.csv").is_file()
@@ -970,6 +977,52 @@ def test_T12_p_S_print():
     assert "p_S = 0.01 (n_ge = 0 of 99, n_deg = 0)" in line0 and "[leg S" not in line0
     lob = K.verdict_line(ev0, DL, U_KEPT, lobe="L")
     assert lob.startswith("male CNS, lobe L (existence bank at c* = 2.99436): ")
+
+
+# ------------------------------------------------------------------------------------------
+# T13 (revision 1.2, section 3.3.1): the registered references themselves.
+
+KO1_REGISTERED = {"L": {"ko1_records": 225, "copied_from_ko": 46, "fitted": 179},
+                  "R": {"ko1_records": 225, "copied_from_ko": 49, "fitted": 176}}
+
+
+def test_T13_the_registered_references_verify():
+    """The real pinned references of both lobes (outside the repository; synthetic worlds only,
+    no sealed file is read, and the seal guard checks it) are accepted by the registered run's
+    reference mode: every file listed in SHA256SUMS.txt matches its listed and pinned sha256
+    and nothing else lies in the folder; the worlds CSV pin is the listed one; the registered
+    smallest_passing_auc (equal in both lobes) and ko1 count derive from them; each was made by
+    a full, clean pre-run at a0e16b6 that touched no sealed file; --out is refused at the
+    reference and at the pre-run folder it was copied from; and the only placeholder left is
+    A's amended hash, so --arm malecns still refuses (D15 step 4)."""
+    for lobe in K.LOBES:
+        d = K.PRERUN_DIR[lobe]
+        if not d.is_dir():
+            pytest.skip(f"the reference folder {d} is not on this machine")
+        assert K.reference_mode(lobe)
+        files = K.check_prerun_files(lobe)
+        assert files["passed"] and files["unlisted"] == [], files["reason"]
+        assert set(files["files"]) == set(K.PRERUN_FILES)
+        assert K.PRERUN_WORLDS_CSV_SHA256[lobe] == K.PRERUN_SHA256[lobe]["synthetic_worlds.csv"]
+        spa = K.derive_smallest_passing_auc(d / "synthetic_only.json")
+        assert spa["passed"] and spa["by_board"] == {"z": 0.671875, "z'": 0.669921875}
+        assert spa["by_board"] == K.board_smallest_passing_auc()
+        assert spa["n_worlds_by_board"] == {"z": 40, "z'": 5}
+        assert K.registered_ko1_count(K.read_raw(d / "raw_fits.json.gz")) == KO1_REGISTERED[lobe]
+        man = json.loads((d / "synthetic_only.json").read_text(encoding="utf-8"))["manifest"]
+        assert man["git_head"] == "a0e16b696389fb796a9f3b95c308358b52dd9dc8"
+        assert man["tree_dirty_under_c6_or_plans"] is False and man["allow_dirty"] is False
+        assert man["sealed_files_touched"] is False and man["not_a_reference"] is None
+        assert man["smoke"] is False and man["starts"] == 10 and man["lobes"] == [lobe]
+        assert man["reference_mode"] is False and man["from_raw"] is None
+        assert "reference folder or inside it" in K.out_dir_refusal(d)
+        origin = K.PRIVATE_ROOT / f"malecns_prerun_{lobe}_20260926T131249Z"
+        if origin.is_dir():
+            assert "byte copy" in K.out_dir_refusal(origin)
+    left = K.placeholders_unset()
+    assert len(left) == 1 and left[0].startswith("A_REGISTRATION_SHA256_LF_AMENDED")
+    with pytest.raises(SystemExit, match="still placeholders: A_REGISTRATION_SHA256_LF_AMENDED"):
+        K.check_registered_constants()
 
 
 if __name__ == "__main__":
