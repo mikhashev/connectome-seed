@@ -718,6 +718,9 @@ objects").
    each `synthetic_only.json`: in all 12 U worlds rule #2.1 passes leg S (`n_ge` = 0 of 99); in 5
    the legs disagree (leg P `p_P` 0.0117–0.0332) and in 7 the two D1 candidates disagree, one of
    them reading R (L 92142, 92144, 92163: BF_1 R; L 92164, 92173, R 92172, 92173: rule #2.1 R).
+   "5" is the attribution by branch (5 by the leg branch, 7 by the D1 branch); the raw predicate
+   "leg S passes and `p_P` > 0.01" holds in **8** worlds, since in 3 of the 7 D1-branch worlds
+   rule #2.1's `p_P` is also above 0.01 (Zcode, 2026-09-26 19:05 UTC).
 3. **One M world above both limits reads G in each lobe:** M0.85, seed 92184 (rule #2.1 AUC
    0.5254, `p_P` 0.3695, `n_ge` 10 in lobe L; AUC 0.5420, `p_P` 0.2872, `n_ge` 1 in lobe R;
    `ceiling_block` 1.0, so the G gate passes). A's pre-run had no G at or above γ_R. The G label
@@ -1573,6 +1576,23 @@ it; the rows above stand:
 | the arm's tests (line 724 at revision 1.1) | A's script's `rc_patterns` lines at `74db080` | history, unchanged (A's script is not amended) |
 | the GPU instrument's registration (`docs/plans/2026-09-26-gpu-instrument-registration.md` lines 30, 132, 287, 303, 547, 911, 918, 957, 1007, 1076, 1083 at `e50bf74`) | A's text (lines 30, 918, 1076: A §7 lines 1473–1476, A §12 lines 2392–2395, A §3.3 and §7) and A's script's lines at `74db080` | history, unchanged: the amendment is appended after A's last line, so every line number above it stays true |
 | the arm's two pre-run references and their stdout logs (`synthetic_only.json` manifest `a_registration_sha256_lf`, and the logs' check 1 line), in both the pre-run folders and the copies | `409184de…`, recorded (pre-run mode) | **history, untouched**: the pinned references are never edited; the registered run records the amended hash in its own manifest |
+
+**Made (D15 step 4, 2026-09-26 UTC).** The amendment was appended to A verbatim from Appendix A
+in commit `6fff1e4` (44 lines after one blank line; no line above changed). A's LF sha256 is now
+`fc41505690365ff6d82fa618b00b482cc992bb36d708ed3b6fbbe6f54f96dbec`, set as
+`A_REGISTRATION_SHA256_LF_AMENDED` in the arm's script. Before it, at the merged head `8531c6d`,
+the §3.3.1 (h) check ran with the merged script (LF `1b952ca6…`): `--synthetic-only --from-raw`
+against each pinned store re-derived the worlds table byte for byte (L `506576…25d91`, R
+`e8476a…9cae0`), 28,665 keys compared, 0 differ, exit 0 in both lobes; so the pre-run is not
+re-run.
+
+**Votes on revision 1.3, the amendment and the constant (DPC Research chat, 2026-09-26 UTC).**
+Zcode, 19:05: yes on all three (revision 1.3 with its four departures from the brief, verified on
+the stores; the amendment `6fff1e4`, verified byte-equal to Appendix A with its LF sha256
+recomputed; the constant and the T10/T13 change, "a translation of the tests to the new state, not
+a weakening"), with one wording note applied above (§3.3.1 (d), "5 by the leg branch"). Ark,
+18:17: accepted every edit of revision 1.3 in advance, and the amendment's form; no vote on the
+amendment commit and the constant (his session hit its limit at 18:57). Johnny: out.
 
 ### 9.4 Votes on revision 1.2 (DPC Research chat, 2026-09-26 UTC; as relayed by CC)
 

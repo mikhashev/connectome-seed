@@ -898,8 +898,11 @@ def test_T10_refusals(monkeypatch):
         K.main(["--synthetic-only"])
     with pytest.raises(SystemExit, match="runs as registered"):
         K.main(["--arm", "malecns", "--smoke-worlds", "1"])
+    # D15 step 4 set the last placeholder (A's amended hash); unset it again to keep this refusal
+    # tested: the real arm refuses while any registered constant is a placeholder.
+    monkeypatch.setattr(K, "A_REGISTRATION_SHA256_LF_AMENDED", None)
     with pytest.raises(SystemExit, match="still placeholders"):
-        K.main(["--arm", "malecns"])                   # the pins of the pre-run are not set
+        K.main(["--arm", "malecns"])
     assert called == []
 
 
@@ -1033,10 +1036,11 @@ def test_T13_the_registered_references_verify():
         origin = K.PRIVATE_ROOT / f"malecns_prerun_{lobe}_20260926T131249Z"
         if origin.is_dir():
             assert "byte copy" in K.out_dir_refusal(origin)
-    left = K.placeholders_unset()
-    assert len(left) == 1 and left[0].startswith("A_REGISTRATION_SHA256_LF_AMENDED")
-    with pytest.raises(SystemExit, match="still placeholders: A_REGISTRATION_SHA256_LF_AMENDED"):
-        K.check_registered_constants()
+    # D15 step 4 (commit 6fff1e4): A's amendment is made and its LF sha256 set; no placeholder is
+    # left, and the constant equals A's file as it now stands.
+    assert K.placeholders_unset() == []
+    K.check_registered_constants()
+    assert K.sha256_lf(K.ROOT / K.A_REGISTRATION) == K.A_REGISTRATION_SHA256_LF_AMENDED
 
 
 # ------------------------------------------------------------------------------------------

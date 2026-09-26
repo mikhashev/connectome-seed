@@ -71,7 +71,8 @@ REGISTRATION_REVISION = "1.3"
 # None the registered run refuses (check_registered_constants), and every other mode records the
 # hash it reads.
 A_REGISTRATION = "docs/plans/2026-09-24-knockout-regrow-registration.md"
-A_REGISTRATION_SHA256_LF_AMENDED = None                # PLACEHOLDER (D15 step 4, section 9.3)
+A_REGISTRATION_SHA256_LF_AMENDED = (                  # D15 step 4, section 9.3: A after its
+    "fc41505690365ff6d82fa618b00b482cc992bb36d708ed3b6fbbe6f54f96dbec")  # Amendment 1, 6fff1e4
 # The text under which the flyvis-65 verdict was made (revision 3.4.1, commit 74db080): history,
 # recovered with `git show 74db080:docs/plans/2026-09-24-knockout-regrow-registration.md`.
 A_REGISTRATION_SHA256_LF_FLYVIS65 = (
