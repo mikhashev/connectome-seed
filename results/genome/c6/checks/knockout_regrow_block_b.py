@@ -89,7 +89,7 @@ C6 = HERE.parent
 ROOT = C6.parents[2]                                   # the repository root
 # S2: this file's registration and revision; the manifest records its LF sha256 at run time.
 REGISTRATION = "docs/plans/2026-09-25-knockout-regrow-block-b-registration.md"
-REGISTRATION_REVISION = "1.6.1"
+REGISTRATION_REVISION = "1.7"
 # S2: A's registration, from which quote_row and quote_section quote section 4 (B section 4 does
 # not restate it). Pinned after A's Amendment 1 and checked at run start in every mode
 # (check_pins); an Amendment 2 of A stops the run on this pin, read as "A changed", not as a
@@ -109,8 +109,8 @@ RULE_PATH = C6 / "rules" / "second_rule_v21" / "fit.py"
 # to PRIVATE_ROOT / "<arm>_<UTC stamp>_<git head, 12>" (private_run_dir).
 PRIVATE_ROOT = ROOT.parent / "connectome-seed-data" / "knockout_regrow"
 # S17 (sections 3.3, 7; D10 (i)): block B's own pre-run reference, a new folder, made by one
-# --synthetic-only run from a committed head on Mike's word. Its pins do not exist yet: they are
-# set, with PRERUN_GIT_HEAD and PRERUN_SCRIPT_SHA256_LF (S37), by the revision after the pre-run,
+# --synthetic-only run from a committed head on Mike's word. Its pins are set, with
+# PRERUN_GIT_HEAD and PRERUN_SCRIPT_SHA256_LF (S37), by the revision after the pre-run (B 1.7),
 # in one reviewed change. While PRERUN_SHA256 is None, --synthetic-only runs in pre-run mode (it
 # makes the reference and checks none) and the real arm refuses. Each pin is the sha256 of a
 # file's raw bytes (read_bytes(), .gz included): integrity, not reproducibility; what a rerun must
@@ -119,19 +119,32 @@ PRIVATE_ROOT = ROOT.parent / "connectome-seed-data" / "knockout_regrow"
 # 3.2's rename check (_mech_renamed_32) are A's history and are not carried over.
 # port: male PRERUN_DIR / PRERUN_SHA256 placeholders, reference_mode (lines 86-116, 2068-2071)
 # -> S17
-PRERUN_DIR = PRIVATE_ROOT / "synthetic_blockB_prerun"
-PRERUN_SHA256 = None                                   # {file name: raw sha256}; D10 (i)
-PRERUN_WORLDS_CSV_SHA256 = None                        # PRERUN_SHA256["synthetic_worlds.csv"]
+# B revision 1.7 (D10 (i), step (4)): the pre-run was made on Mike's word (2026-09-27, 21:10:52 to
+# 23:23:00 UTC) from clean master 5f9cc51 into a new stamped folder; PRERUN_DIR and the pins move
+# to it together, here. The path revisions 1-1.6.1 named (".../synthetic_blockB_prerun") was never
+# written into and is no longer a reference. Every pin below was recomputed from the folder's
+# files (sha256sum on raw bytes) and equals its line of the folder's SHA256SUMS.txt, which lists
+# exactly these five files (B section 10, "Revision 1.7").
+PRERUN_DIR = PRIVATE_ROOT / "synthetic_blockB_prerun_20260927T211052Z_5f9cc51b9a24"
+PRERUN_SHA256 = {                                      # {file name: raw sha256}; D10 (i)
+    "SYNTHETIC.md": "685c5e1fb8ead1d12a3f2f781b314b581671b44f5ce883f33428cf2be47ac7bf",
+    "raw_fits.json.gz": "5d08f6e697c3c06182bbe5e18543fb8838575d0ea8a0b5f0bee0f97b9fb0dbd5",
+    "stdout.log": "aea98de00476b80d65132118ff4b4fcff774953dce4971e270d1950cc33e490f",
+    "synthetic_only.json": "f77fd8445b51eee4067c59b319b72b0ebc9a85a315ed9dd7c79b480fb97a85d9",
+    "synthetic_worlds.csv": "2187ce8983a840417f68aafe4f2678f139d77aecbc5a349cb1aa97a9b8740dcb"}
+PRERUN_WORLDS_CSV_SHA256 = PRERUN_SHA256["synthetic_worlds.csv"]
 # S37 (the male arm's S30): the head and the LF sha256 of the script that WROTE the reference
 # (read from the reference's synthetic_only.json manifest after check_prerun_files passes). The
 # script that reads the reference is intentionally another one (the revision after the pre-run
 # writes PRERUN_* into it), so its own hash differs by design and is not a mismatch.
 # port: male PRERUN_GIT_HEAD, PRERUN_SCRIPT_SHA256_LF (lines 118-127) -> S37
-PRERUN_GIT_HEAD = None
-PRERUN_SCRIPT_SHA256_LF = None
+# B revision 1.7: read from the reference's synthetic_only.json manifest (git_head,
+# script_sha256_lf) and recomputed with `git show 5f9cc51:<this file> | tr -d '\r' | sha256sum`.
+PRERUN_GIT_HEAD = "5f9cc51b9a247514870ea2af518cdb41b0e4cacf"
+PRERUN_SCRIPT_SHA256_LF = "2bb92b433565de50aea4db5e4235a3a964b0fa776a5e957c470af63fb27abe69"
 # S18: the other references, which --out must never touch: A's and the two male references,
 # each guarded by its path and recognised as a byte copy by its pins; block B's own (PRERUN_DIR)
-# is guarded by its path only until its pins exist.
+# was guarded by its path only until its pins existed; from B revision 1.7 it is guarded by both.
 # port: male A_PRERUN_DIR, A_PRERUN_SHA256, PRERUN_DIR, PRERUN_SHA256 (lines 97-137) -> S18
 A_PRERUN_DIR = PRIVATE_ROOT / "synthetic_rev3_prerun"
 A_PRERUN_SHA256 = {

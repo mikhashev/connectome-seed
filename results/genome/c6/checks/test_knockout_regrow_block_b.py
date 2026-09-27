@@ -107,6 +107,12 @@ def flow_setup(tmp, patch, real=None):
     patch(K, "PRIVATE_ROOT", Path(tmp) / "private")
     patch(K, "OUT", Path(tmp) / "committed")
     patch(K, "PRERUN_DIR", Path(tmp) / "no_reference_here")
+    # B revision 1.7: the module now carries block B's registered pins; a flow starts in pre-run
+    # mode on fixtures (no pin, no head, no script), so that no flow reads the real reference, and
+    # make_reference pins its own fixture reference as before.
+    for name in ("PRERUN_SHA256", "PRERUN_WORLDS_CSV_SHA256", "PRERUN_GIT_HEAD",
+                 "PRERUN_SCRIPT_SHA256_LF"):
+        patch(K, name, None)
     t = K.pre_data_tables(real)
     patch(K, "ENDPOINTS_SHA256", t["endpoints_sha256"])
     patch(K, "INFERABLE_EXPECTED", t["inferable"])
@@ -348,10 +354,13 @@ def test_A13_csv_compare_by_key():
     assert "layer (2) is not the cause" in K.repro_fail_treatment(["b"])
 
 
-def test_A14_smallest_passing_auc_check():
-    """Block B's values do not exist yet (B section 3.3): in pre-run mode the check reads its
-    values from the boards' labels (board_smallest_passing_auc); one layout per board (D4 (i));
-    a wrong or a missing value fails."""
+def test_A14_smallest_passing_auc_check(monkeypatch):
+    """In pre-run mode (B section 3.3) the check reads its values from the boards' labels
+    (board_smallest_passing_auc); one layout per board (D4 (i)); a wrong or a missing value fails.
+    B revision 1.7: the pins are registered, so pre-run mode is set here by patching them to
+    None (the placeholder branch of check_prerun_files); the real reference is not read."""
+    monkeypatch.setattr(K, "PRERUN_SHA256", None)
+    monkeypatch.setattr(K, "PRERUN_WORLDS_CSV_SHA256", None)
     assert not K.check_prerun_files()["passed"]               # pre-run mode: no reference
     reg = K.board_smallest_passing_auc()
     entries = [{"world": "world:R:0", "board": "z", "y": K.board_y("z")},
@@ -431,6 +440,12 @@ def test_A17_out_guard_on_four_references(tmp_path, monkeypatch):
     assert K.out_dir_refusal(copy_b) is None                  # B: no pins yet, path only
     (tmp_path / "empty").mkdir()
     assert K.out_dir_refusal(tmp_path / "empty") is None     # B section 3.3 (a)
+    # B revision 1.7: with block B's pins registered, B's folder is recognised by them as the
+    # others are (S18), and its path guard stays.
+    monkeypatch.setattr(K, "PRERUN_SHA256", pin["B"])
+    assert "byte copy of B's pinned reference" in K.out_dir_refusal(copy_b)
+    assert "reference folder or inside it" in K.out_dir_refusal(refs["B"])
+    assert K.out_dir_refusal(tmp_path / "empty") is None
 
 
 # ------------------------------------------------------------------------------------------
@@ -450,7 +465,7 @@ def test_S02_registrations_and_A_pin(monkeypatch):
     """S2: this registration and revision; A's LF sha256 after Amendment 1 is checked in every
     mode (a changed pin stops: "A changed"); the text of A's verdict is recorded."""
     assert K.REGISTRATION == "docs/plans/2026-09-25-knockout-regrow-block-b-registration.md"
-    assert K.REGISTRATION_REVISION == "1.6.1"
+    assert K.REGISTRATION_REVISION == "1.7"
     assert K.A_REGISTRATION_SHA256_LF_AMENDED == (
         "fc41505690365ff6d82fa618b00b482cc992bb36d708ed3b6fbbe6f54f96dbec")
     assert K.A_REGISTRATION_SHA256_LF_FLYVIS65 == (
@@ -654,10 +669,32 @@ def test_S16_smallest_passing_auc_grid():
     assert a is not None and round(a * 400) == a * 400          # on the grid k / 400
 
 
-def test_S17_prerun_placeholders_and_the_real_arm_refuses():
-    assert K.PRERUN_SHA256 is None and K.PRERUN_WORLDS_CSV_SHA256 is None
-    assert K.PRERUN_GIT_HEAD is None and K.PRERUN_SCRIPT_SHA256_LF is None
-    assert str(K.PRERUN_DIR).endswith("synthetic_blockB_prerun")
+def test_S17_prerun_placeholders_and_the_real_arm_refuses(monkeypatch):
+    """B revision 1.7: the pins are registered (their form is checked here; their values against
+    the folder are recomputed in B section 10, "Revision 1.7", not by a test, since no test reads
+    the real reference). With the placeholders put back, the real arm still refuses before any
+    fit or use of the real bank (both patched to raise)."""
+    hexd = re.compile(r"[0-9a-f]{64}")
+    assert set(K.PRERUN_SHA256) == {"SYNTHETIC.md", "raw_fits.json.gz", "stdout.log",
+                                    "synthetic_only.json", "synthetic_worlds.csv"}
+    assert all(hexd.fullmatch(v) for v in K.PRERUN_SHA256.values())
+    assert K.PRERUN_WORLDS_CSV_SHA256 == K.PRERUN_SHA256["synthetic_worlds.csv"]
+    assert re.fullmatch(r"[0-9a-f]{40}", K.PRERUN_GIT_HEAD)
+    assert hexd.fullmatch(K.PRERUN_SCRIPT_SHA256_LF)
+    assert K.PRERUN_DIR.parent == K.PRIVATE_ROOT
+    assert K.PRERUN_DIR.name.startswith("synthetic_blockB_prerun_")
+    assert K.PRERUN_DIR.name.endswith("_" + K.PRERUN_GIT_HEAD[:12])     # a new stamped folder
+    assert K.reference_mode() and K.placeholders_unset() == []
+    assert K.check_registered_constants()["passed"]
+
+    def no_real(*a, **k):
+        raise AssertionError("the real bank was used or a fit was made before the refusal")
+    monkeypatch.setattr(K, "real_bank", no_real)
+    monkeypatch.setattr(K, "_fit_one", no_real)
+    monkeypatch.setattr(K, "degree_terms", no_real)
+    for name in ("PRERUN_SHA256", "PRERUN_WORLDS_CSV_SHA256", "PRERUN_GIT_HEAD",
+                 "PRERUN_SCRIPT_SHA256_LF"):
+        monkeypatch.setattr(K, name, None)
     assert not K.reference_mode()
     assert set(K.placeholders_unset()) == {"PRERUN_SHA256", "PRERUN_WORLDS_CSV_SHA256",
                                           "PRERUN_GIT_HEAD", "PRERUN_SCRIPT_SHA256_LF"}
