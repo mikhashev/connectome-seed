@@ -1,5 +1,5 @@
 # Blind-author exclusion list — GENERATED, do not edit by hand.
-# Produced by tools/contamination_scan.py over 1875 tracked files against a
+# Produced by tools/contamination_scan.py over 1973 tracked files against a
 # values file held outside this repository. Paths only: a path is not a
 # value, so this file is safe for the blind author to read. The values are
 # not recorded here and must not be added.
@@ -7,7 +7,7 @@
 # Regenerate before any blind session begins: this list is only as current
 # as its last run (ADR-003).
 #
-# 96 files carry at least one contaminating literal:
+# 108 files carry at least one contaminating literal:
 ROADMAP.md
 VISION.md
 backlog.md
@@ -17,6 +17,7 @@ docs/decisions/002-file-under-condition.md
 docs/experiments/002-night2-seeds-1-and-2.md
 docs/experiments/004-night4-replicate-3prime-and-seed-5.md
 docs/experiments/005-night5-third-runs-of-seed-0-and-seed-3.md
+docs/notes/2026-09-27-knockout-regrow-power-curves-A-vs-male.md
 docs/plans/2026-09-17-endpoint-before-n.md
 docs/preregistration-reachability-endpoint.md
 results/diagnostics/c3/partA/jitter_9991-703.json
@@ -24,6 +25,17 @@ results/diagnostics/reachability/harness/synthetic_case_i.out
 results/diagnostics/reachability/reachability_reading.json
 results/diagnostics/reachability/reading_stdout.txt
 results/genome/c6/checks/flywire_column_test/summary.json
+results/genome/c6/checks/knockout_regrow/RESULT.md
+results/genome/c6/checks/knockout_regrow/summary.json
+results/genome/c6/checks/knockout_regrow/synthetic_worlds.csv
+results/genome/c6/checks/knockout_regrow_male_cns/RESULT.md
+results/genome/c6/checks/knockout_regrow_male_cns/run1_20260926T192234Z.stdout.log
+results/genome/c6/checks/knockout_regrow_male_cns/summary.json
+results/genome/c6/checks/knockout_regrow_male_cns/synthetic_worlds_L.csv
+results/genome/c6/checks/knockout_regrow_male_cns/synthetic_worlds_R.csv
+results/genome/c6/gpu_instrument/run3.log
+results/genome/c6/gpu_instrument/validation/V6.json
+results/genome/c6/gpu_instrument/validation_vs_cpu_results.json
 results/genome/c6/harness_controls.json
 results/genome/c6/rule_runs/_standin/out/result.json
 results/genome/c6/rule_runs/first_rule/spread.jsonl

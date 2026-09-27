@@ -502,10 +502,10 @@ one that can be trusted to be current.
 | axis | decisions | board entries | awaiting observation |
 |---|---|---|---|
 | **collective** | — | 7 | 0 |
-| **knowledge** | ADR-004 accepted | 13 | 0 |
+| **knowledge** | ADR-004 accepted | 14 | 0 |
 | **network** | — | 0 | 0 |
 | **honesty** | ADR-002 accepted · ADR-003 accepted · ADR-005 accepted | 23 | 0 |
-| **reach** | ADR-001 accepted | 6 | 0 |
+| **reach** | ADR-001 accepted | 5 | 0 |
 
 **Observation debt: 0 under an axis + 0 in entries that carry none = 0.** Work finished and never seen working; per axis it says which direction is running ahead of its evidence.
 

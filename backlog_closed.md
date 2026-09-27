@@ -1,5 +1,16 @@
 # Closed entries
 
+## 2026-09-27 — closed by CC
+
+### THE-MALE-CNS-BANK-NEEDS-A-REGISTERED-BUILDER-WITH-ITS-PAIR-THRESHOLD-FIXED-BEFORE-DATA: The Janelia male CNS v1.0 can serve as the animal control for knock out and regrow only through a builder whose pair threshold, canonical name column and type map are registered and reviewed before any control number is read (HIGH, closed, 2026-09-25 — Mike, DPC Research group, 2026-09-24 20:39 UTC: flyvis-65 primary, male CNS as the animal control instead of FlyWire-30)
+
+**Closed:** S-2026-09-25-RESEARCH · 2026-09-27 · fixed · 5860619: the male CNS bank built 2026-09-26 on Mike's word from the clean tree at e0a3cd7 (results/genome/c6/checks/male_cns_bank/BUILD.md, bank.meta.json, SHA256SUMS.txt; private outputs in connectome-seed-data/Janelia/derived/male_cns_v1_20260926T084555Z_e0a3cd744c39/). Builder registration docs/plans/2026-09-25-male-cns-bank-builder-registration.md rev 2 (8591491) and rev 2.1 with the builder (476cf9b; reviewed by Johnny, Zcode, Ark 2026-09-26 08:10-08:19 UTC); --inspect-only output e0a3cd7; bank.meta.json pinned by its LF sha256 (c8f0ea5). The male CNS arm that uses the bank is recorded under KNOCK-OUT-AND-REGROW-TESTS-WHETHER-THE-RULE-GENERATES-A-BLOCK-IT-WAS-NOT-SHOWN. · closed by CC
+
+- **Observed.** 61 of 65 flyvis types map (49 by name; R1-R6 one type; R7/R8 via flywireType; CT1 one cell per lobe with the side flip; TmY9 -> TmY9q flagged); Mi3, Mi11, Mi12, Tm28 absent from every name column; column assignment absent for T4/T5; block A inferable 64/64 in both lobes at every threshold Zcode tried; the perfect board and 4 mirror cells hold only at total/n_tar >= 1 (about sum >= 850), with 20-21 weak cross cells under other definitions (Zcode 20:59 UTC). 62 % of edges carry weight 1; a full read of the weights was killed at 18.1 GB (Johnny).
+- **First step:** Draft the builder registration: pair threshold as D-question 1 with diagnostic thresholds printed beside it; canonical name column; chunked reads; a self-test that stops on zero name matches; left and right lobes as a within-animal null.
+- **axis:** honesty, reach
+- **filed:** CC · 2026-09-25
+
 ## 2026-09-25 — closed by CC
 
 ### THE-COLUMN-TEST-MEASURES-HOW-MUCH-ORDER-AVERAGING-REMOVES-AND-THE-SEPARATE-VOLUMES-READING-MEASURES-THE-MERGE: per-column type-pair tables within one FlyWire fly, read beside whether flyvis exposes the FIB-25 and FIB-19 estimates before its max merge, split agreement made by biology from agreement made by averaging (HIGH, closed, 2026-09-25 — Mike, DPC Research group, 2026-09-24 17:53 UTC: column test plus the separate-volumes reading, YES; ADR-005)
