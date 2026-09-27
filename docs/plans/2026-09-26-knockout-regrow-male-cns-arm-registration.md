@@ -1851,6 +1851,33 @@ are in the log and `summary.json` but have no column in `RESULT.md`'s table. (6)
   A diagnostic comparison of the two pre-runs' curves (Q2, no run) is made outside this
   registration: `docs/notes/2026-09-27-knockout-regrow-power-curves-A-vs-male.md`.
 
+**After the Q2 note (reviewed: Ark 14:01, Zcode 14:04 UTC, 2026-09-27).**
+
+| field | entry |
+|---|---|
+| item | "the instrument on the male banks is weaker" (§5, the G row's caution; S31's printed line "The instrument on lobe ℓ is weaker than A's"; revision 1.3) |
+| was | a pre-registered statement that the male instrument is measured to be weaker than A's |
+| correct | on the pre-run worlds the male curves are, per lobe, **at most one world of five lower on seen/n and up to two of five lower on R/n** (L at γ 0.85, R at 0.75), on a **different draw** of worlds (A 901xx, male 921xx; unpaired); "weaker" is **not separated from the draw** (per-γ Fisher p >= 0.444; stratified exact 0.355 and 0.669 two-sided; low power at 5 worlds per γ). The G caution stands on its other registered grounds (the male R conjunction's uncalibrated power; each lobe judged by its own limits), not on a measured deficit. `RESULT.md` is left as written; block B's writer carries the corrected text |
+| where it lived | this file §5 (the G row) and S31 at revision 1.3; `RESULT.md` lines 9, 11, 23, 54 at `0286ae1` |
+| what refuted it | `docs/notes/2026-09-27-knockout-regrow-power-curves-A-vs-male.md` §3–§5, from the committed `synthetic_worlds*.csv` |
+| who caught | Ark and Zcode (chat 2026-09-27 13:24–13:28 UTC), measured by the Q2 note |
+
+- **The male G rests on the flags, not on the AUC** (Ark, Zcode): the verdicts are read from
+  `n_ge` and `p_P`; that the real AUCs (0.502, 0.513) lie inside each bank's five-world Nf range
+  (width about 0.034) does not distinguish the block from a no-information world and is not
+  evidence that there is no information.
+- **"G in both lobes" is not two independent confirmations:** the two lobes are one draw seen twice
+  on the worlds (per-world AUC correlation 0.915 within γ) and the real block is the same board in
+  both (k = 0). Written beside the outputs in
+  `results/genome/c6/checks/knockout_regrow_male_cns/READING_NOTES.md`.
+- **Q3 (a weight bank) is deferred for lack of power, not for lack of an effect:** at 5 worlds per
+  γ the draw cannot be told from the instrument. Next: Q1, block B on flyvis-65 (which does not
+  test averaging: it is the same bank). A bank-free unit for the limits, re-expressing the pinned
+  worlds with no fit (Q2 note §7.4), is to be checked for computability first.
+- **Debt (a filter class):** a filter that matches nothing returns 0 and looks like a measurement
+  (`BF:1` in code and docs against `BF_1` in the CSVs; Ark 14:01 UTC); every count states its
+  denominator.
+
 **Debts for the next arms (not made here, since they change the code; chat 2026-09-27 07:06
 UTC):** `sys.stdout`/`sys.stderr.reconfigure(encoding="utf-8", errors="backslashreplace")` at the
 top of every script; a `log()` that cannot stop a run on an output error; the real fits and

@@ -145,7 +145,14 @@ of §2.2 against either lobe:
 
 **Method.** The stratified exact test: the conditional distribution of A's total over the five
 γ, given each γ's margins. This is the exact form of the Cochran–Mantel–Haenszel test, computed
-by convolving the five hypergeometric laws.
+by convolving the five hypergeometric laws. The one-sided p is the upper tail of that conditional
+law at the observed total; the two-sided p is twice the one-sided, capped at 1. It is not Fisher's
+test on the table pooled over γ (that test ignores the strata and gives other numbers, e.g. 0.538
+for rule #2.1 seen, A vs L; Zcode, chat 2026-09-27 14:04 UTC). The scripts that produced every
+number of this note are committed in `results/genome/c6/checks/diagnostics/q2_power_curves/`
+(`q2.py` counts and exact tests, `power.py` power, `nf.py` the Nf ranges, `n20.py` the 20-worlds
+figure); run with `PYTHONUTF8=1` from the repository root (added 2026-09-27 on the reviewers'
+request).
 
 | quantity (over 25 worlds) | A vs L: A, L; p one-sided / two-sided | A vs R: A, R; p one-sided / two-sided |
 |---|---|---|
