@@ -1,5 +1,5 @@
 """Tests of knockout_regrow_block_b.py, block B on flyvis-65 (registration
-docs/plans/2026-09-25-knockout-regrow-block-b-registration.md, revision 1.5, section 7: S1-S40).
+docs/plans/2026-09-25-knockout-regrow-block-b-registration.md, revision 1.6, section 7: S1-S40).
 
 Fixture banks and synthetic worlds only. No test reads block B's cells of the real bank, and no
 test fits on the real bank (D3 (ii)): every flow puts a fixture bank in place of the real one
@@ -117,11 +117,12 @@ SYN_ARGS = ["--synthetic-only", "--starts", "10", "--workers", "1"]
 ARM_ARGS = ["--arm", "flyvis65_blockB", "--starts", "10", "--workers", "1"]
 
 
-def make_reference(tmp, patch):
+def make_reference(tmp, patch, extra=()):
     """A fixture reference: --synthetic-only (pre-run mode) into tmp/ref, then pinned by its own
-    SHA256SUMS.txt, with the head and the script that wrote it (S17, S37)."""
+    SHA256SUMS.txt, with the head and the script that wrote it (S17, S37). extra: further
+    arguments of the run that makes it (revision 1.6: --allow-dirty)."""
     ref = Path(tmp) / "ref"
-    K.main(SYN_ARGS + ["--out", str(ref)])
+    K.main(SYN_ARGS + ["--out", str(ref)] + list(extra))
     sums = dict(reversed(ln.split(" *")) for ln in
                 (ref / "SHA256SUMS.txt").read_text(encoding="utf-8").splitlines())
     man = json.loads((ref / "synthetic_only.json").read_text(encoding="utf-8"))["manifest"]
@@ -443,7 +444,7 @@ def test_S02_registrations_and_A_pin(monkeypatch):
     """S2: this registration and revision; A's LF sha256 after Amendment 1 is checked in every
     mode (a changed pin stops: "A changed"); the text of A's verdict is recorded."""
     assert K.REGISTRATION == "docs/plans/2026-09-25-knockout-regrow-block-b-registration.md"
-    assert K.REGISTRATION_REVISION == "1.5"
+    assert K.REGISTRATION_REVISION == "1.6"
     assert K.A_REGISTRATION_SHA256_LF_AMENDED == (
         "fc41505690365ff6d82fa618b00b482cc992bb36d708ed3b6fbbe6f54f96dbec")
     assert K.A_REGISTRATION_SHA256_LF_FLYVIS65 == (
@@ -1185,6 +1186,81 @@ def test_S40_dirty_tree_refused_unless_allow_dirty(tmp_path, monkeypatch):
     man = json.loads((clean / "synthetic_only.json").read_text(encoding="utf-8"))["manifest"]
     assert man["not_a_reference"] is None
     assert "NOT A REFERENCE" not in (clean / "SYNTHETIC.md").read_text(encoding="utf-8")
+
+
+def test_S17_from_raw_with_out_refused_without_out_a_diagnostic(tmp_path, monkeypatch):
+    """Revision 1.6 (A4; Ark 17:58 and 18:00, Zcode 18:05): on a clean tree --synthetic-only
+    --from-raw with --out is refused before any folder is made (an --out folder can be a
+    reference, a re-read is not one); --from-raw without --out runs to its end as a diagnostic
+    and writes no folder. A version without the refusal writes the --out folder and fails the
+    first assertions."""
+    flow_setup(tmp_path, monkeypatch.setattr)
+    first = tmp_path / "first"
+    K.main(SYN_ARGS + ["--out", str(first)])
+    store = first / "raw_fits.json.gz"
+    assert store.is_file()
+    out = tmp_path / "reread_out"
+    with pytest.raises(SystemExit) as e:
+        K.main(SYN_ARGS + ["--from-raw", str(store), "--out", str(out)])
+    assert str(e.value.code) == K.FROM_RAW_OUT_REFUSED_TEXT
+    assert "REFUSED" in str(e.value.code) and "a re-read is not one" in str(e.value.code)
+    assert not out.exists()
+    before = sorted(p.name for p in tmp_path.iterdir())
+    res = K.main(SYN_ARGS + ["--from-raw", str(store)])
+    assert sorted(p.name for p in tmp_path.iterdir()) == before
+    man = res["manifest"]
+    assert man["run_folder"] is None and man["from_raw"] == str(store)
+    assert man["from_raw_record"]["exists"] and man["prerun_reread_from_saved_fits"]
+    assert res["fits"]["saved_reread"] > 0
+
+
+def test_S17_is_the_pinned_store_is_a_condition(tmp_path, monkeypatch):
+    """Revision 1.6 (A4): is_the_pinned_store is False, not vacuously True, when the pins are
+    absent or the store is absent (before 1.6 the record compared None with None); True only on
+    the pinned raw sha256. It gates the re-read comparison: a re-read of a store other than
+    block B's pinned one is not compared with the pinned table and records no outcome; a re-read
+    of the pinned store is compared (for information; passed stays None for both)."""
+    monkeypatch.setattr(K, "PRERUN_SHA256", None)
+    assert K.is_the_pinned_store(None) is False
+    assert K.is_the_pinned_store("a" * 64) is False
+    flow_setup(tmp_path, monkeypatch.setattr)
+    ref = make_reference(tmp_path, monkeypatch.setattr)
+    pin = K.PRERUN_SHA256["raw_fits.json.gz"]
+    assert K.is_the_pinned_store(None) is False
+    assert K.is_the_pinned_store("b" * 64) is False
+    assert K.is_the_pinned_store(pin) is True
+    got = (ref / "synthetic_worlds.csv").read_bytes()
+    other = K.check_prerun_reproduced(got, True, reread=True, pinned_store=False)
+    assert other["passed"] is None and other["outcome"] is None
+    assert other["pinned_store"] is False and "not block B's pinned" in other["reason"]
+    own = K.check_prerun_reproduced(got, True, reread=True, pinned_store=True)
+    assert own["passed"] is None and own["outcome"] == 1 and own["pinned_store"] is True
+    fresh = K.check_prerun_reproduced(got, True)
+    assert fresh["passed"] is True and fresh["outcome"] == 1
+
+
+def test_S37_reader_refuses_a_not_a_reference_folder(tmp_path, monkeypatch):
+    """Revision 1.6 (A4; Ark 18:00): an --allow-dirty folder (manifest not_a_reference set),
+    pinned by its own sums and with its own head and script registered, verifies its files but
+    is refused by prerun_provenance; the registered run stops with "PRE-RUN PROVENANCE DIFFERS"
+    before any fit. A reader without the refusal passes it and fails the test."""
+    flow_setup(tmp_path, monkeypatch.setattr)
+    monkeypatch.setattr(K, "tree_state", lambda: " M results/genome/c6/checks/x.py")
+    make_reference(tmp_path, monkeypatch.setattr, ["--allow-dirty"])
+    monkeypatch.setattr(K, "tree_state", lambda: "")
+    assert K.check_prerun_files()["passed"]
+    pv = K.prerun_provenance(K.PRERUN_GIT_HEAD, K.PRERUN_SCRIPT_SHA256_LF)
+    assert pv["passed"] is False and pv["not_a_reference"] == K.NOT_A_REFERENCE_TEXT
+    assert "not_a_reference" in pv["reason"]
+
+    def no_fit(*a, **k):
+        raise AssertionError("a fit was made before the provenance check")
+    monkeypatch.setattr(K, "_fit_one", no_fit)
+    monkeypatch.setattr(K, "degree_terms", no_fit)
+    with pytest.raises(SystemExit):
+        K.main(ARM_ARGS)
+    log = next((tmp_path / "private").iterdir()) / "stdout.log"
+    assert K.PROVENANCE_DIFFERS_TEXT in log.read_text(encoding="utf-8")
 
 
 def test_S38_counted_apart_in_RESULT(rehearsal):

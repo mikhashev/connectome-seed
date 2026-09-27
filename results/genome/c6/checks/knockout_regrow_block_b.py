@@ -89,7 +89,7 @@ C6 = HERE.parent
 ROOT = C6.parents[2]                                   # the repository root
 # S2: this file's registration and revision; the manifest records its LF sha256 at run time.
 REGISTRATION = "docs/plans/2026-09-25-knockout-regrow-block-b-registration.md"
-REGISTRATION_REVISION = "1.5"
+REGISTRATION_REVISION = "1.6"
 # S2: A's registration, from which quote_row and quote_section quote section 4 (B section 4 does
 # not restate it). Pinned after A's Amendment 1 and checked at run start in every mode
 # (check_pins); an Amendment 2 of A stops the run on this pin, read as "A changed", not as a
@@ -2048,7 +2048,8 @@ def prerun_provenance(head, script_sha256_lf):
     and script_sha256_lf must equal PRERUN_GIT_HEAD and PRERUN_SCRIPT_SHA256_LF (else passed
     False, and the caller stops with "PRE-RUN PROVENANCE DIFFERS" before any fit). The reading
     script's own hash differs from the writing script's by design (D10 (i)); that difference is
-    not a mismatch. The text names both."""
+    not a mismatch. The text names both. Revision 1.6 (A4; Ark 18:00): a reference whose manifest
+    carries a non-null not_a_reference (an --allow-dirty run, S40) is refused (passed False)."""
     # port: male prerun_provenance (lines 2109-2137) -> S37
     out = {"registered_git_head": PRERUN_GIT_HEAD,
            "registered_script_sha256_lf": PRERUN_SCRIPT_SHA256_LF,
@@ -2059,6 +2060,13 @@ def prerun_provenance(head, script_sha256_lf):
                 "text": None}
     man = json.loads((PRERUN_DIR / "synthetic_only.json")
                      .read_text(encoding="utf-8"))["manifest"]
+    # Revision 1.6 (A4; Ark 18:00): a folder whose manifest carries not_a_reference (an
+    # --allow-dirty run, S40) is never a reference, whatever its pins and its head.
+    if man.get("not_a_reference"):
+        return {**out, "passed": False, "not_a_reference": man["not_a_reference"],
+                "reason": "the reference's manifest carries not_a_reference ("
+                          + str(man["not_a_reference"]) + "); such a folder is never block B's "
+                          "reference (S40, revision 1.6)", "text": None}
     ph, ps = man.get("git_head"), man.get("script_sha256_lf")
     ok = (PRERUN_GIT_HEAD is not None and PRERUN_SCRIPT_SHA256_LF is not None
           and ph == PRERUN_GIT_HEAD and ps == PRERUN_SCRIPT_SHA256_LF)
@@ -2077,13 +2085,27 @@ def prerun_provenance(head, script_sha256_lf):
             "text": text}
 
 
-def check_prerun_reproduced(got, comparable, reread=False):
+def is_the_pinned_store(sha256):
+    """Revision 1.6 (A4; Ark 18:00, Zcode 18:05): True only when a --from-raw store's raw sha256
+    equals block B's pinned raw_fits.json.gz. False, not vacuously True, when the pins are absent
+    (pre-run mode) or the file is absent (sha256 None): before 1.6 the record compared None with
+    None. The raw store's key carries no block name, so this sha256 is the only link between a
+    loaded store and block B."""
+    pinned = (PRERUN_SHA256 or {}).get("raw_fits.json.gz")
+    return sha256 is not None and pinned is not None and sha256 == pinned
+
+
+def check_prerun_reproduced(got, comparable, reread=False, pinned_store=False):
     """Sections 3.3 and 7 (A revisions 3.1, 3.2): the synthetic step must reproduce block B's
     pinned table, PRERUN_DIR/synthetic_worlds.csv, on its deciding columns (csv_compare; outcome
     1 or 2 passes, outcome 3 stops). Every pre-run file is first checked (check_prerun_files).
     Byte identity is recorded, not gated. passed is None when the run is not comparable (smoke,
     or starts != 10), when the table was re-read from saved fits (--from-raw), and in pre-run
-    mode (no registered reference: this run makes it). False stops the two-world check."""
+    mode (no registered reference: this run makes it). False stops the two-world check.
+    Revision 1.6 (A4): a re-read is compared with the pinned table only when its store is block
+    B's own pinned store (pinned_store, from is_the_pinned_store); a re-read of any other store
+    takes its labels from that store unchecked, so it is not compared and no outcome is
+    recorded. passed stays None for every re-read."""
     # port: male check_prerun_reproduced, its pre-run branch (lines 2152-2155) -> S17
     ref_path = PRERUN_DIR / "synthetic_worlds.csv"
     base = {"prerun_path": str(ref_path), "prerun_sha256_pinned": PRERUN_WORLDS_CSV_SHA256,
@@ -2101,6 +2123,14 @@ def check_prerun_reproduced(got, comparable, reread=False):
         return {**base, "passed": None if reread else False,
                 "reason": "pre-run files do not match SHA256SUMS.txt and their pins: "
                           + files["reason"]}
+    if reread and not pinned_store:
+        return {**base, "passed": None, "pinned_store": False,
+                "reason": "re-read (--from-raw) of a store that is not block B's pinned "
+                          "raw_fits.json.gz (is_the_pinned_store False): its labels come from "
+                          "that store unchecked, so it is not compared with the pinned table "
+                          "(revision 1.6, A4)"}
+    if reread:
+        base["pinned_store"] = True
     cmp = csv_compare(ref_path.read_bytes(), got)
     base.update(byte_identical=cmp["byte_identical"], outcome=cmp["outcome"],
                 outcome_3_parts=cmp["outcome_3_parts"], comparison=cmp)
@@ -2115,8 +2145,8 @@ def check_prerun_reproduced(got, comparable, reread=False):
               f"(reported, not gated)")
     if reread:
         return {**base, "passed": None,
-                "reason": "re-read from saved fits (--from-raw), not a reproduction; compared "
-                          "with the pre-run table for information only: " + detail}
+                "reason": "re-read of block B's pinned store (--from-raw), not a reproduction; "
+                          "compared with the pre-run table for information only: " + detail}
     return {**base, "passed": cmp["passed"], "reason": detail}
 
 
@@ -2579,7 +2609,9 @@ def run_synthetic(args, terms, F=None):
         w["verdict_line"] = verdict_line(w, dl, ur)
     secs = {pk: [v["secs"] for (bk, mk, p), v in F.items() if p == pk and mk == "ko"]
             for pk in PRED_KEYS}
-    repro = check_prerun_reproduced(worlds_csv_bytes(worlds), comparable, reread)
+    rec = getattr(args, "from_raw_record", None) or {}
+    pinned_store = bool(rec.get("is_the_pinned_store"))          # revision 1.6 (A4)
+    repro = check_prerun_reproduced(worlds_csv_bytes(worlds), comparable, reread, pinned_store)
     log(f"pre-run table (section 7): {repro['reason']}; recomputed sha256 "
         f"{repro['recomputed_sha256']}")
     raw_diag = None
@@ -2588,8 +2620,7 @@ def run_synthetic(args, terms, F=None):
         fresh = {k for k, v in F.items() if saved.get(k) is not v}
         note = None
         if reread:
-            rec = getattr(args, "from_raw_record", None) or {}
-            if rec.get("sha256") == PRERUN_SHA256["raw_fits.json.gz"]:
+            if pinned_store:
                 note = (f"re-read: compares the pinned store with itself; carries no information "
                         f"(apart from the {len(fresh)} fits this pass made, counted as "
                         f"fitted_this_pass)")
@@ -3315,6 +3346,9 @@ def machine_checks_real(a, terms, checks, y_real):
 NOT_A_REFERENCE_TEXT = ("NOT A REFERENCE: a full --synthetic-only run made with --allow-dirty "
                         "from an uncommitted tree; block B's reference is made from a committed "
                         "head (D10 (i))")
+FROM_RAW_OUT_REFUSED_TEXT = ("REFUSED: block B's reference is made by one fresh fitting run "
+                             "(S17, D10 (i)); an --out folder can be a reference, and a re-read "
+                             "is not one. Run --from-raw without --out.")
 
 
 def main(argv=None):
@@ -3331,7 +3365,8 @@ def main(argv=None):
                          "an uncommitted tree, marked NOT A REFERENCE")
     ap.add_argument("--from-raw", default=None,
                     help="with --synthetic-only: re-read an earlier run's raw_fits.json.gz and "
-                         "fit only what it lacks (new worlds, fixed-lambda fits)")
+                         "fit only what it lacks (new worlds, fixed-lambda fits); a diagnostic, "
+                         "refused with --out (revision 1.6, A4)")
     ap.add_argument("--smoke-worlds", type=int, default=None, help="worlds per family (smoke)")
     ap.add_argument("--smoke-shuffles", type=int, default=None, help="shuffles per bank (smoke)")
     ap.add_argument("--smoke-perm-ceilings", type=int, default=None)
@@ -3373,6 +3408,14 @@ def main(argv=None):
         # A tightening relative to A (A's --synthetic-only recorded the tree state; B refuses):
         # block B's reference (D10 (i)) cannot be made from an uncommitted tree without the
         # NOT A REFERENCE mark (log, manifest, SYNTHETIC.md).
+        # Revision 1.6 (A4; Ark 17:58 and 18:00, Zcode 18:05, Johnny 17:54): block B's
+        # reference is made by one fresh fitting run (S17, D10 (i)). The raw store's key
+        # ("||".join(k), write_raw/read_raw) carries no block name and a loaded store is not
+        # checked against block B, so a re-read cannot make a folder that could be pinned:
+        # --from-raw with --out is refused before any folder is made; without --out it is a
+        # diagnostic (the male section 3.3.1 (h) precedent).
+        if a.from_raw and a.out:
+            sys.exit(FROM_RAW_OUT_REFUSED_TEXT)
         dirty = tree_state()
         comparable = not smoke and a.starts == 10
         if dirty and comparable and not a.allow_dirty:
@@ -3380,7 +3423,7 @@ def main(argv=None):
                      "come from a committed head (D10 (i)); commit first, or pass --allow-dirty to "
                      "run it as NOT A REFERENCE.\n" + dirty)
         not_a_reference = NOT_A_REFERENCE_TEXT if (dirty and comparable) else None
-        earlier = None
+        earlier = None                                 # S27 runs in the real arm only
         folder = Path(a.out) if a.out else None
         if folder is not None:
             folder.mkdir(parents=True, exist_ok=True)
@@ -3401,7 +3444,9 @@ def main(argv=None):
         if a.arm:
             # S29, read literally (revision 1.5, OPEN 3): the committed folder OUT gets its sums
             # too, a delta from A (A's committed folder had none); .gitignore does not cover
-            # the file, and it is committed with the registered run's artifacts.
+            # the file, and it is committed with the registered run's artifacts. Revision 1.6
+            # (Ark, Zcode; item 44): these sums cover the committed folder's files and are not a
+            # reference pin; they are never compared with PRERUN_SHA256.
             write_sha256sums(OUT)
     return result
 
@@ -3469,8 +3514,8 @@ def _run(a, t0, smoke, head, dirty, folder, earlier, not_a_reference):
         a.from_raw_record = {"path": str(fr), "exists": fr.is_file(),
                              "sha256": (hashlib.sha256(fr.read_bytes()).hexdigest()
                                         if fr.is_file() else None)}
-        a.from_raw_record["is_the_pinned_store"] = (
-            a.from_raw_record["sha256"] == (PRERUN_SHA256 or {}).get("raw_fits.json.gz"))
+        a.from_raw_record["is_the_pinned_store"] = is_the_pinned_store(
+            a.from_raw_record["sha256"])
     private = folder if a.arm else None
     manifest = {"registration": REGISTRATION, "revision": REGISTRATION_REVISION,
                 "registration_sha256_lf": sha256_lf(ROOT / REGISTRATION),
