@@ -1711,6 +1711,57 @@ reads them as met):
 **The seal record:** intact at revision 1, at revision 1.1, at revision 1.2 and at revision 1.3 (header). A break
 before review is recorded here, and S26 carries it to the verdict lines.
 
+**The seal record, 2026-09-26 23:25:55 UTC: broken after review, without a verdict (§7.4 (4)).**
+The first registered run (head `01d2d05`, private folder
+`malecns_20260926T192235Z_01d2d051995b`, log `malecns_registered_20260926T192234Z.stdout.log`)
+passed every gate before unsealing (both lobes' synthetic steps and reproduction gates; checks 1,
+2, 4, 6, 7, 8, 9, 10), unsealed both lobes (check 11 passed in both), fitted both real arms (633
+fits per lobe), printed check 3 for both lobes and lobe L's table and verdict line, and then
+stopped on printing A §4's quoted row: `UnicodeEncodeError: 'charmap' codec can't encode character
+'γ'` (stdout redirected to a file; Python on Windows used cp1252; every file the script
+writes is opened with UTF-8). No `RESULT.md` or `summary.json` was written; lobe R's table and
+verdict line were never printed; the real fits were held in memory and are lost (the folder holds
+`stdout.log`, `synthetic_L/`, `synthetic_R/` only; Zcode, chat 2026-09-27 05:43 UTC).
+
+| field | entry |
+|---|---|
+| item | the registered command of §7.5 for `--arm malecns` |
+| was | the command without an encoding for stdout; the script's `_Tee` writes to `sys.stdout` first |
+| correct | the command runs with `PYTHONUTF8=1` in its environment (a setting of the process, not of the code: no float depends on it) |
+| where it lived | §7.5, the `--arm malecns` line; `knockout_regrow_male_cns.py` `_Tee.write` and `log` at `01d2d05` |
+| what refuted it | the first registered run's log, its last 20 lines (the traceback) |
+| who caught | the run itself; CC read it at 23:31 UTC |
+
+**What was seen before the second run (recorded so no one reads it as unseen).** Check 3 in both
+lobes: present 32/64, quadrants ON×T4 16, OFF×T5 16, ON×T5 0, OFF×T4 0, every row and column 4,
+"y = x·w (flyvis's board): True" — the male block is flyvis's board, the same in both lobes (k =
+0). Lobe L's verdict line: G (rule #2.1 AUC 0.5020, `p_P` 0.4905, `n_ge` 62 of 99; BF_1 AUC 0.5332,
+`p_P` 0.3256). Seen by CC and relayed to the chat (2026-09-26 23:34 UTC). Lobe R: not seen by
+anyone.
+
+**A contradiction in §7.4 (4), named (Ark, Zcode, chat 2026-09-26 23:35 and 2026-09-27 05:43
+UTC).** §7.4 (4) asks for a second run "from the same head" whose verdict "carries the note of
+S26"; S26's note is set by the constant `SEAL_RECORD` in the script, so setting it needs a new
+head, and its text ("read before its registration was reviewed") describes another case. The rule
+cannot be kept as written. **Resolved (option (a), Ark and Zcode; Mike's word, chat 2026-09-27
+07:14 UTC):** the second run is made from `01d2d05` with `PYTHONUTF8=1`; the code is not changed
+after the data were seen; the note of the broken seal is carried by this ledger entry, by the file
+`results/genome/c6/checks/knockout_regrow_male_cns/SEAL_BROKEN_NOTE.md` beside the outputs, and by
+the result's commit message, not by the verdict line. The first run's log is committed beside the
+outputs as `results/genome/c6/checks/knockout_regrow_male_cns/run1_20260926T192234Z.stdout.log`.
+
+**The second run's checks against the first (registered here, before it runs).** (1) Each lobe's
+synthetic store of run 2 against run 1's saved `synthetic_L/`, `synthetic_R/`, fit by fit; (2) lobe
+L's table and verdict line of run 2 against run 1's printed ones; (3) lobe R has no base in run 1:
+its numbers in run 2 are a first measurement, not a reproduction.
+
+**Debts for the next arms (not made here, since they change the code; chat 2026-09-27 07:06
+UTC):** `sys.stdout`/`sys.stderr.reconfigure(encoding="utf-8", errors="backslashreplace")` at the
+top of every script; a `log()` that cannot stop a run on an output error; the real fits and
+verdict lines written to disk as they are computed, before any print; a test that runs the real
+arm end to end on a fixture with stdout forced to strict ASCII; a seal-record mechanism that does
+not need a new head (a run-time flag recorded in the manifest).
+
 ## 12. Changelog
 
 **Revision 1 (2026-09-26 UTC): first draft, CC subagent.** Built on A revision 3.4.1, the builder
