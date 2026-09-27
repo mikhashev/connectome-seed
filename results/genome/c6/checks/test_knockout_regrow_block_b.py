@@ -16,6 +16,7 @@ Run: PYTHONUTF8=1 tools/.venv/Scripts/python.exe -m pytest -p no:cacheprovider -
 results/genome/c6/checks/test_knockout_regrow_block_b.py
 """
 import csv
+import gzip
 import hashlib
 import io
 import json
@@ -389,6 +390,11 @@ def test_A16_ko1_count_control():
     other = {"ko1_records": 3, "copied_from_ko": 2, "fitted": 1}
     assert K.check_ko1_count(other, reg, comparable=True, reread=False)["passed"] is False
     assert K.check_ko1_count(other, reg, comparable=True, reread=True)["passed"] is None
+    # revision 1.6.1 (Ark 18:32): a re-read is compared only for block B's pinned store
+    rr = K.check_ko1_count(other, reg, comparable=True, reread=True, pinned_store=False)
+    assert rr["passed"] is None and rr["equal"] is None and "not compared" in rr["status"]
+    rp = K.check_ko1_count(other, reg, comparable=True, reread=True, pinned_store=True)
+    assert rp["passed"] is None and rp["equal"] is False
     pre = K.check_ko1_count(other, None, comparable=True, reread=False, prerun=True)
     assert pre["passed"] is None and "pre-run mode" in pre["status"]
 
@@ -444,7 +450,7 @@ def test_S02_registrations_and_A_pin(monkeypatch):
     """S2: this registration and revision; A's LF sha256 after Amendment 1 is checked in every
     mode (a changed pin stops: "A changed"); the text of A's verdict is recorded."""
     assert K.REGISTRATION == "docs/plans/2026-09-25-knockout-regrow-block-b-registration.md"
-    assert K.REGISTRATION_REVISION == "1.6"
+    assert K.REGISTRATION_REVISION == "1.6.1"
     assert K.A_REGISTRATION_SHA256_LF_AMENDED == (
         "fc41505690365ff6d82fa618b00b482cc992bb36d708ed3b6fbbe6f54f96dbec")
     assert K.A_REGISTRATION_SHA256_LF_FLYVIS65 == (
@@ -1261,6 +1267,55 @@ def test_S37_reader_refuses_a_not_a_reference_folder(tmp_path, monkeypatch):
         K.main(ARM_ARGS)
     log = next((tmp_path / "private").iterdir()) / "stdout.log"
     assert K.PROVENANCE_DIFFERS_TEXT in log.read_text(encoding="utf-8")
+
+
+def test_S40_non_registered_form_is_not_a_reference(tmp_path, monkeypatch):
+    """Revision 1.6.1 (Ark 18:32): being a reference needs the registered form and a clean
+    committed tree. On a clean tree a --synthetic-only --out run with a smoke option is marked
+    NOT A REFERENCE with its actual cause (manifest, SYNTHETIC.md), and the S37 reader refuses it
+    although its files verify. With the old token ("dirty and comparable") the mark is None and
+    the test fails. --starts 3 and a dirty smoke run carry the mark too."""
+    flow_setup(tmp_path, monkeypatch.setattr)
+    ref = make_reference(tmp_path, monkeypatch.setattr, ["--smoke-shuffles", "1"])
+    man = json.loads((ref / "synthetic_only.json").read_text(encoding="utf-8"))["manifest"]
+    assert man["smoke"] and not man["tree_dirty_under_c6_or_plans"]
+    assert man["not_a_reference"] == K.NOT_A_REFERENCE_FORM_TEXT
+    assert K.NOT_A_REFERENCE_FORM_TEXT in (ref / "SYNTHETIC.md").read_text(encoding="utf-8")
+    assert "--allow-dirty" not in man["not_a_reference"]
+    assert K.check_prerun_files()["passed"]
+    pv = K.prerun_provenance(K.PRERUN_GIT_HEAD, K.PRERUN_SCRIPT_SHA256_LF)
+    assert pv["passed"] is False and pv["not_a_reference"] == K.NOT_A_REFERENCE_FORM_TEXT
+    monkeypatch.setattr(K, "PRERUN_SHA256", None)
+    monkeypatch.setattr(K, "PRERUN_WORLDS_CSV_SHA256", None)
+    k3 = K.main(SYN_ARGS + ["--starts", "3"])["manifest"]
+    assert k3["starts"] == 3 and k3["not_a_reference"] == K.NOT_A_REFERENCE_FORM_TEXT
+    monkeypatch.setattr(K, "tree_state", lambda: " M results/genome/c6/checks/x.py")
+    ds = K.main(SYN_ARGS + ["--smoke-shuffles", "1"])["manifest"]
+    assert ds["not_a_reference"].startswith(K.NOT_A_REFERENCE_FORM_TEXT)
+    assert "uncommitted tree" in ds["not_a_reference"]
+    assert K.not_a_reference_text("", True) is None
+
+
+def test_S17_ko1_count_reread_compared_only_for_the_pinned_store(tmp_path, monkeypatch):
+    """Revision 1.6.1 (Ark 18:32): run_synthetic passes pinned_store to check_ko1_count, as to
+    its twin check_prerun_reproduced. A --from-raw re-read of block B's pinned store compares the
+    ko1 count with the registered value (equal True, passed None); a re-read of another store
+    (the same fits, other bytes) is not compared (equal None, passed None). Without the argument
+    the pinned store's count is not compared and the test fails."""
+    flow_setup(tmp_path, monkeypatch.setattr)
+    ref = make_reference(tmp_path, monkeypatch.setattr)
+    own = K.main(SYN_ARGS + ["--from-raw", str(ref / "raw_fits.json.gz")])
+    assert own["manifest"]["from_raw_record"]["is_the_pinned_store"] is True
+    k_own = own["fits"]["ko1_count"]
+    assert k_own["passed"] is None and k_own["equal"] is True
+    other = tmp_path / "other_raw_fits.json.gz"
+    other.write_bytes(gzip.compress(gzip.decompress((ref / "raw_fits.json.gz").read_bytes()),
+                                    mtime=0))
+    res = K.main(SYN_ARGS + ["--from-raw", str(other)])
+    assert res["manifest"]["from_raw_record"]["is_the_pinned_store"] is False
+    k_other = res["fits"]["ko1_count"]
+    assert k_other["passed"] is None and k_other["equal"] is None
+    assert "not compared" in k_other["status"]
 
 
 def test_S38_counted_apart_in_RESULT(rehearsal):

@@ -89,7 +89,7 @@ C6 = HERE.parent
 ROOT = C6.parents[2]                                   # the repository root
 # S2: this file's registration and revision; the manifest records its LF sha256 at run time.
 REGISTRATION = "docs/plans/2026-09-25-knockout-regrow-block-b-registration.md"
-REGISTRATION_REVISION = "1.6"
+REGISTRATION_REVISION = "1.6.1"
 # S2: A's registration, from which quote_row and quote_section quote section 4 (B section 4 does
 # not restate it). Pinned after A's Amendment 1 and checked at run start in every mode
 # (check_pins); an Amendment 2 of A stops the run on this pin, read as "A changed", not as a
@@ -2449,19 +2449,29 @@ KO1_COUNT_CONTROL = (
     "re-reads, so the check is informative; a smoke run or starts != 10 is not compared")
 
 
-def check_ko1_count(got, registered, comparable, reread, prerun=False):
+def check_ko1_count(got, registered, comparable, reread, prerun=False, pinned_store=False):
     """A revision 3.4.1 (item A): the ko1 count of this run (ko1_count over the world banks)
     against the registered one (registered_ko1_count on block B's pinned store). passed is True
     or False for a fresh comparable run (False stops the synthetic step), and None (informative)
     under --from-raw, when the run is not comparable, and in pre-run mode (S17: no registered
-    store yet; this run's count is registered from the store it writes, B section 3.3)."""
+    store yet; this run's count is registered from the store it writes, B section 3.3).
+    Revision 1.6.1 (Ark 18:32; the rule of its twin check_prerun_reproduced): under --from-raw
+    the count is compared with the registered value only when the re-read store is block B's own
+    pinned store (pinned_store, from is_the_pinned_store); a re-read of any other store is not
+    compared and records no equality (equal None). passed stays None for every re-read, so no
+    gate changes."""
     # port: male check_ko1_count, its prerun branch (lines 2472-2490) -> S17
-    equal = None if registered is None else got == registered
+    compare = registered is not None and not (reread and not pinned_store)
+    equal = got == registered if compare else None
     if prerun:
         passed, status = None, ("pre-run mode: no registered store; this run's count is "
                                 "registered from the store it writes (B section 3.3, D10 (i))")
     elif not comparable:
         passed, status = None, "not compared (smoke or starts != 10)"
+    elif reread and not pinned_store:
+        passed, status = None, ("informative, not compared: under --from-raw of a store that is "
+                                "not block B's pinned raw_fits.json.gz (is_the_pinned_store "
+                                "False) the count is that store's, unchecked (revision 1.6.1)")
     elif reread:
         passed, status = None, ("informative: under --from-raw the count is read from the store "
                                 "this pass re-reads, not produced by this pass")
@@ -2578,8 +2588,11 @@ def run_synthetic(args, terms, F=None):
     n_path = len(path_check.get("identical") or {}) if path_check.get("bank") else 0
     ref_store = (read_raw(PRERUN_DIR / "raw_fits.json.gz") if comparable and ref_mode
                  else None)
+    rec = getattr(args, "from_raw_record", None) or {}
+    pinned_store = bool(rec.get("is_the_pinned_store"))          # revision 1.6 (A4)
     ko1_check = check_ko1_count(got, registered_ko1_count(ref_store) if ref_store else None,
-                                comparable, reread, prerun=not ref_mode)
+                                comparable, reread, prerun=not ref_mode,
+                                pinned_store=pinned_store)       # revision 1.6.1 (Ark 18:32)
     ko1_check.update(fitted_by_path_check=n_path, path_check_bank=path_check.get("bank"),
                      this_pass={"copied": fl["reused"], "fitted": fl["fitted"] + n_path})
     log(f"ko1 records (A revision 3.4.1; {ko1_check['status']}): {got['ko1_records']}; copied "
@@ -2609,8 +2622,6 @@ def run_synthetic(args, terms, F=None):
         w["verdict_line"] = verdict_line(w, dl, ur)
     secs = {pk: [v["secs"] for (bk, mk, p), v in F.items() if p == pk and mk == "ko"]
             for pk in PRED_KEYS}
-    rec = getattr(args, "from_raw_record", None) or {}
-    pinned_store = bool(rec.get("is_the_pinned_store"))          # revision 1.6 (A4)
     repro = check_prerun_reproduced(worlds_csv_bytes(worlds), comparable, reread, pinned_store)
     log(f"pre-run table (section 7): {repro['reason']}; recomputed sha256 "
         f"{repro['recomputed_sha256']}")
@@ -3168,7 +3179,7 @@ def write_synthetic_outputs(out, syn, F, manifest):
     md = [f"# Knock out and regrow, block B: synthetic step ({manifest['mode']})", "",
           f"Registration `{REGISTRATION}`, revision {REGISTRATION_REVISION}. "
           f"{'SMOKE RUN, NOT THE REGISTERED RUN. ' if manifest['smoke'] else ''}"
-          f"{NOT_A_REFERENCE_TEXT + '. ' if manifest.get('not_a_reference') else ''}"
+          f"{manifest['not_a_reference'] + '. ' if manifest.get('not_a_reference') else ''}"
           f"git_head={manifest['git_head']}, runtime={manifest.get('runtime_s', 0):.0f}s.", ""]
     md += md_synthetic(syn)
     write_text_synced(out / "SYNTHETIC.md", "\n".join(md) + "\n")
@@ -3346,6 +3357,24 @@ def machine_checks_real(a, terms, checks, y_real):
 NOT_A_REFERENCE_TEXT = ("NOT A REFERENCE: a full --synthetic-only run made with --allow-dirty "
                         "from an uncommitted tree; block B's reference is made from a committed "
                         "head (D10 (i))")
+# Revision 1.6.1 (Ark 18:32): a --synthetic-only run not in the registered form (a smoke option
+# or --starts != 10) is marked too, with its own reason; the mark names the actual cause.
+NOT_A_REFERENCE_FORM_TEXT = ("NOT A REFERENCE: a --synthetic-only run not in the registered form "
+                             "(a smoke option or --starts != 10); block B's reference is a full "
+                             "run with --starts 10 from a committed head (S17, D10 (i))")
+
+
+def not_a_reference_text(dirty, comparable):
+    """Revision 1.6.1 (Ark 18:32), S40: the NOT A REFERENCE mark with its actual cause, or None.
+    Being a reference needs both the registered form (comparable: no smoke option, --starts 10)
+    and a clean committed tree. A comparable dirty run (--allow-dirty) carries
+    NOT_A_REFERENCE_TEXT, as in revision 1.5; a non-registered form carries
+    NOT_A_REFERENCE_FORM_TEXT, naming the uncommitted tree as well when there is one."""
+    if comparable and not dirty:
+        return None
+    if comparable:
+        return NOT_A_REFERENCE_TEXT
+    return NOT_A_REFERENCE_FORM_TEXT + ("; also from an uncommitted tree" if dirty else "")
 FROM_RAW_OUT_REFUSED_TEXT = ("REFUSED: block B's reference is made by one fresh fitting run "
                              "(S17, D10 (i)); an --out folder can be a reference, and a re-read "
                              "is not one. Run --from-raw without --out.")
@@ -3422,7 +3451,11 @@ def main(argv=None):
             sys.exit("REFUSED: a full --synthetic-only run makes block B's reference, which must "
                      "come from a committed head (D10 (i)); commit first, or pass --allow-dirty to "
                      "run it as NOT A REFERENCE.\n" + dirty)
-        not_a_reference = NOT_A_REFERENCE_TEXT if (dirty and comparable) else None
+        # Revision 1.6.1 (Ark 18:32): "or not comparable" (was "and comparable"): a reference
+        # needs the registered form and a clean committed tree; for a comparable run this equals
+        # "dirty", so the pre-run is unchanged.
+        not_a_reference = (not_a_reference_text(dirty, comparable) if (dirty or not comparable)
+                           else None)
         earlier = None                                 # S27 runs in the real arm only
         folder = Path(a.out) if a.out else None
         if folder is not None:
