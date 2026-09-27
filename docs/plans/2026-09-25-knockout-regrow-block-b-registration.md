@@ -1,6 +1,8 @@
 ---
-**Status: revision 1.4: DRAFT, the reviewers' pass on revision 1.3 applied; not re-reviewed, not
-committed.** Revision 1.3 was reviewed in the DPC Research chat on 2026-09-27 (Ark 15:36 UTC, "yes,
+**Status: revision 1.4.1: revision 1.4 reviewed, all three reviewers "yes" (Ark, Johnny, Zcode,
+16:01–16:05 UTC), with the one factual correction in §6 that the vote required (§10, "Revision
+1.4.1"). Revision 1.4 was: DRAFT, the reviewers' pass on revision 1.3 applied; committed in
+`68c0171`.** Revision 1.3 was reviewed in the DPC Research chat on 2026-09-27 (Ark 15:36 UTC, "yes,
 with edits", and 15:39 on Johnny's M6 fix; Johnny 15:41, "yes, with one factual fix"; Zcode 15:46,
 "yes, with edits"). Revision 1.4 was drafted 2026-09-27 UTC by a CC subagent on the same word of
 Mike's (14:31 UTC, "continue what we were doing"); every change is text only, and each, with its
@@ -761,19 +763,20 @@ A §6 applies, and in addition:
 - **Few present cells (revision 1.3; Johnny edit 1, Ark, Zcode).** The leg-P bar moves with the
   count: the fewer present (or absent) cells the block holds, the higher the AUC a pass needs, and
   at the extreme no AUC passes (§3.2, the "not readable" U, S38). **A reviewer's unregistered
-  probe, deciding nothing:** Ark's sandbox run of `smallest_passing_auc` with block B's leg-P
+  probe, deciding nothing:** Ark's `b_spa_probe.py` (Ark's review sandbox, outside this repository), a run of `smallest_passing_auc` with block B's leg-P
   parameters (N = 40, seed 91000, `N_PERM` = 9,999; no bank involved), relayed by CC, gave None
   at `n_p` = 1, 0.9605 at 2, 0.9009 at 3, 0.8542 at 4, 0.7990 at 6, 0.7467 at 10 and 0.7150 at 20,
   and a floor of `p_P` = 0.0245 at `n_p` = 1. By that probe the one hole below the middle is
   `n_p` = 1. **Revision 1.3 wrote, as arithmetic, not probed:** "the uniform permutation null of
   the AUC depends on `n_p` and `n_a` symmetrically (with one absent cell there are again only 40
   arrangements), so `n_p` = 39 is the same hole." **Revision 1.4 (Ark, Zcode): now probed, by a
-  reviewer's unregistered probe deciding nothing.** Ark's `b_spa_probe2.py` (sandbox, on the
-  pinned numpy 2.2.6; N = 40, seed 91000; no bank involved), relayed by CC: `n_p` = 1 → None
+  reviewer's unregistered probe deciding nothing.** Ark's `b_spa_probe2.py` (Ark's review sandbox, outside this
+  repository; on the pinned numpy 2.2.6; N = 40, seed 91000; no bank involved), relayed by CC: `n_p` = 1 → None
   (floor of `p_P` 0.0245); `n_p` = 39 → None (floor 0.0237); `n_p` = 2 and `n_p` = 38 →
   0.9605263157894737 both (denominator 76). The symmetry is exact in the verdict and near in the
-  floor. Ark's earlier probe table (the values above) was also reproduced on numpy 2.2.6, not only
-  on 2.4.6. Neither hole is a registered threshold: the rule reads the object
+  floor. **Revision 1.4.1 (Ark 16:01/16:03, Zcode 16:05):** the earlier probe table (the values above)
+  was reproduced by the second script on the same interpreter and the same numpy
+  (`connectome-seed/tools/.venv`, 2.2.6); no other numpy version was used in this review. Neither hole is a registered threshold: the rule reads the object
   (`smallest_passing_auc is None`), whatever the count.
 - **The bar against the count and the layout (revision 1.4; Ark M9, Zcode; the same probe status:
   unregistered, deciding nothing, relayed by CC).** The bar rises as present cells fall **in
@@ -1170,6 +1173,20 @@ key does not contain it).
 **A record of CC's chat message (Zcode).** CC's chat message of 15:32 UTC said "three line ranges
 were wrong in 1.2"; this file records two (§7, the plan of the port, and item 6 of "Revision 1.3":
 70–80 → 74–80; 2936–2975 → 2936–2974). The file is the carrier; the chat message's count is not.
+
+### Revision 1.4.1: one factual correction in §6 (2026-09-27)
+
+Revision 1.4 (commit `68c0171`) was reviewed in the DPC Research chat: Ark 16:01 UTC and 16:03 UTC
+("yes" on all nine items, with one correction), Johnny 16:02 UTC ("yes, no edits"; his check covered
+§6's probe values, not the version sentence), Zcode 16:05 UTC ("yes", the correction required).
+Applied by CC; text only; nothing run, the bank not read.
+
+| item | was | correct | where the wrong text lived | refuted by | caught by |
+|---|---|---|---|---|---|
+| §6, the probes' numpy | "was also reproduced on numpy 2.2.6, not only on 2.4.6" | both tables were made on one interpreter, `connectome-seed/tools/.venv`, numpy 2.2.6; no other version was used | §6 (revision 1.4); its source was Ark's chat message of 15:36 UTC ("not 2.4.6, as in #13"), relayed by CC | `tools/.venv/Scripts/python.exe -c "import numpy; print(numpy.__version__)"` → 2.2.6, and Ark's tool log of the session | Ark (16:01) |
+| §6, the probes' carriers | the first table was "Ark's sandbox run", with no script named; the second said "sandbox" without whose | `b_spa_probe.py` and `b_spa_probe2.py`, in Ark's review sandbox, outside this repository (Zcode checked both exist) | §6 | — | Ark (16:01, 16:03), Zcode (16:05) |
+
+Revision 1.4.1 carries the review of 1.4 and this correction only; the header's status says so.
 
 ## 11. Not verified at drafting
 
