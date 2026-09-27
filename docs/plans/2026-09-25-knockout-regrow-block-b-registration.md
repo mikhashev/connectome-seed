@@ -1,7 +1,15 @@
 ---
-**Status: revision 1.2: DRAFT, A's pins after Amendment 1, S1–S22 re-checked against the male
-CNS arm's script, the male arm's script debts registered as S23–S35; not reviewed, not
-committed.** Revision 1.2 was drafted 2026-09-27 UTC by a CC subagent, after Mike's word in the
+**Status: revision 1.3: DRAFT, the reviewers' pass on revision 1.2 applied; not re-reviewed, not
+committed.** Revision 1.2 was reviewed in the DPC Research chat on 2026-09-27 (Ark 14:48 UTC, with
+a follow-up at 14:59; Johnny 14:56; Zcode 15:11; all "yes, with edits"). Revision 1.3 was drafted
+2026-09-27 UTC by a CC subagent on the same word of Mike's (14:31 UTC, "continue what we were
+doing"); its changes, each with its reviewer, are in §10 ("Revision 1.3"). Nothing was fitted,
+run or read from block B's cells for revision 1.3; the one computation (the endpoint table's hash,
+§1.4) read presence outside block B only.
+
+**Revision 1.2's status, as it stood (committed in `9b86839`):** "revision 1.2: DRAFT, A's pins
+after Amendment 1, S1–S22 re-checked against the male CNS arm's script, the male arm's script
+debts registered as S23–S35; not reviewed, not committed." Revision 1.2 was drafted 2026-09-27 UTC by a CC subagent, after Mike's word in the
 DPC Research chat (2026-09-27 14:31 UTC, "continue what we were doing", as relayed by CC: start
 Q1, block B on flyvis-65, with a registration revision first); its changes and their sources
 are in §10 ("Revision 1.2"). Nothing was fitted, run or read from the bank for revision 1.2.
@@ -127,7 +135,10 @@ Unchanged: the eight pins of A §1.1 (`offsets.csv`, `types.csv`, `folds.csv`, `
 `offsets.csv`, `types.csv` and `harness.py` at the pinned hashes (`8c45e850…`, `237a195a…`,
 `6fc80952…`; LF sha256, 2026-09-25 UTC). The block-B script records this file's own LF sha256 in its
 manifest, as A's does (§7). **Revision 1.2:** it also checks A's registration against its LF
-sha256 after Amendment 1, `fc415056…` (header; S2).
+sha256 after Amendment 1, `fc415056…` (header; S2). **Revision 1.3 (Ark, Zcode; open point 7 of
+1.2):** these eight pins are **not extended** to a male bank. A male arm on block B, if one is
+ever run, is registered in a file of its own (§8); revision 1.1's rule that this file would be
+amended to pin the built male bank is withdrawn by the reviewers' vote on revision 1.2.
 
 ### 1.2 Block B: the choice rule, written before any table was computed
 
@@ -265,6 +276,36 @@ the block, and the training present total (§1.3).
   ("PRE-DATA TABLES DIFFER"). A consistency check of the scratch script against A's published
   table, on block A's cells only: each of the eight targets' training-target counts equals A
   §1.4's count plus 4, block A's four present cells per source back in training.
+- **The canonical form, exactly (revision 1.3; Ark M1, settled with Zcode).** Recovered from the
+  scratch script that computed the hash, `blockb_hash.py` (written 2026-09-25 20:14:26 UTC by the
+  revision-1 drafting agent; the file is still in that agent's session scratchpad, raw sha256
+  `263426b26e45691a627482473cbb893bd7d1530f32d5c421cec220a72abdb633`, and its source is in that
+  agent's transcript, `tasks/a49d69f4558f37fce.output`, line 139; neither is in the repository).
+  With `SOURCES = ("L1", "L2", "L3", "L4", "L5")`, `TARGETS = ("Mi1", "Tm3", "Mi4", "Mi9", "Tm1",
+  "Tm2", "Tm4", "Tm9")`, `BLOCK` the 65 × 65 boolean mask of the 40 cells by `harness.IDX`, and
+  `ex = harness.REAL.exists & ~BLOCK`:
+  - **keys:** the 13 type names as Python `str` (`"L1"` … `"L5"`, then the eight targets); no
+    other key. The outer dict has the one key `"endpoints"`.
+  - **values:** a `list` of two Python `int` (not numpy integers, not names): for a source `s`,
+    `[int(ex[IDX[s], :].sum()), int(ex[:, IDX[s]].sum())]` (training targets, training sources);
+    for a target `t`, `[int(ex[:, IDX[t]].sum()), int(ex[IDX[t], :].sum())]` (training sources,
+    training targets). Self-loops are counted (the sums include the diagonal).
+  - **serialisation:** `json.dumps({"endpoints": keep}, sort_keys=True, separators=(",", ":"))`
+    with the defaults otherwise (`ensure_ascii=True`; the text is ASCII); `sort_keys` sorts every
+    dict level, here the outer dict and `keep`, so the order is `L1, L2, L3, L4, L5, Mi1, Mi4,
+    Mi9, Tm1, Tm2, Tm3, Tm4, Tm9`; the lists keep their order. The hash is
+    `sha256(canon.encode("utf-8"))`, no trailing newline.
+  - **one element, in form only:** `"L1":[<int>,<int>]` (the values are not written here, D2).
+  - **Recomputed for revision 1.3** (2026-09-27 UTC, `PYTHONUTF8=1`, `tools/.venv`, with the
+    inputs at their pins `8c45e850…`, `237a195a…`, `6fc80952…`): a copy of that script's
+    computation, printing only the hash, its match and the types above (no count), gave
+    `aa0920288e6d…f7705`, equal to the registered value. **What the script touches:** importing
+    the harness loads the whole bank into memory, block B included; every count is taken from
+    `ex`, in which block B is masked in the same expression, so no value of a block-B cell is
+    computed or printed. The earlier scratch script of §1.4 (`blockb_predata.py`, 20:12:45 UTC,
+    raw sha256 `251bdb78…`) builds `keep` the same way with tuples, which `json.dumps` writes as
+    the same arrays; it printed the table's values to that agent's transcript, and it was not run
+    and its output was not read for revision 1.3.
 - **Mirror cells on flyvis-65: 9 are present**, of 40 (block A: 5 of 64): (Mi1, L1), (Mi1, L5),
   (Mi4, L2), (Mi9, L3), (Tm1, L2), (Tm1, L5), (Tm2, L2), (Tm2, L5), (Tm3, L1). The run prints the
   predictions for their 9 block partners on a line of their own, and the AUC on the other 31
@@ -310,6 +351,15 @@ seen by a blind author; GLOSSARY §8), so this file says **prior exposure**.
    30 types (note §1), so 32 is an upper bound on block B's present count, not the count (if the
    note's "pair" is C6 existence; not checked). No file opened for this draft gives the count.
    §1.4 says how A §1.4 and a full endpoint table would give its column counts.
+   **Revision 1.3 (Ark M7, settled with Zcode): the caveat stays as written.** Zcode's grep of the
+   candidates note, repeated for revision 1.3 on `docs/notes/2026-09-25-knockout-block-candidates.md`:
+   "pair" is the note's count unit of bank cells ("FlyWire-30 bank (165 pairs)", "flyvis-30 …
+   (228 pairs)", lines 16–18; "pairs of B (out of 165) and of flyvis-30 (out of 228)", lines
+   37–38; the counts come from `type_pairs.csv`, line 136), and the string "C6" does not occur in
+   the note (0 matches). So the note does not say that its "pair" is C6 existence, and "upper
+   bound 32" keeps its condition. **Open, not done here:** checking the note's flyvis-30 pairs
+   against flyvis-65's C6-present cells would need the bank's cells, block B's among them, which
+   D3 (ii) abstains from before the registered run (§11).
 
 **Block B's content cannot be kept blind (revision 1.1, Johnny).** Because `offsets.csv` is
 committed and the note has already printed an upper bound of 32 for a superset of the block,
@@ -396,7 +446,12 @@ with three adaptations (D7): **precision at `n_present`** (the share of present 
 `n_present` highest `p_exist`; it is not accuracy when the labels are unbalanced) in place of
 precision at 32; **six strata means** in place of A's four quadrants: L1 × ON, L1 × OFF, L2 × ON,
 L2 × OFF, {L3, L4, L5} × ON, {L3, L4, L5} × OFF (ON and OFF are the targets' split, §1.2); the
-AUC on the 31 cells that are not mirror partners, in place of "the other 59".
+AUC on the 31 cells that are not mirror partners, in place of "the other 59". **Revision 1.3 (Ark
+M6, withdrawn as an edit; this half line kept):** {L3, L4, L5}: the note names no ON/OFF side
+for them (it names no targets for L4 and L5, and L3's two, Mi9 and Tm9, are one ON and one OFF;
+the reviewers' wording "names no targets" is narrowed here for L3); not a polarity claim (the
+strata are source type × the targets' ON/OFF split of the key,
+§1.2, not the L3–L5 polarities fixed for the worlds by D4).
 
 ### 3.2 The legs
 
@@ -412,6 +467,17 @@ AUC on the 31 cells that are not mirror partners, in place of "the other 59".
   and about 0.67 at 32/32). The script prints the exact value.
 - **`smallest_passing_auc`:** unchanged in definition, on the grid `k / (n_p n_a)` (A: `k/1024`);
   two new registered values, one per synthetic board (§3.3, §3.6).
+- **A block on which leg P cannot pass: the "not readable" U (revision 1.3; Johnny edit 1, Ark,
+  Zcode; open point 3 of 1.2).** Ported from the male CNS arm **by its object, not by a count**:
+  on the real block, `smallest_passing_auc is None` (no AUC on the grid reaches `p_P <= 0.01`)
+  reads a U of its own kind, "not readable", which **takes precedence over every other branch (R,
+  W and G alike), is never renamed by the U rule, and is not a threshold U** (S38). No threshold
+  on `n_present` is registered for it; the object `smallest_passing_auc is None` is the condition.
+  The 0 / 40 stop of §3.4 check 3 stays as it is (a block with no AUC has no label at all). Male
+  sources: `knockout_regrow_male_cns.py` lines 407–411 (the comment and `NOT_READABLE_REASON`)
+  and line 1627 (`read_label(rows, n_present=int(y.sum()), readable=spa is not None)`, in
+  `evaluate_bank`); the male registration's S16 (line 1308) and D8 (line 1474). A's script has no
+  such rule: its `evaluate_bank` calls `read_label(rows)` (`knockout_regrow.py` line 1099).
 - **Row-and-column variant (printed, decides nothing):** 5 × 8 patterns with the block's row and
   column counts, 640 successful checkerboard swaps per draw as in A, seed 91001. **New guards
   (D7; revision 1.1, Ark and Zcode).** A's loop (`rc_patterns`, `while (succ < RC_SWAPS).any()`)
@@ -424,6 +490,10 @@ AUC on the 31 cells that are not mirror partners, in place of "the other 59".
   stop here is block B's own rule. (2) **Before the loop**, a pattern with no checkerboard 2 × 2 (a
   nested pattern) admits no swap at all; its row-and-column null has exactly one pattern, and the
   variant prints "n/a: the row-and-column null has one pattern" instead of entering the loop.
+  (3) **Revision 1.3 (Ark, Zcode; open point 2 of 1.2): the stop leaves a file.** D7's stop is
+  kept; before it exits, the script writes a stop record as a file (`stop_record.json`) in the
+  run's own folder, with the chain, `succ`, `att`, the arm and the head, so that from outside a
+  stopped run is told from a run that never started by a file, not by a log line (S39).
   **A's code would not even reach the loop on block B:** `reshape(8, 8)` of 40 labels raises
   `ValueError` ("cannot reshape array of size 40 into shape (8,8)"), and with the reshape fixed to
   (5, 8) but the indices still drawn by `integers(8)`, the first row index above 4 raises
@@ -442,6 +512,17 @@ AUC on the 31 cells that are not mirror partners, in place of "the other 59".
   (b), the four layers and their order of reading, the self-test's two outcomes, the null-input
   digests, the per-fit diagnostic (deciding nothing), the store's declared fields, "a pin is
   integrity, not reproducibility".
+- **What a pin covers (revision 1.3; Ark M3, settled with Zcode; S17).** Each of block B's
+  reference pins is the sha256 of a file's **raw bytes**, `.gz` included, read with
+  `read_bytes()` as A's `check_prerun_files` (`knockout_regrow.py` lines 1512–1540, the hash at
+  line 1530) and the male one (`knockout_regrow_male_cns.py` lines 2074–2106, the hash at line
+  2096) do: it is integrity. It is not reproducibility: `raw_fits.json.gz` cannot be
+  byte-reproduced, because gzip writes its mtime into the header (A §3.3, lines 763–769, "A pin
+  is integrity, not reproducibility"; reason (4) of the four, lines 636–641). What a rerun must
+  reproduce is carried by the column gate of this section, not by the pins. **A red pin is never
+  answered by re-pinning** (A §7, "Recreating the reference", lines 1648–1655; A's summary, lines
+  47–49): a new reference goes to a new folder, and `PRERUN_DIR` and the pins move together in one
+  reviewed, committed change.
 - **New reference.** The gate compares with **block B's own pinned pre-run reference**, a new
   folder (proposed `connectome-seed-data/knockout_regrow/synthetic_blockB_prerun/`) with its own
   `PRERUN_DIR`, `PRERUN_SHA256` and `PRERUN_WORLDS_CSV_SHA256`. **Block A's reference is not
@@ -462,8 +543,8 @@ AUC on the 31 cells that are not mirror partners, in place of "the other 59".
 | check | block B |
 |---|---|
 | 1 pins | unchanged |
-| 2 block and mask | 40 cells, 5 distinct sources, 8 distinct targets, all 13 names in `harness.NAMES`, sources and targets disjoint; training mask 4,185 cells, none in the block; `ceiling_block` mask = the 40. **Added:** all 64 cells of block A are in the training mask |
-| 3 board as reviewed | **no reviewed count exists** (D3). Replaced by: the block's present count and its six strata counts are printed at run start, before any fit on the real bank; the run stops only if the block has no AUC (0 or 40 present: "BLOCK HAS NO AUC") |
+| 2 block and mask | 40 cells, 5 distinct sources, 8 distinct targets, all 13 names in `harness.NAMES`, sources and targets disjoint; training mask 4,185 cells, none in the block; `ceiling_block` mask = the 40. **Added:** all 64 cells of block A are in the training mask. **Revision 1.3 (Ark M2, no new check):** since the training mask is `~BLOCK_B`, this addition is exactly `BLOCK_A ∩ BLOCK_B = ∅` |
+| 3 board as reviewed | **no reviewed count exists** (D3). Replaced by: the block's present count and its six strata counts are printed at run start, before any fit on the real bank; the run stops only if the block has no AUC (0 or 40 present: "BLOCK HAS NO AUC"). **Revision 1.3:** unchanged; a block that has an AUC but on which leg P cannot pass reads the "not readable" U (§3.2, S38), not a stop |
 | 4 pre-data tables | the endpoint table's sha256 (§1.4), 40 / 40 inferable and the 9 mirrors must match, else "PRE-DATA TABLES DIFFER"; the training present count is printed, not checked (D3) |
 | 5 N1 parity identity | **cannot pass on any non-degenerate 5 × 8 block** (§0); `D(N1 logit)` is printed, no stop (D6) |
 | 6 leakage | unchanged: block B's knockout of the real bank against the same with its block replaced by permutation 0 of block B's leg P |
@@ -583,6 +664,8 @@ outputs. They add requirements; they relax none.
   revision 3.4's "`reused_from_ko` is derived from `lam`" claim, retro §3, lines 121–123.)
 - **Callers are read from the Orbit code graph and confirmed by grep** when block B's script is
   written and reviewed (retro §4, line 165); an absence is confirmed by grep, not by the graph.
+  **Revision 1.3 (Johnny's note, in Zcode's form):** the callers check is done at the script's
+  review, and the grep command it ran goes into the review artifact.
 
 ## 4. Reading rule (unchanged)
 
@@ -591,8 +674,12 @@ cuts (`P_R` = 0.01, `P_W` = 0.0125, `P_G` = 0.10, `GATE_CUT` = 0.90, `MECHANISM_
 U rule's naming, the verdict line's contents, λ on the verdict line. No condition, cut or label
 string changes. (Revision 1.2: A §4 is quoted from A's file as it now stands, pinned by
 `fc415056…`; §4 is A's lines 1296–1374, byte-identical to revision 3.4.1's, since Amendment 1
-only appends after line 2,495; see the header.) Three readings that differ on block B, stated so that nobody reads A's glosses
-into B's verdict:
+only appends after line 2,495; see the header.) **Revision 1.3 qualifies "no condition … or label
+string changes":** one U kind is added before A's four branches, the "not readable" U of §3.2
+(S38), on the reviewers' vote on revision 1.2 (Johnny edit 1, Ark, Zcode). A's branches, cuts and
+label strings are otherwise quoted and applied as they stand; the new U text is block B's own,
+reviewed as part of this file, and tested by S38. Three readings that differ on block B, stated
+so that nobody reads A's glosses into B's verdict:
 
 - **The quoted rows carry block A's literals.** The G row says "by Johnny's count the information
   is there (64/64 inferable)"; the U row says "all 3 pre-run U worlds sit at γ = 0.6 = γ\*_P" and
@@ -638,6 +725,17 @@ A §6 applies, and in addition:
   line of block B's script or `RESULT.md` says block B's instrument is weaker or stronger than
   A's; the per-γ counts it prints beside its limits are the reading, stated with their
   denominators (5 worlds per γ).
+- **Few present cells (revision 1.3; Johnny edit 1, Ark, Zcode).** The leg-P bar moves with the
+  count: the fewer present (or absent) cells the block holds, the higher the AUC a pass needs, and
+  at the extreme no AUC passes (§3.2, the "not readable" U, S38). **A reviewer's unregistered
+  probe, deciding nothing:** Ark's sandbox run of `smallest_passing_auc` with block B's leg-P
+  parameters (N = 40, seed 91000, `N_PERM` = 9,999; no bank involved), relayed by CC, gave None
+  at `n_p` = 1, 0.9605 at 2, 0.9009 at 3, 0.8542 at 4, 0.7990 at 6, 0.7467 at 10 and 0.7150 at 20,
+  and a floor of `p_P` = 0.0245 at `n_p` = 1. By that probe the one hole below the middle is
+  `n_p` = 1. **Arithmetic added by this revision, not probed:** the uniform permutation null of
+  the AUC depends on `n_p` and `n_a` symmetrically (with one absent cell there are again only 40
+  arrangements), so `n_p` = 39 is the same hole. Neither value is a registered threshold: the
+  rule reads the object (`smallest_passing_auc is None`), whatever the count.
 - **Prior exposure** (§1.5): the block is chosen after block A's verdict, and its cells trained
   every block-A fit.
 - **Mirrors, a named risk (revision 1.1, Johnny).** 9 of block B's 40 cells have a present mirror
@@ -670,7 +768,7 @@ setting stays, as a second guard.
 | # | where (A's script) | change |
 |---|---|---|
 | S1 | the file | a new script, `results/genome/c6/checks/knockout_regrow_block_b.py`, a copy of A's with the changes below; A's script stays byte-unchanged (D13); a new label test beside A's |
-| S2 | `REGISTRATION`, `REGISTRATION_REVISION`, the manifest | this file and its revision; **plus A's registration path, pinned by its LF sha256**, because §4 is quoted from it (`quote_row`, `quote_section`) and this file does not restate it. **Revision 1.1 said "at `74db080`" (`409184de…`); revision 1.2 pins A after Amendment 1: `A_REGISTRATION_SHA256_LF_AMENDED` = `fc41505690365ff6d82fa618b00b482cc992bb36d708ed3b6fbbe6f54f96dbec`** (the value and the constant's name are the male arm's, `knockout_regrow_male_cns.py` lines 74–75 at `01d2d05`), checked at run start and recorded in the manifest; `409184de…` is kept as a second, informational constant naming the text of A's verdict (as the male script's `A_REGISTRATION_SHA256_LF_FLYVIS65`, lines 78–79). `quote_row` and `quote_section` read A's file by path, never this file (this file has no row that starts with a label key; male S2's reasoning) |
+| S2 | `REGISTRATION`, `REGISTRATION_REVISION`, the manifest | this file and its revision; **plus A's registration path, pinned by its LF sha256**, because §4 is quoted from it (`quote_row`, `quote_section`) and this file does not restate it. **Revision 1.1 said "at `74db080`" (`409184de…`); revision 1.2 pins A after Amendment 1: `A_REGISTRATION_SHA256_LF_AMENDED` = `fc41505690365ff6d82fa618b00b482cc992bb36d708ed3b6fbbe6f54f96dbec`** (the value and the constant's name are the male arm's, `knockout_regrow_male_cns.py` lines 74–75 at `01d2d05`), checked at run start and recorded in the manifest; `409184de…` is kept as a second, informational constant naming the text of A's verdict (as the male script's `A_REGISTRATION_SHA256_LF_FLYVIS65`, lines 78–79). `quote_row` and `quote_section` read A's file by path, never this file (this file has no row that starts with a label key; male S2's reasoning). **Revision 1.3 (Ark, Zcode; open point 1 of 1.2):** the pin stays on A after Amendment 1 (`fc415056…`); if A ever gets an Amendment 2, block B's run stops on the pin mismatch, and that stop is read as "A changed", not as a defect of the environment |
 | S3 | the block (lines 173–189) | `SOURCES` = L1–L5, `TARGETS` = the eight; the answer-key sets; `N_BLOCK` = 40; `BLOCK`, `MASKS`; A's `X_SIGN`, `W_SIGN`, `BOARD` removed |
 | S4 | `QUADRANTS` | the six strata of §3.1 |
 | S5 | `N_TRAIN_CELLS`, `N_TRAIN_PRESENT` | 4,185; no registered present count (printed) |
@@ -680,59 +778,70 @@ setting stays, as a second guard.
 | S9 | `check_n1_parity` | a printed value, no stop (D6) |
 | S10 | `check_auc_function` | one unbalanced 40-cell case |
 | S11 | `uniform_perms`, `perm_ceiling_perm` | `permutation(40)`; seeds 91000, 91010 + j |
-| S12 | `rc_patterns` | reshape to (5, 8) (A's `reshape(8, 8)` raises `ValueError` on 40 labels); row and column indices drawn on their own ranges (A draws all four from `integers(8)`, which raises `IndexError` on a 5-row pattern); an attempt cap of 100 × 640 per chain with a stop message, on the pattern of `harness.py:881–883`; the no-checkerboard pre-check printing "n/a" (D7; revision 1.1, Ark and Zcode) |
+| S12 | `rc_patterns` | reshape to (5, 8) (A's `reshape(8, 8)` raises `ValueError` on 40 labels); row and column indices drawn on their own ranges (A draws all four from `integers(8)`, which raises `IndexError` on a 5-row pattern); an attempt cap of 100 × 640 per chain with a stop message, on the pattern of `harness.py:881–883`; the no-checkerboard pre-check printing "n/a" (D7; revision 1.1, Ark and Zcode). **Revision 1.3:** the stop writes its stop record first (§3.2 (3), S39) |
 | S13 | `SEED_*`, `assert_seeds_unique`, `reserved_seeds` | 91000, 91001, 91010, 91100; range 91000–91999; block A's seeds added to the reserved set; **revision 1.2: and the male arm's (92000, 92001, 92010–92029, 92100–92184; §3.7)** |
 | S14 | worlds: `Z_PLUS`, `ZPRIME_PLUS`, the two assertions, `OTHERS`, `NONBLOCK_CELLS`, `degree_terms`, `make_world` | §3.6 (D4, D5): the polarity of the 13 types; target-only exact orthogonality; 52 others; content pool and degree terms outside block B; assertion 20 |
 | S15 | `precision_at_32`, `auc_other_59`, the CSV header, the printed and Markdown tables ("/64", "(32/32)", "other 59", "P@32") | precision at `n_present`; the other 31; block B's own CSV column names (its reference is written by this script, so no compatibility with A's CSV is needed) |
-| S16 | `smallest_passing_auc` | docstring (`k/(n_p n_a)`); the logic already uses `N_BLOCK` and the count |
-| S17 | `PRERUN_DIR`, `PRERUN_SHA256`, `PRERUN_WORLDS_CSV_SHA256`, `PRERUN_REV2_FAMILIES`, `PRERUN_REV3_FAMILIES`, `_mech_renamed_32` | block B's reference, set in the revision after the pre-run (D10); the revision-2/3 split and revision 3.2's rename check are A's history and not needed |
-| S18 | `out_dir_refusal` | refuses `--out` at or in **both** A's and block B's reference folders and on byte copies of either; **revision 1.2: and the two male references** (`synthetic_malecns_L_prerun/`, `synthetic_malecns_R_prerun/` under `connectome-seed-data/knockout_regrow/`, with their pins), as the male script's `protected_references` already lists A's, B's and both male folders |
+| S16 | `smallest_passing_auc` | docstring (`k/(n_p n_a)`); the logic already uses `N_BLOCK` and the count. (Block B's S16 keeps this meaning; the male arm's S16 "not readable" rule is ported as S38, revision 1.3) |
+| S17 | `PRERUN_DIR`, `PRERUN_SHA256`, `PRERUN_WORLDS_CSV_SHA256`, `PRERUN_REV2_FAMILIES`, `PRERUN_REV3_FAMILIES`, `_mech_renamed_32` | block B's reference, set in the revision after the pre-run (D10); the revision-2/3 split and revision 3.2's rename check are A's history and not needed. **Revision 1.3 (Ark M3, settled with Zcode): what each pin covers.** `PRERUN_SHA256` pins the **raw bytes** of every file of block B's reference, `raw_fits.json.gz` included, read by `check_prerun_files` with `read_bytes()` as A's (lines 1512–1540) and the male one (lines 2074–2106) do; `PRERUN_WORLDS_CSV_SHA256` is the worlds table's entry of that dict. The pins are integrity only: the `.gz` bytes are not reproducible (A §3.3, lines 763–769), so what a rerun must reproduce is checked by the column gate of §3.3, not by a pin. Re-pinning in answer to a red pin is forbidden (A §7, "Recreating the reference", lines 1648–1655) |
+| S18 | `out_dir_refusal` | refuses `--out` at or in **both** A's and block B's reference folders and on byte copies of either; **revision 1.2: and the two male references** (`synthetic_malecns_L_prerun/`, `synthetic_malecns_R_prerun/` under `connectome-seed-data/knockout_regrow/`, with their pins), as the male script's `protected_references` already lists A's, B's and both male folders. **Revision 1.3 (Ark M5, settled with Zcode), the wording:** A's reference and both male references are guarded by their path and recognised as byte copies by their pins together (a folder is a copy when at least one pinned-name file is present and every present pinned-name file equals its pin; A §7, lines 1637–1643; male `out_dir_refusal`, lines 2944–2974). Block B's own folder is guarded **by its path only** until the pre-run (its pins do not exist; the male script writes `B_PRERUN_SHA256 = None`, line 139); its pins are added in the revision after the pre-run, and from then on it is recognised by them as the others are |
 | S19 | `write_committed`, `OUT` | `results/genome/c6/checks/knockout_regrow_block_b/`; the title; the line after the quoted §4 row naming A's literals (§4, D9); the header line of §5 |
 | S20 | `--arm`, `private_run_dir` | an arm name that keeps block B's private folders apart, for example `flyvis65_blockB` |
 | S21 | `WITHIN_FLY_NOTE`, the `TAU` comment | "about 2.7 of 40 cells"; the lattice text made generic |
 | S22 | tests | copies of A's 17 label tests adapted to block B's reference, plus: the rc guard; 20/20 on both boards and the exact 0.5 of the No algebra; check 5 as a print; the seed assertion |
 
-**Revision 1.2: S1–S22 re-checked against the male CNS arm's script as it ran.** The male arm's
+**The plan of the port: S1–S22 against the male CNS arm's script (revision 1.3; Ark, Zcode; open
+points 5 and 6 of 1.2).** Revision 1.2 titled this table "S1–S22 re-checked against the male CNS
+arm's script as it ran"; revision 1.3 keeps its content and reads it as **the plan of the port**:
+each row states "male line → block B requirement". **D13 is kept:** block B's script is a copy of
+A's, and the diff that is reviewed is against A's script; a row below says which male form is
+ported into that copy, never that block B's file is the male file. **Numbering (revision 1.3;
+Zcode, Ark):** male S-numbers are never reused in block B; block B's S16, S28 and S30 keep their
+block-B meanings; every port from the male script is marked "(the male arm's SNN)". Revision
+1.2's paragraph, as it stood: the male arm's
 script (`results/genome/c6/checks/knockout_regrow_male_cns.py`, written in `ee380a1`, last changed
 in `01d2d05`, LF sha256 `290ecb565759def6d11e3b76811635ce033a6b008461427ecede4704245e8e32` at
 `01d2d05`, `e07e347` and HEAD; the script of both registered runs) is also a copy of A's script,
 and it already solves several of the changes planned here, **for a 64-cell 8 × 8 block**. Line
-numbers are of that file at `01d2d05` (unchanged to HEAD). "Solved" means a form block B's script
+numbers are of that file at `01d2d05` (unchanged to HEAD; revision 1.3: still unchanged at
+`9b86839`, same LF sha256). "Solved" means a form block B's script
 may port; the diff that is reviewed stays against A's script (D13 (i)); porting is not a change
 of any value of this file.
 
-| # | solved by the male script? | where, and what is left for block B |
+| # | 1.2's status (solved by the male script?) | port: male line → block B requirement |
 |---|---|---|
-| S1 | form only | the same form (a copy of A's; male S1); block B's file and label test are still to be written |
-| S2 | **yes** (the constant) | `A_REGISTRATION_SHA256_LF_AMENDED` and `A_REGISTRATION_SHA256_LF_FLYVIS65` (lines 70–80), `check_registered_constants` (line 567); block B pins the same amended value (S2 above) |
-| S3 | no | block-specific (L1–L5 × the eight) |
-| S4 | no | the male arm keeps A's four quadrants; block B's six strata are new |
-| S5 | no | 4,185 is block B's |
-| S6 | no | the male tables are per lobe (male S8); block B's table is registered by its hash (§1.4) |
-| S7 | form only | `check_block_and_mask` adapted to 2,961 / 3,025 / 64 (male S7); block B's counts are 40 / 5 / 8 / 4,185 plus block A's 64 in training |
-| S8 | **yes, in form** | `check_block_print` (line 734) prints the block after unsealing and stops on `NO_AUC_TEXT` = "BLOCK HAS NO AUC"; block B prints at run start (no seal) with 0 / 40 as the stop |
-| S9 | **yes** | `check_n1_parity` (line 863): a printed value with the balance, "decides nothing", no stop |
-| S10 | **yes, in form** | `check_auc_function` (line 912): one unbalanced 64-cell hand case (16 of 64); block B needs its 40-cell case |
-| S11 | form only | `uniform_perms` (line 960) draws `permutation(N_BLOCK)`; with `N_BLOCK` = 40 the same code draws `permutation(40)`; seeds are block B's |
-| S12 | **partly** | the no-checkerboard pre-check and the cap of 100 × 640 attempts per chain are in `_rc_chains` / `rc_patterns` (lines 992–1047, `RC_CAP_FACTOR` line 340). **Not solved:** the male block is 8 × 8, so the code still has `reshape(8, 8)` and `integers(8)` (`_rc_chains`, lines 995 and 1008); block B's (5, 8) reshape and per-axis index ranges remain. **A difference, not resolved here:** on a real block the male script prints "n/a (attempt cap reached: …)" and goes on (male D9 (i)); block B's D7 recommends a stop. See §10, "Revision 1.2", open points |
-| S13 | **partly** | `reserved_seeds` (line 1072) reserves A's and B's seeds; block B must reserve A's and the male arm's (S13 above) |
-| S14 | no | block B's worlds (§3.6) |
-| S15 | **yes, in form** | `precision_at_n_present` (line 1418); the "other N" AUC generic; CSV column names are the arm's own |
-| S16 | **yes** (docstring) | `smallest_passing_auc` (line 1438), grid `k/(n_p n_a)`. The male script also adds a "not readable" U for a block on which leg P cannot reach 0.01 (male S16, D8); block B's revision 1.1 has no such rule: see §10, "Revision 1.2", open points |
-| S17 | **yes** | A's revision-2/3 split and `_mech_renamed_32` are not carried (male lines 95–96) |
-| S18 | **yes, in form** | `protected_references` / `out_dir_refusal` (lines 2936–2975) refuse A's, B's (path only, `B_PRERUN_SHA256 = None`) and both male folders; block B's list is the same four with B's pins once they exist |
-| S19 | **partly** | the line after the quoted §4 row naming A's literals exists (`a_literals_line`, line 3223); `write_committed` is the male one's form; the debts S31–S33 below change it |
-| S20 | **yes** | `private_run_dir(arm, head)` (line 2930) keys the folder on the arm name |
-| S21 | **yes, in form** | the lattice text made generic (male S24); the within-fly note is block B's ("about 2.7 of 40 cells") |
-| S22 | form only | male T1 copies A's 17 label tests (male §7.3); the debts below add tests S23–S35 |
+| S1 | form only | male S1 (a copy of A's) → block B's S1: its own copy of A's file and its own label test, still to be written |
+| S2 | **yes** (the constant) | lines 74–80 (`A_REGISTRATION_SHA256_LF_AMENDED`, `A_REGISTRATION_SHA256_LF_FLYVIS65`; 1.2 wrote "70–80", the comment above them starts at 70) and `check_registered_constants` (line 567) → block B's S2: the same amended value, checked at run start |
+| S3 | no | none → block-specific (L1–L5 × the eight) |
+| S4 | no | none (the male arm keeps A's four quadrants) → block B's six strata, new |
+| S5 | no | none → 4,185, block B's |
+| S6 | no | none (the male tables are per lobe, male S8) → block B's table registered by its hash (§1.4) |
+| S7 | form only | `check_block_and_mask` adapted to 2,961 / 3,025 / 64 (male S7) → block B's counts 40 / 5 / 8 / 4,185, plus block A's 64 in training |
+| S8 | **yes, in form** | `check_block_print` (line 734), which prints the block after unsealing and stops on `NO_AUC_TEXT` = "BLOCK HAS NO AUC" → block B prints at run start (no seal), with 0 / 40 as the stop |
+| S9 | **yes** | `check_n1_parity` (line 863), a printed value with the balance, "decides nothing", no stop → block B's S9 as it is |
+| S10 | **yes, in form** | `check_auc_function` (line 912), one unbalanced 64-cell hand case (16 of 64) → block B's 40-cell case |
+| S11 | form only | `uniform_perms` (line 960), `permutation(N_BLOCK)` → with `N_BLOCK` = 40 the same code draws `permutation(40)`; block B's seeds |
+| S12 | **partly** | the no-checkerboard pre-check and the cap of 100 × 640 attempts per chain in `_rc_chains` / `rc_patterns` (lines 992–1047, `RC_CAP_FACTOR` line 340) → block B's pre-check and cap. **Not ported, block B's own:** the (5, 8) reshape and per-axis index ranges (the male code has `reshape(8, 8)` and `integers(8)`, `_rc_chains` lines 995 and 1008). **Not ported, a difference kept:** on a real block the male script prints "n/a (attempt cap reached: …)" and goes on (male D9 (i)); block B keeps D7's stop, and revision 1.3 adds the stop record (§3.2 (3), S39) |
+| S13 | **partly** | `reserved_seeds` (line 1072), which reserves A's and B's seeds → block B reserves A's and the male arm's (S13) |
+| S14 | no | none → block B's worlds (§3.6) |
+| S15 | **yes, in form** | `precision_at_n_present` (line 1418); the generic "other N" AUC; the arm's own CSV column names → block B's S15 |
+| S16 | **yes** (docstring) | `smallest_passing_auc` (line 1438), grid `k/(n_p n_a)` → block B's S16 (the docstring). The male "not readable" U (male S16, D8), which 1.2 left open, is ported by revision 1.3 as **S38 (the male arm's S16, its not-readable part)** |
+| S17 | **yes** | A's revision-2/3 split and `_mech_renamed_32` not carried (male lines 95–96) → block B's S17, with what each pin covers (revision 1.3, M3) |
+| S18 | **yes, in form** | `protected_references` / `out_dir_refusal` (lines 2936–2974; 1.2 wrote 2975, the blank line after), which refuse A's, B's (path only, `B_PRERUN_SHA256 = None`, line 139) and both male folders → block B's list, the same four, with B's pins once they exist (revision 1.3 wording, M5) |
+| S19 | **partly** | `a_literals_line` (line 3223), the line after the quoted §4 row naming A's literals; `write_committed` in the male form → block B's S19; the debts S31–S33 change it |
+| S20 | **yes** | `private_run_dir(arm, head)` (line 2930), keyed on the arm name → block B's arm name |
+| S21 | **yes, in form** | the lattice text made generic (male S24) → block B's S21; the within-fly note is block B's ("about 2.7 of 40 cells") |
+| S22 | form only | male T1, copies of A's 17 label tests (male §7.3) → block B's S22; the requirements S23–S39 add their own tests |
 
-**Not planned by S1–S22, solved by the male script, and open for block B** (§10, "Revision 1.2",
-open points): male S28 (`p_S` printed with four decimals and "[leg S decided by the count …]"
-when `n_deg` >= 1) and male S30 (`PRERUN_GIT_HEAD`, `PRERUN_SCRIPT_SHA256_LF`,
-`prerun_provenance`: the head and script that made the pinned reference, checked before any fit,
-"PRE-RUN PROVENANCE DIFFERS"). Under D10 (i) block B's reference is made by one script and read
-by a later one (the revision after the pre-run sets `PRERUN_*` in the script, so its hash
-changes), the case male S30 and male §3.3.1 (h) were written for.
+**Not planned by S1–S22, solved by the male script (revision 1.2's paragraph, as it stood):**
+"open for block B (§10, "Revision 1.2", open points): male S28 (`p_S` printed with four decimals
+and "[leg S decided by the count …]" when `n_deg` >= 1) and male S30 (`PRERUN_GIT_HEAD`,
+`PRERUN_SCRIPT_SHA256_LF`, `prerun_provenance`: the head and script that made the pinned
+reference, checked before any fit, "PRE-RUN PROVENANCE DIFFERS"). Under D10 (i) block B's
+reference is made by one script and read by a later one (the revision after the pre-run sets
+`PRERUN_*` in the script, so its hash changes), the case male S30 and male §3.3.1 (h) were
+written for." **Revision 1.3 (Ark, Zcode; open point 4 of 1.2):** both are now requirements,
+S36 (the male arm's S28) and S37 (the male arm's S30), below.
 
 **Revision 1.2: the male arm's script debts, registered as requirements S23–S35.** Sources: the
 retrospective `docs/retrospectives/2026-09-27-session-close.md` §5 ("Debts for block B's script",
@@ -745,23 +854,29 @@ commit `86d7288`; 1877–1879, the filter debt; 1881–1887, the debts) at HEAD 
 names a test that fails if the requirement is not met. **No test here reads block B's cells of
 the real bank:** every end-to-end test runs on a fixture bank or on a synthetic world, since a
 run of the real arm on flyvis-65 would count block B, which D3 (ii) abstains from before the
-registered run.
+registered run. **Revision 1.3** extends S25 and S27 in place and appends S36–S39: three ports
+from the male script (S36, S37, S38, each marked with its male number) and one requirement of
+block B's own (S39, the stop record). By the numbering rule above, no male S-number is reused.
 
 | # | requirement | what it pays (source) | test that fails if it is not paid |
 |---|---|---|---|
 | S23 | **UTF-8 at the top.** Before any other statement that can print, the script calls `sys.stdout.reconfigure(encoding="utf-8", errors="backslashreplace")` and the same for `sys.stderr` (and the same for the tee's file handles, which are opened with `encoding="utf-8"`) | run 1 of the male arm stopped on `UnicodeEncodeError: 'charmap' codec can't encode character 'γ'` after unsealing (male ledger lines 1714–1733; retro §3, lines 104–112) | a subprocess runs the script's import and a print of A's quoted G row (it holds γ) with `PYTHONUTF8=0` and `PYTHONIOENCODING=cp1252:strict`, stdout redirected to a file: exit 0, and the file decodes as UTF-8 and contains γ |
 | S24 | **`log()` cannot kill a run.** `log` writes to the tee's file first, then to the console inside a guard that catches `UnicodeError` and `OSError`, writes the line with `backslashreplace` instead, and counts the event (`log_output_errors` in the manifest); it never raises | male `log` (line 464) calls `print`, and `_Tee.write` (line 444) writes to the stream before the file, so a console error killed the run and lost the line (male ledger line 1731) | a unit test gives `log` a stream whose `write` raises `UnicodeEncodeError`: `log("γ")` returns, the tee file holds "γ", and the counter is 1 |
-| S25 | **Real fits and verdict lines on disk before any print.** In the real arm, the raw fits (`raw_fits_real.json.gz`) and a `verdict.json` (the label, the verdict line, the quoted row, the A-literals line) are written and flushed to the private folder **before** the first print of the real block's table or verdict | male `_finish_real_arm` prints the real table (line 3902) before `write_raw` (line 3908); run 1's real fits were held in memory and lost (male ledger lines 1722–1724; retro §3) | a test on a fixture bank patches `log` to raise on its first call after the real fits: both files exist, and `verdict.json`'s line equals the one the unpatched run prints |
+| S25 | **Real fits and verdict lines on disk before any print.** In the real arm, the raw fits (`raw_fits_real.json.gz`) and a `verdict.json` (the label, the verdict line, the quoted row, the A-literals line) are written and flushed to the private folder **before** the first print of the real block's table or verdict | male `_finish_real_arm` prints the real table (line 3902) before `write_raw` (line 3908); run 1's real fits were held in memory and lost (male ledger lines 1722–1724; retro §3) | a test on a fixture bank patches `log` to raise on its first call after the real fits: both files exist, and `verdict.json`'s line equals the one the unpatched run prints. **Revision 1.3 (Ark M4, settled with Zcode): extended to the synthetic step, in both modes** (`--synthetic-only` and the registered run): the synthetic step's fits and outputs are written to disk before the first print of its tables. Male fact: `print_synthetic` (line 3764) comes before `write_synthetic_outputs` (line 3776) in `run_synthetic_only`, and in the real arm's synthetic step `print_synthetic` (line 3845) comes before `write_synthetic_outputs` (lines 3846–3848). Added test: in each mode, on a fixture world set, `print_synthetic` (or `log`) is patched to raise on its first call after the synthetic fits; the synthetic outputs (`raw_fits.json.gz`, `synthetic_only.json`, `synthetic_worlds.csv`) exist and hold every world. Under the male order this test fails (nothing is written) |
 | S26 | **An ASCII end-to-end rehearsal.** A test runs the end of the real-arm path (the table, the quoted §4 row, the A-literals line, the verdict line, `write_committed`, the sums) on a fixture bank in a subprocess with `PYTHONUTF8=0`, `PYTHONIOENCODING=ascii:strict` and stdout redirected to a file | "the tests never ran the end of the real arm under a strict encoding" (retro §3, lines 105–107) | the rehearsal exits 0; `RESULT.md` exists and contains A's quoted G row with γ in UTF-8; `SHA256SUMS.txt` verifies (S29). Under this setting A's and the male `log` (a bare `print` to the console first) raise on γ, as the male run 1 did |
-| S27 | **The run's record of prior real-arm runs is read at run time.** There is no seal in block B (its content is public, §1.5), so the male `SEAL_RECORD` constant is **not** carried. Instead the script writes a marker file in the private folder when it starts the real arm; at start it lists every earlier folder of block B's arm under `connectome-seed-data/knockout_regrow/` holding that marker, prints them with the scope searched ("searched: <root>, folders `<arm>_*`; N found"), and records the list in the manifest. `RESULT.md` prints that line; it never prints "intact" or any status the run cannot measure | male `RESULT.md` line 3 "Seal record: intact." from a constant (`SEAL_RECORD`, line 183) after run 1 had unsealed; "a claim the writer cannot measure", class fix in block B (male ledger lines 1784–1791, 1810–1814; retro §3, lines 146–149) | a fixture private root with one earlier folder holding the marker: the printed line names it; with none: "0 found" and the scope; a grep test finds no string `"intact"` in the script's output text constants |
+| S27 | **The run's record of prior real-arm runs is read at run time.** There is no seal in block B (its content is public, §1.5), so the male `SEAL_RECORD` constant is **not** carried. Instead the script writes a marker file in the private folder when it starts the real arm; at start it lists every earlier folder of block B's arm under `connectome-seed-data/knockout_regrow/` holding that marker, prints them with the scope searched ("searched: <root>, folders `<arm>_*`; N found"), and records the list in the manifest. `RESULT.md` prints that line; it never prints "intact" or any status the run cannot measure. **Revision 1.3 (Ark, Zcode; closes open point 7 of 1.2 and Johnny's edit 2): three outcomes, each printed with the scope searched:** (a) "root does not exist: <root>"; (b) "root exists and cannot be read: <root> (<error>)"; (c) "root read: <root>, folders `<arm>_*`; N found" (N = 0 included). (a) and (b) are not written as "0 found". This is S34's rule applied to the search: a search that matched nothing because it could not look must not look like a measurement of zero | male `RESULT.md` line 3 "Seal record: intact." from a constant (`SEAL_RECORD`, line 183) after run 1 had unsealed; "a claim the writer cannot measure", class fix in block B (male ledger lines 1784–1791, 1810–1814; retro §3, lines 146–149) | a fixture private root with one earlier folder holding the marker: the printed line names it; with none: "0 found" and the scope; a grep test finds no string `"intact"` in the script's output text constants. **Revision 1.3:** a missing root prints outcome (a) and a root the process cannot list (patched `iterdir` raising `PermissionError`) prints outcome (b); in neither case does the line or the manifest hold "0 found" |
 | S28 | **The command's environment in the manifest.** The manifest records `sys.argv`, `sys.stdout.encoding`, `sys.stderr.encoding`, and the values found of `PYTHONUTF8`, `PYTHONIOENCODING`, `PYTHONHASHSEED` and the four BLAS thread variables (found before `setdefault` and in effect) | the male manifest records only the thread variables (line 532); `PYTHONUTF8=1` of run 2 is not verifiable from the outputs (blind review line 184; male ledger lines 1800–1801, 1842–1843) | a test sets `PYTHONUTF8=1` and `PYTHONIOENCODING=utf-8` in a subprocess, builds the manifest: both appear with those values; unset, they appear as `null` |
 | S29 | **`SHA256SUMS.txt` written last.** In every folder the script writes, the sums are written after the last log line, after the tee is closed; nothing is written to that folder afterwards, and the sums cover `stdout.log` | male `write_sha256sums(private)` (line 3940) runs before `write_committed` and the "wrote …" and "wall-clock" lines, so the `stdout.log` entry does not verify (blind review line 93; male ledger lines 1797–1799, 1819–1821) | after the rehearsal (S26), every entry of every `SHA256SUMS.txt` the run wrote verifies, `stdout.log` included |
 | S30 | **A conditional diagnostic sentence carries its condition.** Every registered text printed as a diagnostic either prints only when its condition holds or states the condition in its own words. Block B has no lobe comparison, so the male S0 sentence has no copy here; the class applies to block B's own conditional texts: the line naming A's literals (§4, D9), the D8 outcome note ("a second possible source of U on this block": printed beside a U only), N1's `p_P` beside a U, the "failed fit or rank limit" reading (beside a failed fit only) | the male S0 text "the split comes from the instrument's response …" was printed where no split by reading occurred; block B's writer "carries the condition in the sentence" (male ledger lines 1834–1837) | a table-driven test of each conditional text over the four labels on fixture outcomes: printed only under its condition, or its text contains the condition's clause |
 | S31 | **§3.5's columns in `RESULT.md`.** Every quantity §3.5 says is printed (the six strata means, precision at `n_present`, the 9 mirror partners' `p_exist`, the AUC on the other 31, the per-type rows for the 13 types, the 20 permuted-block `ceiling_full`, the fixed λ = 1 diagnostic, `D(N1 logit)`, N1's `p_P` beside any U) has a column or a line in `RESULT.md`, not only in the log and `summary.json` | male `RESULT.md` has no column for §3.5's mirror, other-61 and quadrant values; "§3.5's statement is wider than the artifact" (blind review line 115; male ledger lines 1803–1804, 1825–1828) | on the rehearsal's `RESULT.md`, a list of the §3.5 items, each mapped to its header string, is found; the values equal `summary.json`'s |
 | S32 | **The synthetic U-rule paragraph follows block B's own U reading.** The "U rule" paragraph of `RESULT.md` prints the γ of block B's own U worlds against block B's own limits, computed from block B's synthetic step, and says whether they lie in A's position ("at γ\*_P") or not; it does not print A's reading of a threshold U as block B's | male `RESULT.md` lines 194 and 974 print A's reading of a threshold U, which the male §4.1 (5) says does not hold there (male ledger lines 1801–1803, 1822–1825; `knockout_regrow_male_cns.py` line 2835) | a fixture synthetic step whose U worlds lie below γ\*_P: the paragraph states that and does not contain A's literal "sit at γ = 0.6 = γ\*_P" as a description of block B |
 | S33 | **No duplicate `auc_N1` column.** `per_shuffle.csv`'s header has unique names | male `write_per_shuffle_csv` (line 2985) writes `auc_N1` explicitly and again from `PRED_KEYS` (which ends with `"N1"`, line 307) (blind review line 105; male ledger line 1805) | the rehearsal's `per_shuffle.csv` header: `len(set(cols)) == len(cols)` |
-| S34 | **Every filter states its denominator.** Every count the script prints or writes over a filtered set is written "k of n", n the number of rows the filter matched; a filter that matches no row stops with "FILTER MATCHED NOTHING: <key>" instead of returning 0. The same rule binds counts written into this file's later revisions (§3.9) | a filter on `BF:1` against the CSVs' `BF_1` returned 0 and looked like a measurement (Ark, 2026-09-27 14:01 UTC; male ledger lines 1877–1879) | a unit test counts over a fixture table with the key `BF:1` where rows say `BF_1`: it raises; with the right key it returns "k of n" with n equal to the matched rows |
+| S34 | **Every filter states its denominator.** Every count the script prints or writes over a filtered set is written "k of n", n the number of rows the filter matched; a filter that matches no row stops with "FILTER MATCHED NOTHING: <key>" instead of returning 0. The same rule binds counts written into this file's later revisions (§3.9). **Revision 1.3:** S27's search of earlier runs is an instance of this rule (its three outcomes) | a filter on `BF:1` against the CSVs' `BF_1` returned 0 and looked like a measurement (Ark, 2026-09-27 14:01 UTC; male ledger lines 1877–1879) | a unit test counts over a fixture table with the key `BF:1` where rows say `BF_1`: it raises; with the right key it returns "k of n" with n equal to the matched rows |
 | S35 | **Fenced drafts inside a registration are marked.** Any fenced block in this file or its later revisions that holds registration text (a draft of an amendment, a section) is introduced by the line "**Fenced draft, not a section.**", and a heading inside a fence is never counted as this file's heading | the male arm's blind reviewer read Appendix A's fenced "## 13. Amendment 1" as a section of the registration (blind review line 11; male ledger lines 1843–1845) | a test reads this registration, finds every fence opening (```` ``` ```` or `~~~`) and asserts the marker line within the two lines before it; a fixture with an unmarked fence makes the checker fail (this file has no fence at revision 1.2, so the fixture case is what shows the test can fail) |
+| S36 | **(the male arm's S28) The `p_S` mark (revision 1.3; Ark, Zcode; open point 4 of 1.2).** When `n_deg` >= 1, `p_S` is printed with four decimals followed by the mark "[leg S decided by the count: n_ge = {n_ge} of {n_valid}]", everywhere it is printed (the verdict line, the bank print, the synthetic table, the `RESULT.md` bank table); when `n_deg` = 0 it is printed as A prints it (two decimals, no mark). No decision reads `p_S`: leg S stays `n_valid >= 1 and n_ge == 0` (§3.2) | male `P_S_MARK` (line 421) and `p_s_text` (lines 1788–1796); male registration S28 (line 1324); A printed `p_S` without saying that the count decides, which on a bank with degenerate shuffles reads as a p-value near the cut | as male T12 (`test_T12_p_S_print`, `test_knockout_regrow_male_cns.py` line 984), on block B's fixture: with one degenerate shuffle the verdict line and the `RESULT.md` bank table hold "p_S = 0.0101 [leg S decided by the count: n_ge = 0 of 98]"; with none, "p_S = 0.01" and no "[leg S"; A's printing fails the first assertion |
+| S37 | **(the male arm's S30) Pre-run provenance, checked before any fit (revision 1.3; Ark, Zcode; open point 4 of 1.2).** The revision after the pre-run registers `PRERUN_GIT_HEAD` and `PRERUN_SCRIPT_SHA256_LF` beside block B's pins. **`PRERUN_SCRIPT_SHA256_LF` is the LF sha256 of the script that wrote the reference** (read from the reference's `synthetic_only.json` manifest after `check_prerun_files` passes); **the reading script's own hash is intentionally different**, because under D10 (i) that revision writes `PRERUN_*` into the script, so the script that reads the reference is not the one that wrote it. Before any fit (in the registered run and in any `--synthetic-only` run that reads the reference), `prerun_provenance` compares the reference's manifest with the two registered values and stops with "PRE-RUN PROVENANCE DIFFERS" on a mismatch; both codes (the reference's and this run's) are printed, recorded in the manifest and in `RESULT.md`'s header ("pre-run made by …; this run by …"). A difference between the writing script's hash and the reading script's hash is not a mismatch | male `PRERUN_GIT_HEAD`, `PRERUN_SCRIPT_SHA256_LF` (lines 118–127), `prerun_provenance` (lines 2109–2137), its stops (lines 3753, 3836); male registration S30 (line 1321) and §3.3.1 (h) (line 799) | as male T14 (`test_T14_S30_prerun_provenance`, line 1166), on a temporary reference: a manifest naming the registered head and script passes although the running script's hash differs; a manifest naming another script stops with "PRE-RUN PROVENANCE DIFFERS" before the first fit (a patched fit function that raises is never called) |
+| S38 | **(the male arm's S16, its not-readable part) The "not readable" U (revision 1.3; Johnny edit 1, Ark, Zcode; open point 3 of 1.2).** On the real block, `smallest_passing_auc is None` gives a U of its own kind, "not readable", with block B's own text ("not readable: leg P cannot reach p_P <= 0.01 on this block (n_present = {k} of 40)"; the male text says "of 64"). It takes precedence over R, W and G alike, is never renamed by the U rule, is not a threshold U, and is counted apart wherever U kinds are counted. The condition is the object `smallest_passing_auc is None`; no threshold on `n_present` is written anywhere (§3.2). The 0 / 40 stop of check 3 stays | male `NOT_READABLE_REASON` (lines 407–411), `read_label(..., readable=spa is not None)` (line 1627), `u_kind` (line 1672), `read_label` (lines 1688–1730); male registration S16 (line 1308), D8 (line 1474); A's `evaluate_bank` calls `read_label(rows)` with no such argument (`knockout_regrow.py` line 1099) | as male T8 (`test_T8_not_readable_and_no_auc`, line 789), on 40 cells: with `n_p` = 1 and rows that would read R (and again W, and G), the label is U, its first reason starts with "not readable", `u_kind` is `not_readable`, and the U rule's rename leaves it unchanged; with `n_p` = 2 and the same rows, the ordinary branch is read. With A's `read_label(rows)` the first case reads R, so the test fails |
+| S39 | **The attempt-cap stop leaves a record (revision 1.3; Ark, Zcode; open point 2 of 1.2).** When a row-and-column chain reaches the cap of 100 × 640 attempts (D7, S12), the script, before it exits, writes `stop_record.json` into the run's own folder (the real arm's private folder; the `--out` folder in `--synthetic-only`), flushed and closed, holding the stop message, the chain index, `succ`, `att`, the arm and the git head, and then stops with the message of §3.2. A run that never started has no such file; a stopped run has it | D7's stop was only a log line, so from outside a stopped run could not be told from a run that never started (Ark, Zcode, review of 1.2) | a fixture 5 × 8 pattern that admits a swap in only one position and a cap lowered by patching `RC_CAP_FACTOR`: the process exits non-zero, `stop_record.json` exists in the run folder and its `chain`, `succ`, `att`, `arm` and `head` equal the values printed in the stop message; a version that only logs fails the existence assertion |
 
 **Run commands (to be pinned in the revision after the pre-run):** as A's, with the new script and
 arm name, `--starts 10 --workers 30`.
@@ -792,6 +907,12 @@ amendment; whether a male arm on block B would follow that form is not decided h
 "Revision 1.2", open points.) Whether the built male bank places L1–L5 was not checked for this
 revision (§11).
 
+**Revision 1.3 (Ark, Zcode; open point 7 of 1.2): a male arm on block B is a separate registration
+file, not an amendment of this file.** The part of revision 1.1's rule quoted above that says
+"this file is amended to pin the built bank" is withdrawn on the reviewers' vote; §1.1's eight
+pins are not extended. That the builder must map L1–L5 remains a condition of any such arm, and
+belongs to that registration.
+
 ## 9. Lessons applied (delta on A §9)
 
 | lesson | where here |
@@ -804,6 +925,7 @@ revision (§11).
 | retro 2026-09-27 §4 (revision 1.2): scope and denominator; census scope and band; "not recomputed" from the log; callers from the graph | §3.9; S34 |
 | retro 2026-09-27 §3 (revision 1.2): the cp1252 crash after unsealing; outputs that claim what the writer cannot measure; sums before the last log line | S23–S29 (§7) |
 | male ledger, after the Q2 note (revision 1.2): "instrument weaker" not separated from the draw | §6, "Less power" |
+| review of revision 1.2 (revision 1.3): a stop and an empty search must be told from "nothing happened"; a rule ported by its object, not by a count | S27, S34, S38, S39 |
 
 ## 10. Decisions for review (reviewers, then Mike)
 
@@ -817,7 +939,7 @@ The body is written with the recommendation of each row.
 | **D4** | Worlds' polarity on L3–L5 | (i) fixed L3 +1, L4 −1, L5 +1: one layout per board, so the one-value-per-board check of `smallest_passing_auc` can hold. (ii) drawn per world: the layout varies by world, so that check fails by construction and would have to be registered per world (a gate change). (iii) all +1: columns 4 of 5 against 1 of 5 | (i) |
 | **D5** | `z'_B` and the No assertion | (i) A's `z'` on the targets (exact orthogonality, classes of 2), `z'` = (+1, +1, −1, −1, +1) on L1–L5, the assertion relaxed to the targets, with §3.6's algebra. (ii) make the sources orthogonal too, which needs an even number of sources, so it changes the block of D1 | (i) |
 | **D6** | Check 5 (N1 parity identity) | (i) a printed value, no stop. (ii) kept as a stop: it fails on every non-degenerate 5 × 8 block (§0), so the real arm could never run | (i) |
-| **D7** | Printed-only adaptations | strata for quadrants; precision at `n_present`; the other 31 cells; the row-and-column null on 5 × 8 with 640 swaps, an attempt cap of 100 × 640 per chain that stops the run with a message (the harness's pattern, `harness.py:881–883`; revision 1.1, Ark and Zcode), and a pre-check that prints "n/a" for a pattern with no checkerboard. Without a cap A's swap loop has no end; without S12 it would fail earlier, on the reshape. The cap stops the whole run although the variant decides nothing: the alternative is to print "n/a (cap reached)" and go on, which keeps the run but reports a truncated null | as written (stop) |
+| **D7** | Printed-only adaptations | strata for quadrants; precision at `n_present`; the other 31 cells; the row-and-column null on 5 × 8 with 640 swaps, an attempt cap of 100 × 640 per chain that stops the run with a message (the harness's pattern, `harness.py:881–883`; revision 1.1, Ark and Zcode), and a pre-check that prints "n/a" for a pattern with no checkerboard. **Revision 1.3 (Ark, Zcode):** the stop is kept and writes a stop record file first (S39). Without a cap A's swap loop has no end; without S12 it would fail earlier, on the reshape. The cap stops the whole run although the variant decides nothing: the alternative is to print "n/a (cap reached)" and go on, which keeps the run but reports a truncated null | as written (stop) |
 | **D8** | U and the degree channel | (i) U's label and text unchanged; N1's own `p_P` printed beside U; the outcome note names the additive channel. (ii) a new U reason, "N1 alone passes leg P", on the verdict line: changes a verdict-line string, so it needs its own review and a test | (i) |
 | **D9** | A's literals in the quoted §4 rows; "failed fit" | (i) quote A's rows verbatim, then a printed line naming A's literals (64/64; the pre-run U worlds; "the block is rank 1"); "failed fit" read on block B as "fit failure or rank limit, not separated". (ii) restate §4 in this file with block B's literals: a new text of a reading rule, reviewed as such | (i) |
 | **D10** | Order of work | (i) commit the script and this draft; the pre-run from that committed head on Mike's word; a revision registering the values read from the pinned reference; review; the registered run. Block B's reference then has a producer in git. (ii) A's D11 order (pre-run before commit): repeats the provenance gap of A §3.3 | (i) |
@@ -915,6 +1037,50 @@ scratch script (`PYTHONUTF8=1`, `tools/.venv`) on the two blobs; it is not commi
    sealed file, so S27 records earlier real-arm runs of block B found at run time, with the scope
    searched. Whether that is the record the reviewers meant is for them.
 
+**Revision 1.3: points 1–7 are answered by the reviewers' pass below** (items 1–8 of its table).
+The points are kept as revision 1.2 wrote them.
+
+### Revision 1.3: the reviewers' pass on revision 1.2 (2026-09-27)
+
+Revision 1.2 (commit `9b86839`) was reviewed in the DPC Research chat on 2026-09-27. The votes and
+the edits are as CC's message to the drafting agent relays them, with the consensus settled
+between Ark and Zcode on Ark's M1–M7; the chat is not in the repository. Mike's word covering the
+work: 14:31 UTC ("continue what we were doing"). Drafted by a CC subagent; not re-reviewed, not
+committed. Nothing was fitted or run; no cell of block B was read (the one computation, §1.4's
+hash, read presence outside block B only). No gate, cut, grid, seed, block or D-row
+recommendation changed. What changed in the reading: one U kind (S38) is added before A's
+branches (§4, the qualification written there); D7's stop is kept and now leaves a file (S39).
+
+| reviewer | time (UTC) | vote |
+|---|---|---|
+| Ark | 14:48 (follow-up 14:59) | yes, with edits |
+| Johnny | 14:56 | yes, with edits |
+| Zcode | 15:11 | yes, with edits |
+
+| # | edit | asked by | applied in revision 1.3 (where; sources checked) |
+|---|---|---|---|
+| 1 | Open point 1: S2 stays pinned to A after Amendment 1 (`fc415056…`); an Amendment 2 of A stops the run on the pin, read as "A changed", not as an environment defect | Ark, Zcode | S2 (one sentence) |
+| 2 | Open point 2: D7's stop kept; a stopped run writes a stop record as a file before exit (chain, `succ`, `att`, arm, head), with a test that can fail | Ark, Zcode | §3.2 (3); S12; S39 (new) |
+| 3 | Open point 3: the male "not readable" U ported by its object (`smallest_passing_auc is None`), not by a count; precedence over R, W and G; never renamed; not a threshold U; no threshold on the count; the 0 / 40 stop unchanged; the leg-P bar moving with the count stated, with Ark's probe quoted as unregistered | Johnny (edit 1), Ark, Zcode | §3.2; §3.4 check 3; §4 (qualification); §6 ("Few present cells"); S16 (note); S38 (new). Male script lines 407–411 and 1627, male registration lines 1308 (S16) and 1474 (D8), A's script line 1099: each opened and checked for revision 1.3 |
+| 4 | Open point 4: male S28 and S30 added as S36 and S37, each with a test that can fail; `PRERUN_SCRIPT_SHA256_LF` is the hash of the script that wrote the reference, the reading script's hash differs by design (D10 (i)) | Ark, Zcode | S36, S37 (new); the port-plan paragraph. Male lines 118–127, 421, 1788–1796, 2109–2137, 3753, 3836; male registration lines 1321, 1324, 799; male tests T12 (line 984) and T14 S30 (line 1166): checked |
+| 5 | Numbering: male S-numbers never reused; B's S16, S28, S30 keep their meanings; every port marked "(the male arm's SNN)"; the not-readable rule on a free number with its male source in words | Zcode, Ark | the port-plan paragraph; S16; S36–S38 |
+| 6 | Open points 5 and 6 (D13): D13 kept; the table "S1–S22 re-checked against the male CNS arm's script" renamed and read as the plan of the port, each row "male line → B requirement" | Ark, Zcode | §7, "The plan of the port" (content of 1.2's table kept; two of its line ranges corrected: 70–80 → 74–80, 2936–2975 → 2936–2974) |
+| 7 | Open point 6: a male arm on block B is a separate registration file; §1.1's eight pins not extended; revision 1.1's rule changed on the reviewers' vote | Ark, Zcode | §1.1; §8 (1.1's rule quoted, the amendment clause withdrawn) |
+| 8 | Open point 7 and Johnny's edit 2: S27's three outcomes (root missing / root unreadable / root read, N found including 0), each with the scope searched; linked to S34 | Ark, Zcode, Johnny (edit 2) | S27 (requirement and test); S34 |
+| 9 | M1: the exact canonical form of §1.4's table (key and value types, `sort_keys` on nested dicts, one element); recovered from the scratch script, not invented; the hash recomputed without reading block B's cells | Ark (M1), Zcode | §1.4, "The canonical form, exactly". The script `blockb_hash.py` (20:14:26 UTC 2026-09-25) was found in the revision-1 agent's scratchpad and transcript; the computation reads presence outside block B only; recomputed hash equals `aa092028…` |
+| 10 | M2: one sentence, check 2's block-A clause is exactly `BLOCK_A ∩ BLOCK_B = ∅`; no new check | Ark (M2), Zcode | §3.4, check 2 |
+| 11 | M3: S17 names what each pin covers (raw bytes, `.gz` included, `read_bytes()`); the column gate because `.gz` bytes are not reproducible; re-pinning forbidden | Ark (M3), Zcode | §3.3 (a bullet); S17. A's `check_prerun_files` lines 1512–1540 (hash at 1530), male lines 2074–2106 (hash at 2096); A's registration lines 636–641, 763–769, 1648–1655, 47–49: checked |
+| 12 | M4: S25 extended to the synthetic step in both modes | Ark (M4), Zcode | S25. Male lines 3764 and 3776 (`run_synthetic_only`), 3845 and 3846–3848 (real arm): checked |
+| 13 | M5: S18's wording (A's and both male references by path and pins; B's folder by path only until the pre-run, `B_PRERUN_SHA256 = None`) | Ark (M5), Zcode | S18. Male lines 139, 2936–2974; A's registration lines 1637–1643: checked |
+| 14 | M6 (withdrawn): half a line in §3.1 that {L3, L4, L5} makes no polarity claim | Ark (M6), Zcode | §3.1. The strata were checked to be source type × the targets' ON/OFF split of the key (§1.2), not D4's L3–L5 polarities. The reviewers' words "the note names no targets for them" are narrowed for L3: the note names Mi9 and Tm9 (and Tm20) for L3 (§1.2); for L4 and L5 it names none |
+| 15 | M7: the "upper bound 32" / "pair" caveat stays; Zcode's grep recorded; the check against flyvis-65's present cells not done (it needs the bank) and listed as open | Ark (M7), Zcode | §1.5 item 5; §11. The grep was repeated: "pair" is a count unit of bank cells (lines 16–18, 37–38, 136); "C6" has 0 matches |
+| 16 | Johnny's §3.9 note: the callers check is done at the script's review, and the grep command goes into the review artifact | Johnny, in Zcode's form | §3.9 |
+| 17 | This section and the header | CC's request | header; §10 |
+
+**Computations for revision 1.3** (2026-09-27 UTC, `PYTHONUTF8=1`, `tools/.venv`): the §1.4 hash
+only (above; the script printed the hash, its match and the types, no count). The three inputs'
+LF sha256 were re-read and match their pins. Nothing else was run.
+
 ## 11. Not verified at drafting
 
 - **Biology:** the targets of L4 and L5 inside the block; that L1 → OFF and L2 → ON are absent
@@ -931,7 +1097,17 @@ scratch script (`PYTHONUTF8=1`, `tools/.venv`) on the two blobs; it is not commi
 - **Per-cell exposure in C6:** whether any C6 diagnostic printed per-cell predictions for
   L → medulla cells (§1.5, item 4) was not searched.
 - **Block B's present count** is unknown. If it is small, power is low and degenerate shuffles are
-  more likely; if it is 0 or 40, the run stops (§3.4).
+  more likely; if it is 0 or 40, the run stops (§3.4). **Revision 1.3:** if leg P cannot pass on
+  it (`smallest_passing_auc is None`), it reads the "not readable" U (§3.2, S38); Ark's probe of
+  where that happens (§6) is unregistered.
+- **Revision 1.3: the note's "pair" against flyvis-65's C6 existence** (§1.5 item 5, M7): not
+  checked; it needs the bank's cells, block B's among them, and D3 (ii) abstains before the run.
+- **Revision 1.3: S36–S39 and the extensions of S25 and S27** are, like S23–S35, requirements on
+  a script that does not exist; their tests are described, not written, and that each can fail
+  was reasoned from the male script's code and tests at `01d2d05`, not run.
+- **Revision 1.3: the stop record's folder in `--synthetic-only`** (S39): the reviewers asked for
+  a file "in the private folder"; in `--synthetic-only` the run's folder is `--out`, and S39
+  writes it there. That reading is this draft's.
 - **GLOSSARY:** it has no entry for block A, block B or knockout; its rules of use ask for a term
   to be added before use. Not added here (this draft modifies no existing file).
 - **The male-CNS mapping of L1–L5** (§8). Revision 1.2: whether the built male bank
