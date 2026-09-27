@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """Knock out and regrow, block B on flyvis-65: L1-L5 x the eight motion-pathway inputs (40 cells).
 
-Implements docs/plans/2026-09-25-knockout-regrow-block-b-registration.md, revision 1.4.1 ("B";
+Implements docs/plans/2026-09-25-knockout-regrow-block-b-registration.md, revision 1.5 ("B";
 section numbers below refer to it unless marked "A"), a delta on block A's registration
 docs/plans/2026-09-24-knockout-regrow-registration.md, revision 3.4.1 with its Amendment 1 ("A").
 This file is a copy of A's script results/genome/c6/checks/knockout_regrow.py (D13 (i)) with the
-script changes S1-S39 of B section 7, and is reviewed as a diff against it; A's script, the male
+script changes S1-S40 of B section 7, and is reviewed as a diff against it; A's script, the male
 CNS arm's script and the pinned harness are not edited. Each change is marked "S<n>" where it is
 made. Forms taken from the male CNS arm's script (results/genome/c6/checks/
 knockout_regrow_male_cns.py, LF sha256 290ecb56... at 01d2d05) are ported by name, each marked
@@ -22,7 +22,8 @@ cap and a stop record (D7; S12, S39); a block on which leg P cannot pass reads t
 U (S38); p_S carries a mark when n_deg >= 1 (S36); the pre-run's provenance is checked (S37);
 and the output path is hardened: UTF-8 streams (S23), a log that cannot kill a run (S24), fits
 and verdict lines on disk before any print (S25), the command's environment in the manifest
-(S28), SHA256SUMS.txt written last (S29), earlier real-arm runs found at run time (S27).
+(S28), SHA256SUMS.txt written last (S29), earlier real-arm runs found at run time (S27), and a
+full --synthetic-only run refused on a dirty tree unless --allow-dirty (S40).
 
     tools/.venv/Scripts/python.exe results/genome/c6/checks/knockout_regrow_block_b.py --synthetic-only --starts 10 --workers 30 --out <new folder>
     tools/.venv/Scripts/python.exe results/genome/c6/checks/knockout_regrow_block_b.py --arm flyvis65_blockB --starts 10 --workers 30
@@ -88,7 +89,7 @@ C6 = HERE.parent
 ROOT = C6.parents[2]                                   # the repository root
 # S2: this file's registration and revision; the manifest records its LF sha256 at run time.
 REGISTRATION = "docs/plans/2026-09-25-knockout-regrow-block-b-registration.md"
-REGISTRATION_REVISION = "1.4.1"
+REGISTRATION_REVISION = "1.5"
 # S2: A's registration, from which quote_row and quote_section quote section 4 (B section 4 does
 # not restate it). Pinned after A's Amendment 1 and checked at run start in every mode
 # (check_pins); an Amendment 2 of A stops the run on this pin, read as "A changed", not as a
@@ -262,6 +263,7 @@ P_R = 0.01                                             # leg P for R
 P_W = 0.05 / len(RANKS)                                # leg P for W (0.0125, D6 (i))
 P_G = 0.10                                             # G needs p_P > 0.10 for every predictor
 N_DEG_NAME_ABOVE = 5                                   # section 3.2, D14 (ii): naming threshold
+# port: male TAU comment, the lattice text made generic (lines 321-327; the male arm's S24) -> S21
 # S21: 1e-9, the harness's tie band (revision 3.2, section 3.2), inert (B section 3.2): with
 # n_p present of N_BLOCK, every AUC is a multiple of 1/(2 n_p n_a), 2 n_p n_a <= 800 on block B,
 # so two unequal values on these lattices differ by at least 1/800^2 (about 1.6e-6), far more than
@@ -652,7 +654,9 @@ def check_block_and_mask():
 
 def block_print(y):
     """S8, check 3: the block's present count and its six strata counts (B section 3.4); has_auc
-    is False with 0 or 40 present cells."""
+    is False with 0 or 40 present cells. has_auc means "the AUC is defined" (0 < n < 40), not
+    "leg P can pass": n = 1 and n = 39 pass check 3 and are read by S38 (the "not readable" U,
+    smallest_passing_auc is None), not stopped here (revision 1.5, A1)."""
     y = np.asarray(y, bool)
     n = int(y.sum())
     return {"present": n, "absent": N_BLOCK - n,
@@ -667,6 +671,8 @@ def check_block_print(y):
     a block with an AUC on which leg P cannot pass reads the "not readable" U (S38), not a stop."""
     # port: male check_block_print (lines 734-745) -> S8 (no seal: printed at run start; the
     # whole run stops, there is no other lobe)
+    # has_auc is "AUC defined" (0 < n < 40), not "leg P can pass": n = 1 and 39 pass this check
+    # and are read by S38 (revision 1.5, A1).
     d = block_print(y)
     log(f"check 3 (block print): present {d['present']} of {N_BLOCK}; strata {d['strata']}")
     if not d["has_auc"]:
@@ -720,11 +726,11 @@ def check_pre_data_tables(tables, real_arm):
     at run start (D2 (ii), D3); in --synthetic-only only the hash, the inferable count and the
     mirrors are returned, so that no output of the pre-run carries a count from which block B's
     content follows by subtraction."""
-    # OPEN: B section 1.4 says the script "prints [the table] at run start" and section 1.3 that
-    # it prints the training present count at run start, without naming the mode. Read here as
-    # the real arm only: printed in --synthetic-only (the pre-run), the table with A section 1.4
-    # would give block B's column counts, and 604 minus the training present count block B's
-    # present count, before the registered run (D3 (ii)'s abstention). To be confirmed by review.
+    # Printed in the real arm only (B sections 1.3, 1.4, revision 1.5; D3 (ii)). If printed in
+    # --synthetic-only (the pre-run), two routes would give block B's content before the
+    # registered run: 604 minus the training present count is block B's present count, and the
+    # table's per-name [out, in] pairs with the public whole-bank degrees (A section 1.4) give
+    # presence inside the block per name.
     ok = (tables["endpoints_sha256"] == ENDPOINTS_SHA256
           and tables["inferable"] == INFERABLE_EXPECTED
           and set(map(tuple, tables["mirrors"])) == MIRRORS_EXPECTED)
@@ -900,9 +906,10 @@ def write_stop_record(fields, message):
     the arm and the git head. Returns the path, or None when the run has no folder."""
     folder = _RUN["folder"]
     if folder is None:
-        # OPEN: S39 names the real arm's private folder and the --out folder of --synthetic-only;
-        # a --synthetic-only run without --out has no folder (it writes nothing, A section 7),
-        # so no record is written there and the stop message says so.
+        # B section 3.2 (3), S39 (revision 1.5, OPEN 2): a --synthetic-only run without --out
+        # has no folder (it writes nothing, A section 7), so no record is written and the stop
+        # message says so. Seen from outside: no folder (legitimate without --out) / a folder
+        # with stop_record.json and no sums (stopped) / a folder with sums (completed).
         return None
     folder = Path(folder)
     folder.mkdir(parents=True, exist_ok=True)
@@ -3362,10 +3369,10 @@ def main(argv=None):
             {"arm": a.arm, "head": head, "started_utc": time.strftime(
                 "%Y-%m-%dT%H:%M:%SZ", time.gmtime())}) + "\n")
     else:
-        # port: male run_synthetic_only, its dirty-tree refusal (lines 3721-3727) -> D10 (i)
-        # OPEN: not one of S1-S39; ported so that block B's reference (D10 (i)) cannot be made
-        # from an uncommitted tree without the NOT A REFERENCE mark; A's --synthetic-only only
-        # recorded the tree state.
+        # port: male run_synthetic_only, its dirty-tree refusal (lines 3721-3727) -> S40
+        # A tightening relative to A (A's --synthetic-only recorded the tree state; B refuses):
+        # block B's reference (D10 (i)) cannot be made from an uncommitted tree without the
+        # NOT A REFERENCE mark (log, manifest, SYNTHETIC.md).
         dirty = tree_state()
         comparable = not smoke and a.starts == 10
         if dirty and comparable and not a.allow_dirty:
@@ -3392,8 +3399,9 @@ def main(argv=None):
     if completed and folder is not None:
         write_sha256sums(folder)
         if a.arm:
-            # OPEN: S29 says "in every folder the script writes"; read literally, the committed
-            # folder OUT gets its sums too (A's committed folder had none).
+            # S29, read literally (revision 1.5, OPEN 3): the committed folder OUT gets its sums
+            # too, a delta from A (A's committed folder had none); .gitignore does not cover
+            # the file, and it is committed with the registered run's artifacts.
             write_sha256sums(OUT)
     return result
 
@@ -3519,8 +3527,8 @@ def _run(a, t0, smoke, head, dirty, folder, earlier, not_a_reference):
         log("TWO-WORLD CHECK FAILED: a requirement marked stop failed, or the pre-run table was "
             "not reproduced (outcome 3); the real arm does not run (sections 3.6, 7). No real "
             f"block score was computed. Run folder: {folder}. " + treatment)
-        # OPEN: a failed two-world check exits here, so its folder gets no SHA256SUMS.txt (read
-        # with S29/S39: only a completed run writes sums); A wrote them before this exit.
+        # S29 (revision 1.5, OPEN 4): the folder of a run that did not complete has no
+        # SHA256SUMS.txt, this exit included (A wrote them before this exit).
         sys.exit(1)
     if a.synthetic_only:
         log(f"\n--synthetic-only: stopped before any real block score. {time.time() - t0:.0f}s")

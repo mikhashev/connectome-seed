@@ -1,5 +1,5 @@
 """Tests of knockout_regrow_block_b.py, block B on flyvis-65 (registration
-docs/plans/2026-09-25-knockout-regrow-block-b-registration.md, revision 1.4.1, section 7: S1-S39).
+docs/plans/2026-09-25-knockout-regrow-block-b-registration.md, revision 1.5, section 7: S1-S40).
 
 Fixture banks and synthetic worlds only. No test reads block B's cells of the real bank, and no
 test fits on the real bank (D3 (ii)): every flow puts a fixture bank in place of the real one
@@ -10,7 +10,7 @@ presence OUTSIDE block B (as revision 1.3 recomputed it), of which only the hash
 count and the mirrors are compared; no count is printed.
 
 T-A   copies of A's 17 label tests (test_knockout_regrow_labels.py), adapted to block B (S22).
-S1-S39  one or more tests each, named test_S<nn>_...; each can fail (the docstring says how).
+S1-S40  one or more tests each, named test_S<nn>_...; each can fail (the docstring says how).
 
 Run: PYTHONUTF8=1 tools/.venv/Scripts/python.exe -m pytest -p no:cacheprovider -v
 results/genome/c6/checks/test_knockout_regrow_block_b.py
@@ -443,7 +443,7 @@ def test_S02_registrations_and_A_pin(monkeypatch):
     """S2: this registration and revision; A's LF sha256 after Amendment 1 is checked in every
     mode (a changed pin stops: "A changed"); the text of A's verdict is recorded."""
     assert K.REGISTRATION == "docs/plans/2026-09-25-knockout-regrow-block-b-registration.md"
-    assert K.REGISTRATION_REVISION == "1.4.1"
+    assert K.REGISTRATION_REVISION == "1.5"
     assert K.A_REGISTRATION_SHA256_LF_AMENDED == (
         "fc41505690365ff6d82fa618b00b482cc992bb36d708ed3b6fbbe6f54f96dbec")
     assert K.A_REGISTRATION_SHA256_LF_FLYVIS65 == (
@@ -1074,7 +1074,10 @@ def test_S37_prerun_provenance(tmp_path, monkeypatch):
 def test_S38_not_readable(capsys):
     """S38: with n_p = 1 and rows that would read R (and W, and G), the label is U, its first
     reason is block B's literal "of 40", u_kind is not_readable and the rename leaves it; with
-    n_p = 2 the ordinary branch is read. With A's read_label(rows) the first case reads R."""
+    n_p = 2 the ordinary branch is read. With A's read_label(rows) the first case reads R.
+    Revision 1.5 (A3): n_p = 39 gives the same not-readable U with "(n_present = 39 of 40)", and
+    n_p = 1 and 39 pass check 3 (has_auc means "AUC defined", not "leg P can pass"); n_p = 2
+    carries no not-readable text."""
     perms = K.uniform_perms()
     lit = "not readable: leg P cannot reach p_P <= 0.01 on this block (n_present = 1 of 40)"
     for k in (1, 39):
@@ -1105,6 +1108,19 @@ def test_S38_not_readable(capsys):
             assert K.label_text("U", DL, u, lab["U_reasons"], 1.0) == "U: " + lit
         assert K.read_label(rr, n_present=2, readable=True)["label"] == want
     assert "of 64" not in K.NOT_READABLE_REASON
+    # revision 1.5 (A3): the other end, n_p = 39, and n_p = 2 carrying no not-readable text
+    lit39 = "not readable: leg P cannot reach p_P <= 0.01 on this block (n_present = 39 of 40)"
+    for want, rr in variants.items():
+        lab = K.read_label(rr, n_present=39, readable=False)
+        assert lab["label"] == "U" and lab["U_reasons"][0] == lit39
+        assert K.u_kind(lab["U_reasons"]) == "not_readable"
+        lab2 = K.read_label(rr, n_present=2, readable=True)
+        assert not any("not readable" in r for r in lab2.get("U_reasons", []))
+    for k in (1, 39):
+        y = np.zeros(40, bool)
+        y[:k] = True
+        d = K.block_print(y)
+        assert d["has_auc"] and d["present"] == k           # check 3 passes; S38 reads it
 
 
 def test_S39_stop_record(tmp_path, monkeypatch, capsys):
@@ -1143,6 +1159,32 @@ def test_S39_a_stopped_synthetic_run_has_a_record_and_no_sums(tmp_path, monkeypa
     assert rec["arm"] == "synthetic-only" and rec["att"] == 0
     assert not (out / "SHA256SUMS.txt").exists()
     assert K.RC_CAP_STOP_TEXT.split(" (")[0] in (out / "stdout.log").read_text(encoding="utf-8")
+
+
+def test_S40_dirty_tree_refused_unless_allow_dirty(tmp_path, monkeypatch):
+    """S40 (revision 1.5): a full --synthetic-only run on a dirty tree is refused before its
+    folder is made; with --allow-dirty it runs and is marked NOT A REFERENCE in the log, the
+    manifest and SYNTHETIC.md; a clean tree carries no mark. A version without the refusal (A's,
+    which only recorded the tree state) fails the first assertion."""
+    flow_setup(tmp_path, monkeypatch.setattr)
+    monkeypatch.setattr(K, "tree_state", lambda: " M results/genome/c6/checks/x.py")
+    out = tmp_path / "out"
+    with pytest.raises(SystemExit) as e:
+        K.main(SYN_ARGS + ["--out", str(out)])
+    assert "REFUSED" in str(e.value.code) and "--allow-dirty" in str(e.value.code)
+    assert not out.exists()
+    K.main(SYN_ARGS + ["--out", str(out), "--allow-dirty"])
+    man = json.loads((out / "synthetic_only.json").read_text(encoding="utf-8"))["manifest"]
+    assert man["not_a_reference"] == K.NOT_A_REFERENCE_TEXT and man["allow_dirty"]
+    assert K.NOT_A_REFERENCE_TEXT in (out / "SYNTHETIC.md").read_text(encoding="utf-8")
+    assert K.NOT_A_REFERENCE_TEXT in (out / "stdout.log").read_text(encoding="utf-8")
+    assert (out / "SHA256SUMS.txt").is_file()
+    monkeypatch.setattr(K, "tree_state", lambda: "")
+    clean = tmp_path / "clean"
+    K.main(SYN_ARGS + ["--out", str(clean)])
+    man = json.loads((clean / "synthetic_only.json").read_text(encoding="utf-8"))["manifest"]
+    assert man["not_a_reference"] is None
+    assert "NOT A REFERENCE" not in (clean / "SYNTHETIC.md").read_text(encoding="utf-8")
 
 
 def test_S38_counted_apart_in_RESULT(rehearsal):
