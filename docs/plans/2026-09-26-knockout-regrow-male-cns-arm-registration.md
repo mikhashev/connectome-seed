@@ -1773,12 +1773,44 @@ caution printed with it). Outputs committed in `results/genome/c6/checks/knockou
 | what refuted it | both runs' logs, "this run by head …, script 290ecb56", and `RESULT.md`'s code line |
 | who caught | CC, reading `RESULT.md`, 2026-09-27 11:40 UTC |
 
+**The blind review of run 2 (2026-09-27, `docs/notes/2026-09-27-knockout-regrow-male-cns-blind-review.md`):
+"the verdicts follow".** Lobe L G, lobe R G, the male reading, S0 (k = 0) and the joint reading follow
+from the registered rules applied to the run's outputs; rule #2.1's and BF_1's AUC, `M_real`,
+`n_ge`, `p_S` and `p_P` recompute exactly from the raw fits in both lobes; `RESULT.md` regenerates
+from `summary.json` (1,659 of 1,659 lines; 1,940 of 1,940 table fields); every gate of §7.4 (1)
+passed in order before "UNSEALING"; the three claims of `SEAL_BROKEN_NOTE.md` hold. Its findings,
+recorded here:
+
+| field | entry |
+|---|---|
+| item | the seal record printed by run 2 |
+| was | `RESULT.md` line 3 "Seal record: intact."; `summary.json` `manifest.seal_record` "intact"; no S26 note on the verdict lines |
+| correct | the seal was broken after review by run 1 (2026-09-26T23:25:55Z); `SEAL_BROKEN_NOTE.md` in the same folder is the registered substitute (this section, before run 2); `RESULT.md` and `summary.json` are left as the run wrote them, so that they still regenerate from each other; they are read with the note |
+| where it lived | `knockout_regrow_male_cns.py` `SEAL_RECORD = "intact"` (line 183) at `01d2d05`/`e07e347`; `results/genome/c6/checks/knockout_regrow_male_cns/RESULT.md` line 3 at `0286ae1` |
+| what refuted it | `run1_20260926T192234Z.stdout.log` line 3462 ("UNSEALING at 2026-09-26T23:25:55Z") |
+| who caught | the blind reviewer, §E.5 |
+
+**Clarifications from the review (not errors of a number).** (1) The committed
+`run1_20260926T192234Z.stdout.log` is the console log of run 1 (stdout and stderr redirected to
+`connectome-seed-data/knockout_regrow/malecns_registered_20260926T192234Z.stdout.log`), not the
+private folder's `stdout.log`: it equals the private log (3,554 lines) plus the 18-line Python
+traceback that only the console received (the tee is closed in a `finally` before the exception
+reaches the top level). (2) Run 2's private `SHA256SUMS.txt` lists `stdout.log` as it stood when the
+sums were written; the log gains three lines after them ("wrote …" twice, "wall-clock"), so that
+entry does not verify; the other entries do. (3) `PYTHONUTF8=1` is not recorded by the manifest
+(only the BLAS thread variables are). (4) The synthetic-step paragraph "U rule" of `RESULT.md`
+(lines 194, 974) still prints A's reading of a threshold U; it describes the worlds' labels, no
+real lobe read U, and §4.1 (5) governs a real U. (5) §3.5's mirror, other-61 and quadrant values
+are in the log and `summary.json` but have no column in `RESULT.md`'s table. (6)
+`per_shuffle_<lobe>.csv` carries `auc_N1` twice, from the same field.
+
 **Debts for the next arms (not made here, since they change the code; chat 2026-09-27 07:06
 UTC):** `sys.stdout`/`sys.stderr.reconfigure(encoding="utf-8", errors="backslashreplace")` at the
 top of every script; a `log()` that cannot stop a run on an output error; the real fits and
 verdict lines written to disk as they are computed, before any print; a test that runs the real
 arm end to end on a fixture with stdout forced to strict ASCII; a seal-record mechanism that does
 not need a new head (a run-time flag recorded in the manifest).
+**Debts added by the blind review:** the manifest records the run's environment variables that touch output (`PYTHONUTF8`, `PYTHONIOENCODING`); `SHA256SUMS.txt` is written after the last log line; the synthetic "U rule" paragraph follows the arm's U reading; `RESULT.md` carries §3.5's mirror, other-61 and quadrant columns; `per_shuffle` CSV without the duplicate column; the seal record set at run time, not by a constant.
 
 ## 12. Changelog
 
