@@ -1846,7 +1846,7 @@ are in the log and `summary.json` but have no column in `RESULT.md`'s table. (6)
 - **The male instrument's weakness, read as counts, not limits (Ark, Zcode):** the male curves
   are one world of five below A's at several γ (rule #2.1 seen at 0.6: 2/5 in each lobe against
   3/5), within the ±1 grid step that the binomial note gives limits at n = 5, and on different
-  draws of worlds (A 90xxx, male 921xx). "Instrument weaker" is therefore not separated from "a
+  draws of worlds (A 901xx, male 921xx). "Instrument weaker" is therefore not separated from "a
   different draw"; the per-γ counts that S31 prints beside each G are the reading, not the limits.
   A diagnostic comparison of the two pre-runs' curves (Q2, no run) is made outside this
   registration: `docs/notes/2026-09-27-knockout-regrow-power-curves-A-vs-male.md`.
