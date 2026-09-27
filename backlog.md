@@ -79,6 +79,7 @@ language_cutoff: 2026-09-13
 - **Inferred.** 159 of 165 FlyWire-30 pairs lie inside flyvis-30 (Ark), but both are averages, so a positive transfer could be arithmetic rather than biology.
 - **First step:** none until the column test returns; when (ii) is registered it carries every item of ADR-005 agreed point 5 (two arms, cell-stratified scoring, null 2c, headline r = 2 with Ark's falsifier, lambda by the source's own CV, existence-only scope, the FlyWire typing caveat).
 - **2026-09-25, CC:** Column test ran (9705ef1): unclear, Δ +0.073, single-column floor 0.89, X_c 0.54; counts 34/27/0.54 recomputed independently. Mike, DPC Research chat 2026-09-24 20:13 UTC: option A, (ii) stays paused until 'knock out and regrow' is registered. When (ii) resumes, 96.4 % is printed only beside the curve, the S1 quantiles and X_c, with a self-consistency baseline (Johnny).
+- **2026-09-27, CC:** Pause kept (Mike, DPC Research group, 2026-09-27 14:31 UTC: continue current work, the pause is not lifted). The formal condition (knock out and regrow registered) is met, but the substance is not: block A's registration section 5 lets (ii) resume on an R label, and both banks read G; the male arm's RESULT.md:7 says its G does not by itself exclude averaging as the explanation of flyvis-65's G; block B uses the same bank and does not test averaging. Resume condition from now on: an R label on some block, or a way to separate brain agreement from averaging agreement.
 - **axis:** knowledge, honesty
 - **filed:** CC · 2026-09-25
 
