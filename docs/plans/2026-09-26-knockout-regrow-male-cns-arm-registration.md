@@ -1804,6 +1804,53 @@ real lobe read U, and §4.1 (5) governs a real U. (5) §3.5's mirror, other-61 a
 are in the log and `summary.json` but have no column in `RESULT.md`'s table. (6)
 `per_shuffle_<lobe>.csv` carries `auc_N1` twice, from the same field.
 
+**The reviewers on the blind review (DPC Research chat, 2026-09-27: Ark 13:24, Zcode 13:28 UTC):
+"the verdicts follow" confirmed; the findings reclassified as follows.**
+
+- **"Seal record: intact" is a claim about what the writer cannot measure** (Ark; Zcode checked
+  `RESULT.md:3` and the header lines himself), not a wrong value: the script prints the constant
+  `SEAL_RECORD` and cannot detect a seal broken by an earlier run. The outputs are not regenerated
+  (a regeneration would add a second variable for no gain); the fix is of the class, in block B's
+  script (the seal record is read from the folder, or printed "not determined by this run").
+- **The header's "intact" lines of this file** ("The seal, at drafting: intact …, At revision 1.2:
+  intact, At revision 1.3: intact") state the seal **at each revision's drafting, before run 1
+  unsealed** (2026-09-26 23:25:55 UTC); read after that time they are not the seal's status. The
+  status since then: broken after review by run 1 (above).
+- **Run 2's `SHA256SUMS.txt` makes no integrity claim for `stdout.log`.** Its six other entries are
+  integrity claims and verify; the `stdout.log` entry was written while the log was still being
+  written (three lines follow it), so it is not one. Block B's script writes the sums last.
+- **Two contradictions between an output and this registration**, not clarifications:
+  (a) `RESULT.md`'s synthetic "U rule" paragraphs (lines 194, 974) print A's reading of a threshold
+  U, which §4.1 (5) and §6 say does not hold on the male banks; they describe the worlds' labels and
+  no real lobe read U, so no reading depends on them. (b) §3.5 registers the mirror partners' `p`,
+  the AUC on the other 61 cells and the quadrant means as printed; `RESULT.md` has no column for
+  them (they are in the log and `summary.json` `real.<lobe>.ev.rows.<pk>`). §3.5's statement is
+  wider than the artifact.
+- **The committed run-1 log's console tail is not reproducible, and how it got there is named:**
+  run 1 was launched with stdout and stderr both redirected to one file (`… > <log> 2>&1`); the
+  script's tee wrote the private `stdout.log`, and the interpreter's traceback, raised after the
+  tee was closed in a `finally`, went to stderr, that is into the same redirected file. The
+  committed file is that redirected file, copied byte for byte (CC, 2026-09-27 07:16 UTC).
+- **S0's registered text** ("the split comes from the instrument's response …") was printed where
+  no split by reading occurred; it is the registered diagnostic, not a misreading. Block B's writer
+  carries the condition in the sentence ("a label split here would come from the instrument's
+  response, not the block").
+- **The (h) check, worded as the reviewers put it:** it ran with a script that differs from the
+  registered run's by one constant (A's amended hash), on a path that does not read it; no claim of
+  reproduction rests on (h), since both registered runs refitted the synthetic step and passed the
+  reproduction gate.
+- **Debts added:** `PYTHONUTF8` and the other command variables in the manifest (provenance: the
+  registered command is not checkable from the artifact otherwise); fenced drafts inside a
+  registration marked "fenced draft, not a section" (the blind reviewer read Appendix A's heading
+  as a section).
+- **The male instrument's weakness, read as counts, not limits (Ark, Zcode):** the male curves
+  are one world of five below A's at several γ (rule #2.1 seen at 0.6: 2/5 in each lobe against
+  3/5), within the ±1 grid step that the binomial note gives limits at n = 5, and on different
+  draws of worlds (A 90xxx, male 921xx). "Instrument weaker" is therefore not separated from "a
+  different draw"; the per-γ counts that S31 prints beside each G are the reading, not the limits.
+  A diagnostic comparison of the two pre-runs' curves (Q2, no run) is made outside this
+  registration: `docs/notes/2026-09-27-knockout-regrow-power-curves-A-vs-male.md`.
+
 **Debts for the next arms (not made here, since they change the code; chat 2026-09-27 07:06
 UTC):** `sys.stdout`/`sys.stderr.reconfigure(encoding="utf-8", errors="backslashreplace")` at the
 top of every script; a `log()` that cannot stop a run on an output error; the real fits and
