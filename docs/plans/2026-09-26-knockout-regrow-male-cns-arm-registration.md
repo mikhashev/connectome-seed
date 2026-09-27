@@ -1755,6 +1755,24 @@ synthetic store of run 2 against run 1's saved `synthetic_L/`, `synthetic_R/`, f
 L's table and verdict line of run 2 against run 1's printed ones; (3) lobe R has no base in run 1:
 its numbers in run 2 are a first measurement, not a reproduction.
 
+**The second run and its checks against the first (2026-09-27, head `e07e347`, 07:16:41–11:32:46
+UTC, `PYTHONUTF8=1`, exit 0).** (1) Synthetic stores, fit by fit: 28,665 keys per lobe, 0 missing,
+0 differing fields (`lam`, `outside_density`, `p`, `reused_from_ko`, `score`, `y`; `secs` excluded)
+in both lobes; worlds tables byte-identical. (2) Lobe L's table and verdict line: identical to the
+first run's (`diff` of the 31 printed lines empty); check 3 identical in both lobes. (3) Lobe R: a
+first measurement, rule #2.1 AUC 0.5127, `p_P` 0.4318, `n_ge` 20 of 99: G. **Male reading: G in
+both lobes; block difference S0 (k = 0); joint reading with flyvis-65: agreement** (the registered
+caution printed with it). Outputs committed in `results/genome/c6/checks/knockout_regrow_male_cns/`.
+
+| field | entry |
+|---|---|
+| item | the script's LF sha256 named for the second run |
+| was | "`1b952ca6…`, unchanged since `01d2d05`" (`SEAL_BROKEN_NOTE.md` and the message of `e07e347`; chat 2026-09-27 07:17 UTC) |
+| correct | `290ecb56…` since `01d2d05` (unchanged to `e07e347`); `1b952ca6…` is the script of `8531c6d`, before `01d2d05` set A's amended hash in it. So the §3.3.1 (h) `--from-raw` check ran with `1b952ca6…`, not with the registered run's script; the difference is that constant only, and both registered runs refitted the synthetic step and passed the reproduction gate against the pinned references themselves |
+| where it lived | `results/genome/c6/checks/knockout_regrow_male_cns/SEAL_BROKEN_NOTE.md` at `e07e347`; commit message of `e07e347` |
+| what refuted it | both runs' logs, "this run by head …, script 290ecb56", and `RESULT.md`'s code line |
+| who caught | CC, reading `RESULT.md`, 2026-09-27 11:40 UTC |
+
 **Debts for the next arms (not made here, since they change the code; chat 2026-09-27 07:06
 UTC):** `sys.stdout`/`sys.stderr.reconfigure(encoding="utf-8", errors="backslashreplace")` at the
 top of every script; a `log()` that cannot stop a run on an output error; the real fits and
