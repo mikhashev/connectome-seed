@@ -5,7 +5,10 @@ lands on (`docs/decisions/`) and the tasks it consists of (`backlog.md`). Dates 
 local day; chat timestamps quoted anywhere in this repository are UTC (this machine is
 UTC+07).
 
-**Last updated 2026-09-25, session close** (the ADR-005 paragraph of the grammar track: the
+**Last updated 2026-09-28, session close** (the knock out and regrow bullet of the ADR-005
+paragraph: block A, the male CNS arm and block B run and blind-reviewed; retrospective:
+[docs/retrospectives/2026-09-28-session-close.md](docs/retrospectives/2026-09-28-session-close.md)).
+Before that, 2026-09-25, session close (the ADR-005 paragraph of the grammar track: the
 column test ran, the knockout block and bank were chosen, and the knockout registration reached
 revision 3.1, unreviewed; handover:
 [docs/briefs/2026-09-25-next-session-handover.md](docs/briefs/2026-09-25-next-session-handover.md)); the C6 row of the owners table on 2026-09-24; the rest
@@ -432,16 +435,27 @@ list grows with every commit.
 - **Done: the column test.** Run once at `b3f41ed`; the result is `9705ef1`, verdict **unclear**.
   A single FlyWire column already sits at 0.89 inside flyvis-30, against 0.964 for the averaged
   bank. flyvis ships only the merged template, so the max merge cannot be measured.
-- **Next: knock out and regrow.** Remove block A, the ON/OFF inputs to T4/T5 (64 cells, a perfect
-  checkerboard in every bank), from **flyvis-65**, and ask whether the rule regrows it (Mike,
-  2026-09-24 20:39 UTC).
-  - The registration is at revision 3.1, committed as an unreviewed draft:
-    `docs/plans/2026-09-24-knockout-regrow-registration.md`, with its script
-    `results/genome/c6/checks/knockout_regrow.py`. The synthetic worlds pass. The real block has not
-    been run. Next: review of 3.1, then the real run on the CPU. A batched GPU instrument is built
-    in parallel as a separate instrument (Mike, 2026-09-25 09:34 and 09:40 UTC).
-  - The animal control is the **Janelia male CNS v1.0**. Its bank needs its own registered
-    builder first.
+- **In progress: knock out and regrow.** Remove block A, the ON/OFF inputs to T4/T5 (64 cells, a
+  perfect checkerboard in every bank), from **flyvis-65**, and ask whether the rule regrows it
+  (Mike, 2026-09-24 20:39 UTC).
+  - **Block A: run, verdict G**, blind review "the verdict follows"
+    (`docs/plans/2026-09-24-knockout-regrow-registration.md`;
+    `results/genome/c6/checks/knockout_regrow/RESULT.md`). A batched GPU instrument was built and
+    validated as a separate instrument; no registered arm reads it.
+  - **The animal control, the Janelia male CNS v1.0:** its bank was built by a registered builder;
+    the arm read G in both lobes, with the registered caution that it does not exclude averaging
+    (`results/genome/c6/checks/knockout_regrow_male_cns/RESULT.md`, with `SEAL_BROKEN_NOTE.md` and
+    `READING_NOTES.md`).
+  - **Block B on flyvis-65: run, verdict U, failed fit**, blind review "the verdict follows"
+    (`docs/plans/2026-09-25-knockout-regrow-block-b-registration.md`;
+    `results/genome/c6/checks/knockout_regrow_block_b/RESULT.md`, read with `READING_NOTES.md`:
+    nothing is concluded about the block). Block B uses the same bank, so it does not test
+    averaging.
+  - **Next, for Mike to choose** (backlog
+    `THE-FAILED-FIT-BRANCH-HAS-NO-SYNTHETIC-WITNESS-AND-THE-GATE-DOES-NOT-MEASURE-THE-INTERACTION`
+    and `KNOCK-OUT-AND-REGROW-TESTS-WHETHER-THE-RULE-GENERATES-A-BLOCK-IT-WAS-NOT-SHOWN`): calibrate
+    the failed-fit branch; a gate that measures the interaction; Ark's proposal to move the main
+    line to animal banks. Each needs a registration.
   - FlyWire-30 stays as provenance: on it the block's targets are cut off from the rest of the
     bank (14 of 64 cells inferable).
 
