@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Knock out and regrow, block B on flyvis-65: L1-L5 x the eight motion-pathway inputs (40 cells).
 
-Implements docs/plans/2026-09-25-knockout-regrow-block-b-registration.md, revision 1.7.1 ("B";
+Implements docs/plans/2026-09-25-knockout-regrow-block-b-registration.md, revision 1.7.2 ("B";
 section numbers below refer to it unless marked "A"), a delta on block A's registration
 docs/plans/2026-09-24-knockout-regrow-registration.md, revision 3.4.1 with its Amendment 1 ("A").
 This file is a copy of A's script results/genome/c6/checks/knockout_regrow.py (D13 (i)) with the
@@ -89,7 +89,7 @@ C6 = HERE.parent
 ROOT = C6.parents[2]                                   # the repository root
 # S2: this file's registration and revision; the manifest records its LF sha256 at run time.
 REGISTRATION = "docs/plans/2026-09-25-knockout-regrow-block-b-registration.md"
-REGISTRATION_REVISION = "1.7.1"
+REGISTRATION_REVISION = "1.7.2"
 # S2: A's registration, from which quote_row and quote_section quote section 4 (B section 4 does
 # not restate it). Pinned after A's Amendment 1 and checked at run start in every mode
 # (check_pins); an Amendment 2 of A stops the run on this pin, read as "A changed", not as a
@@ -3396,6 +3396,39 @@ FROM_RAW_OUT_REFUSED_TEXT = ("REFUSED: block B's reference is made by one fresh 
                              "is not one. Run --from-raw without --out.")
 
 
+def arm_gate(a, head):
+    """Revision 1.7.2 (S27, S37; the reviewers' vote on 1.7.1): the real arm's checks that can
+    refuse without reading the bank, run in main before the private folder and REAL_ARM_MARKER
+    exist and before real_bank() is called, so that a refusal shows nothing of block B (no check 3
+    line, no section 1.4 table) and leaves no folder and no marker. In _run's order: check 1
+    (pins, versions, rule #2.1, A's registration, S2), check 2 (block and mask: pure geometry on
+    an empty H.Bank("geometry", {}), no real cell), check 7 (AUC function on hand-made inputs),
+    the seeds (section 3.7), and the pre-run's provenance (S37, with check_prerun_files). The
+    results are handed to _run, which logs them at their places in section 7's order (the log's
+    order is unchanged; only the PRE-RUN PROVENANCE DIFFERS line of a refusal moves ahead of the
+    first line). The rule is limited to what guards the show; it is not a general reordering."""
+    pins = check_pins()
+    block_and_mask = check_block_and_mask()
+    auc_function = check_auc_function()
+    seeds = assert_seeds_unique(a.starts)
+    # S37 moved here from _run (revision 1.7.2). Safe to move: prerun_provenance's verdict
+    # ("passed") depends only on PRERUN_DIR's content (check_prerun_files and the manifest of
+    # synthetic_only.json) and the registered constants (PRERUN_SHA256, PRERUN_GIT_HEAD,
+    # PRERUN_SCRIPT_SHA256_LF); its arguments, this run's head and script hash, enter only its
+    # record and its text. check_registered_constants has already passed in the arm, so
+    # reference_mode() holds here and check_prerun_files never meets pre-run mode's placeholder.
+    prov = prerun_provenance(head, sha256_lf(Path(__file__)))
+    if not prov["passed"]:
+        # By design, a refusal here leaves only the console (stdout and stderr): the line goes to
+        # the log's buffer and no folder exists to receive it. Do not "fix" this by creating the
+        # folder earlier: no folder and no marker before the reference and the pins are verified
+        # is the rule (revision 1.7.2).
+        log(f"{PROVENANCE_DIFFERS_TEXT} (S37): {prov['reason']}; no fit was made")
+        sys.exit(1)
+    return {"pins": pins, "block_and_mask": block_and_mask, "auc_function": auc_function,
+            "seeds": seeds, "prov": prov}
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser()
     mode = ap.add_mutually_exclusive_group(required=True)
@@ -3440,9 +3473,16 @@ def main(argv=None):
     H.STARTS = a.starts
     head = git("rev-parse", "HEAD")
     not_a_reference = None
+    gate, prov = None, None
     if a.arm:
         dirty = refuse_if_dirty(a.allow_dirty)
         earlier = find_earlier_runs(PRIVATE_ROOT, a.arm)        # S27, before this run's folder
+        # Revision 1.7.2: nothing is shown and no folder or marker exists until every check that
+        # can refuse without reading the bank has passed (arm_gate: pins, block and mask, AUC
+        # function, seeds, the pre-run's provenance). REAL_ARM_STARTED.json therefore means "the
+        # reference and the pins verified, the arm began"; a run that fails later still leaves it.
+        gate = arm_gate(a, head)
+        prov = gate["prov"]
         folder = private_run_dir(a.arm, head)
         folder.mkdir(parents=True, exist_ok=False)
         write_text_synced(folder / REAL_ARM_MARKER, dump_json(
@@ -3481,7 +3521,7 @@ def main(argv=None):
         tee_to(folder / "stdout.log")                  # S24, S29
     completed = False
     try:
-        result = _run(a, t0, smoke, head, dirty, folder, earlier, not_a_reference)
+        result = _run(a, t0, smoke, head, dirty, folder, earlier, not_a_reference, gate, prov)
         completed = True
     finally:
         untee()
@@ -3500,12 +3540,16 @@ def main(argv=None):
     return result
 
 
-def _run(a, t0, smoke, head, dirty, folder, earlier, not_a_reference):
+def _run(a, t0, smoke, head, dirty, folder, earlier, not_a_reference, gate=None, prov=None):
     """Section 7's order: pins; machine checks (check 3 and the pre-data table before any fit on
     the real bank); the pre-run's provenance before any fit (S37); the synthetic step, its
     outputs on disk before its tables are printed (S25); then, in the real arm, the real block,
-    its fits and verdict lines on disk before any print of them (S25), and the outputs."""
-    pins = check_pins()
+    its fits and verdict lines on disk before any print of them (S25), and the outputs.
+    Revision 1.7.2: in the real arm, checks 1, 2 and 7, the seeds and the provenance have run in
+    main (arm_gate) before the folder existed; gate and prov carry their results, logged here at
+    their places, and prov enters the manifest as before. In --synthetic-only (gate None) they
+    run here, as in 1.7.1."""
+    pins = gate["pins"] if gate else check_pins()
     log(f"registration: {REGISTRATION}, revision {REGISTRATION_REVISION}; A's registration LF "
         f"sha256 {pins['a_registration_sha256_lf']} (pinned after Amendment 1; S2); "
         f"{'SYNTHETIC ONLY' if a.synthetic_only else 'arm ' + a.arm}"
@@ -3519,7 +3563,8 @@ def _run(a, t0, smoke, head, dirty, folder, earlier, not_a_reference):
 
     # Step 2: machine checks (section 3.4). Checks 3, 5, 6, 8 and 9 read the real block or fit a
     # rule on the real bank, so they run in the real arm only.
-    checks = {"1_pins": pins, "2_block_and_mask": check_block_and_mask()}
+    checks = {"1_pins": pins,
+              "2_block_and_mask": gate["block_and_mask"] if gate else check_block_and_mask()}
     log(f"check 2 (block and mask): passed; {N_TRAIN_CELLS} training cells, {N_BLOCK} block "
         "cells, block A's 64 cells in training")
     bank = real_bank()
@@ -3536,17 +3581,20 @@ def _run(a, t0, smoke, head, dirty, folder, earlier, not_a_reference):
         log(f"section 1.4 table (printed at run start, D2 (ii)): {tables['endpoints']}; training "
             f"present cells {tables['training_present']} of {N_TRAIN_CELLS} (printed, not "
             "checked; D3)")
-    checks["7_auc_function"] = check_auc_function()
+    checks["7_auc_function"] = gate["auc_function"] if gate else check_auc_function()
     log("check 7 (AUC function on hand-made inputs): passed")
-    seeds = assert_seeds_unique(a.starts)
+    seeds = gate["seeds"] if gate else assert_seeds_unique(a.starts)
     log(f"seeds (section 3.7): {seeds}")
-    # S37: which code made the reference, before any fit (degree_terms is the first).
-    prov = None
-    if reference_mode():
+    # S37: which code made the reference, before any fit (degree_terms is the first). Revision
+    # 1.7.2: the real arm checked it in main (arm_gate) before its folder existed; here it runs
+    # for --synthetic-only in reference mode only (the one-time --from-raw diagnostic re-read goes
+    # through it), never twice in the arm, and never in pre-run mode.
+    if reference_mode() and not a.arm:
         prov = prerun_provenance(head, sha256_lf(Path(__file__)))
         if not prov["passed"]:
             log(f"{PROVENANCE_DIFFERS_TEXT} (S37): {prov['reason']}; no fit was made")
             sys.exit(1)
+    if prov is not None:
         log(f"pre-run provenance (S37): {prov['text']}")
     terms = degree_terms()
     log(f"section 3.6 degree terms: N1 (c, a, b) fitted on the real bank's knockout view of block "

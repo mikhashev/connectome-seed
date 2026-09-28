@@ -1,5 +1,5 @@
 """Tests of knockout_regrow_block_b.py, block B on flyvis-65 (registration
-docs/plans/2026-09-25-knockout-regrow-block-b-registration.md, revision 1.7.1, section 7: S1-S40).
+docs/plans/2026-09-25-knockout-regrow-block-b-registration.md, revision 1.7.2, section 7: S1-S40).
 
 Fixture banks and synthetic worlds only. No test reads block B's cells of the real bank, and no
 test fits on the real bank (D3 (ii)): every flow puts a fixture bank in place of the real one
@@ -468,7 +468,7 @@ def test_S02_registrations_and_A_pin(monkeypatch):
     """S2: this registration and revision; A's LF sha256 after Amendment 1 is checked in every
     mode (a changed pin stops: "A changed"); the text of A's verdict is recorded."""
     assert K.REGISTRATION == "docs/plans/2026-09-25-knockout-regrow-block-b-registration.md"
-    assert K.REGISTRATION_REVISION == "1.7.1"
+    assert K.REGISTRATION_REVISION == "1.7.2"
     assert K.A_REGISTRATION_SHA256_LF_AMENDED == (
         "fc41505690365ff6d82fa618b00b482cc992bb36d708ed3b6fbbe6f54f96dbec")
     assert K.A_REGISTRATION_SHA256_LF_FLYVIS65 == (
@@ -1129,11 +1129,12 @@ def test_S36_p_S_mark():
     assert "p_S = 0.01 (n_ge = 0 of 99, n_deg = 0)" in line0 and "[leg S" not in line0
 
 
-def test_S37_prerun_provenance(tmp_path, monkeypatch):
+def test_S37_prerun_provenance(tmp_path, monkeypatch, capsys):
     """S37: a reference whose manifest names the registered head and script passes although the
     running script's hash differs; a manifest naming another script stops the registered run
     with "PRE-RUN PROVENANCE DIFFERS" before the first fit (fit functions that raise are never
-    called)."""
+    called). Revision 1.7.2: the real arm stops before its private folder exists (the line is on
+    the console only); --synthetic-only is unchanged (its --out folder's log holds the line)."""
     flow_setup(tmp_path, monkeypatch.setattr)
     make_reference(tmp_path, monkeypatch.setattr)
     pv = K.prerun_provenance("f" * 40, "e" * 64)
@@ -1149,12 +1150,15 @@ def test_S37_prerun_provenance(tmp_path, monkeypatch):
     monkeypatch.setattr(K, "_fit_one", no_fit)
     monkeypatch.setattr(K, "degree_terms", no_fit)
     monkeypatch.setattr(K, "machine_checks_real", no_fit)
+    capsys.readouterr()
     with pytest.raises(SystemExit):
         K.main(ARM_ARGS)
+    assert K.PROVENANCE_DIFFERS_TEXT in capsys.readouterr().out
+    assert not (tmp_path / "private").exists()
     with pytest.raises(SystemExit):
         K.main(SYN_ARGS + ["--out", str(tmp_path / "again")])
     assert fits == []
-    log = next((tmp_path / "private").iterdir()) / "stdout.log"
+    log = tmp_path / "again" / "stdout.log"
     assert K.PROVENANCE_DIFFERS_TEXT in log.read_text(encoding="utf-8")
 
 
@@ -1325,11 +1329,12 @@ def test_S17_is_the_pinned_store_is_a_condition(tmp_path, monkeypatch):
     assert fresh["passed"] is True and fresh["outcome"] == 1
 
 
-def test_S37_reader_refuses_a_not_a_reference_folder(tmp_path, monkeypatch):
+def test_S37_reader_refuses_a_not_a_reference_folder(tmp_path, monkeypatch, capsys):
     """Revision 1.6 (A4; Ark 18:00): an --allow-dirty folder (manifest not_a_reference set),
     pinned by its own sums and with its own head and script registered, verifies its files but
     is refused by prerun_provenance; the registered run stops with "PRE-RUN PROVENANCE DIFFERS"
-    before any fit. A reader without the refusal passes it and fails the test."""
+    before any fit (revision 1.7.2: and before its private folder exists, so the line is on the
+    console only). A reader without the refusal passes it and fails the test."""
     flow_setup(tmp_path, monkeypatch.setattr)
     monkeypatch.setattr(K, "tree_state", lambda: " M results/genome/c6/checks/x.py")
     make_reference(tmp_path, monkeypatch.setattr, ["--allow-dirty"])
@@ -1343,10 +1348,54 @@ def test_S37_reader_refuses_a_not_a_reference_folder(tmp_path, monkeypatch):
         raise AssertionError("a fit was made before the provenance check")
     monkeypatch.setattr(K, "_fit_one", no_fit)
     monkeypatch.setattr(K, "degree_terms", no_fit)
+    capsys.readouterr()
     with pytest.raises(SystemExit):
         K.main(ARM_ARGS)
-    log = next((tmp_path / "private").iterdir()) / "stdout.log"
-    assert K.PROVENANCE_DIFFERS_TEXT in log.read_text(encoding="utf-8")
+    assert K.PROVENANCE_DIFFERS_TEXT in capsys.readouterr().out
+    assert not (tmp_path / "private").exists()
+
+
+
+@pytest.mark.parametrize("broken", ["A_pin", "no_reference"])
+def test_S27_S37_a_refusal_before_the_show_leaves_nothing(tmp_path, monkeypatch, capsys, broken):
+    """Revision 1.7.2 (the reviewers' vote on 1.7.1; Ark 06:59: test the show, not the call
+    order): nothing of block B is shown and no private folder or REAL_ARM_MARKER exists until the
+    checks that refuse without reading the bank have passed. Two inputs: (1) A's registration
+    pin changed (S2, "A changed"), (2) PRERUN_DIR does not exist (S37, "PRE-RUN PROVENANCE
+    DIFFERS"). For each, the real arm runs on fixtures twice: with real_bank recording its calls
+    and returning the fixture bank (so a run in the old order would print check 3 and the section
+    1.4 table, which this test reads), and with real_bank raising. It fails if the output holds a
+    check 3 line, a check 4 line or the section 1.4 table line, if real_bank was called, if the
+    private root exists, or if a REAL_ARM_MARKER exists anywhere under tmp_path."""
+    real = flow_setup(tmp_path, monkeypatch.setattr)
+    make_reference(tmp_path, monkeypatch.setattr)
+    if broken == "A_pin":
+        monkeypatch.setattr(K, "A_REGISTRATION_SHA256_LF_AMENDED", "0" * 64)
+        stop = "A changed"
+    else:
+        monkeypatch.setattr(K, "PRERUN_DIR", tmp_path / "no_such_reference")
+        stop = K.PROVENANCE_DIFFERS_TEXT
+    for bank_mode in ("record", "raise"):
+        used = []
+
+        def bank():
+            used.append(bank_mode)
+            if bank_mode == "raise":
+                raise AssertionError("real_bank() was called before the gate passed")
+            return real
+        monkeypatch.setattr(K, "real_bank", bank)
+        capsys.readouterr()
+        with pytest.raises(SystemExit) as e:
+            K.main(ARM_ARGS)
+        cap = capsys.readouterr()
+        shown = cap.out + cap.err + str(e.value.code)
+        assert stop in shown, (bank_mode, shown)
+        for line in ("check 3 (block print)", "check 4 (pre-data table",
+                     "section 1.4 table (printed at run start", "training present cells"):
+            assert line not in shown, (bank_mode, line)
+        assert used == [], bank_mode
+        assert not (tmp_path / "private").exists(), bank_mode
+        assert list(tmp_path.rglob(K.REAL_ARM_MARKER)) == [], bank_mode
 
 
 def test_S40_non_registered_form_is_not_a_reference(tmp_path, monkeypatch):

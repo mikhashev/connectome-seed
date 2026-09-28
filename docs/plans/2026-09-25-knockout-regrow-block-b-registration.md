@@ -1,5 +1,17 @@
 ---
-**Status: revision 1.7.1: revision 1.7 reviewed, all three yes (Johnny 06:24, Zcode 06:25, Ark
+**Status: revision 1.7.2: DRAFT, the gate order fixed on the reviewers' vote on 1.7.1; not
+re-reviewed.** Revision 1.7.1 got three yes votes in the DPC Research chat on 2026-09-28
+(Johnny 06:53, Ark 06:55/06:59, Zcode 06:58 UTC), all asking for this revision before the
+merge (§10, "Revision 1.7.2"). In the real arm, every check that can refuse without reading
+the bank (the pins with A's registration, block and mask, the AUC function, the seeds, and the
+pre-run's provenance with its files) now runs before the private folder and
+`REAL_ARM_STARTED.json` exist and before the real bank is read; a refusal shows nothing of
+block B (§7, S27). Drafted 2026-09-28 UTC by a CC subagent. Nothing was fitted or run, no cell
+of block B was read, and the pre-run folder was read only; no gate, cut, grid, seed, block,
+reading rule or registered number's computation changed.
+
+**Revision 1.7.1's status, as it stood (committed in `891d144`):**
+"**Status: revision 1.7.1: revision 1.7 reviewed, all three yes (Johnny 06:24, Zcode 06:25, Ark
 06:29/06:34 UTC), with the edits below.** Revision 1.7 and the block-B script at `bb398a2`
 (branch `block-b-pins`) were reviewed in the DPC Research chat on 2026-09-28 (§10, "Revision
 1.7.1"). Revision 1.7.1 applies the reviewers' edits: the script's docstring and revision, the
@@ -8,7 +20,7 @@ registered command must be run from (`PRIVATE_ROOT`), a committed reference-mode
 answers to 1.7's open points; it adds items to §11 for the registered run's reading, without
 changing any rule. Drafted 2026-09-28 UTC by a CC subagent. Nothing was fitted or run, no cell of
 block B was read, and the pre-run folder was read only; no gate, cut, grid, seed, block, reading
-rule or registered number's computation changed.
+rule or registered number's computation changed."
 
 **Revision 1.7's status, as it stood (committed in `bb398a2`):**
 "**Status: revision 1.7: DRAFT, the pre-run's values pinned; not reviewed.** Step (3) of the order
@@ -1095,7 +1107,7 @@ no S-number for it).
 | S24 | **`log()` cannot kill a run.** `log` writes to the tee's file first, then to the console inside a guard that catches `UnicodeError` and `OSError`, writes the line with `backslashreplace` instead, and counts the event (`log_output_errors` in the manifest); it never raises | male `log` (line 464) calls `print`, and `_Tee.write` (line 444) writes to the stream before the file, so a console error killed the run and lost the line (male ledger line 1731) | a unit test gives `log` a stream whose `write` raises `UnicodeEncodeError`: `log("γ")` returns, the tee file holds "γ", and the counter is 1 |
 | S25 | **Real fits and verdict lines on disk before any print.** In the real arm, the raw fits (`raw_fits_real.json.gz`) and a `verdict.json` (the label, the verdict line, the quoted row, the A-literals line) are written and flushed to the private folder **before** the first print of the real block's table or verdict | male `_finish_real_arm` prints the real table (line 3902) before `write_raw` (line 3908); run 1's real fits were held in memory and lost (male ledger lines 1722–1724; retro §3) | a test on a fixture bank patches `log` to raise on its first call after the real fits: both files exist, and `verdict.json`'s line equals the one the unpatched run prints. **Revision 1.3 (Ark M4, settled with Zcode): extended to the synthetic step, in both modes** (`--synthetic-only` and the registered run): the synthetic step's fits and outputs are written to disk before the first print of its tables. Male fact: `print_synthetic` (line 3764) comes before `write_synthetic_outputs` (line 3776) in `run_synthetic_only`, and in the real arm's synthetic step `print_synthetic` (line 3845) comes before `write_synthetic_outputs` (lines 3846–3848). Added test: in each mode, on a fixture world set, `print_synthetic` (or `log`) is patched to raise on its first call after the synthetic fits; the synthetic outputs (`raw_fits.json.gz`, `synthetic_only.json`, `synthetic_worlds.csv`) exist and hold every world. Under the male order this test fails (nothing is written) |
 | S26 | **An ASCII end-to-end rehearsal.** A test runs the end of the real-arm path (the table, the quoted §4 row, the A-literals line, the verdict line, `write_committed`, the sums) on a fixture bank in a subprocess with `PYTHONUTF8=0`, `PYTHONIOENCODING=ascii:strict` and stdout redirected to a file | "the tests never ran the end of the real arm under a strict encoding" (retro §3, lines 105–107) | the rehearsal exits 0; `RESULT.md` exists and contains A's quoted G row with γ in UTF-8; `SHA256SUMS.txt` verifies (S29). Under this setting A's and the male `log` (a bare `print` to the console first) raise on γ, as the male run 1 did |
-| S27 | **The run's record of prior real-arm runs is read at run time.** There is no seal in block B (its content is public, §1.5), so the male `SEAL_RECORD` constant is **not** carried. Instead the script writes a marker file in the private folder when it starts the real arm; at start it lists every earlier folder of block B's arm under `connectome-seed-data/knockout_regrow/` holding that marker, prints them with the scope searched ("searched: <root>, folders `<arm>_*`; N found"), and records the list in the manifest. `RESULT.md` prints that line; it never prints "intact" or any status the run cannot measure. **Revision 1.3 (Ark, Zcode; closes open point 7 of 1.2 and Johnny's edit 2): three outcomes, each printed with the scope searched:** (a) "root does not exist: <root>"; (b) "root exists and cannot be read: <root> (<error>)"; (c) "root read: <root>, folders `<arm>_*`; N found" (N = 0 included). (a) and (b) are not written as "0 found". This is S34's rule applied to the search: a search that matched nothing because it could not look must not look like a measurement of zero. **S27 runs in the real arm only** (revision 1.6; Ark, Zcode): `find_earlier_runs` is called under `--arm` only (line 3365 at `b810ecb`), and `--synthetic-only` sets `earlier = None` (line 3383 at `b810ecb`) and searches nothing | male `RESULT.md` line 3 "Seal record: intact." from a constant (`SEAL_RECORD`, line 183) after run 1 had unsealed; "a claim the writer cannot measure", class fix in block B (male ledger lines 1784–1791, 1810–1814; retro §3, lines 146–149) | a fixture private root with one earlier folder holding the marker: the printed line names it; with none: "0 found" and the scope; a grep test finds no string `"intact"` in the script's output text constants. **Revision 1.3:** a missing root prints outcome (a) and a root the process cannot list (patched `iterdir` raising `PermissionError`) prints outcome (b); in neither case does the line or the manifest hold "0 found" |
+| S27 | **The run's record of prior real-arm runs is read at run time.** There is no seal in block B (its content is public, §1.5), so the male `SEAL_RECORD` constant is **not** carried. Instead the script writes a marker file in the private folder when it starts the real arm; at start it lists every earlier folder of block B's arm under `connectome-seed-data/knockout_regrow/` holding that marker, prints them with the scope searched ("searched: <root>, folders `<arm>_*`; N found"), and records the list in the manifest. `RESULT.md` prints that line; it never prints "intact" or any status the run cannot measure. **Revision 1.3 (Ark, Zcode; closes open point 7 of 1.2 and Johnny's edit 2): three outcomes, each printed with the scope searched:** (a) "root does not exist: <root>"; (b) "root exists and cannot be read: <root> (<error>)"; (c) "root read: <root>, folders `<arm>_*`; N found" (N = 0 included). (a) and (b) are not written as "0 found". This is S34's rule applied to the search: a search that matched nothing because it could not look must not look like a measurement of zero. **S27 runs in the real arm only** (revision 1.6; Ark, Zcode): `find_earlier_runs` is called under `--arm` only (line 3365 at `b810ecb`), and `--synthetic-only` sets `earlier = None` (line 3383 at `b810ecb`) and searches nothing. **Revision 1.7.2 (the reviewers' vote on 1.7.1): nothing is shown and no folder or marker exists until every check that can refuse without reading the bank has passed.** In the real arm the order is: the argument refusals and `check_registered_constants`, the `--out` guard, the dirty-tree refusal, this search, then `arm_gate` (check 1 with A's registration pin, S2; check 2; check 7; the seeds; `prerun_provenance` with `check_prerun_files`, S37), and only then the private folder, the marker and the tee, and in `_run` `real_bank()`, check 3 and the §1.4 table. `REAL_ARM_STARTED.json` therefore means "the reference and the pins verified, the arm began"; a run that fails after that point (check 3 with no AUC, check 4, the synthetic step's gate, a fit) still leaves it, as before. A refusal inside `arm_gate` leaves only the console (stdout and stderr), by design: no folder exists to hold its log. The reorder is limited to what guards the show; it is not a general reordering (the log's lines keep their order; `--synthetic-only` keeps 1.7.1's order). Test `test_S27_S37_a_refusal_before_the_show_leaves_nothing` | male `RESULT.md` line 3 "Seal record: intact." from a constant (`SEAL_RECORD`, line 183) after run 1 had unsealed; "a claim the writer cannot measure", class fix in block B (male ledger lines 1784–1791, 1810–1814; retro §3, lines 146–149) | a fixture private root with one earlier folder holding the marker: the printed line names it; with none: "0 found" and the scope; a grep test finds no string `"intact"` in the script's output text constants. **Revision 1.3:** a missing root prints outcome (a) and a root the process cannot list (patched `iterdir` raising `PermissionError`) prints outcome (b); in neither case does the line or the manifest hold "0 found" |
 | S28 | **The command's environment in the manifest.** The manifest records `sys.argv`, `sys.stdout.encoding`, `sys.stderr.encoding`, and the values found of `PYTHONUTF8`, `PYTHONIOENCODING`, `PYTHONHASHSEED` and the four BLAS thread variables (found before `setdefault` and in effect) | the male manifest records only the thread variables (line 532); `PYTHONUTF8=1` of run 2 is not verifiable from the outputs (blind review line 184; male ledger lines 1800–1801, 1842–1843) | a test sets `PYTHONUTF8=1` and `PYTHONIOENCODING=utf-8` in a subprocess, builds the manifest: both appear with those values; unset, they appear as `null` |
 | S29 | **`SHA256SUMS.txt` written last.** In every folder the script writes, the sums are written after the last log line, after the tee is closed; nothing is written to that folder afterwards, and the sums cover `stdout.log` | male `write_sha256sums(private)` (line 3940) runs before `write_committed` and the "wrote …" and "wall-clock" lines, so the `stdout.log` entry does not verify (blind review line 93; male ledger lines 1797–1799, 1819–1821) | after the rehearsal (S26), every entry of every `SHA256SUMS.txt` the run wrote verifies, `stdout.log` included. **Revision 1.4:** a run stopped before the end writes no sums, which S39 uses as a second sign of the stop. **Revision 1.5 (OPEN 3, decided on the reviewers' votes; OPEN 4, Ark, Zcode).** (a) *The literal reading is kept:* the committed folder `OUT` (`results/genome/c6/checks/knockout_regrow_block_b/`) gets its own `SHA256SUMS.txt`, written last as the private folder's is. This is a **delta from A** (A's committed folder had none). `.gitignore` does not cover the file, so it is committed with the registered run's artifacts. **Revision 1.6 (Ark, Zcode; ㊹):** the sums in `OUT` cover the committed folder's files and are **not** a reference pin: they are never compared with `PRERUN_SHA256` (`check_prerun_files` reads only `PRERUN_DIR/SHA256SUMS.txt`; `OUT` is not among `protected_references`). (b) *The general form:* **the folder of any run that did not complete has no `SHA256SUMS.txt`**: a failed two-world check, check 4 ("PRE-DATA TABLES DIFFER"), a block with no AUC (check 3), a provenance failure (S37) and the attempt cap (S39) alike. One sign, not special cases: `main` writes the sums only after `_run` has returned, and every stop is a `sys.exit` inside `_run` or before any folder is made (checked for revision 1.5 in the code; no exit path writes sums first) |
 | S30 | **A conditional diagnostic sentence carries its condition.** Every registered text printed as a diagnostic either prints only when its condition holds or states the condition in its own words. Block B has no lobe comparison, so the male S0 sentence has no copy here; the class applies to block B's own conditional texts: the line naming A's literals (§4, D9), the D8 outcome note ("a second possible source of U on this block": printed beside a U only), N1's `p_P` beside a U, the "failed fit or rank limit" reading (beside a failed fit only) | the male S0 text "the split comes from the instrument's response …" was printed where no split by reading occurred; block B's writer "carries the condition in the sentence" (male ledger lines 1834–1837) | a table-driven test of each conditional text over the four labels on fixture outcomes: printed only under its condition, or its text contains the condition's clause |
@@ -1144,15 +1156,17 @@ from a clean committed head (the script refuses a dirty tree under `results/geno
   repository (e.g. under `.claude/worktrees/`) resolves it elsewhere
   (`…/connectome-seed/.claude/worktrees/connectome-seed-data/knockout_regrow`), finds no
   reference there, and the run stops before any fit. The stop reads "PRE-RUN PROVENANCE DIFFERS
-  (S37): reference not verified: SHA256SUMS.txt not found; no fit was made" (line 3548):
-  `prerun_provenance` verifies the files first and runs in `_run` before `run_synthetic`, whose
-  own "PRE-RUN REFERENCE NOT VERIFIED" (line 2555) is reached only after it has passed. In the
-  real arm that stop comes late: the run has already made its private folder with the real-arm
-  marker under the misresolved root (lines 3445–3447; S27's search reports that root missing)
-  and check 3 has printed block B's present count (line 3529). A nested worktree is therefore
-  not a safe place to try the command. The worktree `cs-blockb-pins`, in which 1.7 and 1.7.1
-  were drafted, sits beside `connectome-seed/` in `dpc-research/` and resolves to the same
-  folder as the main checkout.
+  (S37): reference not verified: SHA256SUMS.txt not found; no fit was made" (line 3548 of 1.7.1,
+  3426 at 1.7.2): `prerun_provenance` verifies the files first and runs before `run_synthetic`
+  (in `_run` at 1.7.1, in `arm_gate` from 1.7.2), whose own "PRE-RUN REFERENCE NOT VERIFIED"
+  (line 2555) is reached only after it has passed. In the
+  real arm at 1.7.1 that stop came late: the run had already made its private folder with the
+  real-arm marker under the misresolved root (lines 3445–3447 of 1.7.1; S27's search reports
+  that root missing) and check 3 had printed block B's present count (line 3529 of 1.7.1).
+  *Revision 1.7.2:* the stop now comes first, in `arm_gate` (line 3426), before any folder,
+  marker or print of block B (S27); a nested worktree still cannot make the registered run.
+  The worktree `cs-blockb-pins`, in which 1.7, 1.7.1 and 1.7.2 were drafted, sits beside
+  `connectome-seed/` in `dpc-research/` and resolves to the same folder as the main checkout.
 - *Cost, measured by the pre-run:* 28,440 world fits in 7,908 s ("[synthetic worlds] done in
   7908s"), about 3.60 fits per second at 30 workers (A §7 measured 3.65), and 7,927 s in all. The
   registered run refits the same synthetic step, so it takes about 2 h 15 min or more.
@@ -1711,6 +1725,73 @@ changed. Line numbers below are of the script at 1.7.1.
 
 **Tests at 1.7.1:** `PYTHONUTF8=1 tools/.venv/Scripts/python.exe -m pytest -p no:cacheprovider
 -v -rs results/genome/c6/checks/test_knockout_regrow_block_b.py` from the worktree: **66 passed in 59.34 s** (65 of 1.7 and the new reference-mode test, which ran and passed, not skipped; no skips). No existing assertion was removed or loosened.
+
+
+### Revision 1.7.2: the gate order (2026-09-28)
+
+Revision 1.7.1 and the script and tests at `891d144` (branch `block-b-pins`) were reviewed in the
+DPC Research chat on 2026-09-28. The votes are as CC's message to the drafting agent relays them;
+the chat is not in the repository. All three are yes, and all three ask for this revision before
+the merge. Drafted by a CC subagent in the worktree `cs-blockb-pins`. Nothing was fitted or run
+(no `--arm`, no `--synthetic-only`, no re-run of the pre-run), no cell of block B was read, and
+the pre-run folder was read only (by the reference-mode test). No gate, cut, grid, seed, block,
+reading rule, label text, log text or registered number's computation changed. Line numbers
+below are of the script at 1.7.2 unless marked 1.7.1.
+
+| reviewer | time (UTC) | vote |
+|---|---|---|
+| Johnny | 06:53 | yes; 1.7.2 before the merge, with a step table of the real arm's order |
+| Ark | 06:55 and 06:59 | yes; 06:55: the broad criterion, and a correction of his own P2 stop string (already applied in 1.7.1, §7 "Where to run it from": "PRE-RUN PROVENANCE DIFFERS", not "PRE-RUN REFERENCE NOT VERIFIED"); 06:59: move what guards the show, three traps (rows 3, 4, 5), a test of the show and not of the call order (row 7) |
+| Zcode | 06:58 | yes; 1.7.2 before the merge, the broad criterion |
+
+**How it was found.** CC found the order while checking Ark's P2 (1.7.1, row 4): at 1.7.1 the real
+arm made its private folder and `REAL_ARM_STARTED.json` in `main` (lines 3443–3451 of 1.7.1),
+then in `_run` called `check_pins` (3509), `check_block_and_mask`, `real_bank()` (3525), printed
+check 3 (3529) and the §1.4 table with the training present count (check 4), then check 7 and the
+seeds, and only then `prerun_provenance` (3545–3546). A wrong pin, a corrupt or missing
+reference file, a nested worktree resolving `PRIVATE_ROOT` elsewhere, or A's changed
+registration (S2, "A changed") stopped the run after the marker was written and block B was
+shown. Johnny's step table laid the order out step by step; the reviewers agreed the rule below.
+
+**The rule:** nothing is shown and no folder or marker exists until every check that can refuse
+without reading the bank has passed.
+
+**The real arm's order at 1.7.2:** `main`: the argument refusals, `check_registered_constants`
+(3467), the `--out` guard (3470), `refuse_if_dirty` (3478), `find_earlier_runs` (3479, reads only),
+`arm_gate` (3484: `check_pins` 3410, `check_block_and_mask` 3411, `check_auc_function` 3412,
+`assert_seeds_unique` 3413, `prerun_provenance` 3420 with its stop at 3426); then the folder
+(3487), `REAL_ARM_MARKER` (3488) and the tee (3521); `_run` (3543): the registration and check 1
+lines, the S27 line, check 2's line, `real_bank()` (3570), check 3 (3574), check 4 and the §1.4
+table (3577, 3581), check 7's and the seeds' lines, the provenance line (3598), `degree_terms`
+(3599).
+
+| # | change | where | reviewer (time, UTC) | checked against |
+|---|---|---|---|---|
+| 1 | Checks 1 (with S2), 2 and 7, the seeds and S37's provenance run in a new `arm_gate(a, head)`, called from `main` in the real arm after S27's search and before the private folder, the marker and `real_bank()`. Their order among themselves is `_run`'s. Check 7 and the seeds moved as well because it was simple (their results are handed on) | script `arm_gate` (3399–3429), `main` (3480–3485) | all three; Ark 06:55 and Zcode (the broad criterion), Ark 06:59 (what guards the show) | the moved calls read no bank: `check_pins` reads pinned files, versions and `load_rule`; `check_block_and_mask` builds its view on an empty `H.Bank("geometry", {})` and reads `MASKS`, `BLOCK`, `BLOCK_A` and `H.NAMES` (module geometry), never `H.REAL`; `check_auc_function` and `assert_seeds_unique` are hand-made inputs and seed arithmetic |
+| 2 | `_run` logs the gate's results at their old places: `gate` and `prov` are parameters; in the arm `pins`, check 2, check 7 and the seeds come from `gate`; in `--synthetic-only` (`gate` None) they are computed in `_run` as in 1.7.1 | `_run` (3543, 3552, 3566–3567, 3584, 3586) | CC | a passing arm's log lines keep 1.7.1's order (the rehearsal tests S26, S27, S29, S31, S33 pass unchanged) |
+| 3 | Ark's trap (a), the predicate: the early provenance call is in the arm only, where `check_registered_constants` has passed, so `reference_mode()` holds and `check_prerun_files` never returns pre-run mode's "no registered reference"; `_run`'s call is narrowed to `reference_mode() and not a.arm`, so `--synthetic-only` in reference mode (the one-time `--from-raw` diagnostic re-read included) still checks it, and the arm does not check it twice | `arm_gate` (3414–3420, comment); `_run` (3589–3598) | Ark (06:59) | `check_registered_constants` at 3467 under `if a.arm`, before `arm_gate` |
+| 4 | Ark's trap (b): `prov` goes into the manifest as before: it is passed to `_run` as a parameter, like `dirty`, `earlier` and `not_a_reference`; `manifest["prerun_provenance"]` is unchanged | `main` (3485, 3524); `_run`'s manifest | Ark (06:59) | the rehearsal's manifest tests pass unchanged |
+| 5 | Ark's trap (c): a comment at the stop: a refusal before the folder leaves only the console (stdout and stderr), by design; nobody should "fix" it by creating the folder earlier | `arm_gate` (3422–3425) | Ark (06:59) | the log's buffer (`_LOG["buffer"]`, `log`, `tee_to`): lines logged before the folder exists are buffered and written first into `stdout.log` by `tee_to`; a passing gate logs no line, so a passing run's `stdout.log` is unchanged, and a refused gate's buffered line reaches no file |
+| 6 | A comment at the move: `prerun_provenance`'s verdict depends only on `PRERUN_DIR`'s content and the registered constants; `head` and the script's hash enter only its record and its text, which is why moving it is safe | `arm_gate` (3414–3419) | Ark (06:59) | `prerun_provenance` (2058–2105 of 1.7.1): the two arguments go into `out` and `text` only (and `same_script`, a record field); `passed` is `check_prerun_files` (`PRERUN_DIR`, `PRERUN_SHA256`), the manifest's `not_a_reference`, and `git_head`/`script_sha256_lf` against `PRERUN_GIT_HEAD`/`PRERUN_SCRIPT_SHA256_LF` |
+| 7 | New test `test_S27_S37_a_refusal_before_the_show_leaves_nothing`, two inputs: A's registration pin changed (S2) and a nonexistent `PRERUN_DIR` (S37). The real arm runs on fixtures twice per input, with `real_bank` recording its calls and returning the fixture bank (so the old order would print check 3), and with `real_bank` raising; it asserts the stop's text, no check 3, check 4 or §1.4 table line in the output, `real_bank` not called, no private root and no `REAL_ARM_MARKER` under the test's folder | test file | Ark (06:59): test the show | the mutation check below |
+| 8 | `test_S37_prerun_provenance` and `test_S37_reader_refuses_a_not_a_reference_folder` read the stop's line from the arm's `stdout.log`; the arm now stops before its folder exists, so they read it from the console and also assert that no private folder exists; `test_S37_prerun_provenance` reads the `--synthetic-only` stop from its `--out` folder's `stdout.log`. No assertion loosened: the stop is still required | test file | CC | — |
+| 9 | Log lines: none moved in a passing run. In a refused arm the "PRE-RUN PROVENANCE DIFFERS" line is now the first and only line (at 1.7.1 it followed the registration, check 1, S27, check 2, check 3, check 4, §1.4 table, check 7 and seeds lines); a refusal of check 1, 2 or 7 or of the seeds (a `sys.exit` message on stderr) likewise comes before any logged line | — | CC | — |
+| 10 | `--synthetic-only` is unchanged: its `--out` folder is made before check 1 and the provenance, as in 1.7.1, so a refused reference-mode `--synthetic-only` run still leaves its `--out` folder with its `stdout.log`; it shows nothing of block B (check 3 and the §1.4 table are printed in the real arm only). The early `check_prerun_files` never runs in pre-run mode | `main`; `_run` | CC (named, as asked) | — |
+| 11 | `REGISTRATION_REVISION` = "1.7.2" and its test; the module's and the test file's docstrings say 1.7.2 | script lines 4 and 92; `test_S02_registrations_and_A_pin` | CC's request | — |
+| 12 | Header status 1.7.2; 1.7.1's status quoted as it stood (`891d144`); §7 S27 (the order, the marker's meaning, the limit of the reorder); §7 "Where to run it from" (the late stop is 1.7.1's); this section | header; §7; §10 | CC's request | — |
+
+**Mutation check (row 7).** The script's sha256 before: `6b055388…bdbbaa`. (M1) the folder and
+the marker created in `main` before `arm_gate`: the new test fails on both inputs (the private
+root exists), as do the two S37 tests of row 8. (M2) the provenance moved back after check 3
+(`arm_gate`'s call replaced by a pass, `_run`'s predicate back to `reference_mode()`): the new
+test fails on the nonexistent `PRERUN_DIR` input with the check 3 line in the output (the A-pin
+input passes, as it should: M2 does not move the pins), as do the two S37 tests of row 8. The
+script was restored from its copy after each; sha256 after: `6b055388…bdbbaa`, byte for byte.
+
+**Tests at 1.7.2:** `PYTHONUTF8=1 tools/.venv/Scripts/python.exe -m pytest -p no:cacheprovider
+-v -rs results/genome/c6/checks/test_knockout_regrow_block_b.py` from the worktree: **68 passed in
+48.82 s** (66 of 1.7.1 and the new test's two inputs; the reference-mode test ran and passed, not
+skipped; no skips).
 
 
 ## 11. Not verified at drafting
