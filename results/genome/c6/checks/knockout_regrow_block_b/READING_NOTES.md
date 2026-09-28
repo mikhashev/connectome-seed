@@ -21,7 +21,11 @@ line of A, "the private folder" is
 - **On block B it is read "a failed fit or a rank limit, not separated"** (B §4, B:922–925; D9,
   B:1257), since the real block is not known to be rank 1. The run prints this beside the verdict,
   not on it (`RESULT.md` line 19; `stdout.log` line 1524).
-- **It is not G, and it is not "no grammar".** Below the gate "a regrowth failure could be a failure
+- **The block is readable, and this was checked, not assumed** (Ark and Zcode, 19:34–19:36 UTC):
+  `real.smallest_passing_auc` = 0.7142857142857143 = 285/399 on the grid k/(19·21), not `None`, so
+  B's "not readable" U (S38, B:575–578), which would take precedence over every branch, did not
+  fire (review A.2). The label below is read on a readable block.
+- **It is not G, and it is not "no grammar". Below the gate "a regrowth failure could be a failure
   to fit, so it is not read as G" (A:1358–1360). The table under the verdict (AUC 0.51–0.57, `p_P`
   0.24–0.48; `RESULT.md` lines 31–35) is not a G in all but name (review D.5).
 - **A citation of the verdict line alone drops this reading** (review D.2). The subject of commit
@@ -59,7 +63,7 @@ None of these enters the label (A:1352–1353, A:1368–1373), and none separate
 | the same residual for the others (logit) | BF_1 2.09, BF_2–BF_4 1.81, N1 ~3e-16 (additive by construction) | records `real\|\|block\|\|<key>` |
 | the same residual in `p`-space for rule #2.1 (Zcode) | ~3e-2, from the sigmoid, not from an interaction | same record |
 | distance from N1's prediction | at most 0.040 in `p` (rule #2.1 keeps its field term, review A.8 item 3) | records `…\|\|rule`, `…\|\|N1` |
-| inner folds of the block-only fit | 4, 4, 2, 4, 5, 3, 2, 8, 1, 7 cells; the one-cell fold holds a present cell and no absent one | `results/genome/c6/folds.csv`; review A.8 item 7 |
+| inner folds of the block-only fit | 4, 4, 2, 4, 5, 3, 2, 8, 1, 7 cells (sum 40); present by fold 1, 2, 1, 3, 2, 2, 1, 3, 1, 3 (sum 19); the one-cell fold holds a present cell and no absent one | `results/genome/c6/folds.csv`; review A.8 item 7 |
 | synthetic worlds meeting this branch | none: `ceiling_block` 1.0 and `lambda_block` 1 in all 225 rows of rule #2.1 and BF_1–BF_4 (the run's and the reference's) | `synthetic_worlds.csv`; review A.8 item 6 |
 
 So 0.7744 is the AUC of an additive score: the `u_s · v_t` term adds nothing to it, and it is not
@@ -72,7 +76,7 @@ only a refit would give them (review, "What could not be checked", item 3).
 `results/genome/bank/offsets.csv`) has five non-zero singular values, 4.6373, 3.3333, 2.0000,
 1.4567, 1.1235 (review A.8 item 5: 4.64, 3.33, 2.00, 1.46, 1.12). It is not rank 1 in A §2.4's
 sense (`y_st = x_s · w_t`, A:416–421). Present cells by source 2, 6, 4, 4, 3; by target 4, 3, 2,
-3, 1, 2, 2, 2 (19 of 40: `stdout.log` line 1496, "block present 19 of 40"; `RESULT.md` line 31,
+3, 1, 2, 2, 2 (each margin sums to 19, one count two ways; Zcode) (19 of 40: `stdout.log` line 1496, "block present 19 of 40"; `RESULT.md` line 31,
 "(19/21)"). The table's cells equal the labels stored with the block-only fits (`raw_fits_real.json.gz`,
 records `real||block||<key>`, field `y`). This fact is
 kept out of the reading **because it was not a registered input**, not because it came late; B
@@ -88,7 +92,8 @@ said before the data only that the block "is not known to be rank 1" (B:531–53
   B:537–539). The string comes from the script (`knockout_regrow_block_b.py` lines 290, 294,
   1770–1771). A reader looking for a section 2.4 in B finds none; the unambiguous address is B §2,
   the item on the two ceilings (B:529–539), with §4 and D9 (B:922–925, B:1257). The frozen artifact
-  is not edited.
+  is not edited. Because the script prints the string, correcting prose does not stop it from
+  returning: a fix is an edit of the script, with its own revision and head (Ark, Zcode).
 - **(b) The commit subject.** Commit ce48577's subject cites the label and its measurement without
   the reading of section 1 (review D.2).
 
@@ -97,7 +102,8 @@ said before the data only that the block "is not known to be rank 1" (B:531–53
 `per_shuffle.csv` and `synthetic_worlds.csv` were written with CRLF (Python's `csv`) and summed on
 those bytes; git at ce48577 stored them as LF. Commit c42f184 adds this folder's `.gitattributes`
 (`*.csv -text`), so git now stores them as written. The sums were not regenerated:
-`SHA256SUMS.txt` describes the bytes the run wrote.
+`SHA256SUMS.txt` describes the bytes the run wrote. This folder therefore holds two files that the
+run did not write and the sums do not name: `.gitattributes` and this `READING_NOTES.md`.
 
 | file | sha256 of the stored bytes at ce48577 | at c42f184 | CR bytes at c42f184 |
 |---|---|---|---|
