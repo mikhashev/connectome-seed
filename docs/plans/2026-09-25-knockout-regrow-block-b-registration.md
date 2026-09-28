@@ -2,7 +2,7 @@
 **Status: revision 1.7.3: DRAFT, text only: the reviewers' notes on 1.7.2 and the one-time
 re-read's outcome; not re-reviewed.** Revision 1.7.2 (`62228ad`) was reviewed in the DPC Research
 chat on 2026-09-28: Johnny 07:17 UTC yes, no edits; Ark 07:21 UTC yes, no edits, and 07:23 UTC yes
-with text requests; Zcode has not voted on 1.7.2 (his 06:58 vote asked for 1.7.2 in this form).
+with text requests; Zcode 07:27 "yes, no edits" on 1.7.2 (recorded by CC after the draft; the draft had said he had not voted yet).
 Revision 1.7.3 applies Ark's text requests (§7: the registered run's console redirected, the only
 carrier of an `arm_gate` refusal; §10, "Revision 1.7.2": four qualifications; §11: one sentence),
 reconciles `arm_gate`'s docstring with §10 (the script's only change besides its revision string;
@@ -1838,7 +1838,7 @@ the docstring edit moves every line after 3409 down by 2.
 |---|---|---|
 | Johnny | 07:17 | yes, no edits |
 | Ark | 07:21 and 07:23 | 07:21: yes, no edits; a recommendation (row 4), an observation (row 5), a note on Johnny's line numbers (row 6). 07:23: yes, with text requests: an operational hole (row 1, required), T1 (row 2), T2 (row 3) |
-| Zcode | — | has not voted on 1.7.2 (his 06:58 vote on 1.7.1 asked for 1.7.2 in this form) |
+| Zcode | 07:27 | yes, no edits, on 1.7.2 (seventh independent test run: 68 passed, 50.15 s; checked the re-read's console file first-hand); on 1.7.3 his vote follows the commit. Johnny 07:26 voted yes on 1.7.2 + 1.7.3 before this commit |
 
 | # | change | where | reviewer (time, UTC) | checked against |
 |---|---|---|---|---|
