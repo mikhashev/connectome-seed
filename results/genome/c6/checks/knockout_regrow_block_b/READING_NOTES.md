@@ -189,3 +189,9 @@ Ark and Zcode, 19:52–19:56 UTC; run on Mike's word, DPC Research chat 20:00 UT
   inner folds the grid does not separate λ = 1 from "no interaction" robustly for either predictor (margins
   well under one nat once the single-class fold is out, decided by one or two folds); a gate that measures
   the interaction (iii) needs λ < 1 or a fixed λ, and folds without single-class members.
+- **Two reading notes from Ark (chat 2026-09-28 20:12 UTC, recomputed from `diagnostic.json`):** (1) rule #2.1's
+  inner fits at λ = 1 have max |u·v| 1.83, the same order as BF_1's 1.80 (`tails`), so the fit had a rank model
+  with a non-zero u·v and the selection switched it off, by a margin that the one-cell fold mostly carries and
+  fold 9 reverses; the chosen fit has no rank term, the model family does. (2) Read m as
+  `margin_top_over_low` = total(100) − total(1) for both predictors; `margin_tied_over_rest` equals m for rule
+  #2.1 but has the opposite sign for BF_1 (T = {1}), and it is never negative, so it carries no sign.
