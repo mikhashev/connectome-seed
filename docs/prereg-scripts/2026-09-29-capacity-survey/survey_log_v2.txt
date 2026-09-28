@@ -1,0 +1,102 @@
+
+### 5x8: 571 boards, npairs=400; stage1 K=100 steps=500 94s; refine 10 lowest x5 seeds K=500 38s; deep 10 lowest x2 seeds K=500 steps=1200 37s; Fraction recheck 0s; total 169s
+float64/search count vs exact Fraction recount of stored member: mismatches = []
+stage1 distribution (K=100): {'min': 0.9375, 'p5': 0.9425, 'median': 0.985, 'max': 1.0}
+final distribution: {'min': 0.9425, 'p5': 0.9425, 'median': 0.985, 'max': 1.0}
+   group WH 21 {'min': 0.9425, 'p5': 0.9425, 'median': 0.945, 'max': 0.95}
+   group WH+- 150 {'min': 0.9425, 'p5': 0.9425, 'median': 0.975, 'max': 0.98}
+   group flat 100 {'min': 0.9775, 'p5': 0.9875, 'median': 1.0, 'max': 1.0}
+   group rand 300 {'min': 0.945, 'p5': 0.9625, 'median': 0.9875, 'max': 1.0}
+10 lowest boards (final best count; stage1; refine 5 seeds min-max; deep 2 seeds min-max; rows):
+  board#305 [WH] final=377.0/400=0.9425 stage1=377.0 refine=nan-nan deep=nan-nan circulant=False rows=[[0, 2, 4, 6], [0, 1, 4, 5], [0, 3, 4, 7], [0, 1, 6, 7], [0, 3, 5, 6]]
+  board#307 [WH] final=377.0/400=0.9425 stage1=377.0 refine=nan-nan deep=nan-nan circulant=False rows=[[0, 2, 4, 6], [0, 1, 4, 5], [0, 1, 2, 3], [0, 2, 5, 7], [0, 3, 5, 6]]
+  board#309 [WH] final=377.0/400=0.9425 stage1=377.0 refine=nan-nan deep=nan-nan circulant=False rows=[[0, 2, 4, 6], [0, 1, 4, 5], [0, 2, 5, 7], [0, 1, 6, 7], [0, 3, 5, 6]]
+  board#311 [WH] final=377.0/400=0.9425 stage1=377.0 refine=nan-nan deep=nan-nan circulant=False rows=[[0, 2, 4, 6], [0, 3, 4, 7], [0, 1, 2, 3], [0, 2, 5, 7], [0, 3, 5, 6]]
+  board#313 [WH] final=377.0/400=0.9425 stage1=377.0 refine=nan-nan deep=nan-nan circulant=False rows=[[0, 2, 4, 6], [0, 3, 4, 7], [0, 2, 5, 7], [0, 1, 6, 7], [0, 3, 5, 6]]
+  board#315 [WH] final=377.0/400=0.9425 stage1=377.0 refine=nan-nan deep=nan-nan circulant=False rows=[[0, 1, 4, 5], [0, 3, 4, 7], [0, 1, 2, 3], [0, 2, 5, 7], [0, 1, 6, 7]]
+  board#318 [WH] final=377.0/400=0.9425 stage1=377.0 refine=nan-nan deep=nan-nan circulant=False rows=[[0, 1, 4, 5], [0, 3, 4, 7], [0, 2, 5, 7], [0, 1, 6, 7], [0, 3, 5, 6]]
+  board#330 [WH+-] final=377.0/400=0.9425 stage1=377.0 refine=nan-nan deep=nan-nan circulant=False rows=[[1, 2, 5, 6], [1, 3, 4, 6], [1, 3, 5, 7], [4, 5, 6, 7], [0, 1, 4, 5]]
+  board#346 [WH+-] final=377.0/400=0.9425 stage1=377.0 refine=nan-nan deep=nan-nan circulant=False rows=[[0, 1, 6, 7], [1, 2, 4, 7], [0, 1, 2, 3], [1, 3, 4, 6], [1, 2, 5, 6]]
+  board#348 [WH+-] final=377.0/400=0.9425 stage1=377.0 refine=nan-nan deep=nan-nan circulant=False rows=[[0, 2, 4, 6], [4, 5, 6, 7], [0, 3, 5, 6], [1, 3, 4, 6], [2, 3, 6, 7]]
+final <0.90: 0  <=0.85: 0  min 377.0 0.9425
+boards with rerun spread (refine+deep, min..max) > 2/400-equivalent (2.00 counts): []
+
+### 8x8: 220 boards, npairs=1024; stage1 K=100 steps=500 80s; refine 10 lowest x5 seeds K=500 88s; deep 10 lowest x2 seeds K=500 steps=1200 86s; Fraction recheck 0s; total 254s
+float64/search count vs exact Fraction recount of stored member: mismatches = []
+stage1 distribution (K=100): {'min': 0.8643, 'p5': 0.8682, 'median': 0.957, 'max': 1.0}
+final distribution: {'min': 0.8711, 'p5': 0.873, 'median': 0.957, 'max': 1.0}
+   group WH+- 30 {'min': 0.8926, 'p5': 0.8969, 'median': 0.916, 'max': 0.9238}
+   group circ 20 {'min': 0.8711, 'p5': 0.872, 'median': 0.873, 'max': 0.9277}
+   group flat 20 {'min': 0.9717, 'p5': 0.9745, 'median': 0.9971, 'max': 1.0}
+   group rand 150 {'min': 0.9199, 'p5': 0.9314, 'median': 0.9609, 'max': 0.998}
+10 lowest boards (final best count; stage1; refine 5 seeds min-max; deep 2 seeds min-max; rows):
+  board#163 [circ] final=892.0/1024=0.8711 stage1=892.0 refine=nan-nan deep=892.0-892.0 circulant=True rows=[[2, 5, 6, 7], [0, 3, 6, 7], [0, 1, 4, 7], [0, 1, 2, 5], [1, 2, 3, 6], [2, 3, 4, 7], [0, 3, 4, 5], [1, 4, 5, 6]]
+  board#152 [circ] final=893.0/1024=0.8721 stage1=889.0 refine=890.0-893.0 deep=891.0-893.0 circulant=True rows=[[1, 5, 6, 7], [0, 2, 6, 7], [0, 1, 3, 7], [0, 1, 2, 4], [1, 2, 3, 5], [2, 3, 4, 6], [3, 4, 5, 7], [0, 4, 5, 6]]
+  board#156 [circ] final=893.0/1024=0.8721 stage1=890.0 refine=nan-nan deep=892.0-893.0 circulant=True rows=[[2, 3, 5, 7], [0, 3, 4, 6], [1, 4, 5, 7], [0, 2, 5, 6], [1, 3, 6, 7], [0, 2, 4, 7], [0, 1, 3, 5], [1, 2, 4, 6]]
+  board#161 [circ] final=893.0/1024=0.8721 stage1=891.0 refine=nan-nan deep=892.0-893.0 circulant=True rows=[[1, 2, 4, 5], [2, 3, 5, 6], [3, 4, 6, 7], [0, 4, 5, 7], [0, 1, 5, 6], [1, 2, 6, 7], [0, 2, 3, 7], [0, 1, 3, 4]]
+  board#162 [circ] final=893.0/1024=0.8721 stage1=889.0 refine=nan-nan deep=892.0-893.0 circulant=True rows=[[2, 4, 5, 6], [3, 5, 6, 7], [0, 4, 6, 7], [0, 1, 5, 7], [0, 1, 2, 6], [1, 2, 3, 7], [0, 2, 3, 4], [1, 3, 4, 5]]
+  board#164 [circ] final=893.0/1024=0.8721 stage1=890.0 refine=nan-nan deep=893.0-893.0 circulant=True rows=[[0, 4, 6, 7], [0, 1, 5, 7], [0, 1, 2, 6], [1, 2, 3, 7], [0, 2, 3, 4], [1, 3, 4, 5], [2, 4, 5, 6], [3, 5, 6, 7]]
+  board#165 [circ] final=893.0/1024=0.8721 stage1=889.0 refine=nan-nan deep=892.0-893.0 circulant=True rows=[[0, 1, 2, 6], [1, 2, 3, 7], [0, 2, 3, 4], [1, 3, 4, 5], [2, 4, 5, 6], [3, 5, 6, 7], [0, 4, 6, 7], [0, 1, 5, 7]]
+  board#168 [circ] final=893.0/1024=0.8721 stage1=886.0 refine=891.0-893.0 deep=nan-nan circulant=True rows=[[0, 1, 2, 4], [1, 2, 3, 5], [2, 3, 4, 6], [3, 4, 5, 7], [0, 4, 5, 6], [1, 5, 6, 7], [0, 2, 6, 7], [0, 1, 3, 7]]
+  board#151 [circ] final=894.0/1024=0.8730 stage1=887.0 refine=891.0-894.0 deep=nan-nan circulant=True rows=[[2, 4, 5, 6], [3, 5, 6, 7], [0, 4, 6, 7], [0, 1, 5, 7], [0, 1, 2, 6], [1, 2, 3, 7], [0, 2, 3, 4], [1, 3, 4, 5]]
+  board#155 [circ] final=894.0/1024=0.8730 stage1=887.0 refine=889.0-894.0 deep=nan-nan circulant=True rows=[[0, 3, 4, 5], [1, 4, 5, 6], [2, 5, 6, 7], [0, 3, 6, 7], [0, 1, 4, 7], [0, 1, 2, 5], [1, 2, 3, 6], [2, 3, 4, 7]]
+final <0.90: 22  <=0.85: 0  min 892.0 0.87109375
+boards with rerun spread (refine+deep, min..max) > 2/400-equivalent (5.12 counts): [(153, 7.0), (158, 7.0), (159, 6.0)]
+
+### 10x10: 160 boards, npairs=2500; stage1 K=100 steps=500 138s; refine 10 lowest x5 seeds K=500 200s; deep 10 lowest x2 seeds K=500 steps=1200 197s; Fraction recheck 0s; total 536s
+float64/search count vs exact Fraction recount of stored member: mismatches = []
+stage1 distribution (K=100): {'min': 0.8384, 'p5': 0.8839, 'median': 0.9252, 'max': 0.9928}
+final distribution: {'min': 0.846, 'p5': 0.8919, 'median': 0.9252, 'max': 0.9928}
+   group circ 20 {'min': 0.846, 'p5': 0.8471, 'median': 0.8946, 'max': 0.9244}
+   group flat 20 {'min': 0.9448, 'p5': 0.9494, 'median': 0.9796, 'max': 0.9928}
+   group rand 120 {'min': 0.8896, 'p5': 0.902, 'median': 0.9252, 'max': 0.9788}
+10 lowest boards (final best count; stage1; refine 5 seeds min-max; deep 2 seeds min-max; rows):
+  board#138 [circ] final=2115.0/2500=0.8460 stage1=2096.0 refine=2106.0-2115.0 deep=2109.0-2115.0 circulant=True rows=[[1, 2, 3, 4, 7], [2, 3, 4, 5, 8], [3, 4, 5, 6, 9], [0, 4, 5, 6, 7], [1, 5, 6, 7, 8], [2, 6, 7, 8, 9], [0, 3, 7, 8, 9], [0, 1, 4, 8, 9], [0, 1, 2, 5, 9], [0, 1, 2, 3, 6]]
+  board#127 [circ] final=2118.0/2500=0.8472 stage1=2099.0 refine=2100.0-2115.0 deep=2109.0-2118.0 circulant=True rows=[[0, 2, 6, 7, 9], [0, 1, 3, 7, 8], [1, 2, 4, 8, 9], [0, 2, 3, 5, 9], [0, 1, 3, 4, 6], [1, 2, 4, 5, 7], [2, 3, 5, 6, 8], [3, 4, 6, 7, 9], [0, 4, 5, 7, 8], [1, 5, 6, 8, 9]]
+  board#134 [circ] final=2125.0/2500=0.8500 stage1=2111.0 refine=2100.0-2111.0 deep=2112.0-2125.0 circulant=True rows=[[0, 1, 4, 7, 9], [0, 1, 2, 5, 8], [1, 2, 3, 6, 9], [0, 2, 3, 4, 7], [1, 3, 4, 5, 8], [2, 4, 5, 6, 9], [0, 3, 5, 6, 7], [1, 4, 6, 7, 8], [2, 5, 7, 8, 9], [0, 3, 6, 8, 9]]
+  board#124 [circ] final=2177.0/2500=0.8708 stage1=2164.0 refine=2165.0-2170.0 deep=2172.0-2177.0 circulant=True rows=[[4, 5, 6, 7, 9], [0, 5, 6, 7, 8], [1, 6, 7, 8, 9], [0, 2, 7, 8, 9], [0, 1, 3, 8, 9], [0, 1, 2, 4, 9], [0, 1, 2, 3, 5], [1, 2, 3, 4, 6], [2, 3, 4, 5, 7], [3, 4, 5, 6, 8]]
+  board#131 [circ] final=2184.0/2500=0.8736 stage1=2167.0 refine=2164.0-2171.0 deep=2171.0-2184.0 circulant=True rows=[[2, 3, 6, 7, 9], [0, 3, 4, 7, 8], [1, 4, 5, 8, 9], [0, 2, 5, 6, 9], [0, 1, 3, 6, 7], [1, 2, 4, 7, 8], [2, 3, 5, 8, 9], [0, 3, 4, 6, 9], [0, 1, 4, 5, 7], [1, 2, 5, 6, 8]]
+  board#123 [circ] final=2185.0/2500=0.8740 stage1=2172.0 refine=2165.0-2178.0 deep=2174.0-2185.0 circulant=True rows=[[0, 1, 4, 5, 7], [1, 2, 5, 6, 8], [2, 3, 6, 7, 9], [0, 3, 4, 7, 8], [1, 4, 5, 8, 9], [0, 2, 5, 6, 9], [0, 1, 3, 6, 7], [1, 2, 4, 7, 8], [2, 3, 5, 8, 9], [0, 3, 4, 6, 9]]
+  board#129 [circ] final=2185.0/2500=0.8740 stage1=2164.0 refine=2166.0-2173.0 deep=2174.0-2185.0 circulant=True rows=[[2, 3, 6, 8, 9], [0, 3, 4, 7, 9], [0, 1, 4, 5, 8], [1, 2, 5, 6, 9], [0, 2, 3, 6, 7], [1, 3, 4, 7, 8], [2, 4, 5, 8, 9], [0, 3, 5, 6, 9], [0, 1, 4, 6, 7], [1, 2, 5, 7, 8]]
+  board#52 [rand] final=2224.0/2500=0.8896 stage1=2210.0 refine=2210.0-2218.0 deep=2211.0-2224.0 circulant=False rows=[[0, 1, 5, 6, 8], [0, 2, 6, 7, 9], [2, 3, 4, 6, 8], [1, 4, 6, 7, 9], [2, 3, 5, 6, 7], [0, 2, 4, 5, 8], [2, 4, 7, 8, 9], [1, 3, 4, 5, 6], [0, 3, 4, 7, 9], [1, 2, 3, 5, 9]]
+  board#122 [circ] final=2230.0/2500=0.8920 stage1=2230.0 refine=nan-nan deep=nan-nan circulant=True rows=[[0, 3, 4, 6, 8], [1, 4, 5, 7, 9], [0, 2, 5, 6, 8], [1, 3, 6, 7, 9], [0, 2, 4, 7, 8], [1, 3, 5, 8, 9], [0, 2, 4, 6, 9], [0, 1, 3, 5, 7], [1, 2, 4, 6, 8], [2, 3, 5, 7, 9]]
+  board#133 [circ] final=2232.0/2500=0.8928 stage1=2210.0 refine=2229.0-2232.0 deep=nan-nan circulant=True rows=[[2, 3, 5, 7, 8], [3, 4, 6, 8, 9], [0, 4, 5, 7, 9], [0, 1, 5, 6, 8], [1, 2, 6, 7, 9], [0, 2, 3, 7, 8], [1, 3, 4, 8, 9], [0, 2, 4, 5, 9], [0, 1, 3, 5, 6], [1, 2, 4, 6, 7]]
+final <0.90: 17  <=0.85: 3  min 2115.0 0.846
+boards with rerun spread (refine+deep, min..max) > 2/400-equivalent (12.50 counts): [(52, 14.0), (123, 20.0), (127, 18.0), (129, 19.0), (131, 20.0), (134, 25.0)]
+
+### 13x13: 101 boards, npairs=7098; stage1 K=100 steps=500 233s; refine 10 lowest x5 seeds K=300 331s; deep 10 lowest x2 seeds K=300 steps=1200 327s; Fraction recheck 0s; total 891s
+float64/search count vs exact Fraction recount of stored member: mismatches = []
+stage1 distribution (K=100): {'min': 0.7959, 'p5': 0.8136, 'median': 0.8897, 'max': 0.9669}
+final distribution: {'min': 0.807, 'p5': 0.8249, 'median': 0.8897, 'max': 0.9669}
+   group circ 20 {'min': 0.809, 'p5': 0.8206, 'median': 0.8481, 'max': 0.9174}
+   group flat 20 {'min': 0.92, 'p5': 0.9205, 'median': 0.9532, 'max': 0.9669}
+   group paley 1 {'min': 0.807, 'p5': 0.807, 'median': 0.807, 'max': 0.807}
+   group rand 60 {'min': 0.8629, 'p5': 0.8696, 'median': 0.889, 'max': 0.9379}
+10 lowest boards (final best count; stage1; refine 5 seeds min-max; deep 2 seeds min-max; rows):
+  board#100 [paley] final=5728.0/7098=0.8070 stage1=5668.0 refine=5674.0-5722.0 deep=5722.0-5728.0 circulant=True rows=[[1, 3, 4, 9, 10, 12], [0, 2, 4, 5, 10, 11], [1, 3, 5, 6, 11, 12], [0, 2, 4, 6, 7, 12], [0, 1, 3, 5, 7, 8], [1, 2, 4, 6, 8, 9], [2, 3, 5, 7, 9, 10], [3, 4, 6, 8, 10, 11], [4, 5, 7, 9, 11, 12], [0, 5, 6, 8, 10, 12], [0, 1, 6, 7, 9, 11], [1, 2, 7, 8, 10, 12], [0, 2, 3, 8, 9, 11]]
+  board#73 [circ] final=5742.0/7098=0.8090 stage1=5649.0 refine=5681.0-5716.0 deep=5729.0-5742.0 circulant=True rows=[[0, 1, 6, 7, 9, 11], [1, 2, 7, 8, 10, 12], [0, 2, 3, 8, 9, 11], [1, 3, 4, 9, 10, 12], [0, 2, 4, 5, 10, 11], [1, 3, 5, 6, 11, 12], [0, 2, 4, 6, 7, 12], [0, 1, 3, 5, 7, 8], [1, 2, 4, 6, 8, 9], [2, 3, 5, 7, 9, 10], [3, 4, 6, 8, 10, 11], [4, 5, 7, 9, 11, 12], [0, 5, 6, 8, 10, 12]]
+  board#62 [circ] final=5829.0/7098=0.8212 stage1=5751.0 refine=5736.0-5821.0 deep=5793.0-5829.0 circulant=True rows=[[0, 1, 3, 8, 9, 12], [0, 1, 2, 4, 9, 10], [1, 2, 3, 5, 10, 11], [2, 3, 4, 6, 11, 12], [0, 3, 4, 5, 7, 12], [0, 1, 4, 5, 6, 8], [1, 2, 5, 6, 7, 9], [2, 3, 6, 7, 8, 10], [3, 4, 7, 8, 9, 11], [4, 5, 8, 9, 10, 12], [0, 5, 6, 9, 10, 11], [1, 6, 7, 10, 11, 12], [0, 2, 7, 8, 11, 12]]
+  board#74 [circ] final=5830.0/7098=0.8214 stage1=5752.0 refine=5790.0-5830.0 deep=5791.0-5825.0 circulant=True rows=[[2, 3, 5, 6, 9, 11], [3, 4, 6, 7, 10, 12], [0, 4, 5, 7, 8, 11], [1, 5, 6, 8, 9, 12], [0, 2, 6, 7, 9, 10], [1, 3, 7, 8, 10, 11], [2, 4, 8, 9, 11, 12], [0, 3, 5, 9, 10, 12], [0, 1, 4, 6, 10, 11], [1, 2, 5, 7, 11, 12], [0, 2, 3, 6, 8, 12], [0, 1, 3, 4, 7, 9], [1, 2, 4, 5, 8, 10]]
+  board#75 [circ] final=5841.0/7098=0.8229 stage1=5775.0 refine=5756.0-5816.0 deep=5835.0-5841.0 circulant=True rows=[[0, 2, 3, 4, 6, 9], [1, 3, 4, 5, 7, 10], [2, 4, 5, 6, 8, 11], [3, 5, 6, 7, 9, 12], [0, 4, 6, 7, 8, 10], [1, 5, 7, 8, 9, 11], [2, 6, 8, 9, 10, 12], [0, 3, 7, 9, 10, 11], [1, 4, 8, 10, 11, 12], [0, 2, 5, 9, 11, 12], [0, 1, 3, 6, 10, 12], [0, 1, 2, 4, 7, 11], [1, 2, 3, 5, 8, 12]]
+  board#66 [circ] final=5855.0/7098=0.8249 stage1=5765.0 refine=5751.0-5778.0 deep=5846.0-5855.0 circulant=True rows=[[1, 6, 7, 8, 11, 12], [0, 2, 7, 8, 9, 12], [0, 1, 3, 8, 9, 10], [1, 2, 4, 9, 10, 11], [2, 3, 5, 10, 11, 12], [0, 3, 4, 6, 11, 12], [0, 1, 4, 5, 7, 12], [0, 1, 2, 5, 6, 8], [1, 2, 3, 6, 7, 9], [2, 3, 4, 7, 8, 10], [3, 4, 5, 8, 9, 11], [4, 5, 6, 9, 10, 12], [0, 5, 6, 7, 10, 11]]
+  board#63 [circ] final=5875.0/7098=0.8277 stage1=5812.0 refine=5816.0-5831.0 deep=5852.0-5875.0 circulant=True rows=[[1, 2, 3, 4, 9, 11], [2, 3, 4, 5, 10, 12], [0, 3, 4, 5, 6, 11], [1, 4, 5, 6, 7, 12], [0, 2, 5, 6, 7, 8], [1, 3, 6, 7, 8, 9], [2, 4, 7, 8, 9, 10], [3, 5, 8, 9, 10, 11], [4, 6, 9, 10, 11, 12], [0, 5, 7, 10, 11, 12], [0, 1, 6, 8, 11, 12], [0, 1, 2, 7, 9, 12], [0, 1, 2, 3, 8, 10]]
+  board#65 [circ] final=5898.0/7098=0.8309 stage1=5856.0 refine=5864.0-5891.0 deep=5889.0-5898.0 circulant=True rows=[[0, 1, 4, 5, 11, 12], [0, 1, 2, 5, 6, 12], [0, 1, 2, 3, 6, 7], [1, 2, 3, 4, 7, 8], [2, 3, 4, 5, 8, 9], [3, 4, 5, 6, 9, 10], [4, 5, 6, 7, 10, 11], [5, 6, 7, 8, 11, 12], [0, 6, 7, 8, 9, 12], [0, 1, 7, 8, 9, 10], [1, 2, 8, 9, 10, 11], [2, 3, 9, 10, 11, 12], [0, 3, 4, 10, 11, 12]]
+  board#72 [circ] final=5920.0/7098=0.8340 stage1=5880.0 refine=5874.0-5920.0 deep=5879.0-5920.0 circulant=True rows=[[0, 2, 4, 5, 9, 10], [1, 3, 5, 6, 10, 11], [2, 4, 6, 7, 11, 12], [0, 3, 5, 7, 8, 12], [0, 1, 4, 6, 8, 9], [1, 2, 5, 7, 9, 10], [2, 3, 6, 8, 10, 11], [3, 4, 7, 9, 11, 12], [0, 4, 5, 8, 10, 12], [0, 1, 5, 6, 9, 11], [1, 2, 6, 7, 10, 12], [0, 2, 3, 7, 8, 11], [1, 3, 4, 8, 9, 12]]
+  board#79 [circ] final=6013.0/7098=0.8471 stage1=5971.0 refine=5965.0-5996.0 deep=6012.0-6013.0 circulant=True rows=[[0, 4, 5, 9, 10, 12], [0, 1, 5, 6, 10, 11], [1, 2, 6, 7, 11, 12], [0, 2, 3, 7, 8, 12], [0, 1, 3, 4, 8, 9], [1, 2, 4, 5, 9, 10], [2, 3, 5, 6, 10, 11], [3, 4, 6, 7, 11, 12], [0, 4, 5, 7, 8, 12], [0, 1, 5, 6, 8, 9], [1, 2, 6, 7, 9, 10], [2, 3, 7, 8, 10, 11], [3, 4, 8, 9, 11, 12]]
+final <0.90: 61  <=0.85: 12  min 5728.0 0.8069878839109609
+boards with rerun spread (refine+deep, min..max) > 2/400-equivalent (35.49 counts): [(62, 93.0), (63, 59.0), (66, 104.0), (72, 46.0), (73, 61.0), (74, 40.0), (75, 85.0), (79, 48.0), (100, 54.0)]
+13x13 boards with final <=0.85 (0.85*n=6033.3):
+   board#62 [circ] 5829.0/7098 circulant=True
+   board#63 [circ] 5875.0/7098 circulant=True
+   board#64 [circ] 6021.0/7098 circulant=True
+   board#65 [circ] 5898.0/7098 circulant=True
+   board#66 [circ] 5855.0/7098 circulant=True
+   board#67 [circ] 6019.0/7098 circulant=True
+   board#72 [circ] 5920.0/7098 circulant=True
+   board#73 [circ] 5742.0/7098 circulant=True
+   board#74 [circ] 5830.0/7098 circulant=True
+   board#75 [circ] 5841.0/7098 circulant=True
+   board#79 [circ] 6013.0/7098 circulant=True
+   board#100 [paley] 5728.0/7098 circulant=True
+   non-circulant among them: []
+done
