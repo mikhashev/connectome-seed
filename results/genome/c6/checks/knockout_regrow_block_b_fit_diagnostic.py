@@ -21,6 +21,7 @@ import knockout_regrow_block_b as B  # noqa: E402
 import gzip  # noqa: E402
 import inspect  # noqa: E402
 import json  # noqa: E402
+import re  # noqa: E402
 import time  # noqa: E402
 
 import numpy as np  # noqa: E402
@@ -28,7 +29,13 @@ import numpy as np  # noqa: E402
 H = B.H
 ARM = "blockB_fit_diagnostic"
 STARTS = 10                                  # the registered command's --starts
-TIE = 1e-9                                   # fit.py LAMBDA_TIE, harness fit_bf's tolerance
+# Revision 1 (E6): the tie tolerance is read from the registered carrier, fit.py's LAMBDA_TIE
+# (fit.py line 68, used at line 142), loaded as the rule path loads it. harness.fit_bf carries the
+# same tolerance as a literal (harness.py line 728), which cannot be imported: it is read from the
+# source of fit_bf and must equal LAMBDA_TIE, or the script stops at import.
+FIT = H.load_rule(B.RULE_PATH).fit.__globals__
+LAMBDA_TIE = float(FIT["LAMBDA_TIE"])
+UV_ZERO = 1e-9                               # max |u.v| at or below this: no rank-1 term (plan 5)
 PRED_KEYS = ("rule", "BF:1")
 PLAN = "docs/plans/2026-09-28-block-b-fit-diagnostic.md"
 # summary.json real.rows.<key>.lambda_block / ceiling_block of the registered run
@@ -37,6 +44,20 @@ REGISTERED = {"rule": {"lambda": 100.0, "ceiling_block": 0.7744360902255639},
 REGISTERED_RUN_DIR = B.PRIVATE_ROOT / "flyvis65_blockB_20260928T143258Z_7a10d88ec95e"
 RAW_REAL = REGISTERED_RUN_DIR / "raw_fits_real.json.gz"
 SUMS = ("all folds", "without the one-cell fold(s)", "without single-class folds")
+
+
+def harness_tie_literal(src=None):
+    """The tolerance literal in harness.fit_bf's selection line (harness.py line 728)."""
+    src = inspect.getsource(H.fit_bf) if src is None else src
+    hits = re.findall(r"ll\[l\]\s*>=\s*best\s*-\s*([0-9.]+(?:[eE][+-]?[0-9]+)?)\s*\)", src)
+    if len(hits) != 1:
+        raise RuntimeError(f"harness.fit_bf: {len(hits)} tie-rule lines found, expected 1")
+    return float(hits[0])
+
+
+if harness_tie_literal() != LAMBDA_TIE:
+    raise RuntimeError(f"harness.fit_bf's tie literal {harness_tie_literal()!r} != fit.LAMBDA_TIE "
+                       f"{LAMBDA_TIE!r}: the two predictors would not share the tie rule")
 
 
 # ------------------------------------------------------------------------------------------
@@ -97,10 +118,10 @@ def recorded_block_fit(pk, bank, starts=STARTS):
 # The per-fold table and the selection.
 
 def select(ll, grid):
-    """fit.py line 142 / harness.py line 728: argmax, ties within 1e-9 to the larger lambda.
-    Returns (selected, the lambdas within 1e-9 of the best)."""
+    """fit.py line 142 / harness.py line 728: argmax, ties within LAMBDA_TIE to the larger
+    lambda. Returns (selected, the lambdas within LAMBDA_TIE of the best)."""
     best = max(ll[l] for l in grid)
-    tied = [l for l in grid if ll[l] >= best - TIE]
+    tied = [l for l in grid if ll[l] >= best - LAMBDA_TIE]
     return max(tied), tied
 
 
@@ -143,7 +164,7 @@ def per_fold_table(fit, bank):
     last = calls[-1]
     if not np.array_equal(last["M"], M_full) or last["lam"] != fit["lam"]:
         raise RuntimeError("the final call is not the full-view fit at the selected lambda")
-    return {"folds": rows, "totals": tot, "grid": grid}
+    return {"folds": rows, "totals": tot, "grid": grid, "final_uv_max": last["uv_max"]}
 
 
 def sums_without(table, drop):
@@ -156,54 +177,126 @@ def sums_without(table, drop):
     return tot
 
 
+def margin_reading(m):
+    """The plan's section 5 reading of the margin m = total(top lambda) - total(lambda = 1), nats."""
+    if abs(m) <= LAMBDA_TIE:
+        return "indifferent"
+    return "top preferred" if m > 0 else "lambda = 1 preferred"
+
+
+def _contest(table, drop):
+    """Selection, tie set and margins of the totals over the folds not in drop (a re-sum)."""
+    grid = table["grid"]
+    top, low = max(grid), min(grid)
+    tot = sums_without(table, set(drop))
+    sel, tied = select(tot, grid)
+    rest = [l for l in grid if l not in tied]
+    m = tot[top] - tot[low]
+    return {"dropped": sorted(drop), "totals": tot, "selected": sel, "tied": tied,
+            "tie_rule_acted": len(tied) > 1,
+            # top against the next-best lambda: with a collapsed tail, the spread inside it
+            "margin_top_over_rest": tot[top] - max(tot[l] for l in grid if l != top),
+            # the worst of T against the best outside T: > LAMBDA_TIE by construction, or None
+            "margin_tied_over_rest": (min(tot[l] for l in tied)
+                                      - max(tot[l] for l in rest)) if rest else None,
+            # the number the reading reads (plan section 5, revision 1, E1)
+            "margin_top_over_low": m, "margin_reading": margin_reading(m)}
+
+
+def tail_report(table, lam):
+    """Revision 1 (E4): the collapsed tail (the lambdas whose inner fits have max |u.v| <=
+    UV_ZERO in every fold) and whether the chosen lambda lies in it."""
+    grid = table["grid"]
+    uv = {l: max(r["uv_max"][l] for r in table["folds"]) for l in grid}
+    tail = [l for l in grid if uv[l] <= UV_ZERO]
+    spread = (max(abs(r["ll"][l] - r["ll"][max(tail)]) for r in table["folds"] for l in tail)
+              if tail else None)
+    return {"chosen": lam, "collapsed_tail": tail, "chosen_in_tail": lam in tail,
+            "uv_max_folds": uv, "uv_max_final": table.get("final_uv_max"), "tail_spread": spread}
+
+
 def summarise(table):
     grid = table["grid"]
-    top = max(grid)
+    top, low = max(grid), min(grid)
     single = [r["fold"] for r in table["folds"] if r["single_class"]]
     one_cell = [r["fold"] for r in table["folds"] if r["n_cells"] == 1]
-    out = {}
-    for name, drop in zip(SUMS, ([], one_cell, single)):
-        tot = sums_without(table, set(drop))
-        sel, tied = select(tot, grid)
-        rest = [l for l in grid if l not in tied]
-        out[name] = {"dropped": drop, "totals": tot, "selected": sel, "tied": tied,
-                     "tie_rule_acted": len(tied) > 1,
-                     "margin_top_over_rest": tot[top] - max(tot[l] for l in grid if l != top),
-                     "margin_tied_over_rest": (min(tot[l] for l in tied)
-                                               - max(tot[l] for l in rest)) if rest else None}
+    out = {name: _contest(table, drop) for name, drop in zip(SUMS, ([], one_cell, single))}
+    a = out["all folds"]
+    # Revision 1 (E5): leave one fold out, each fold in turn; a re-sum, not a refit
+    loo = []
+    for r in table["folds"]:
+        c = _contest(table, [r["fold"]])
+        loo.append({"fold": r["fold"], "selected": c["selected"], "tied": c["tied"],
+                    "margin_top_over_low": c["margin_top_over_low"],
+                    "margin_reading": c["margin_reading"],
+                    "flips_choice": c["selected"] != a["selected"],
+                    "flips_reading": c["margin_reading"] != a["margin_reading"]})
+    out["leave_one_out"] = loo
+    out["folds_flipping_choice"] = [x["fold"] for x in loo if x["flips_choice"]]
+    out["folds_flipping_reading"] = [x["fold"] for x in loo if x["flips_reading"]]
     two = [r for r in table["folds"] if not r["single_class"]]
     out["two_class_folds"] = len(two)
     out["two_class_folds_choosing_top"] = sum(r["selected"] == top for r in two)
     out["two_class_folds_by_choice"] = {l: [r["fold"] for r in two if r["selected"] == l]
                                         for l in grid}
+    out["two_class_folds_preferring_top"] = [
+        r["fold"] for r in two if margin_reading(r["ll"][top] - r["ll"][low]) == "top preferred"]
     return out
 
 
 def read_outcome(s, table):
-    """The plan's reading rules, in the plan's order. T is the set of lambdas within 1e-9 of the
-    best all-fold total (the tie rule picks max T); the contest is T against the other lambdas."""
+    """The plan's reading rules (section 5, revision 1), in the plan's order, on the margin
+    m = total(lambda = top) - total(lambda = 1) in nats, not on membership in T."""
     grid = table["grid"]
     top, low = max(grid), min(grid)
     a = s["all folds"]
-    T = a["tied"]
+    m = a["margin_top_over_low"]
     if a["selected"] != top:
         return "not applicable", f"the all-fold selection is {a['selected']:g}, not {top:g}"
-    same = all(abs(r["ll"][l] - r["ll"][top]) <= TIE for r in table["folds"] for l in T)
-    tset = (f"T = {T} (the same held-out value in every fold within 1e-9: {same}; "
-            f"max |u.v| in T: {max(r['uv_max'][l] for r in table['folds'] for l in T):.3g})")
-    if low in T:
-        return "(a) tie rule", f"lambda = {low:g} is tied with {top:g}; {tset}"
+    tail = tail_report(table, a["selected"])
+    ctx = (f"T = {a['tied']}; margin_tied_over_rest = {a['margin_tied_over_rest']}; "
+           f"margin_top_over_rest = {a['margin_top_over_rest']:.6g}; collapsed tail "
+           f"{tail['collapsed_tail']} (spread {tail['tail_spread']}); leave-one-fold-out: the "
+           f"choice flips without folds {s['folds_flipping_choice']}, the margin reading without "
+           f"folds {s['folds_flipping_reading']}")
+    if m < -LAMBDA_TIE:
+        return "gate arithmetic failed", (f"lambda = {low:g} beats {top:g} by {-m:.6g} nats, so "
+                                          f"the tie rule would have chosen {low:g}; {ctx}")
+    if abs(m) <= LAMBDA_TIE:
+        return "(a) tie rule", (f"|m| = {abs(m):.3g} <= LAMBDA_TIE: the data are indifferent "
+                                f"between lambda = {low:g} and {top:g}; the tie rule chose; {ctx}")
     t = s["without single-class folds"]
-    if not set(t["tied"]) <= set(T):
-        return "(a) fold geometry", (f"without the single-class fold(s) {t['dropped']} the best "
-                                     f"is {t['tied']}, outside T; {tset}")
+    if t["margin_top_over_low"] <= LAMBDA_TIE:
+        return "(a) fold geometry", (f"m = {m:.6g} nats, but without the single-class fold(s) "
+                                     f"{t['dropped']} m = {t['margin_top_over_low']:.6g} "
+                                     f"({t['margin_reading']}); {ctx}")
     two = [r for r in table["folds"] if not r["single_class"]]
-    k = sum(set(r["tied"]) <= set(T) for r in two)
-    why = (f"T wins the two-class sum by {t['margin_tied_over_rest']:.6g} nats and is the "
-           f"choice of {k} of {len(two)} two-class folds; {tset}")
-    if 2 * k > len(two):
-        return "(b) data", why
+    pref = s["two_class_folds_preferring_top"]
+    gloss = ("no interaction on the registered lambda grid" if tail["chosen_in_tail"] else
+             f"a weaker interaction (lambda = {top:g} is not in the collapsed tail), not none")
+    why = (f"m = {m:.6g} nats, {t['margin_top_over_low']:.6g} without the single-class folds; "
+           f"{len(pref)} of {len(two)} two-class folds prefer lambda = {top:g} (folds {pref}); "
+           f"{ctx}")
+    if 2 * len(pref) > len(two):
+        return "(b) data", f"the data preferred lambda = {top:g}: {gloss}; {why}"
     return "(c) carried by few folds", why
+
+
+def compare_predictors(tails):
+    """Revision 1 (E4): the mechanical sentence on the two predictors' chosen lambdas."""
+    r, b = tails["rule"], tails["BF:1"]
+    lines = [f"{B.PRED_NAME[pk]}: chosen lambda {x['chosen']:g}; collapsed tail "
+             f"{x['collapsed_tail']}; in the tail: {x['chosen_in_tail']}; max |u.v| over the "
+             f"folds at the chosen lambda {x['uv_max_folds'][x['chosen']]:.3g}, final fit "
+             f"{x['uv_max_final']:.3g}" for pk, x in (("rule", r), ("BF:1", b))]
+    if r["chosen_in_tail"] and not b["chosen_in_tail"]:
+        lines.append("rule #2.1 chose a lambda in its collapsed tail and BF_1 did not: 0.7744 "
+                     "against 0.9649 compares a fit with no rank-1 term against a rank-1 fit, "
+                     "two model classes as much as two predictors")
+    else:
+        lines.append("the two chosen lambdas are not split by the collapsed tail (rule #2.1 in "
+                     f"it: {r['chosen_in_tail']}, BF_1 in it: {b['chosen_in_tail']})")
+    return lines
 
 
 # ------------------------------------------------------------------------------------------
@@ -269,9 +362,16 @@ def fmt_table(pk, table, s):
     for name in SUMS:
         x = s[name]
         lines.append(f"{name:<30} " + "  ".join(f"{x['totals'][l]:>11.6f}" for l in grid)
-                     + f"  -> {x['selected']:g} (within 1e-9: {x['tied']}; their worst minus "
-                     f"the best other = {x['margin_tied_over_rest']})")
-    lines.append(f"two-class folds by choice: {s['two_class_folds_by_choice']}")
+                     + f"  -> {x['selected']:g} (T: {x['tied']}; m = top - lambda 1 = "
+                     f"{x['margin_top_over_low']!r}, {x['margin_reading']}; "
+                     f"margin_tied_over_rest = {x['margin_tied_over_rest']!r})")
+    for x in s["leave_one_out"]:
+        lines.append(f"without fold {x['fold']:>2}: -> {x['selected']:g} (T: {x['tied']}; m = "
+                     f"{x['margin_top_over_low']!r}, {x['margin_reading']})"
+                     + ("  FLIPS THE CHOICE" if x["flips_choice"] else "")
+                     + ("  flips the reading" if x["flips_reading"] else ""))
+    lines.append(f"two-class folds by choice: {s['two_class_folds_by_choice']}; preferring the "
+                 f"top lambda by the margin: {s['two_class_folds_preferring_top']}")
     return lines
 
 
@@ -314,8 +414,15 @@ def main():
     lines = []
     for pk in PRED_KEYS:
         lines += fmt_table(pk, tables[pk], summ[pk]) + [""]
+    tails = {pk: tail_report(tables[pk], fits[pk]["lam"]) for pk in PRED_KEYS}
+    m = summ["rule"]["all folds"]["margin_top_over_low"]
+    lines += compare_predictors(tails) + [
+        f"gate arithmetic: rule #2.1 m = {m!r} >= -LAMBDA_TIE = {-LAMBDA_TIE!r}: "
+        f"{m >= -LAMBDA_TIE} (m < -LAMBDA_TIE would mean lambda = 1 is chosen)"]
     label, why = read_outcome(summ["rule"], tables["rule"])
-    lines += [f"reading (plan, rule #2.1 only): {label}: {why}",
+    lines += [f"reading (plan section 5, rule #2.1): {label}: {why}",
+              "read about the registered lambda grid (no lambda < 1), not about the block: "
+              "a 'no' is not 'no interaction'",
               "block B's label is unchanged (U, failed fit)"]
     for ln in lines:
         B.log(ln)
@@ -323,7 +430,8 @@ def main():
            "fits": {pk: {"lambda": fits[pk]["lam"], "ceiling_block": fits[pk]["ceiling_block"],
                          "p": fits[pk]["p"].tolist(), "y": fits[pk]["y"].tolist(),
                          "inner_ll_of_the_fit": fits[pk]["inner_ll"]} for pk in PRED_KEYS},
-           "tables": tables, "summary": summ,
+           "tables": tables, "summary": summ, "tails": tails, "lambda_tie": LAMBDA_TIE,
+           "uv_zero": UV_ZERO,
            "reading_rule_2_1": {"outcome": label, "why": why}, "runtime_s": time.time() - t0}
     (out / "diagnostic.json").write_text(B.dump_json(res) + "\n", encoding="utf-8", newline="\n")
     (out / "console.txt").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")

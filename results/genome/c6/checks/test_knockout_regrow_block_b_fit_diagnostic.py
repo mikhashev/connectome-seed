@@ -74,6 +74,7 @@ def test_reproduction_catches_a_changed_total_or_value(runs):
 
 
 def test_select_tie_rule():
+    """The tie rule at LAMBDA_TIE / 2 (a tie) and 2 * LAMBDA_TIE (no tie)."""
     grid = [1.0, 3.0, 10.0, 30.0, 100.0]
     ll = {1.0: -10.0, 3.0: -11.0, 10.0: -12.0, 30.0: -13.0, 100.0: -10.0 - 5e-10}
     assert D.select(ll, grid) == (100.0, [1.0, 100.0])
@@ -100,19 +101,19 @@ def _read(rows):
 
 
 def test_reading_rules_each_branch():
+    """Revision 1 (E1): the reading reads the margin m = total(100) - total(1), in the plan's
+    order: |m| <= LAMBDA_TIE, then m without the single-class folds, then the two-class folds."""
     flat = [-2.0] * 5
     up = [-2.0, -1.9, -1.8, -1.7, -1.6]            # lambda = 100 best
     down = [-1.6, -1.7, -1.8, -1.9, -2.0]          # lambda = 1 best
-    # tie: all folds flat
+    # indifferent: all folds flat
     assert _read([(1, 1, flat), (2, 2, flat)]) == "(a) tie rule"
     # lambda = 100 wins only through the one-cell single-class fold
-    assert _read([(1, 0, [-5, -4, -3, -2, -0.5]), (1, 1, down), (2, 1, down)]) == \
-        "(a) fold geometry"
+    assert _read([(1, 0, [-5, -4, -3, -2, -0.5]), (1, 1, down), (2, 1, down)]) ==         "(a) fold geometry"
     # lambda = 100 wins in most two-class folds
     assert _read([(1, 0, down), (1, 1, up), (2, 1, up), (1, 2, up)]) == "(b) data"
     # lambda = 100 wins the two-class sum through one fold only
-    assert _read([(1, 1, [-9, -8, -7, -6, -1]), (2, 1, down), (1, 2, down)]) == \
-        "(c) carried by few folds"
+    assert _read([(1, 1, [-9, -8, -7, -6, -1]), (2, 1, down), (1, 2, down)]) ==         "(c) carried by few folds"
     # the collapse seen on fixtures: lambda >= 3 give one fit (tied), lambda = 1 differs
     col_up = [-2.0, -1.5, -1.5, -1.5, -1.5]
     col_down = [-1.5, -2.0, -2.0, -2.0, -2.0]
@@ -121,6 +122,83 @@ def test_reading_rules_each_branch():
     assert _read([(1, 1, [-9, -1, -1, -1, -1]), (2, 1, col_down), (1, 2, col_down)]) ==         "(c) carried by few folds"
     # the all-fold selection is not lambda = 100
     assert _read([(1, 1, down)]) == "not applicable"
+
+
+def test_margin_decides_not_membership():
+    """A collapsed tail whose in-tail spread (1e-13) moves the argmax from 100 to 3 when the
+    single-class fold is dropped (inside T): the margin over lambda = 1 stays positive, so the reading is
+    (b), not (a) fold geometry; and a margin within LAMBDA_TIE is read as indifferent."""
+    e = 1e-13
+    single = [-3.0, -0.5, -0.5, -0.5, -0.5 + 2 * e]
+    two = [-2.0, -1.5 + e, -1.5, -1.5, -1.5]
+    rows = [(1, 0, single), (1, 1, two), (2, 1, two), (1, 2, two)]
+    t = _table(rows)
+    s = D.summarise(t)
+    assert s["all folds"]["selected"] == 100.0
+    w = s["without single-class folds"]
+    assert max(w["totals"], key=w["totals"].get) == 3.0          # the argmax moved inside T
+    assert w["tied"] == [3.0, 10.0, 30.0, 100.0]
+    assert s["without single-class folds"]["margin_reading"] == "top preferred"
+    assert D.read_outcome(s, t)[0] == "(b) data"
+    # with a collapsed tail, margin_tied_over_rest and m agree within the tail's spread;
+    # margin_top_over_rest is the spread itself, not the decision number
+    a = s["all folds"]
+    assert abs(a["margin_tied_over_rest"] - a["margin_top_over_low"]) <= 1e-12
+    assert abs(a["margin_top_over_rest"]) <= 1e-12
+    half = D.LAMBDA_TIE / 2
+    assert D.margin_reading(half) == "indifferent" and D.margin_reading(-half) == "indifferent"
+    assert D.margin_reading(2 * D.LAMBDA_TIE) == "top preferred"
+    assert D.margin_reading(-2 * D.LAMBDA_TIE) == "lambda = 1 preferred"
+    assert _read([(1, 1, [-2.0, -3, -3, -3, -2.0 - half]), (2, 1, [-2.0] * 5)]) == "(a) tie rule"
+
+
+def test_leave_one_fold_out_names_the_flipping_folds():
+    """Revision 1 (E5): a re-sum without each fold in turn; the fold that carries lambda = 100
+    alone is named as flipping the choice, the others are not."""
+    down = [-1.6, -1.7, -1.8, -1.9, -2.0]
+    t = _table([(1, 1, [-9, -8, -7, -6, -1]), (2, 1, down), (1, 2, down)])
+    s = D.summarise(t)
+    assert [x["fold"] for x in s["leave_one_out"]] == [0, 1, 2]
+    assert s["folds_flipping_choice"] == [0]
+    assert s["folds_flipping_reading"] == [0]
+    x0 = s["leave_one_out"][0]
+    assert x0["selected"] == 1.0 and x0["margin_reading"] == "lambda = 1 preferred"
+    assert x0["margin_top_over_low"] == pytest.approx(-0.8)
+    assert "[0]" in D.read_outcome(s, t)[1]
+
+
+def test_tail_report_and_the_predictor_sentence():
+    """Revision 1 (E4): the collapsed tail by max |u.v| per lambda, and the sentence that fires
+    only when rule #2.1's lambda is in its tail and BF_1's is not."""
+    t = _table([(1, 1, [-2.0, -1.5, -1.5, -1.5, -1.5]), (2, 1, [-2.0, -1.5, -1.5, -1.5, -1.5])])
+    for r in t["folds"]:
+        r["uv_max"] = {1.0: 0.3, 3.0: 1e-14, 10.0: 0.0, 30.0: 0.0, 100.0: 0.0}
+    t["final_uv_max"] = 0.0
+    x = D.tail_report(t, 100.0)
+    assert x["collapsed_tail"] == [3.0, 10.0, 30.0, 100.0] and x["chosen_in_tail"]
+    y = D.tail_report(t, 1.0)
+    assert not y["chosen_in_tail"]
+    assert "two model classes" in D.compare_predictors({"rule": x, "BF:1": y})[-1]
+    assert "not split" in D.compare_predictors({"rule": x, "BF:1": x})[-1]
+
+
+@pytest.mark.parametrize("pk", D.PRED_KEYS)
+def test_tail_report_on_the_fixture_fits(runs, pk):
+    fit, table = runs[pk]
+    x = D.tail_report(table, fit["lam"])
+    assert x["chosen_in_tail"] == (x["uv_max_folds"][fit["lam"]] <= D.UV_ZERO)
+    assert x["uv_max_final"] == fit["calls"][-1]["uv_max"]
+
+
+def test_tie_tolerance_carriers():
+    """Revision 1 (E6): LAMBDA_TIE is fit.py's; harness.fit_bf's literal is read and equals it;
+    a changed or missing literal is caught."""
+    assert D.LAMBDA_TIE == D.FIT["LAMBDA_TIE"] == 1e-9
+    assert D.harness_tie_literal() == D.LAMBDA_TIE
+    line = "    lam = max(l for l in BF_LAMBDAS if ll[l] >= best - {})"
+    assert D.harness_tie_literal(line.format("1e-12")) == 1e-12
+    with pytest.raises(RuntimeError):
+        D.harness_tie_literal("    lam = max(BF_LAMBDAS)")
 
 
 def test_out_dir_refusal():
@@ -135,3 +213,17 @@ def test_dirty_tree_refused_before_any_fit(monkeypatch):
     monkeypatch.setattr(B, "real_bank", lambda: pytest.fail("the real bank was read"))
     with pytest.raises(SystemExit):
         D.main()
+
+
+def test_console_lines_on_the_fixture_fits(runs):
+    """The printing path (tables, leave-one-fold-out lines, the predictor sentence) runs on the
+    fixture fits; a smoke test of main's output code, not of its values."""
+    tails = {}
+    for pk in D.PRED_KEYS:
+        fit, table = runs[pk]
+        s = D.summarise(table)
+        lines = D.fmt_table(pk, table, s)
+        assert sum(ln.startswith("without fold") for ln in lines) == len(table["folds"])
+        tails[pk] = D.tail_report(table, fit["lam"])
+    assert len(D.compare_predictors(tails)) == 3
+    assert D.read_outcome(D.summarise(runs["rule"][1]), runs["rule"][1])[0]
