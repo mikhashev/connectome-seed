@@ -1,5 +1,5 @@
 """Tests of knockout_regrow_block_b.py, block B on flyvis-65 (registration
-docs/plans/2026-09-25-knockout-regrow-block-b-registration.md, revision 1.7.2, section 7: S1-S40).
+docs/plans/2026-09-25-knockout-regrow-block-b-registration.md, revision 1.7.3, section 7: S1-S40).
 
 Fixture banks and synthetic worlds only. No test reads block B's cells of the real bank, and no
 test fits on the real bank (D3 (ii)): every flow puts a fixture bank in place of the real one
@@ -468,7 +468,7 @@ def test_S02_registrations_and_A_pin(monkeypatch):
     """S2: this registration and revision; A's LF sha256 after Amendment 1 is checked in every
     mode (a changed pin stops: "A changed"); the text of A's verdict is recorded."""
     assert K.REGISTRATION == "docs/plans/2026-09-25-knockout-regrow-block-b-registration.md"
-    assert K.REGISTRATION_REVISION == "1.7.2"
+    assert K.REGISTRATION_REVISION == "1.7.3"
     assert K.A_REGISTRATION_SHA256_LF_AMENDED == (
         "fc41505690365ff6d82fa618b00b482cc992bb36d708ed3b6fbbe6f54f96dbec")
     assert K.A_REGISTRATION_SHA256_LF_FLYVIS65 == (

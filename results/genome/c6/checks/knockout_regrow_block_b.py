@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Knock out and regrow, block B on flyvis-65: L1-L5 x the eight motion-pathway inputs (40 cells).
 
-Implements docs/plans/2026-09-25-knockout-regrow-block-b-registration.md, revision 1.7.2 ("B";
+Implements docs/plans/2026-09-25-knockout-regrow-block-b-registration.md, revision 1.7.3 ("B";
 section numbers below refer to it unless marked "A"), a delta on block A's registration
 docs/plans/2026-09-24-knockout-regrow-registration.md, revision 3.4.1 with its Amendment 1 ("A").
 This file is a copy of A's script results/genome/c6/checks/knockout_regrow.py (D13 (i)) with the
@@ -89,7 +89,7 @@ C6 = HERE.parent
 ROOT = C6.parents[2]                                   # the repository root
 # S2: this file's registration and revision; the manifest records its LF sha256 at run time.
 REGISTRATION = "docs/plans/2026-09-25-knockout-regrow-block-b-registration.md"
-REGISTRATION_REVISION = "1.7.2"
+REGISTRATION_REVISION = "1.7.3"
 # S2: A's registration, from which quote_row and quote_section quote section 4 (B section 4 does
 # not restate it). Pinned after A's Amendment 1 and checked at run start in every mode
 # (check_pins); an Amendment 2 of A stops the run on this pin, read as "A changed", not as a
@@ -3406,7 +3406,9 @@ def arm_gate(a, head):
     the seeds (section 3.7), and the pre-run's provenance (S37, with check_prerun_files). The
     results are handed to _run, which logs them at their places in section 7's order (the log's
     order is unchanged; only the PRE-RUN PROVENANCE DIFFERS line of a refusal moves ahead of the
-    first line). The rule is limited to what guards the show; it is not a general reordering."""
+    first line). The gate holds every check that refuses without reading the bank (five today);
+    the ones that guard the show are why the rule exists (revision 1.7.3, T2; no behaviour
+    changed)."""
     pins = check_pins()
     block_and_mask = check_block_and_mask()
     auc_function = check_auc_function()
