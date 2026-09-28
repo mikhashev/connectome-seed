@@ -158,3 +158,34 @@ are different objects).
 
 Record: `docs/notes/2026-09-28-knockout-regrow-block-b-blind-review.md`; commits ce48577, 804f87a,
 c42f184.
+
+## 9. The fit diagnostic (ii): why rule #2.1's block-only fit chose λ = 100 (run 2026-09-28 20:08 UTC)
+
+Plan `docs/plans/2026-09-28-block-b-fit-diagnostic.md` (revision 1, commit 3be7824; reviewed by Johnny,
+Ark and Zcode, 19:52–19:56 UTC; run on Mike's word, DPC Research chat 20:00 UTC). Script
+`results/genome/c6/checks/knockout_regrow_block_b_fit_diagnostic.py` at 3be7824, run from the worktree
+`cs-blockb-diag` beside the data folder, clean tree:
+`PYTHONUTF8=1 tools/.venv/Scripts/python.exe results/genome/c6/checks/knockout_regrow_block_b_fit_diagnostic.py > ../connectome-seed-data/knockout_regrow/blockB_fit_diagnostic_20260928T200841Z.console.log 2>&1`
+(exit 0, 5 s). Outputs: `connectome-seed-data/knockout_regrow/blockB_fit_diagnostic_20260928T200841Z_3be78249595c/`
+(`diagnostic.json`, `console.txt`, `SHA256SUMS.txt`); console copy sha256 `d025867a…bf5df8`.
+
+- **Reproduction passed** for both refits: rule #2.1 λ 100, `ceiling_block` 0.7744360902255639; BF_1 λ 1,
+  0.9649122807017544 (and the 40 `p_exist` and the per-fold sums, as the plan requires).
+- **Rule #2.1, per λ total held-out log-likelihood (nats):** λ 1 −32.3258; λ 3, 10, 30, 100 −31.8911
+  (one fit: the collapsed tail, max |u·v| at the chosen λ 2.6e-19). m = total(100) − total(1) = **+0.435**.
+  Without the one-cell fold 8 (1 present, 0 absent): m = **+0.042**. Two-class folds preferring the tail:
+  **4 of 9** (0, 1, 5, 9); folds 2, 3, 4, 6, 7 prefer λ = 1. Leaving out **fold 9 alone flips the choice to
+  λ = 1** (m −0.999).
+- **Registered reading (plan §5): "(c) carried by few folds"** — λ = 100 is preferred by 0.435 nats in all,
+  of which 0.39 come from the one-cell fold, and by fewer than half of the two-class folds; one fold's
+  removal reverses it. Read about the registered λ grid (no λ < 1), not about the block: this is not "no
+  interaction".
+- **BF_1, same folds:** λ 1 preferred by m = −0.044 (−0.300 without fold 8); the same four two-class folds
+  prefer the tail, and leaving out any one of folds 2, 3, 4, 6, 7 flips its choice to the tail. Its chosen λ
+  = 1 is outside the collapsed tail (max |u·v| 1.8).
+- **E4:** rule #2.1 chose a λ in its collapsed tail and BF_1 did not, so 0.7744 against 0.9649 compares a
+  fit with no rank-1 term against a rank-1 fit — two model classes as much as two predictors.
+- **What this changes:** nothing about the label (U, failed fit). For the next registrations: on block B's
+  inner folds the grid does not separate λ = 1 from "no interaction" robustly for either predictor (margins
+  well under one nat once the single-class fold is out, decided by one or two folds); a gate that measures
+  the interaction (iii) needs λ < 1 or a fixed λ, and folds without single-class members.
