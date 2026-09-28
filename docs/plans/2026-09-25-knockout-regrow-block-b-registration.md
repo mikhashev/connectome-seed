@@ -1,5 +1,17 @@
 ---
-**Status: revision 1.7: DRAFT, the pre-run's values pinned; not reviewed.** Step (3) of the order
+**Status: revision 1.7.1: revision 1.7 reviewed, all three yes (Johnny 06:24, Zcode 06:25, Ark
+06:29/06:34 UTC), with the edits below.** Revision 1.7 and the block-B script at `bb398a2`
+(branch `block-b-pins`) were reviewed in the DPC Research chat on 2026-09-28 (§10, "Revision
+1.7.1"). Revision 1.7.1 applies the reviewers' edits: the script's docstring and revision, the
+reference manifest's registration hash, A's and B's `ko1` counts named apart, where the
+registered command must be run from (`PRIVATE_ROOT`), a committed reference-mode test, and the
+answers to 1.7's open points; it adds items to §11 for the registered run's reading, without
+changing any rule. Drafted 2026-09-28 UTC by a CC subagent. Nothing was fitted or run, no cell of
+block B was read, and the pre-run folder was read only; no gate, cut, grid, seed, block, reading
+rule or registered number's computation changed.
+
+**Revision 1.7's status, as it stood (committed in `bb398a2`):**
+"**Status: revision 1.7: DRAFT, the pre-run's values pinned; not reviewed.** Step (3) of the order
 of work (below) is done: block B's `--synthetic-only` pre-run was made on Mike's word
 (2026-09-27, about 21:10 UTC) from clean `master` at `5f9cc51` (revision 1.6.1) into a new stamped
 folder, `connectome-seed-data/knockout_regrow/synthetic_blockB_prerun_20260927T211052Z_5f9cc51b9a24/`.
@@ -11,7 +23,7 @@ bank that holds the real block, and **no cell of block B was read** for the pre-
 revision (the pre-run's uses of the real bank are those §3.6 allows: N1's degree terms fitted
 outside block B, "no block-B cell read" in its log's line 7, the content pool outside block B, and
 check 4's table from presence outside block B). Drafted 2026-09-28 UTC by a CC subagent; nothing
-was fitted for revision 1.7, and the script's tests ran on fixtures only.
+was fitted for revision 1.7, and the script's tests ran on fixtures only."
 
 **Revision 1.6.1's status, as it stood (committed in `5f9cc51`):**
 "**Status: revision 1.6.1: revision 1.6 reviewed, all three reviewers yes (Zcode 18:26, Johnny
@@ -623,9 +635,23 @@ strata are source type × the targets' ON/OFF split of the key,
   pinned too, since `check_prerun_files` requires the list to name exactly the pinned files).
   The values and their commands are in §10, "Revision 1.7". The proposed name
   `synthetic_blockB_prerun/` was never made; from revision 1.7 it is not a reference and not
-  guarded. The console copy beside the folder
+  guarded. **Revision 1.7.1 (Ark P5):** making a folder under that old name would be making a new
+  reference, which goes by A §7's "Recreating the reference" (a new folder and its own reviewed
+  revision), not by "fixing" S18's guard; the old name survives only as a recorded string inside
+  the pinned manifest (`synthetic_only.json`, `manifest.prerun_dir`, the constant's value when
+  the pre-run was made). The console copy beside the folder
   (`synthetic_blockB_prerun_20260927T211052Z_5f9cc51b9a24.stdout.log`) is not part of the
-  reference and is not pinned.
+  reference and is not pinned. **The registration hash in the reference's manifest (revision
+  1.7.1; Ark 06:29):** the manifest names the registration revision and hash at which the
+  reference was made: `revision` "1.6.1", `registration_sha256_lf`
+  `3bb1bc34b9ab7fc14f4bda98ec04cfda175a79829138d7ea0e2c6996d4de357e`, equal to `git show
+  5f9cc51:docs/plans/2026-09-25-knockout-regrow-block-b-registration.md | tr -d '\r' |
+  sha256sum`. Revision 1.7, the revision after the pre-run, edits this file (and 1.7.1 again), so
+  the registration's hash at the registered run differs from the manifest's by design, as the
+  script's does (S37). Nothing compares them: `prerun_provenance` reads from the reference's
+  manifest only `git_head` and `script_sha256_lf` (compared with `PRERUN_GIT_HEAD` and
+  `PRERUN_SCRIPT_SHA256_LF`) and `not_a_reference` (which must be null), never
+  `registration_sha256_lf`.
 - **The reference is made by fitting, never by a re-read (revision 1.6, A4; Ark 17:58 and 18:00,
   Zcode 18:05, Johnny 17:54).** Block B's reference is made by one fresh fitting
   `--synthetic-only` run from a committed head (S17, D10 (i)). A `--synthetic-only --from-raw`
@@ -680,6 +706,18 @@ strata are source type × the targets' ON/OFF split of the key,
   **refused, not marked**: `main` exits with "REFUSED: the real arm runs as registered: --starts
   10, no smoke option, no --from-raw (sections 3.3, 7)" before any check, fit or folder (line
   3385 of 1.6, line 3414 of 1.6.1).
+- **A diagnostic re-read before the registered run: not a registered step (revision 1.7.1; open
+  point 1 of 1.7; Ark P4, Johnny, Zcode).** The registered run reads block B's pinned store
+  itself: `run_synthetic` reads `<F>/raw_fits.json.gz` (line 2605 of 1.7.1) for the `ko1` count
+  (`registered_ko1_count`, line 2609) and for the per-key diagnostic
+  (`raw_fits_diagnostic(F, fresh, note, ref_store)`, line 2658). A `--from-raw` re-read without
+  `--out` would add only the path from the store to the table; the diagnostic compares only the
+  score fields present in both records (line 2208; the note at line 1261). A re-read, if run, is
+  a diagnostic outside the gate (`passed` None), makes no reference (refused with `--out`,
+  above), and its outcome's carriers are `manifest["prerun_comparison_outcome"]` (line 3604) and
+  `two_world_check.prerun_reproduction.comparison` (lines 1823, 2149); without `--out` no file
+  is written, so these live in the run's return value, and the console carries the "pre-run
+  table (section 7): …" line.
 - **Registered values, recomputed from block B's worlds and read from block B's reference (one
   address, as revision 3.4.1 item B):** `smallest_passing_auc` for board `z_B` and for board
   `z'_B` (from its `synthetic_only.json`), and the `ko1` count, copied and fitted (from its
@@ -704,7 +742,7 @@ strata are source type × the targets' ON/OFF split of the key,
 | check | block B |
 |---|---|
 | 1 pins | unchanged |
-| 2 block and mask | 40 cells, 5 distinct sources, 8 distinct targets, all 13 names in `harness.NAMES`, sources and targets disjoint; training mask 4,185 cells, none in the block; `ceiling_block` mask = the 40. **Added:** all 64 cells of block A are in the training mask. **Revision 1.3 (Ark M2, no new check):** since the training mask is `~BLOCK_B`, this addition is exactly `BLOCK_A ∩ BLOCK_B = ∅` |
+| 2 block and mask | 40 cells, 5 distinct sources, 8 distinct targets, all 13 names in `harness.NAMES`, sources and targets disjoint; training mask 4,185 cells, none in the block; `ceiling_block` mask = the 40. **Added:** all 64 cells of block A are in the training mask. **Revision 1.3 (Ark M2, no new check):** since the training mask is `~BLOCK_B`, this addition is exactly `BLOCK_A ∩ BLOCK_B = ∅`. **Revision 1.7.1 (Ark 06:29):** the check's record carries `cells` and `ceiling_block_cells`, the same number (40) under two names: the check passes only when `int(blk.sum()) == N_BLOCK` (`check_block_and_mask`, line 657 of 1.7.1), and the record writes `N_BLOCK` and `int(blk.sum())` (line 664) |
 | 3 board as reviewed | **no reviewed count exists** (D3). Replaced by: the block's present count and its six strata counts are printed at run start, before any fit on the real bank; the run stops only if the block has no AUC (0 or 40 present: "BLOCK HAS NO AUC"). **Revision 1.3:** unchanged; a block that has an AUC but on which leg P cannot pass reads the "not readable" U (§3.2, S38), not a stop |
 | 4 pre-data tables | the endpoint table's sha256 (§1.4), 40 / 40 inferable and the 9 mirrors must match, else "PRE-DATA TABLES DIFFER"; the training present count is printed, not checked (D3) |
 | 5 N1 parity identity | **cannot pass on any non-degenerate 5 × 8 block** (§0); `D(N1 logit)` is printed, no stop (D6) |
@@ -1099,6 +1137,22 @@ from a clean committed head (the script refuses a dirty tree under `results/geno
   step refits the 45 worlds and must reproduce the pinned table on the deciding columns
   (outcome 1 or 2), the `smallest_passing_auc` values and the `ko1` count (§3.3), or it stops
   before the real block is scored.
+- *Where to run it from (revision 1.7.1; Ark P2, required):* run from the main checkout or from
+  a worktree placed beside the repository's data folder: `PRIVATE_ROOT` is
+  `ROOT.parent / "connectome-seed-data" / "knockout_regrow"` (line 110 of 1.7.1; `ROOT` is the
+  root of the checkout the script runs from, line 89), so a worktree nested inside the
+  repository (e.g. under `.claude/worktrees/`) resolves it elsewhere
+  (`…/connectome-seed/.claude/worktrees/connectome-seed-data/knockout_regrow`), finds no
+  reference there, and the run stops before any fit. The stop reads "PRE-RUN PROVENANCE DIFFERS
+  (S37): reference not verified: SHA256SUMS.txt not found; no fit was made" (line 3548):
+  `prerun_provenance` verifies the files first and runs in `_run` before `run_synthetic`, whose
+  own "PRE-RUN REFERENCE NOT VERIFIED" (line 2555) is reached only after it has passed. In the
+  real arm that stop comes late: the run has already made its private folder with the real-arm
+  marker under the misresolved root (lines 3445–3447; S27's search reports that root missing)
+  and check 3 has printed block B's present count (line 3529). A nested worktree is therefore
+  not a safe place to try the command. The worktree `cs-blockb-pins`, in which 1.7 and 1.7.1
+  were drafted, sits beside `connectome-seed/` in `dpc-research/` and resolves to the same
+  folder as the main checkout.
 - *Cost, measured by the pre-run:* 28,440 world fits in 7,908 s ("[synthetic worlds] done in
   7908s"), about 3.60 fits per second at 30 workers (A §7 measured 3.65), and 7,927 s in all. The
   registered run refits the same synthetic step, so it takes about 2 h 15 min or more.
@@ -1510,7 +1564,7 @@ written `<F>` below).
 
 | value | where | recomputed by (command) |
 |---|---|---|
-| `PRERUN_DIR` = `PRIVATE_ROOT / "synthetic_blockB_prerun_20260927T211052Z_5f9cc51b9a24"` | script (S17) | `PRIVATE_ROOT` = `ROOT.parent / "connectome-seed-data" / "knockout_regrow"`; resolved from the worktree and from the main checkout to the same `C:\Users\mikha\Documents\dpc-research\connectome-seed-data\knockout_regrow` (the dry check below prints it) |
+| `PRERUN_DIR` = `PRIVATE_ROOT / "synthetic_blockB_prerun_20260927T211052Z_5f9cc51b9a24"` | script (S17) | `PRIVATE_ROOT` = `ROOT.parent / "connectome-seed-data" / "knockout_regrow"`; resolved from the worktree and from the main checkout to the same `C:\Users\mikha\Documents\dpc-research\connectome-seed-data\knockout_regrow` (the dry check below prints it). *Revision 1.7.1 (Ark P2):* true of this worktree, which sits beside the main checkout; not of a worktree nested inside the repository, which resolves it elsewhere (§7, "Where to run it from") |
 | `PRERUN_SHA256["SYNTHETIC.md"]` = `685c5e1fb8ead1d12a3f2f781b314b581671b44f5ce883f33428cf2be47ac7bf` | script (S17) | `cd <F> && sha256sum * && sha256sum -c SHA256SUMS.txt` (raw bytes; equal to the line in `SHA256SUMS.txt`; `-c` OK) |
 | `PRERUN_SHA256["raw_fits.json.gz"]` = `5d08f6e697c3c06182bbe5e18543fb8838575d0ea8a0b5f0bee0f97b9fb0dbd5` | script (S17) | the same |
 | `PRERUN_SHA256["stdout.log"]` = `aea98de00476b80d65132118ff4b4fcff774953dce4971e270d1950cc33e490f` | script (S17) | the same |
@@ -1624,8 +1678,62 @@ rule, label text or D-row recommendation changed; no registered number's computa
 3. *The script's module docstring* still says "Implements … revision 1.5" (it did at 1.6 and
    1.6.1); left unchanged here, as in those revisions.
 
+### Revision 1.7.1: revision 1.7 reviewed; the reviewers' edits (2026-09-28)
+
+Revision 1.7 and the script and tests at `bb398a2` (branch `block-b-pins`) were reviewed in the
+DPC Research chat on 2026-09-28. The votes and the edits are as CC's message to the drafting agent
+relays them; the chat is not in the repository. Drafted by a CC subagent in the worktree
+`cs-blockb-pins`. All three votes are yes; this revision applies the edits asked for. Nothing was
+fitted or run (no `--arm`, no `--synthetic-only`, no re-run of the pre-run), no cell of block B
+was read, and the pre-run folder was read only (its listing, sizes and mtimes compared before and
+after, and `sha256sum -c SHA256SUMS.txt` OK before and after). No gate, cut, grid, seed, block,
+reading rule, label text or D-row recommendation changed; no registered number's computation
+changed. Line numbers below are of the script at 1.7.1.
+
+| reviewer | time (UTC) | vote |
+|---|---|---|
+| Johnny | 06:24 | yes, no edits |
+| Zcode | 06:25 | yes (ran the tests of `bb398a2`: 65 passed, 45.85 s); with the docstring token (row 1) |
+| Ark | 06:29 and 06:34 | 06:29: yes, one text fix (row 3) and two small notes (rows 2, 8); 06:34: yes, with edits: P1 (row 1) and P2 (row 4) required, P3 (row 5) a strong recommendation, P4 and P5 (rows 6, 7) on the open points; notes for the arm's reading (row 9) |
+
+| # | change | where | reviewer (time, UTC) | checked against |
+|---|---|---|---|---|
+| 1 | The module docstring's "revision 1.5" became "revision 1.7.1" ("S1-S40" kept: S40 is the last requirement of §7, no S41 exists); `REGISTRATION_REVISION` = "1.7.1" and its test; the test file's docstring (it said "revision 1.6") likewise. Answers 1.7's open point 3 | script line 4 and line 92; `test_S02_registrations_and_A_pin`; test file docstring | Zcode (06:25), Ark P1 (06:34) | `grep -c S41` over §7 and the script: 0 |
+| 2 | One sentence: the reference's manifest names the registration revision and hash at which it was made (1.6.1, `3bb1bc34b9ab7fc14f4bda98ec04cfda175a79829138d7ea0e2c6996d4de357e`); revision 1.7 edits this file, so its hash differs by design, as the script's does; nothing compares them | §3.3, "New reference" | Ark (06:29) | recomputed: the manifest's `revision` "1.6.1" and `registration_sha256_lf` (`python -c "import json; m=json.load(open('<F>/synthetic_only.json', encoding='utf-8'))['manifest']; print(m['revision'], m['registration_sha256_lf'])"`) equal `git show 5f9cc51:docs/plans/2026-09-25-knockout-regrow-block-b-registration.md \| tr -d '\r' \| sha256sum` = `3bb1bc34…357e`. `grep registration_sha256_lf` in the script: written into this run's manifest (line 3570), never read back; `prerun_provenance` reads `not_a_reference` (line 2078), `git_head` and `script_sha256_lf` (line 2083) only |
+| 3 | `registered_ko1_count`'s docstring named A's store as "the pinned store"; it now says "A's pinned store at A's revision 3.4 (A's reference, `synthetic_rev3_prerun`)" (225, 47 copied, 178 fitted, 5 by the path check) and states block B's own: **225 records, 50 copied, 175 fitted, 0 by the path check** | script `registered_ko1_count` (docstring) | Ark (06:29) | A's figures: A §3.3 (A's registration, line 806). B's recomputed: `registered_ko1_count(read_raw(PRERUN_DIR / "raw_fits.json.gz"))` = `{'ko1_records': 225, 'copied_from_ko': 50, 'fitted': 175}`. Breakdown, recomputed by the drafting agent with the same filter (`mk == "ko1"`, base `world:` banks), as copied/fitted: by family R 10/15, Nf 0/25, No 10/15, W 20/5, M0.5 0/25, M0.6 0/25, M0.75 0/25, M0.85 1/24, M1.0 9/16; by predictor rule 21/24, BF_1 19/26, BF_2 5/40, BF_3 5/40, BF_4 0/45 |
+| 4 | Where the registered command must be run from: the main checkout or a worktree beside the repository's data folder; a nested worktree resolves `PRIVATE_ROOT` elsewhere and stops at S37. 1.7's §10 claim ("resolved from the worktree and from the main checkout to the same …") holds for `cs-blockb-pins` only; it is qualified in place | §7 (new bullet "Where to run it from"); §10 "Revision 1.7", the `PRERUN_DIR` row | Ark P2 (06:34), required | `PRIVATE_ROOT = ROOT.parent / …` (line 110), `ROOT = C6.parents[2]` (line 89). Checked by a scratchpad snippet: for a root `…/connectome-seed/.claude/worktrees/x`, `PRIVATE_ROOT` is `…/connectome-seed/.claude/worktrees/connectome-seed-data/knockout_regrow`, and with `PRERUN_DIR` there `check_prerun_files` returns "SHA256SUMS.txt not found" and `prerun_provenance` passed False, "reference not verified: SHA256SUMS.txt not found". The stop's text is therefore "PRE-RUN PROVENANCE DIFFERS" (line 3548), not "PRE-RUN REFERENCE NOT VERIFIED" (line 2555, `run_synthetic`, reached only after provenance passed); the order in `main`/`_run` (folder and marker lines 3445–3447, check 3 line 3529, provenance line 3546) read in the code. From this worktree `PRIVATE_ROOT` prints `C:\Users\mikha\Documents\dpc-research\connectome-seed-data\knockout_regrow` |
+| 5 | A committed reference-mode test, `test_S17_S37_the_registered_reference_in_reference_mode`: skipped when `PRERUN_DIR` does not exist; otherwise, with the module's own constants, `reference_mode()` True, `placeholders_unset() == []`, `check_registered_constants()` passed, `check_prerun_files()` passed (nothing unlisted, exactly the pinned names), the five files' sha256 recomputed from disk equal `PRERUN_SHA256` (and the CSV's equals `PRERUN_WORLDS_CSV_SHA256`), the folder name ends with `PRERUN_GIT_HEAD[:12]`, `prerun_provenance(this head, this script's LF sha256)` passed and names the registered head and script. `real_bank`, `_fit_one` and `degree_terms` are patched to raise; the folder's listing, sizes and mtimes are compared before and after. The S17 test's and the file's docstrings say so | test file | Ark P3 (06:34), strong recommendation | it ran, not skipped, from this worktree (`-v -rs`: PASSED). It fails when a pin is changed (`stdout.log` → zeros: "differs or missing: stdout.log"), when `PRERUN_GIT_HEAD`, `PRERUN_SCRIPT_SHA256_LF` or `PRERUN_WORLDS_CSV_SHA256` is changed (each run in a scratchpad snippet with `pytest.MonkeyPatch`, undone after). Every patch it makes is a `monkeypatch`, undone after the test; no other test reads the real reference (every flow starts from `flow_setup`, which sets the four constants to `None` and `PRERUN_DIR` to a tmp path) |
+| 6 | Open point 1 of 1.7 (a diagnostic re-read, male §3.3.1 (h)): **not a required step**. One bullet: the registered run reads the pinned store itself; a re-read would add only the store→table path; the diagnostic compares only the score fields present in both records; a re-read, if run, is outside the gate, makes no reference, and its carriers are named | §3.3 (new bullet) | Ark P4 (06:34), Johnny, Zcode | lines opened: `ref_store = (read_raw(PRERUN_DIR / "raw_fits.json.gz") …)` 2605, `check_ko1_count(got, registered_ko1_count(ref_store) …)` 2609, `raw_fits_diagnostic(F, fresh, note, ref_store)` 2658, `bad = [n for n in SCORE_FIELDS if n in s0 and n in s1 …]` 2208 (note at 1261), `manifest["prerun_comparison_outcome"]` 3604, `"prerun_reproduction": repro` 1823, `comparison=cmp` 2149; without `--out` `write_synthetic_outputs` is not called (`if folder is not None`), so no file carries them |
+| 7 | Open point 2 of 1.7 (the old placeholder path): a folder made under the old name would be a new reference, under A §7, not a fix of S18; the old name survives in the pinned manifest | §3.3, "New reference" | Ark P5 (06:34) | the manifest's `prerun_dir` = `C:\Users\mikha\Documents\dpc-research\connectome-seed-data\knockout_regrow\synthetic_blockB_prerun` (read with the snippet of row 2) |
+| 8 | One phrase: `cells` and `ceiling_block_cells` in check 2's record are the same number under two names | §3.4, check 2 | Ark (06:29) | `check_block_and_mask`: the check requires `int(blk.sum()) == N_BLOCK` (line 657) and the record writes `"cells": N_BLOCK` and `"ceiling_block_cells": int(blk.sum())` (line 664) |
+| 9 | Ark's notes for the registered run's reading, added to §11 as items to read, not rules | §11 | Ark (06:34) | the limits and the curve as recorded in §10, "Revision 1.7" (`SYNTHETIC.md`); `majority(k, n)` is `2 * k > n` (the script's `majority`); A's limits as 1.7 quotes them |
+| 10 | Header status 1.7.1; 1.7's status quoted as it stood (`bb398a2`); this section | header; §10 | CC's request | — |
+
+**Tests at 1.7.1:** `PYTHONUTF8=1 tools/.venv/Scripts/python.exe -m pytest -p no:cacheprovider
+-v -rs results/genome/c6/checks/test_knockout_regrow_block_b.py` from the worktree: **66 passed in 59.34 s** (65 of 1.7 and the new reference-mode test, which ran and passed, not skipped; no skips). No existing assertion was removed or loosened.
+
 
 ## 11. Not verified at drafting
+
+- **Revision 1.7.1: items for the registered run's reading (Ark 06:34; not rules of this
+  revision, no rule changed).** Three facts of block B's synthetic limits (§10, "Revision 1.7"),
+  to be read with the registered run's result:
+  (a) block B's transition band [γ\*_P, γ_R) is **empty by construction**: γ\*_P = γ_R = 0.75, so
+  [0.75, 0.75) holds no γ; block A's band was one grid step (γ\*_P 0.6, γ_R 0.75). A reading that
+  leans on "inside the band" has no γ to point to in block B.
+  (b) each limit is a **majority rule** (the smallest grid γ at which more than half the worlds
+  count, `majority(k, n)`: `2 * k > n`, 3 of 5), and at the limit the curve shows **4/5**, not
+  5/5 (0.75: seen 4/5, R 4/5; one M0.75 world, seed 91174, reads G there): the limit is where a
+  majority is first reached, not where every world is detected.
+  (c) blocks A (γ\*_P 0.6) and B (0.75) on the **same bank with the same instrument** give
+  different limits, so the carrier of a limit is the pair **(bank, block)**, not the bank; the
+  bank-free unit proposed for the limits (the Q2 note,
+  `docs/notes/2026-09-27-knockout-regrow-power-curves-A-vs-male.md`, §7 item 4) must be free of
+  the block as well. The pair A/B also differs in seeds (B's 91000–91999, new) and in degree
+  terms (N1's, fitted on each block's own knockout view): the Q2 lesson (the note's §0: with
+  different seeds and degree terms, a shift of a limit cannot be told apart from a different
+  draw, and γ's units depend on the generator's degree terms) one step higher, from bank to
+  block.
 
 - **Revision 1.5, a disclosure (Ark's wording; Johnny and Zcode agree).** During script
   construction, one subagent ran a grep of `types.csv` by L1–L5 and saw their rows, including the

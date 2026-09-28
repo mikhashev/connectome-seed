@@ -1,5 +1,5 @@
 """Tests of knockout_regrow_block_b.py, block B on flyvis-65 (registration
-docs/plans/2026-09-25-knockout-regrow-block-b-registration.md, revision 1.6, section 7: S1-S40).
+docs/plans/2026-09-25-knockout-regrow-block-b-registration.md, revision 1.7.1, section 7: S1-S40).
 
 Fixture banks and synthetic worlds only. No test reads block B's cells of the real bank, and no
 test fits on the real bank (D3 (ii)): every flow puts a fixture bank in place of the real one
@@ -7,7 +7,10 @@ test fits on the real bank (D3 (ii)): every flow puts a fixture bank in place of
 and a deterministic stand-in for every fit (K._fit_one); check 8 (a C6 run on the real bank) is
 stubbed. The one computation on the real bank is S6's: the section 1.4 table's hash from
 presence OUTSIDE block B (as revision 1.3 recomputed it), of which only the hash, the inferable
-count and the mirrors are compared; no count is printed.
+count and the mirrors are compared; no count is printed. One test (B revision 1.7.1,
+test_S17_S37_the_registered_reference_in_reference_mode) reads the files of block B's registered
+pre-run reference (synthetic worlds only; hashes and the manifest), read-only, and is skipped
+where that folder does not exist.
 
 T-A   copies of A's 17 label tests (test_knockout_regrow_labels.py), adapted to block B (S22).
 S1-S40  one or more tests each, named test_S<nn>_...; each can fail (the docstring says how).
@@ -465,7 +468,7 @@ def test_S02_registrations_and_A_pin(monkeypatch):
     """S2: this registration and revision; A's LF sha256 after Amendment 1 is checked in every
     mode (a changed pin stops: "A changed"); the text of A's verdict is recorded."""
     assert K.REGISTRATION == "docs/plans/2026-09-25-knockout-regrow-block-b-registration.md"
-    assert K.REGISTRATION_REVISION == "1.7"
+    assert K.REGISTRATION_REVISION == "1.7.1"
     assert K.A_REGISTRATION_SHA256_LF_AMENDED == (
         "fc41505690365ff6d82fa618b00b482cc992bb36d708ed3b6fbbe6f54f96dbec")
     assert K.A_REGISTRATION_SHA256_LF_FLYVIS65 == (
@@ -671,8 +674,9 @@ def test_S16_smallest_passing_auc_grid():
 
 def test_S17_prerun_placeholders_and_the_real_arm_refuses(monkeypatch):
     """B revision 1.7: the pins are registered (their form is checked here; their values against
-    the folder are recomputed in B section 10, "Revision 1.7", not by a test, since no test reads
-    the real reference). With the placeholders put back, the real arm still refuses before any
+    the folder are recomputed in B section 10, "Revision 1.7"; from B revision 1.7.1 they are
+    also checked against the folder's files by test_S17_S37_the_registered_reference_in_reference_
+    mode, where the folder exists). With the placeholders put back, the real arm still refuses before any
     fit or use of the real bank (both patched to raise)."""
     hexd = re.compile(r"[0-9a-f]{64}")
     assert set(K.PRERUN_SHA256) == {"SYNTHETIC.md", "raw_fits.json.gz", "stdout.log",
@@ -705,6 +709,45 @@ def test_S17_prerun_placeholders_and_the_real_arm_refuses(monkeypatch):
            ("world:R:0|sh:0", "ko", "rule"): {"p": [0.1] * 40, "y": [True] * 40, "lam": 1.0}}
     d = K.raw_fits_diagnostic({}, ref=ref)
     assert set(d["kinds"]) == {"ko", "sh"} and d["total"]["missing_now"] == 2
+
+
+def test_S17_S37_the_registered_reference_in_reference_mode(monkeypatch):
+    """B revision 1.7.1 (Ark P3): the registered reference, read in reference mode with the
+    module's own constants (no fixture, no patched pin). Skipped where PRERUN_DIR does not exist
+    (another machine, or a worktree whose PRIVATE_ROOT resolves elsewhere; B section 7). It reads
+    only the reference's files (SHA256SUMS.txt, the five pinned files, the manifest of
+    synthetic_only.json): no bank cell, no fit (real_bank, _fit_one and degree_terms are patched
+    to raise), and it writes nothing (the folder's listing, sizes and mtimes are compared before
+    and after). It fails if a pin, the folder, the head or the script hash drifts from the files."""
+    if not K.PRERUN_DIR.is_dir():
+        pytest.skip(f"block B's reference is not at {K.PRERUN_DIR} on this machine")
+
+    def no_real(*a, **k):
+        raise AssertionError("the real bank was used or a fit was made")
+    monkeypatch.setattr(K, "real_bank", no_real)
+    monkeypatch.setattr(K, "_fit_one", no_real)
+    monkeypatch.setattr(K, "degree_terms", no_real)
+
+    def snapshot():
+        return sorted((p.name, p.stat().st_size, p.stat().st_mtime_ns)
+                      for p in K.PRERUN_DIR.iterdir())
+    before = snapshot()
+    assert K.reference_mode()
+    assert K.placeholders_unset() == []
+    assert K.check_registered_constants()["passed"]
+    files = K.check_prerun_files()
+    assert files["passed"], files["reason"]
+    assert files["unlisted"] == [] and set(files["files"]) == set(K.PRERUN_SHA256)
+    on_disk = {n: hashlib.sha256((K.PRERUN_DIR / n).read_bytes()).hexdigest()
+               for n in K.PRERUN_SHA256}
+    assert on_disk == K.PRERUN_SHA256
+    assert on_disk["synthetic_worlds.csv"] == K.PRERUN_WORLDS_CSV_SHA256
+    assert K.PRERUN_DIR.name.endswith(K.PRERUN_GIT_HEAD[:12])
+    pv = K.prerun_provenance(K.git("rev-parse", "HEAD"), K.sha256_lf(Path(K.__file__)))
+    assert pv["passed"], pv["reason"]
+    assert pv["prerun_git_head"] == K.PRERUN_GIT_HEAD
+    assert pv["prerun_script_sha256_lf"] == K.PRERUN_SCRIPT_SHA256_LF
+    assert snapshot() == before
 
 
 def test_S19_S20_S21_names():

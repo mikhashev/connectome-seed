@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Knock out and regrow, block B on flyvis-65: L1-L5 x the eight motion-pathway inputs (40 cells).
 
-Implements docs/plans/2026-09-25-knockout-regrow-block-b-registration.md, revision 1.5 ("B";
+Implements docs/plans/2026-09-25-knockout-regrow-block-b-registration.md, revision 1.7.1 ("B";
 section numbers below refer to it unless marked "A"), a delta on block A's registration
 docs/plans/2026-09-24-knockout-regrow-registration.md, revision 3.4.1 with its Amendment 1 ("A").
 This file is a copy of A's script results/genome/c6/checks/knockout_regrow.py (D13 (i)) with the
@@ -89,7 +89,7 @@ C6 = HERE.parent
 ROOT = C6.parents[2]                                   # the repository root
 # S2: this file's registration and revision; the manifest records its LF sha256 at run time.
 REGISTRATION = "docs/plans/2026-09-25-knockout-regrow-block-b-registration.md"
-REGISTRATION_REVISION = "1.7"
+REGISTRATION_REVISION = "1.7.1"
 # S2: A's registration, from which quote_row and quote_section quote section 4 (B section 4 does
 # not restate it). Pinned after A's Amendment 1 and checked at run start in every mode
 # (check_pins); an Amendment 2 of A stops the run on this pin, read as "A changed", not as a
@@ -2449,8 +2449,11 @@ def ko1_count(records):
 def registered_ko1_count(ref):
     """Revision 3.4.1 (item A): the registered ko1 count, derived from a store (in run_synthetic,
     the pinned raw_fits.json.gz, read after check_prerun_files has verified it): ko1_count over
-    its ko1 records of the world banks. The pinned store at revision 3.4 gives 225 records, 47
-    copied and 178 fitted (5 of them by the path check, on world:W:0)."""
+    its ko1 records of the world banks. A's pinned store at A's revision 3.4 (A's reference,
+    synthetic_rev3_prerun) gives 225 records, 47 copied and 178 fitted (5 of them by the path
+    check, on world:W:0). B revision 1.7.1: block B's own pinned store (PRERUN_DIR, B revision
+    1.7) gives 225 records, 50 copied and 175 fitted (0 by the path check), recomputed with this
+    function on its raw_fits.json.gz (B section 10, "Revision 1.7.1")."""
     return ko1_count(v for (bk, mk, _), v in ref.items()
                      if mk == "ko1" and bk.startswith("world:") and "|" not in bk)
 
