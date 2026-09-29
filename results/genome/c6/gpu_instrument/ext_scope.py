@@ -86,19 +86,27 @@ def planned(keys, mask, ranks=RANKS):
     return [record_key(k, mask, r) for r in ranks for k in keys]
 
 
-def ext_composition_digest(arm_module_name, mask, keys, starts, ranks):
-    """The refusal digest of an extension-X run: sha256 over the arm module's name, the mask, the
-    ordered key list, starts, the rank order and (ko1) the fixed lambda. Unlike
-    instrument.composition_digest (keys, starts, ranks only), it binds the arm and the mask: the
-    key strings world:<family>:<j> are the same in A, B and the male arm, and V1 and V8 (both
-    lobes) carry the same registered digest a6a8a0df... for three different sets of banks."""
+def ext_composition_digest(mask, keys, starts, ranks):
+    """The composition axis of an extension-X run: sha256 over the mask, the ordered key list,
+    starts, the rank order and (ko1) the fixed lambda. The arm is not in it: as for the ko
+    composition (G18, revision 1.5), the arm is bound by the other two axes of the composition
+    identity (ext_composition_identity), never by a re-hash."""
     import hashlib
     keys = [check_base_key(k) for k in keys]
     check_mask(mask)
-    obj = {"extension": "X", "arm": str(arm_module_name), "mask": mask, "keys": keys,
-           "starts": int(starts), "ranks": [int(r) for r in ranks],
+    obj = {"extension": "X", "mask": mask, "keys": keys, "starts": int(starts),
+           "ranks": [int(r) for r in ranks],
            "fixed_lambda": FIXED_LAMBDA if mask == "ko1" else None}
     return hashlib.sha256(I._canon(obj).encode()).hexdigest()
+
+
+def ext_composition_identity(mask, keys, starts, ranks, degree_terms_digest, arm_module,
+                             lobe=None):
+    """G18's composition identity for extension X: composition (ext_composition_digest), world
+    (the degree-term digest: the content), script (arm module and lobe: a label); compared as a
+    whole by instrument.check_composition_identity."""
+    return I.composition_identity(ext_composition_digest(mask, keys, starts, ranks),
+                                  degree_terms_digest, arm_module, lobe)
 
 
 def ext_out_dir_refusal(out):

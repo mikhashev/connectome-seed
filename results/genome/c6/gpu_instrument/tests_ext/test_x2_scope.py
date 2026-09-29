@@ -3,9 +3,9 @@
 (i) Only base views world:<family>:<j> and only the masks block and ko1 are accepted.
 (ii) The output guard refuses A's pinned folder, B's pinned pre-run folder and B's registered run
 folder (and anything inside them); a scratch folder passes.
-(iii) The extension digest changes with the arm, the mask, the key order, the key set, starts and
-the rank order; the registered composition digest does not see the arm (the finding behind the
-extension digest: V1 and V8 L and R carry the same registered digest).
+(iii) The composition identity (G18): the extension's composition axis changes with the mask,
+the key order, the key set, starts and the rank order; the arm enters through the world and
+script axes, never the digest (V1 and V8 L and R carry the same registered digest).
 """
 import pathlib
 
@@ -44,17 +44,28 @@ def test_x2_output_guard(K_A, K_B, tmp_path):
     assert XS.ext_out_dir_refusal(tmp_path / "x") is None
 
 
-def test_x2_extension_digest():
-    d = XS.ext_composition_digest("knockout_regrow_block_b", "block", KEYS, 10, (1, 2, 3, 4))
-    variants = [
-        XS.ext_composition_digest("knockout_regrow", "block", KEYS, 10, (1, 2, 3, 4)),
-        XS.ext_composition_digest("knockout_regrow_block_b", "ko1", KEYS, 10, (1, 2, 3, 4)),
-        XS.ext_composition_digest("knockout_regrow_block_b", "block", KEYS[::-1], 10,
-                                  (1, 2, 3, 4)),
-        XS.ext_composition_digest("knockout_regrow_block_b", "block", KEYS[:2], 10, (1, 2, 3, 4)),
-        XS.ext_composition_digest("knockout_regrow_block_b", "block", KEYS, 9, (1, 2, 3, 4)),
-        XS.ext_composition_digest("knockout_regrow_block_b", "block", KEYS, 10, (4, 3, 2, 1))]
-    assert len({d, *variants}) == 7
+def test_x2_extension_identity():
+    """G18 for extension X: the composition axis moves with the mask, the key order and set,
+    starts and ranks, not with the arm; the arm moves the identity through its world axis (the
+    degree-term digest) and its script axis (the module), each refused alone."""
+    d = XS.ext_composition_digest("block", KEYS, 10, (1, 2, 3, 4))
+    variants = [XS.ext_composition_digest("ko1", KEYS, 10, (1, 2, 3, 4)),
+                XS.ext_composition_digest("block", KEYS[::-1], 10, (1, 2, 3, 4)),
+                XS.ext_composition_digest("block", KEYS[:2], 10, (1, 2, 3, 4)),
+                XS.ext_composition_digest("block", KEYS, 9, (1, 2, 3, 4)),
+                XS.ext_composition_digest("block", KEYS, 10, (4, 3, 2, 1))]
+    assert len({d, *variants}) == 6
+    idB = XS.ext_composition_identity("block", KEYS, 10, (1, 2, 3, 4), "b" * 64,
+                                      "knockout_regrow_block_b")
+    idA = XS.ext_composition_identity("block", KEYS, 10, (1, 2, 3, 4), "a" * 64,
+                                      "knockout_regrow")
+    assert idA["composition"] == idB["composition"] == d
+    assert I.check_composition_identity(idB, idB)["passed"] is True
+    with pytest.raises(ValueError, match="world.*script|script.*world"):
+        I.check_composition_identity(idA, idB)
+    same_world = dict(idA, world=idB["world"])
+    with pytest.raises(ValueError, match=r"\['script'\]"):
+        I.check_composition_identity(same_world, idB)
 
 
 def test_x2_registered_digest_is_arm_blind():

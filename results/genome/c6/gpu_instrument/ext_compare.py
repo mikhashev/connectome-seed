@@ -28,6 +28,11 @@ its scope label.
 Usage:
   tools/.venv/Scripts/python.exe ext_compare.py --arm B --mask block --runs <d1> <d2> <d3> \
       [--reference pinned|registered] [--json <path outside every reference folder>]
+  tools/.venv/Scripts/python.exe ext_compare.py --arm B --mask ko1 --runs <VX6 run> --vx6
+      --json <path>   (VX6: the comparator against the direct recount; "uninformative" if no p
+                       moved)
+A difference on a ko1 record copied from the ko fit (reused_from_ko) triggers the CPU path check
+of that record first (cpu_path_check; Zcode's rider).
 """
 import argparse
 import json
@@ -81,13 +86,16 @@ def hashes_equal(h1, h2):
 def self_stability(run_dirs):
     """VX1: the first run against each other run; all manifests of one composition."""
     runs = [read_run(d) for d in run_dirs]
+    idents = {json.dumps(m["composition_identity"], sort_keys=True) for _, m, _ in runs}
+    if len(idents) != 1:
+        raise SystemExit(f"REFUSED (X, G18): the runs have different composition identities "
+                         f"{idents}")
     digests = {m["extension_digest"] for _, m, _ in runs}
-    if len(digests) != 1:
-        raise SystemExit(f"REFUSED (X): the runs have different extension digests {digests}")
     hs = [json.loads((d / "fit_hashes.json").read_text(encoding="utf-8")) for d, _, _ in runs]
     pairs = {f"run1_vs_run{i + 1}": hashes_equal(hs[0], hs[i]) for i in range(1, len(hs))}
     ok = all(v["differ"] == 0 for v in pairs.values())
     return {"passed": ok, "n_runs": len(runs), "extension_digest": digests.pop(),
+            "composition_identity": json.loads(idents.pop()),
             "stamps_equal": len({json.dumps(m["stamp"], sort_keys=True)
                                  for _, m, _ in runs}) == 1, **pairs}
 
@@ -192,6 +200,62 @@ def compare_records(got, ref, K, planned, ref_info=None, scope=""):
                          "n_flips": e["n_flips"], "at_risk": e["at_risk"]} for e in ents]}
 
 
+def direct_recount(got, ref, K, planned):
+    """VX6: the differences counted directly from the saved records, with none of the
+    comparator's code: p bytes, lambda, labels, AUC (the arm's auc)."""
+    out = {"not_bit_equal": [], "lam_differ": [], "label_differ": [], "auc_differ": []}
+    for rk in planned:
+        pg = np.asarray(got[rk]["p"], np.float64)
+        pr = np.asarray(ref[rk]["p"], np.float64)
+        y = np.asarray(ref[rk]["y"], bool)
+        if pg.tobytes() != pr.tobytes():
+            out["not_bit_equal"].append(rk)
+        if float(got[rk]["lam"]) != float(ref[rk]["lam"]):
+            out["lam_differ"].append(rk)
+        if np.any((pg >= 0.5) != (pr >= 0.5)):
+            out["label_differ"].append(rk)
+        if K.auc(pg, y) != K.auc(pr, y):
+            out["auc_differ"].append(rk)
+    return out
+
+
+def recount_agrees(rep, direct):
+    """VX6's pass rule: the comparator's not-bit-equal set equals the direct one, and its E1
+    failures are exactly the fits with a direct lambda, label or AUC difference (plus, on ko1,
+    any p_P-only failure, which the comparator must justify with an unequal p_P)."""
+    nb = sorted(d["key"] for d in rep["differing_fits"])
+    e1 = {e["key"]: e for e in rep["e1_failures"]}
+    direct_e1 = set(direct["lam_differ"]) | set(direct["label_differ"]) | set(direct["auc_differ"])
+    extra = [k for k in e1 if k not in direct_e1 and e1[k].get("p_P_fixed_equal", True)]
+    ok = nb == sorted(direct["not_bit_equal"]) and direct_e1 <= set(e1) and not extra
+    return {"agrees": ok, "comparator_not_bit_equal": len(nb),
+            "direct_not_bit_equal": len(direct["not_bit_equal"]),
+            "direct_e1": sorted(direct_e1), "comparator_e1": sorted(e1),
+            "unexplained_comparator_e1": extra,
+            "uninformative": not direct["not_bit_equal"]}
+
+
+def cpu_path_check(arm, rk, ref):
+    """Zcode's rider (review of 2026-09-29): before a difference on a ko1 record copied from the
+    ko fit (reused_from_ko) is read, the CPU path check is re-run: the arm's own
+    train_fixed_lambda on the CPU, decoded, must equal the stored copy bit for bit (the check
+    A's and B's scripts make, fixed_lambda_path_check). CPU only; one bank, one rank."""
+    import prep
+    bk, mk, pk = rk.split("||")
+    if mk != "ko1" or not ref[rk].get("reused_from_ko"):
+        raise ValueError(f"cpu_path_check: {rk} is not a ko1 copy of the ko fit")
+    name = XS.ARMS[arm]
+    K = prep.set_arm(name, None)
+    prep.init_arm_worker(name, None, K.degree_terms())
+    bank = K.build_bank(XS.check_base_key(bk), prep._TERMS["t"], True)
+    P = K._pred(pk)
+    data = K.train_fixed_lambda(pk, P, bank, XS.FIXED_LAMBDA)
+    p = np.asarray(P.decode(data, K.BLOCK_CELLS)["p_exist"], np.float64)
+    pr = np.asarray(ref[rk]["p"], np.float64)
+    return {"key": rk, "passed": bool(np.array_equal(p, pr)),
+            "max_abs_dp": float(np.max(np.abs(p - pr)))}
+
+
 def compare_run(run_dir, arm, which="pinned", ref=None, ref_info=None):
     run_dir, manifest, planned = read_run(run_dir)
     if manifest["arm"]["name"] != arm:
@@ -203,6 +267,12 @@ def compare_run(run_dir, arm, which="pinned", ref=None, ref_info=None):
     scope = (f"arm {arm} {manifest['mask']}-mask BF fits ({len(planned)} fits, "
              f"{len(manifest['keys'])} base views)")
     rep = compare_records(got, ref, K, planned, ref_info, scope)
+    reused_diff = sorted({d["key"] for d in rep["differing_fits"]} | {e["key"] for e in
+                                                                      rep["e1_failures"]})
+    reused_diff = [rk for rk in reused_diff if ref[rk].get("reused_from_ko")]
+    rep["reused_cells_with_a_difference"] = reused_diff
+    rep["cpu_path_checks_first"] = [cpu_path_check(arm, rk, ref) for rk in reused_diff]
+    rep["direct_recount"] = recount_agrees(rep, direct_recount(got, ref, K, planned))
     rep.update(gpu_run=str(run_dir), gpu_label=manifest.get("label"),
                gpu_head=manifest.get("git_head"), mask=manifest["mask"], arm=arm,
                reference_census=XS.reference_census(ref, manifest["mask"], manifest["keys"],
@@ -217,6 +287,9 @@ def main():
     ap.add_argument("--runs", nargs="+", required=True)
     ap.add_argument("--reference", choices=["pinned", "registered"], default="pinned")
     ap.add_argument("--json", default=None)
+    ap.add_argument("--vx6", action="store_true",
+                    help="VX6 (a --bf-tol 1e-5 run): passes if the comparator equals the direct "
+                         "recount; its outcome is expected to be a refusal")
     a = ap.parse_args()
     out = {"VX1": self_stability(a.runs) if len(a.runs) > 1 else None,
            "VX2": compare_run(a.runs[0], a.arm, a.reference)}
@@ -225,14 +298,19 @@ def main():
     log(json.dumps({"VX1": out["VX1"], "VX2_outcome": out["VX2"]["outcome_text"],
                     "n_not_bit_equal": out["VX2"]["n_not_bit_equal"],
                     "n_flipped_pairs": out["VX2"]["n_flipped_pairs"],
-                    "at_risk": len(out["VX2"]["at_risk"]), "e3": out["VX2"]["e3"]}, indent=1))
+                    "at_risk": len(out["VX2"]["at_risk"]), "e3": out["VX2"]["e3"],
+                    "direct_recount (VX6)": out["VX2"]["direct_recount"],
+                    "cpu_path_checks_first": out["VX2"]["cpu_path_checks_first"]}, indent=1))
     if a.json:
         p = pathlib.Path(a.json)
         why = XS.ext_out_dir_refusal(p.parent)
         if why:
             raise SystemExit(why)
         I.write_json(p, out)
-    ok = out["VX2"]["outcome"] == 1 and (out["VX1"] is None or out["VX1"]["passed"])
+    ok = (out["VX2"]["outcome"] == 1 and (out["VX1"] is None or out["VX1"]["passed"])
+          and all(c["passed"] for c in out["VX2"]["cpu_path_checks_first"]))
+    if a.vx6:
+        ok = out["VX2"]["direct_recount"]["agrees"]
     sys.exit(0 if ok else 1)
 
 

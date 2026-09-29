@@ -18,14 +18,19 @@ into a private folder connectome-seed-data/gpu_instrument/<tag>_<UTC>_<head 12>/
 
 Run kinds:
   --kind arm         an arm's GPU pre-run or registered run: a registered stamp is required (R1),
-                     an expected composition digest is required (R4), a clean tree at the head
-                     (R7); no override of any kind.
+                     an expected composition identity is required (R4, G18: --expect-identity,
+                     the refusal digest, the degree-term digest and the arm module with its lobe,
+                     compared together), the arm module must be in REGISTERED_ARM_MODULES (G19;
+                     none is), a clean tree at the head (R7); no override of any kind.
   --kind validation  V0-V8 of section 7 (launched by validation.py): --label names the run;
                      --stamp-unregistered is accepted while no stamp is registered (the manifest
                      says so); the overrides below are accepted only for their run.
 The arm module (G7): --arm-module knockout_regrow (A's, the default) or, for V8 only (D11: the
 male arm stays on the CPU; its D13 (iii)), --arm-module knockout_regrow_male_cns --lobe L|R, reached
 through the adapter male_arm.py; refused in an arm run and under any other validation label.
+The set is closed (G19, revision 1.5): instrument.arm_module_refusal refuses every module that
+instrument.REGISTERED_ARM_MODULES (arm runs) or VALIDATION_ARM_MODULES (validation runs) does not
+name, block B's script included.
 Overrides (validation only): GPU_INSTRUMENT_FLAGS_OFF=1 (label V0-off: V0's flag-free comparison
 run); --bf-tol 1e-5 (label V6); --poison-real-block (labels V7, T-G5); GPU_INSTRUMENT_DEVICE=cpu
 (label V5b); --allow-dirty (the run is marked NOT FROM A COMMITTED HEAD).
@@ -95,7 +100,7 @@ import gpu_bf3  # noqa: E402  (engine v3; imports gpu_common, not gpu_bf2 or gpu
 
 assert_no_unregistered_engine()
 
-MALE_ARM_LABELS = ("V8", "smoke")
+MALE_ARM_LABELS = tuple(I.VALIDATION_ARM_MODULES["knockout_regrow_male_cns"]["labels"])
 VALIDATION_LABELS = ("V0", "V0-off", "V1", "V4a", "V4b", "V4c", "V4d", "V5b", "V6", "V7", "V8",
                      "T-G5", "T-G5-poison", "T-G7", "smoke")
 
@@ -167,22 +172,21 @@ def refusals(a):
     """Which run may use which override (validation only), and the arm run's requirements."""
     why = []
     lab = a.label
-    if a.arm_module in prep.ARM_ADAPTERS:
-        # D11, V8: the male arm stays on the CPU; its worlds run here only as V8's unregistered
-        # cross-check (and the adapter's smoke test).
-        if a.kind != "validation" or lab not in MALE_ARM_LABELS:
-            why.append(f"--arm-module {a.arm_module} outside validation labels {MALE_ARM_LABELS} "
-                       "(D11: the male arm stays on the CPU; V8 is an unregistered cross-check)")
-        if a.lobe is None:
-            why.append(f"--arm-module {a.arm_module} needs --lobe L or R")
+    # G19 (revision 1.5): the closed set of arm modules per run kind (instrument.py), in place of
+    # the check on the male adapter alone that revisions 1.3-1.4 had here.
+    arm_why = I.arm_module_refusal(a.kind, lab, a.arm_module, a.lobe)
+    if arm_why:
+        why.append(arm_why)
     if a.kind == "arm":
         if gpu_env.FLAGS_OFF:
             why.append("GPU_INSTRUMENT_FLAGS_OFF in an arm run")
         if a.bf_tol is not None or a.poison_real_block or a.allow_dirty or a.stamp_unregistered:
             why.append("an override (--bf-tol, --poison-real-block, --allow-dirty, "
                        "--stamp-unregistered) in an arm run")
-        if a.expect_digest is None:
-            why.append("an arm run needs --expect-digest (R4: the registered composition)")
+        if a.expect_identity not in I.REGISTERED_COMPOSITION_IDENTITIES:
+            why.append("an arm run needs --expect-identity naming a registered composition "
+                       f"identity ({sorted(I.REGISTERED_COMPOSITION_IDENTITIES)}; R4, G18: "
+                       "--expect-digest alone is arm-blind)")
         if os.environ.get("GPU_INSTRUMENT_DEVICE", "cuda") != "cuda":
             why.append("an arm run on a device other than cuda")
     else:
@@ -218,6 +222,8 @@ def main():
     ap.add_argument("--workers", type=int, default=24)
     ap.add_argument("--row-chunk", type=int, default=40000)
     ap.add_argument("--expect-digest", default=None)
+    ap.add_argument("--expect-identity", default=None,
+                    help="G18: the name of a registered composition identity (arm runs: required)")
     ap.add_argument("--stamp-unregistered", action="store_true")
     ap.add_argument("--allow-dirty", action="store_true")
     ap.add_argument("--bf-tol", type=float, default=None)
@@ -293,10 +299,16 @@ def main():
     # R4 / G3: the composition and its refusal digest.
     n_lambdas = len(H.BF_LAMBDAS)
     comp_digest = I.composition_digest(keys, starts, ranks)
+    identity = I.composition_identity(comp_digest, terms_digest, a.arm_module, a.lobe)
     try:
         comp_check = I.check_composition(comp_digest, a.expect_digest)
+        identity_check = I.check_composition_identity(
+            identity, I.REGISTERED_COMPOSITION_IDENTITIES.get(a.expect_identity)
+            if a.expect_identity is not None else None)
     except ValueError as e:
         raise SystemExit(str(e))
+    if a.expect_identity is not None and a.expect_identity not in             I.REGISTERED_COMPOSITION_IDENTITIES:
+        raise SystemExit(f"REFUSED (G18): no registered composition identity {a.expect_identity!r}")
     log(f"R4 composition: {len(keys)} banks, ranks {list(ranks)}, starts {starts}; refusal "
         f"digest {comp_digest} ({comp_check['status']}); row_chunk {a.row_chunk} (recorded)")
 
@@ -421,6 +433,9 @@ def main():
                 "adapter": prep.ARM_ADAPTERS.get(a.arm_module),
                 "worker_init": worker_env.get("arm")},
         "composition": comp_rec, "composition_check": comp_check,
+        "composition_identity": identity, "composition_identity_check": identity_check,
+        "expect_identity": a.expect_identity,
+        "registration_text": I.REGISTRATION_TEXT,
         "keys": keys, "planned_record_keys_order": "for each rank in rank order, keys in order",
         "degree_terms_digest": terms_digest,
         "near_ties_by_rank": {str(r): v for r, v in near_ties.items()},

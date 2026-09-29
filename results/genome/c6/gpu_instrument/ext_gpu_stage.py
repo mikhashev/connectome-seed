@@ -8,8 +8,9 @@ views, and writes, as the registered driver does (gpu_stage.py; G4-G6, G15, G16)
   raw_fits_gpu.json.gz   records "<bank>||<mask>||BF:<r>" in the arm's store schema
   fit_hashes.json        per fit, the sha256 of the raw float64 U, V, lambda and the decoded p
   census.json.gz         per fit, the tie census (ext_census; no reference: no flip count)
-  manifest.json          stamp and its check, settings, threads, head and tree, the extension
-                         digest (arm, mask, keys, starts, ranks), row_chunk, degree-term digest,
+  manifest.json          stamp and its check, settings, threads, head and tree, the composition
+                         identity (G18: the extension digest of mask, keys, starts, ranks; the
+                         degree-term digest; the arm module), row_chunk,
                          near-ties (block), the census with its scope label, timings, VRAM
   SHA256SUMS.txt
 into connectome-seed-data/gpu_instrument/<label>_<arm>_<mask>_<UTC>_<head 12>/ (or --out;
@@ -17,14 +18,14 @@ refused at or in any reference folder: instrument.out_dir_refusal plus B's two f
 
 The checks it keeps from the registered driver: G1 (gpu_env first), G8 (v1, v2 and the rule port
 refused: gpu_stage is imported, which installs the import refusal), R1 (the registered stamp, or
---stamp-unregistered while none is registered), R2, R3, R7 (a clean tree, or --allow-dirty, which
+R2, R3, R7 (a clean tree, or --allow-dirty, which
 marks the run NOT FROM A COMMITTED HEAD), G11 (extended), D10 (degree-term digest in every
 worker), the VRAM preflight against the registered need at row_chunk (12,526 MiB at 40,000;
 too little stops the run, no fallback). Labels: VX0 (smoke, one world), VX1 (the V1 scheme: run
 three times), VX6 (--bf-tol 1e-5, the comparator's negative control), VX7 (--poison-real-block).
 
 Usage (torch venv, instrument.TORCH_PY), after llama-server is stopped on Mike's word:
-  python run_ext.py --label VX1 --arm B --mask block --stamp-unregistered
+  python run_ext.py --label VX1 --arm B --mask block
 """
 import sys
 
@@ -143,7 +144,8 @@ def main():
     terms_digest = I.degree_terms_digest(terms)
     K._w_init(10, terms, True)
     starts = H.STARTS
-    digest = XS.ext_composition_digest(arm_name, a.mask, keys, starts, ranks)
+    identity = XS.ext_composition_identity(a.mask, keys, starts, ranks, terms_digest, arm_name)
+    digest = identity["composition"]
     log(f"D10 degree terms digest {terms_digest}; extension digest {digest} "
         f"({len(keys)} base views, ranks {list(ranks)}, starts {starts}); row_chunk "
         f"{a.row_chunk} (recorded)")
@@ -211,7 +213,8 @@ def main():
         "stamp": stamp, "stamp_check": stamp_check,
         "determinism_settings": gpu_env.SETTINGS, "threads": gpu_env.thread_record(),
         "overrides": overrides, "keys": keys, "ranks": list(ranks), "starts": starts,
-        "extension_digest": digest,
+        "extension_digest": digest, "composition_identity": identity,
+        "registration_text": I.REGISTRATION_TEXT,
         "registered_digest_for_comparison": I.composition_digest(keys, starts, ranks),
         "row_chunk": a.row_chunk, "n_folds": info["n_folds"], "grids_per_bank": info["per"],
         "degree_terms_digest": terms_digest,

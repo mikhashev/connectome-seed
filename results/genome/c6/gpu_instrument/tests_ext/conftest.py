@@ -4,8 +4,8 @@ Run from the repository root with tools/.venv, CPU only:
     tools/.venv/Scripts/python.exe -m pytest results/genome/c6/gpu_instrument/tests_ext -q
 This folder is separate from tests/ on purpose: tests/conftest.py probes the torch venv for CUDA
 at import (needs_gpu), and these tests must not touch the GPU at all. The one engine test runs
-engine v3 on the torch CPU device (GPU_INSTRUMENT_DEVICE=cpu) in a subprocess of tools/.venv;
-no CUDA call is made. Fixtures: A's and B's pinned synthetic stores (read-only, after each arm's
+engine v3 on the torch CPU device (GPU_INSTRUMENT_DEVICE=cpu, CUDA_VISIBLE_DEVICES=-1) in a subprocess of tools/.venv;
+the device is hidden. Run the suite itself with CUDA_VISIBLE_DEVICES=-1 as well. Fixtures: A's and B's pinned synthetic stores (read-only, after each arm's
 check_prerun_files) and B's registered run's synthetic store (read-only, by its sha256). No real
 block and no real-arm store is read.
 """

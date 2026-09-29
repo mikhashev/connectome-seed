@@ -122,6 +122,7 @@ def record(run, outcome, text, details):
            "utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
            "registration": f"{I.REGISTRATION} revision {I.REGISTRATION_REVISION} "
                            f"({I.REGISTRATION_COMMIT}; {I.REGISTRATION_NOTE})",
+           "registration_text_sha256_lf": I.REGISTRATION_TEXT["sha256_lf"],
            "applied_ahead": I.APPLIED_AHEAD}
     I.write_json(I.VALIDATION_DIR / f"{run}.json", {**row, "details": details})
     table = json.loads(TABLE.read_text(encoding="utf-8")) if TABLE.is_file() else {}

@@ -2,16 +2,21 @@
 CPU side (tools/.venv): key refusals, the batch-composition digest, the environment-stamp
 comparison, the output guard, file and array hashes, the degree-term digest, store I/O.
 
-Registration: docs/plans/2026-09-26-gpu-instrument-registration.md, revision 1.4 (e2fab47; its
-section 15.5, Zcode's vote, added in a0e16b6). Ark's review of revision 1.3 (chat 12:09 UTC, points
-1-3), applied in the code ahead of revision 1.4, is part of revision 1.4 (section 15.4).
+Registration: docs/plans/2026-09-26-gpu-instrument-registration.md. The revision label that runs
+print and record is derived from the file's content (its LF sha256 looked up in REGISTRATION_TEXTS,
+G-(10) of revision 1.5), never hand-set; a text not in the table is labelled UNKNOWN.
+Revision 1.5 (draft: docs/plans/2026-09-29-gpu-instrument-revision-1.5-draft.md) adds G17-G19:
   * R6 / G7 / T-G2: check_key accepts only "world:<family>:<j>" and "world:<family>:<j>|sh:<sd>".
   * R4 / D5 / G3 / T-G3: composition_digest over (ordered keys, starts, rank order); row_chunk and
     the chunk boundaries are recorded beside it (composition_record), outside the digest.
-  * R1 / D7 / G2 / T-G6: check_stamp against the registered stamp. REGISTERED_STAMP is None until
-    the revision that registers V1's results writes the stamp measured in V1 here; until then a
-    run refuses unless it is a validation run that says so (allow_unregistered), and its manifest
-    carries STAMP_NOT_REGISTERED_TEXT.
+  * R4 / G18 / T-G11: the composition identity, three values compared together (an AND, not a
+    re-hash): composition (the refusal digest of the keys), world (the degree-term digest, the
+    content), script (arm module and lobe, a label). REGISTERED_COMPOSITION_IDENTITIES.
+  * G19 / D11 / T-G11: arm_module_refusal, the closed set of arm modules each run kind may load
+    (REGISTERED_ARM_MODULES for arm runs, empty until a revision names an arm;
+    VALIDATION_ARM_MODULES for the validation labels).
+  * R1 / D7 / G2 / G17 / T-G6: check_stamp against REGISTERED_STAMP, the stamp V1 measured
+    (witnessed again by Ark on 2026-09-29); once it is registered, --stamp-unregistered refuses.
   * G11: out_dir_refusal, A's out_dir_refusal rule reimplemented (A's script is not modified).
   * D10: degree_terms_digest.
 Nothing here imports torch. knockout_regrow (A's script, read-only) is imported lazily.
@@ -32,12 +37,37 @@ for _p in (str(HERE), str(C6), str(C6 / "checks")):
     if _p not in sys.path:
         sys.path.insert(0, _p)
 REGISTRATION = "docs/plans/2026-09-26-gpu-instrument-registration.md"
+# G-(10): the registration's texts by LF sha256 -> (revision, commit, note). The label a run
+# prints and records is looked up from the file's content at import; the V0-V7 records carry
+# the hand-set constant "1.3 (ec5cbc0)" of a0e16b6 while the text there was 0f5be2fc (revision
+# 1.4); those records are not edited. A new revision adds its own row when it is merged.
+REGISTRATION_TEXTS = {
+    "97737b4c9dedcac025ab862653e2ad6a7b9f4ff2a4f7b82461e5988a8304f2ef": ("1", "fedeec5", ""),
+    "2715e1a0723c53e4c852a2fb4231a683da7725a960794c8b06af64f4a1e82a32": ("1.1", "345acf2", ""),
+    "a741367e7c3ae65548661c1819090af7ffa1f80cdcc3b376fe5162a9b90cea9a": ("1.2", "5983385", ""),
+    "7d5d7ea921d41a440147cf6502ea52a41cb51068038d5d9fef1995317a49e540": ("1.3", "ec5cbc0", ""),
+    "dffec1dc8e3d697555b007e6a0709cf9fd3b24c13aa3eae4c57a4486e666f99a": ("1.4", "e2fab47", ""),
+    "0f5be2fc2133eba14b93f7525a80c594111a3ad42b7c6a76547eedafc7815c54": (
+        "1.4", "e2fab47",
+        "section 15.5 (Zcode's vote on revisions 1.3 and 1.4) added in a0e16b6"),
+}
+
+
+def registration_text_record(path=None):
+    """G-(10): the registration's LF sha256 and the (revision, commit, note) it maps to."""
+    p = ROOT / REGISTRATION if path is None else pathlib.Path(path)
+    h = hashlib.sha256(p.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
+    rev, commit, note = REGISTRATION_TEXTS.get(
+        h, ("UNKNOWN", None, f"text sha256 {h} is not a registered revision (REGISTRATION_TEXTS)"))
+    return {"path": REGISTRATION, "sha256_lf": h, "revision": rev, "commit": commit, "note": note}
+
+
 # Printed by the driver and the validation runner and recorded in manifests and validation rows;
-# no digest and no refusal reads these strings (the composition digest covers keys, starts and
-# ranks; the degree-term digest c, a, b; G13 compares file hashes at one head).
-REGISTRATION_REVISION = "1.4"
-REGISTRATION_COMMIT = "e2fab47"
-REGISTRATION_NOTE = "section 15.5 (Zcode's vote on revisions 1.3 and 1.4) added in a0e16b6"
+# no digest and no refusal reads these strings.
+REGISTRATION_TEXT = registration_text_record()
+REGISTRATION_REVISION = REGISTRATION_TEXT["revision"]
+REGISTRATION_COMMIT = REGISTRATION_TEXT["commit"]
+REGISTRATION_NOTE = REGISTRATION_TEXT["note"] or f"text sha256 {REGISTRATION_TEXT['sha256_lf']}"
 APPLIED_AHEAD = ("none: Ark's review of revision 1.3 (chat 12:09 UTC), points 1-3 (the BF-active "
                  "classification printed by the comparator; the per-fit census denominator; V6 on "
                  "the BF-active subset with 'uninformative' a recorded outcome), applied in the "
@@ -141,13 +171,83 @@ def check_composition(found_digest, expected_digest):
             "status": "equal to the expected digest"}
 
 
-# Registered compositions by name (D5 (a)); filled by the revision that registers V1's results.
-REGISTERED_COMPOSITION_DIGESTS = {}
+# Registered compositions by name (D5 (a); G17, revision 1.5): the refusal digest V1 measured
+# for A's 45 worlds x (99 shuffles + base view), starts 10, ranks 1-4 (V1's three manifests).
+REGISTERED_COMPOSITION_DIGESTS = {
+    "A": "a6a8a0dfd445f0dcc69fe29602af50b074e4534418082d37757c4580fdd72e8e"}
 
-# R4: the registered VRAM need before the upload, by row_chunk: the measured torch peak of the
-# flag-free all-45 run at 40,000 (M10: 12,526 MiB) and the README's 26.5 GB at 100,000
-# (README:299-301, V4 (c)). Too little free VRAM stops the run; there is no automatic fallback.
-REGISTERED_VRAM_NEED_MIB = {40000: 12526, 100000: int(26.5 * 1024)}
+# G18 (revision 1.5): the composition identity. The refusal digest covers the key strings only,
+# which are the same in every arm (V1 and V8 L, R share a6a8a0df...), so R4 compares three values
+# together: composition (the refusal digest), world (the degree-term digest: what the banks are
+# built from, the content), script (arm module and lobe: a label). No re-hash of the three.
+IDENTITY_AXES = ("composition", "world", "script")
+REGISTERED_COMPOSITION_IDENTITIES = {
+    "A": {"composition": REGISTERED_COMPOSITION_DIGESTS["A"],
+          "world": "d48adfbd3c27c90e16c699041c5f1e3d99be21838857b2816278e9dbcc5d9d6b",
+          "script": {"module": "knockout_regrow", "lobe": None}}}
+
+
+def composition_identity(composition_digest_value, degree_terms_digest_value, arm_module, lobe):
+    return {"composition": composition_digest_value, "world": degree_terms_digest_value,
+            "script": {"module": arm_module, "lobe": lobe}}
+
+
+def check_composition_identity(found, expected):
+    """R4 / G18: every axis equal, or ValueError naming the axes that differ."""
+    if expected is None:
+        return {"expected": None, "found": found, "passed": None,
+                "status": "no expected identity given (validation run: recorded, not compared)"}
+    diff = {ax: {"found": found.get(ax), "expected": expected.get(ax)} for ax in IDENTITY_AXES
+            if found.get(ax) != expected.get(ax)}
+    if diff:
+        raise ValueError("REFUSED (R4, G18): the composition identity differs on "
+                         f"{sorted(diff)}: {json.dumps(diff, sort_keys=True)}")
+    return {"expected": expected, "found": found, "passed": True,
+            "status": "equal to the expected identity on composition, world and script"}
+
+
+# G19 (revision 1.5; D11): the arm modules each run kind may load. An arm run: only a module a
+# revision registers for it, with its lobes and the names of its registered identities; none is
+# registered (block A never, the male arm and block B stay on the CPU). A validation run: A's
+# script under every label; the male arm's script only as V8 and the adapter's smoke test.
+REGISTERED_ARM_MODULES = {}
+VALIDATION_ARM_MODULES = {
+    "knockout_regrow": {"labels": None, "lobes": (None,)},
+    "knockout_regrow_male_cns": {"labels": ("V8", "smoke"), "lobes": ("L", "R")}}
+
+
+def arm_module_refusal(kind, label, module, lobe):
+    """G19: why `module` (with `lobe`) may not be loaded by a run of this kind and label, or
+    None. The set is closed: a module named in neither registry is refused."""
+    if kind == "arm":
+        reg = REGISTERED_ARM_MODULES.get(module)
+        if reg is None:
+            return (f"REFUSED (G19, D11): arm module {module!r} is not in REGISTERED_ARM_MODULES "
+                    f"({sorted(REGISTERED_ARM_MODULES) or 'none registered'}); an arm uses the "
+                    "instrument only after a revision names it before its pre-run")
+        if lobe not in reg["lobes"]:
+            return f"REFUSED (G19): arm module {module!r} with lobe {lobe!r}; registered lobes " \
+                   f"{reg['lobes']}"
+        return None
+    reg = VALIDATION_ARM_MODULES.get(module)
+    if reg is None:
+        return (f"REFUSED (G19, D11): arm module {module!r} is not a validation module "
+                f"({sorted(VALIDATION_ARM_MODULES)})")
+    if reg["labels"] is not None and label not in reg["labels"]:
+        return (f"REFUSED (G19, D11): --arm-module {module} outside validation labels "
+                f"{reg['labels']} (D11: that arm stays on the CPU; V8 is an unregistered "
+                "cross-check)")
+    if lobe not in reg["lobes"]:
+        return (f"REFUSED (G19): --arm-module {module} needs --lobe L or R" if None not in
+                reg["lobes"] else f"REFUSED (G19): --arm-module {module} takes no lobe")
+    return None
+
+
+# R4: the registered VRAM need before the upload, by row_chunk. Revision 1.5: at 40,000 the torch
+# peak V1 measured under D6 (12,550 MiB, all three runs; M10's flag-free 12,526 was the value of
+# revisions 1-1.4); at 100,000 the README's 26.5 GB (README:299-301; V4 (c) measured 24,300).
+# Too little free VRAM stops the run; there is no automatic fallback.
+REGISTERED_VRAM_NEED_MIB = {40000: 12550, 100000: int(26.5 * 1024)}
 
 # ------------------------------------------------------------------------------------------
 # R1 / D7 / G2: the environment stamp.
@@ -155,9 +255,17 @@ REGISTERED_VRAM_NEED_MIB = {40000: 12526, 100000: int(26.5 * 1024)}
 STAMP_FIELDS = ("python", "numpy", "torch", "cuda", "dll_sha256", "driver", "gpu_name")
 STAMP_DLLS = ("cublas64_12.dll", "cublasLt64_12.dll", "cusolver64_11.dll")
 # D7: "The registered stamp is the one measured in V1 and written into the revision that
-# registers V1's results". Until then it is None, and the check refuses every run except a
-# validation run that declares it (allow_unregistered), whose manifest says so.
-REGISTERED_STAMP = None
+# registers V1's results". Before revision 1.5 it was None, and only a validation run that
+# declared it (allow_unregistered) could proceed.
+# G17 (revision 1.5): the stamp V1 measured (equal in its three runs, V1.json), read again field by
+# field by Ark on 2026-09-29 (DPC Research chat 08:37:58 UTC). Two witnesses.
+REGISTERED_STAMP = {
+    "python": "3.10.20", "numpy": "2.2.6", "torch": "2.9.1+cu128", "cuda": "12.8",
+    "dll_sha256": {
+        "cublas64_12.dll": "9513540e4ec4c51ee9e7304138c2cc255c29a8c181f9e80c38efa25738becd99",
+        "cublasLt64_12.dll": "b199d1ff892a81b7fd3d57ba1781549609b41500b36008fef326038393ad46c7",
+        "cusolver64_11.dll": "3d4f7a66b5f352db56d4bb5962bb453a42d5feb2d831779f4a0bebc9971c36fb"},
+    "driver": "596.86", "gpu_name": "NVIDIA RTX PRO 4500 Blackwell"}
 STAMP_NOT_REGISTERED_TEXT = ("STAMP NOT YET REGISTERED: validation run; the stamp is recorded "
                              "and compared with nothing (D7: V1 measures the registered stamp)")
 
@@ -296,7 +404,15 @@ def reference_dirs():
     import knockout_regrow as K
     return ([pathlib.Path(K.PRERUN_DIR),
              pathlib.Path(K.PRIVATE_ROOT) / "flyvis65_20260925T171656Z_74de0401a21f"]
-            + list(MALE_PRERUN_STORES.values()) + list(MALE_PRERUN_DIRS))
+            + list(MALE_PRERUN_STORES.values()) + list(MALE_PRERUN_DIRS)
+            + list(BLOCK_B_REFERENCE_DIRS))
+
+
+# Revision 1.5 (R.7 (3)): block B's pinned pre-run folder and its registered run's folder
+# (extension X's references), refused as output folders like the others.
+BLOCK_B_REFERENCE_DIRS = (
+    MALE_PRIVATE_ROOT / "synthetic_blockB_prerun_20260927T211052Z_5f9cc51b9a24",
+    MALE_PRIVATE_ROOT / "flyvis65_blockB_20260928T143258Z_7a10d88ec95e")
 
 
 def out_dir_refusal(out):

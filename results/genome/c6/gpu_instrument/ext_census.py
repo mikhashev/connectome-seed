@@ -16,9 +16,9 @@ of tied PAIRS with per-fit denominators) is census.py's. On a 64-cell block ever
 returns what census.py returns (tests_ext/test_x1_census_equivalence.py checks it on A's pinned
 store). census.py is not modified and stays the registered census of D1's scope.
 
-Scope labels (the pending item of the backlog entry, revision 1.5 draft): family_summary_scoped
-names every count with its scope, so that no census number leaves this module without saying
-which fits it counts.
+Scope labels (revision 1.5 of the registration, R.5): family_summary_scoped returns the scope as
+a field `scope` next to `families`, so that no census number leaves this module without saying
+which fits it counts. The pair arithmetic is census.py's, carried over.
 numpy only; no torch, no harness.
 """
 import numpy as np

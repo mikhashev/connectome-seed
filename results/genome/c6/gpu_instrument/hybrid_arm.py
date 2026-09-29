@@ -35,9 +35,12 @@ class GpuStageRefused(Exception):
 
 
 def check_gpu_stage(run_dir, planned_keys, expected_digest, own_terms, registered_stamp=None,
-                    own_head=None, own_dirty=None, require_clean=True, file_hashes=None):
+                    own_head=None, own_dirty=None, require_clean=True, file_hashes=None,
+                    expected_identity=None):
     """G13. planned_keys: the arm's planned bank keys (world and world|sh). Returns
-    (records, report). Raises GpuStageRefused with every reason found."""
+    (records, report). Raises GpuStageRefused with every reason found. expected_identity (G18,
+    revision 1.5): the arm's registered composition identity; when given, the GPU stage's
+    (refusal digest, degree-term digest, arm module and lobe) must equal it as a whole."""
     run_dir = pathlib.Path(run_dir)
     why = []
     ok, detail = I.check_sha256sums(run_dir)
@@ -88,6 +91,14 @@ def check_gpu_stage(run_dir, planned_keys, expected_digest, own_terms, registere
         why.append(str(e))
     if m.get("degree_terms_digest") != I.degree_terms_digest(own_terms):
         why.append("the degree-term digest differs from this stage's own (D10)")
+    if expected_identity is not None:
+        found = I.composition_identity(comp.get("refusal_digest"), m.get("degree_terms_digest"),
+                                       (m.get("arm") or {}).get("module"),
+                                       (m.get("arm") or {}).get("lobe"))
+        try:
+            I.check_composition_identity(found, expected_identity)
+        except ValueError as e:
+            why.append(str(e))
     ov = m.get("overrides", {})
     if ov.get("flags_off") or ov.get("bf_tol") or ov.get("poison_real_block") or \
             ov.get("device", "cuda") != "cuda":

@@ -1,6 +1,7 @@
 """T-G6 (R1, D7, G2): the stamp check refuses a mocked torch version and a mocked DLL hash; with
 no registered stamp it refuses unless the run is a validation run that says so, and then says
-"STAMP NOT YET REGISTERED"; once a stamp is registered, --stamp-unregistered is refused."""
+"STAMP NOT YET REGISTERED"; once a stamp is registered, --stamp-unregistered is refused.
+Revision 1.5 (G17) registers V1's stamp as the module default."""
 import json
 
 import pytest
@@ -49,13 +50,28 @@ def test_every_field_refuses(field, value):
 
 
 def test_unregistered_mode():
-    assert I.REGISTERED_STAMP is None          # placeholder until V1 registers it (D7)
+    # the behaviour before revision 1.5 (G17), with no stamp given and no module default
     with pytest.raises(ValueError, match="no registered environment stamp"):
-        I.check_stamp(_copy())
-    r = I.check_stamp(_copy(), allow_unregistered=True)
+        I.check_stamp(_copy(), use_module_default=False)
+    r = I.check_stamp(_copy(), allow_unregistered=True, use_module_default=False)
     assert r["passed"] is None and r["status"].startswith("STAMP NOT YET REGISTERED")
     with pytest.raises(ValueError, match="not accepted once it is"):
         I.check_stamp(_copy(), registered=STAMP, allow_unregistered=True)
+
+
+def test_registered_stamp_is_v1s():
+    """G17 (revision 1.5): the module default is the stamp V1 measured, read from V1.json; once
+    it is registered, --stamp-unregistered refuses and a different field refuses."""
+    v1 = json.loads((I.VALIDATION_DIR / "V1.json").read_text(encoding="utf-8"))
+    assert I.REGISTERED_STAMP == v1["details"]["stamp_to_register_in_instrument_REGISTERED_STAMP"]
+    assert set(I.REGISTERED_STAMP) == set(I.STAMP_FIELDS)
+    assert I.check_stamp(json.loads(json.dumps(I.REGISTERED_STAMP)))["passed"] is True
+    with pytest.raises(ValueError, match="not accepted once it is"):
+        I.check_stamp(json.loads(json.dumps(I.REGISTERED_STAMP)), allow_unregistered=True)
+    bad = json.loads(json.dumps(I.REGISTERED_STAMP))
+    bad["driver"] = "597.00"
+    with pytest.raises(ValueError, match="driver"):
+        I.check_stamp(bad)
 
 
 @needs_gpu

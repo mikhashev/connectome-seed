@@ -1,5 +1,5 @@
 """T-X6: ext_engine.run_core runs end to end on the torch CPU device (GPU_INSTRUMENT_DEVICE=cpu,
-CUDA_VISIBLE_DEVICES empty, gpu_env imported first), on arm B's world:R:0: block at rank 1, ko1
+CUDA_VISIBLE_DEVICES=-1, gpu_env imported first), on arm B's world:R:0: block at rank 1, ko1
 at ranks 1 and 4, twice each. Planned keys, lambda, per-fit hashes equal across the two runs, and
 the comparator's outcome 1 against B's pinned store are asserted; bit-equality of p is printed,
 not asserted. A test of the plumbing, not a validation: VX1 and VX2 run on the GPU.
@@ -38,7 +38,7 @@ def _run():
     for v in ("CUBLAS_WORKSPACE_CONFIG", "GPU_INSTRUMENT_FLAGS_OFF", "OMP_NUM_THREADS",
               "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS", "NUMEXPR_NUM_THREADS"):
         env.pop(v, None)
-    env.update(GPU_INSTRUMENT_DEVICE="cpu", CUDA_VISIBLE_DEVICES="", PYTHONUTF8="1")
+    env.update(GPU_INSTRUMENT_DEVICE="cpu", CUDA_VISIBLE_DEVICES="-1", PYTHONUTF8="1")
     r = subprocess.run([sys.executable, "-c", SCRIPT], cwd=GI, capture_output=True, text=True,
                        env=env, timeout=1800)
     assert r.returncode == 0, r.stdout[-3000:] + r.stderr[-3000:]
