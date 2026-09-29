@@ -111,6 +111,9 @@ CERT_CUT = K.GATE_CUT                                  # borrowed, not calibrate
 TAU = K.TAU                                            # harness.py:66
 # Section 9: the cert budget, "to be fixed before values"; proposed as the survey rerun's staging
 # (run_survey.py `stage`: K = 100 x 500 steps; 5 x K = 500 x 500 steps; 2 x K = 500 x 1,200 steps).
+# REG-AMBIGUITY A-4: section 9 leaves the cert budget 'to be fixed before values'; the rerun's
+#   staging is used, all three stages on every pattern (the survey reran only its 10 lowest
+#   boards); the spread is max - min over the 7 reruns (cert_search)
 CERT_BUDGET_REGISTERED = {"K1": 100, "steps1": 500, "K2": 500, "steps2": 500,
                           "deep_K": 500, "deep_steps": 1200,
                           "status": "proposed (section 9: to be fixed before values)"}
@@ -301,7 +304,7 @@ def fn_swap(y, k, rng):
 
 def _draws(spec):
     """The draws of K.make_world (B script lines 1112-1119) in their order, then the swaps of
-    S-C2 from the same generator (ambiguity A-1 in the report). None of them depends on the degree
+    S-C2 from the same generator (REG-AMBIGUITY A-1 below). None of them depends on the degree
     terms, so the block pattern is known before any fit."""
     rng = np.random.default_rng(spec["seed"])
     z = K.Z_BLOCK.copy()
@@ -311,6 +314,9 @@ def _draws(spec):
     z1[K.OTHERS] = np.where(rng.random(len(K.OTHERS)) < 0.5, 1.0, -1.0)
     u = rng.random((65, 65))
     pool = rng.integers(len(K.NONBLOCK_CELLS), size=(65, 65))
+    # REG-AMBIGUITY A-1: section 4 says the swaps are drawn 'by the world's seed' without naming
+    #   the stream; they continue the world generator after K.make_world's draws, so the outside
+    #   equals K.make_world's
     yb = fn_swap(K.board_y("z"), spec["k"], rng)
     return z, z1, u, pool, yb
 
@@ -346,11 +352,14 @@ PLACEHOLDER = {"offsets": {(0, 0): 2.0}, "hull": [], "sign": 1}
 
 def constructed_bank(y, name):
     """A bank holding only the 40 block cells (present ones with a placeholder offset set), as
-    SURVEY fc_anchor.py's bank_of; used for the permuted-board reference (ambiguity A-6)."""
+    SURVEY fc_anchor.py's bank_of; used for the permuted-board reference (REG-AMBIGUITY A-6 below)."""
     y = np.asarray(y, bool)
     content = {tuple(K.BLOCK_CELLS[i].tolist()): {"offsets": dict(PLACEHOLDER["offsets"]),
                                                   "hull": [], "sign": 1}
                for i in range(K.N_BLOCK) if y[i]}
+    # REG-AMBIGUITY A-6: section 10 does not name the permuted boards' bank; a constructed
+    #   40-cell bank (SURVEY fc_anchor.py bank_of) is used, since the block-only fit sees the
+    #   block alone (section 2, fact 3)
     return H.Bank(name, content)
 
 
@@ -410,6 +419,9 @@ def cert_search(y, budget):
     frac_value = Fraction(int(round(2 * frac)), 2 * n)
     return {"n_pairs": int(n), "count_search": best, "count_fraction": frac,
             "count_registered_auc": reg["twice"] / 2,
+            # REG-AMBIGUITY A-3: section 6 voids a cert whose three counts disagree, section 6a
+            #   keeps the Fraction value as the certificate and prints ulp_sensitive; section 6a
+            #   (the later text) is implemented, nothing is voided
             "counts_agree": best == frac == reg["twice"] / 2,
             "exact": float(frac_value), "fraction": f"{frac_value.numerator}/{frac_value.denominator}",
             "tau": reg["tau"], "registered_auc_exact": reg["exact"],
@@ -449,15 +461,35 @@ def train_capturing(P, bank, grid):
     fit_existence's return value captured (fit.py:119-146 is called unchanged); returns (data,
     ex, lambda chosen)."""
     g = P.fit.__globals__
-    orig, box = g["fit_existence"], {}
+    orig, box = g["fit_existence"], {"calls": 0}
 
     def capture(*args, **kw):
+        box["calls"] += 1
         box["ex"] = orig(*args, **kw)
         return box["ex"]
     with swapped_globals(g, LAMBDAS=list(grid), fit_existence=capture):
         data = P.train(bank, K.MASKS["block"])
         lam = float(g["LAST_FIT"]["lambda"])
+    assert_final_fit(box, lam, grid, bank)
     return data, box["ex"], lam
+
+
+def assert_final_fit(box, lam, grid, bank):
+    """Ark E-4: the captured ex is the FINAL fit at the chosen lambda, not a fold refit. fit()
+    calls fit_existence once (fit.py:364); the fold refits happen inside it (fit.py:129-140) and
+    call fit_uvw, never fit_existence. So: exactly one captured call; its lambda equals LAST_FIT's
+    (fit.py:398) and lies on the grid; its inner_ll covers the whole grid (the nested choice ran,
+    or was a single candidate); and its mask M is the whole view (all 40 block cells), not a
+    fold's subview."""
+    ex = box["ex"]
+    n_view = int(K.MASKS["block"].sum())
+    assert box["calls"] == 1, f"fit_existence called {box['calls']} times"
+    assert float(ex["lam"]) == lam, (ex["lam"], lam)
+    assert lam in [float(x) for x in grid], (lam, grid)
+    assert sorted(float(k) for k in ex["inner_ll"]) == sorted(float(x) for x in grid)
+    assert int(np.sum(ex["M"] > 0)) == n_view == K.N_BLOCK, int(np.sum(ex["M"] > 0))
+    assert np.array_equal(ex["Y"][K.BLOCK_CELLS[:, 0], K.BLOCK_CELLS[:, 1]] > 0,
+                          bank.exists[K.BLOCK_CELLS[:, 0], K.BLOCK_CELLS[:, 1]])
 
 
 def train_shortcut(P, bank, lam, starts=None):
@@ -582,6 +614,20 @@ def pattern_of(key):
     raise KeyError(key)
 
 
+def cert_patterns(specs, n_perm_ref):
+    """S-C6: every distinct block pattern that gets a cert, {y bytes: first bank key}. Identical
+    boards are certified once (setdefault on y.tobytes()): FC's 5 worlds share board z, while each
+    FN world has its own board (a different seed), so the registered form has 1 + 5 + 5 = 11 world
+    boards (fewer only if two FN draws coincide) and up to 99 permuted boards. Every world looks its
+    cert up by its own y, so every distinct board is certified."""
+    patterns = {}
+    for w in specs:
+        patterns.setdefault(world_block_y(w).tobytes(), f"cal:{w['family']}:{w['j']}")
+    for j in range(n_perm_ref):
+        patterns.setdefault(perm_ref_y(j).tobytes(), f"perm:{j}")
+    return patterns
+
+
 def cert_task(key):
     """S-C6: one cert search; module-level, so that the tests can replace it."""
     return cert_search(pattern_of(key), _CW["budget"])
@@ -666,6 +712,8 @@ def plan_perm_ref(j):
     return [[(key, "block", pk) for pk in K.BF_KEYS], [(key, "sep", "rule")]]
 
 
+# REG-AMBIGUITY A-11: the registration does not mention the ko1 (fixed lambda = 1 knockout)
+#   fits; K.evaluate_bank requires them, so they are made as block B makes them
 def complete_ko1(F, keys, workers, init_args):
     """K.complete_fixed_lambda (B script lines 2415-2435) with this file's workers: the ko fit at
     lambda = 1 is reused where the selected lambda was 1, else fitted by K._fit_one("ko1")."""
@@ -732,6 +780,8 @@ def label_under_option(ev, option):
         gate = ge(cb["rule"])
     elif option == "v-b":
         if ge(cb["rule"]) != ge(cb["BF:1"]):
+            # REG-AMBIGUITY A-14: section 8 gives (v-b) 'a new reason' without its text; the
+            #   wording of section 8's table is used
             return "U (the D1 candidates disagree on the gate)"
         gate = ge(cb["rule"])
     elif option == "v-c":
@@ -754,6 +804,9 @@ def outcome_labels(worlds, stops):
     fn_met = [w for w in worlds if w["family"] != "FC" and w["branch_met"]]
     fc_ffsel = bool(fc) and all(w["branch_met"] and "FF-sel" in w["sep"]["subkinds"] for w in fc)
     fn_fit_row = any(w["sep"]["reading"].startswith("fit failure") for w in fn_met)
+    # REG-AMBIGUITY A-13: section 7 names no label when FN worlds meet the branch but none reads
+    #   a fit-failure row (excluded in practice by A3); neither C1 nor C2 is given then. C3 can
+    #   co-occur with C1 or C2, so the labels are a list
     c3 = [w["key"] for w in worlds if w["branch_met"] and ge(w["sep"]["cert"]["exact"])
           and not ge(w["sep"]["ceil_1"]["exact"])
           and w["sep"]["subkinds"] == ["FF-struct-or-FF-opt"]]
@@ -788,6 +841,9 @@ def read_world(w, F, n_sh, n_pc, certs):
     """The registered reading (K.evaluate_bank, K.read_label) and, beside it, the separator (S-C7),
     the tau values and flags (S-C12), the gate options (S-C9) and the stop rows of section 6."""
     key = world_key(w)
+    # REG-AMBIGUITY A-9: the registered reading reuses block B's leg-P seeds 91000 (uniform),
+    #   91001 (row-and-column), the permuted ceilings 91010-91029 and the shuffles 0-98 through
+    #   K.evaluate_bank; S-C11 does not list them as reused
     ev = K.evaluate_bank(key, F, n_sh, n_pc)
     y = np.asarray(F[(key, "ko", "N1")]["y"], bool)
     sp = F[(key, "sep", "rule")]
@@ -803,9 +859,15 @@ def read_world(w, F, n_sh, n_pc, certs):
            "ceil_1": auc_counts(sp["ceil1_p"], y),
            "ceil_1_float": auc_counts(sp["ceil1_float_p"], y),
            "ceil_lambda_c_float": auc_counts(sp["reg_float_p"], y), "lambda_c": sp["lambda_c"],
+           # REG-AMBIGUITY A-5 (Ark E-3): ceil_1_starts100 is the FLOAT value (section 3: 'step
+           #   3 at lambda = 1 with 100 starts'), and it names FF-opt; the quantised value is
+           #   printed beside it (ceil_1_starts100_quantised), deciding nothing
            "ceil_1_starts100": auc_counts(sp["ceil1_s100_float_p"], y),
            "ceil_1_starts100_quantised": auc_counts(sp["ceil1_s100_p"], y),
            "block_fit_reproduced": [float(x) for x in sp["reg_p"]] == [float(x) for x in blk["p"]]}
+    # REG-AMBIGUITY A-7: section 6 prints the separator 'for every predictor', but its table has
+    #   columns for rule #2.1 only; for BF_r, ceiling_block and ceil_1 are printed with *_tau and
+    #   flags, and no separator row
     sep["bf"] = {pk: {"ceiling_block": auc_counts(F[(key, "block", pk)]["p"], y),
                       "lambda_block": F[(key, "block", pk)]["lam"],
                       "ceil_1": auc_counts(F[(key, "blk1", pk)]["p"], y)} for pk in K.BF_KEYS}
@@ -820,6 +882,8 @@ def read_world(w, F, n_sh, n_pc, certs):
     if split_at_cut(cb):
         flags.append(GATE_ULP_SPLIT)
     if split_at_cut(sep["ceil_1"]):
+        # REG-AMBIGUITY A-12: section 6a names only GATE_ULP_SPLIT ('the same row applies to
+        #   ceil_1 and cert'); the names CEIL_1_ULP_SPLIT and CERT_ULP_SPLIT are this script's
         flags.append("CEIL_1_ULP_SPLIT")
     if (cert["exact"] >= CERT_CUT) != (cert["tau"] >= CERT_CUT):
         flags.append("CERT_ULP_SPLIT")
@@ -829,6 +893,9 @@ def read_world(w, F, n_sh, n_pc, certs):
     if ev["label"] in ("R", "W"):
         stops.append(f"{key}: reads {ev['label']} (a stop on a calibration world, as on B's Nf)")
     if not sep["block_fit_reproduced"]:
+        # REG-AMBIGUITY A-12: a stop this script adds (not in section 6): the separator's refit
+        #   must equal the registered block fit bit for bit, or ceil_lambda_c_float is not that
+        #   fit's float
         stops.append(f"{key}: SCRIPT DEFECT: the separator's refit of the registered block-only "
                      "fit differs from it, so ceil_lambda_c_float is not the float of that fit")
     if w["family"] == "FC":
@@ -840,12 +907,18 @@ def read_world(w, F, n_sh, n_pc, certs):
             elif ge(cb["exact"]):
                 br = "(b) the forcing acted and the value is >= 0.90: FC is not a witness"
             else:
+                # REG-AMBIGUITY A-2: section 6 names branches (a) lambda != 100 and (b) value >=
+                #   0.90 only; lambda = 100 with a value below 0.90 and != 0.600000 is a stop in
+                #   an unnamed branch (c)
                 br = ("(c) not named by the registration: the forcing acted, the value is below "
                       "0.90 and differs from 0.600000")
             stops.append(f"{key}: ceiling_block {cb['exact']!r} != 0.600000 (240 of 400); {br}")
         if sep["ceil_1"]["exact"] != FC_CEIL_1_EXPECTED:
             stops.append(f"{key}: ceil_1 = {sep['ceil_1']['exact']!r} != 1.0: the registered "
                          "reproduction (A2) failed")
+    # REG-AMBIGUITY A-8: the G and threshold-U label texts need block B's dense-grid limits,
+    #   which this run does not measure; the letter is printed with a note, the failed-fit text is
+    #   K.label_text's, unchanged
     label_text = (K.label_text(ev["label"], None, None, ev["U_reasons"],
                                ev["rows"]["rule"]["ceiling_block"])
                   if ev["label"] in ("R", "W") or kind in ("failed_fit", "not_readable",
@@ -1112,12 +1185,15 @@ def estimate(a):
                  + t["sep:rule"] + 4 * t["blk1:BF:4"] + ko1)
     per_perm = t["sep:rule"] + sum(t[f"block:{pk}"] for pk in K.BF_KEYS)
     n_worlds = len(FAMILY_NAMES) * WORLDS_PER_FAMILY
-    n_patterns = 3 + N_PERM_REF                        # FC's 5 worlds share one board
+    patterns = cert_patterns(world_specs_cal(), N_PERM_REF)     # as _run counts them (Ark E-1)
+    n_patterns = len(patterns)
+    n_world_patterns = len({world_block_y(w).tobytes() for w in world_specs_cal()})
     cpu = n_worlds * per_world + N_PERM_REF * per_perm + n_patterns * t["cert"]
     longest = max(t.values())
     wall = cpu / a.workers + longest
     return {"timings_s": t, "per_world_cpu_s": per_world, "per_perm_board_cpu_s": per_perm,
-            "cert_s": t["cert"], "total_cpu_s": cpu, "workers": a.workers,
+            "cert_s": t["cert"], "n_cert_patterns": n_patterns,
+            "n_world_cert_patterns": n_world_patterns, "total_cpu_s": cpu, "workers": a.workers,
             "wall_s_estimate": wall, "wall_min_estimate": wall / 60,
             "over_30_min": wall > 1800,
             "method": "one task of each kind timed on a fixture-scale bank (fixture degree terms; "
@@ -1219,11 +1295,7 @@ def _run(a, t0, head, gate, not_registered, specs, folder):
     K.log("planted values (section 5, exact): " + ", ".join(
         f"{w['family']}:{w['j']} {w['planted']}" for w in specs))
     # Section 6 (S-C6, A3): cert on every block pattern, before any fit.
-    patterns = {}
-    for w in specs:
-        patterns.setdefault(world_block_y(w).tobytes(), f"cal:{w['family']}:{w['j']}")
-    for j in range(a.perm_ref):
-        patterns.setdefault(perm_ref_y(j).tobytes(), f"perm:{j}")
+    patterns = cert_patterns(specs, a.perm_ref)
     init_args = (a.starts, FIXTURE_TERMS if a.fixture else None, budget)
     res = run_groups([[(key, "cert", "cert")] for key in patterns.values()], a.workers,
                      init_args, "cert (before any fit)")
@@ -1292,6 +1364,8 @@ def _run(a, t0, head, gate, not_registered, specs, folder):
               f"flags {w['flags'] or '-'}; gate options {w['gate_options']}")
     K.log(f"OUTCOME: {', '.join(outcome['labels'])}; {outcome}")
     if stops:
+        # REG-AMBIGUITY A-10: 'the run stops' after the fits is read as block B's pattern:
+        #   outputs and stop_record.json written, exit 1, no SHA256SUMS.txt
         msg = "STOP ROWS FIRED (C5): " + " | ".join(stops)
         K.log(msg)
         write_stop_record(folder, msg, {"outcome": "C5"})

@@ -446,3 +446,60 @@ def test_encoding_cp1252_redirected_stdout(tmp_path):
     assert log.read_bytes().isascii() and b"OUTCOME" in log.read_bytes()
     man = json.loads((out / "calibration.json").read_text(encoding="utf-8"))["manifest"]
     assert man["log_output_errors"] == 0
+
+
+# ------------------------------------------------------------------------------------------
+# Ark's review (2026-09-29 09:19:30 UTC): E-1 and E-4.
+
+def test_E1_every_distinct_board_is_certified():
+    """FC's 5 worlds share board z; each FN world has its own board: 11 world boards in the
+    registered form, and every world finds its own cert key."""
+    specs = C.world_specs_cal()
+    pats = C.cert_patterns(specs, C.N_PERM_REF)
+    world_keys = {C.world_block_y(w).tobytes() for w in specs}
+    assert len(world_keys) == 11 and world_keys <= set(pats)
+    assert all(C.world_block_y(w).tobytes() in pats for w in specs)
+    assert len(pats) == len(world_keys | {C.perm_ref_y(j).tobytes() for j in range(99)})
+
+
+def test_E4_lambda_c_float_reads_the_final_fit(rule):
+    """On an FN board with the full registered grid, the captured ex is the final fit: an
+    independent refit of the final step (fit_n1 on the whole view, fit_uvw at the chosen lambda)
+    gives the same float p bit for bit, and the captured lambda is LAST_FIT's."""
+    g = rule.fit.__globals__
+    y = C.world_block_y(C.spec_cal("FN1", 2))
+    bank = C.constructed_bank(y, "t.fn1.full")
+    grid = list(g["LAMBDAS"])
+    assert grid == list(H.BF_LAMBDAS)
+    data, ex, lam = C.train_capturing(rule, bank, grid)
+    assert lam == float(g["LAST_FIT"]["lambda"]) == float(ex["lam"])
+    view = H.make_view(bank, K.MASKS["block"])
+    n1 = H.fit_n1(view)
+    M, Y = H._grid(view)
+    O = H._n1_logit_grid(n1)
+    G = g["groups"](view.type_fields)
+    U, V, W = g["fit_uvw"](O, Y, M, G, lam, H.STARTS)
+    again = {"O": O, "U": U, "V": V, "W": W, "G": G}
+    assert np.array_equal(C.float_p(g, ex), C.float_p(g, again))
+
+
+def test_E4_assert_final_fit_rejects_a_fold_refit():
+    """The identifying assert fails on two calls, on a lambda other than LAST_FIT's, and on a
+    fold's subview mask."""
+    y = C.world_block_y(C.spec_cal("FN1", 2))
+    bank = C.constructed_bank(y, "t")
+    M = np.zeros((65, 65))
+    M[K.BLOCK_CELLS[:, 0], K.BLOCK_CELLS[:, 1]] = 1
+    Y = np.zeros((65, 65))
+    Y[K.BLOCK_CELLS[:, 0], K.BLOCK_CELLS[:, 1]] = y
+    grid = [1.0, 3.0, 10.0, 30.0, 100.0]
+    ex = {"lam": 3.0, "inner_ll": {x: 0.0 for x in grid}, "M": M, "Y": Y}
+    C.assert_final_fit({"calls": 1, "ex": ex}, 3.0, grid, bank)
+    with pytest.raises(AssertionError):
+        C.assert_final_fit({"calls": 2, "ex": ex}, 3.0, grid, bank)
+    with pytest.raises(AssertionError):
+        C.assert_final_fit({"calls": 1, "ex": ex}, 100.0, grid, bank)
+    sub = M.copy()
+    sub[K.BLOCK_CELLS[0, 0], K.BLOCK_CELLS[0, 1]] = 0
+    with pytest.raises(AssertionError):
+        C.assert_final_fit({"calls": 1, "ex": {**ex, "M": sub}}, 3.0, grid, bank)
