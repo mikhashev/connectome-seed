@@ -1,0 +1,6 @@
+boards checked: 824 (survey 5x8: 571; profile 2,6,4,4,3: 50; random unequal rows: 200; edge: 3)
+each board: two offsets (O = 0; a random additive O with integer a in [-10,10], b in [-10,10]); exact Fraction count
+rank of the constructed K*U V^T term on the 5 x 8 block: {1: 2, 2: 8, 3: 125, 4: 689} (all <= 4)
+smallest margin delta over all boards: 1/4
+boards x offsets with AUC != 1: 0
+done

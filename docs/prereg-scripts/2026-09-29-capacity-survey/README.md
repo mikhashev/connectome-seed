@@ -1,7 +1,7 @@
 # Capacity survey of the class a_s + b_t + u_s v_t on small boards
 
 **What this is.** A design computation on constructed 0/1 boards, cited by
-`docs/plans/2026-09-29-failed-fit-branch-calibration-registration.md` (rev 1.3, §2a, §5b, §6, §16).
+`docs/plans/2026-09-29-failed-fit-branch-calibration-registration.md` (rev 1.4: §2a, §4, §5b, §6, §8, §16).
 It is **not a value of any registered run**. It reads no bank, neither flyvis-65 nor any world of a
 registered arm, and it decides no label.
 
@@ -26,7 +26,7 @@ Every number is a **lower bound** on the capacity of the free class `a_s + b_t +
 The rerun counts exactly and gives 892/1,024 and 377/400.
 
 CC reran `verify_members.py` independently: 1,052 members rechecked, 0 mismatches. This README was
-written by a CC subagent, which reran nothing.
+written by a CC subagent, which reran nothing of the survey; it wrote and ran `bf4_check.py` and `fc_anchor.py` (below).
 
 ## Method (the rerun)
 
@@ -91,10 +91,44 @@ No board is below 0.90 and none is at or below 0.85. No board is flagged unstabl
   only per group.
 - The 8 × 8 "< 0.90" count is 20 circulant boards and 2 others.
 
+## Added for the registration's rev 1.4 (2026-09-29, by a CC subagent)
+
+These files are design computations on constructed boards; none is a value of any registered run.
+
+- **`bf4_capacity.md`, `bf4_check.py`, `bf4_check_out.txt`: BF_4's capacity on 5 × 8** (Johnny's
+  review).
+  - The argument: every 5 × 8 pattern, with any row profile and any additive offset, has a BF_4
+    member at AUC 1.
+  - The check: 824 boards × 2 offsets (the 571 survey boards, 50 boards with block B's real row
+    profile 2, 6, 4, 4, 3, 200 with random unequal rows, 3 edge cases), exact `Fraction` counting,
+    seed `default_rng(20260929)`.
+  - Result: 0 failures. Run with `tools/.venv` (Python 3.10, numpy 2.2.6), `PYTHONUTF8=1`, in
+    seconds.
+- **`fc_anchor.py`, `fc_anchor_out.txt`: the number FC stands on** (Ark's review, A1).
+  - It runs rule #2.1's registered block-only path (`P.train` + `P.decode`, loaded by
+    `harness.load_rule`) on a constructed bank that holds only block B's 40 cells, laid out as
+    board z and as board z′. Present cells carry a placeholder offset set, which enters no
+    existence term.
+  - The λ grid is forced to [100], forced to [1], or left as registered.
+  - **No fit reads the real bank.** Importing `harness` loads the bank's files and checks their pins
+    at import, as every harness user does, but nothing is fitted or scored on them.
+  - Result on board z:
+    - forced to [100]: 0.600000 (240 of 400 pairs: 162 wins, 156 ties); the float fit before
+      quantisation 0.555; max |u·v| 1.4e-20;
+    - [1]: 1.000000;
+    - registered grid: λ 1 and 1.000000.
+  - Board z′: 0.600000, 1.000000, and λ 1 with 1.000000.
+  - N1 alone on the block view: 0.600000 on both boards.
+
 ## Files (sha256 of the bytes as stored; `.gitattributes` holds `* -text`, so git stores them as written)
 
 | file | sha256 |
 |---|---|
+| `bf4_capacity.md` | `e8c37a1a6916867bc9ca402608ddbe5f8bccc81447e76bac804e35136591faf7` |
+| `bf4_check.py` | `8a747563bbdfc740da6d076947be5cf63378f9de1ad4e00a4d56f74d245257ea` |
+| `bf4_check_out.txt` | `986529a3c88565d7e921af37b63bb0c7eb1824cf2cd2299b705c2529cb0e337d` |
+| `fc_anchor.py` | `716dad6005a88b9fbebaa98ce081beaddfa76a7c2addae4f9219b15a7881cab4` |
+| `fc_anchor_out.txt` | `9983738639be7bac3788aaf06c89803356185d74b1110470ca4d7238c5d91caf` |
 | `.gitattributes` | `705fd4d6451a31d36b3df7de96f83f30ac976c9b4a6d1e51671d8e2f33e2d0da` |
 | `auc_search.py` | `c605a6555afec91af311d39e4ae4e5a4fa9ac4db403204d6bcad34764518899e` |
 | `auc_search_members.json` | `6f188ae856f8135d681930f40c77bd443bd86fe0fdf1b96f14cf921e767b73f9` |
