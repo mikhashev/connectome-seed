@@ -116,7 +116,7 @@ TAU = K.TAU                                            # harness.py:66
 #   boards); the spread is max - min over the 7 reruns (cert_search)
 CERT_BUDGET_REGISTERED = {"K1": 100, "steps1": 500, "K2": 500, "steps2": 500,
                           "deep_K": 500, "deep_steps": 1200,
-                          "status": "proposed (section 9: to be fixed before values)"}
+                          "status": "fixed in registration rev 1.9 section 6"}
 CERT_BUDGET_TINY = {"K1": 8, "steps1": 100, "K2": 8, "steps2": 100, "deep_K": 8,
                     "deep_steps": 100, "status": "tiny (tests only)"}
 FIXTURE_TERMS = (-2.5, np.zeros(65), np.zeros(65))     # the B tests' FIX_TERMS
@@ -1031,13 +1031,16 @@ def report_md(result):
     L += [f"- **{c}**: {OUTCOME_TEXT[c]}" for c in oc["labels"]]
     L += ["", f"FC reads FF-sel in all its worlds: {oc['fc_reads_ff_sel_all']}. FN worlds meeting "
           f"the branch: {oc['fn_worlds_meeting_branch']}. {GATE_ULP_SPLIT} rows: "
-          f"{result['gate_ulp_split_count']}.", ""]
+          f"{result['gate_ulp_split_count']}. CEIL_1_ULP_SPLIT rows: "
+          f"{result['ceil_1_ulp_split_count']}. CERT_ULP_SPLIT rows: "
+          f"{result['cert_ulp_split_count']}.", ""]
     if result["stops"]:
         L += ["## Stop rows (section 6)", ""] + [f"- {s}" for s in result["stops"]] + [""]
     L += ["## Worlds (registered label beside the separator; the label text is unchanged)", "",
           "| world | seed | label | ceiling_block (tau) | cert | ceil_1 (tau) | ceil_1_float | "
-          "lambda_c | ceil_lambda_c_float | ceil_1_starts100 | reads | flags |",
-          "|---|---|---|---|---|---|---|---|---|---|---|---|"]
+          "lambda_c | ceil_lambda_c_float | ceil_lambda_c_float_tau | ceil_1_starts100 | "
+          "ceil_1_starts100_quantised | reads | flags |",
+          "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
     for w in result["worlds"]:
         s = w["sep"]
         L.append(f"| {w['key']} | {w['seed']} | {w['label_text']} | "
@@ -1045,10 +1048,12 @@ def report_md(result):
                  f"{s['cert']['fraction']} | {v(s['ceil_1']['exact'], 4)} "
                  f"({v(s['ceil_1']['tau'], 4)}) | {v(s['ceil_1_float']['exact'], 4)} | "
                  f"{v(s['lambda_c'], 0)} | {v(s['ceil_lambda_c_float']['exact'], 4)} | "
-                 f"{v(s['ceil_1_starts100']['exact'], 4)} | {s['reading']} | "
+                 f"{v(s['ceil_lambda_c_float']['tau'], 4)} | "
+                 f"{v(s['ceil_1_starts100']['exact'], 4)} | "
+                 f"{v(s['ceil_1_starts100_quantised']['exact'], 4)} | {s['reading']} | "
                  f"{', '.join(w['flags']) or '-'} |")
         if s.get("reading_line"):
-            L.append(f"|  |  | {s['reading_line']} |  |  |  |  |  |  |  |  |  |")
+            L.append(f"|  |  | {s['reading_line']} |  |  |  |  |  |  |  |  |  |  |  |")
     L += ["", "## Gate options (section 8; printed, only (v-a) sets the label)", "",
           "| world | " + " | ".join(GATE_OPTIONS) + " |", "|---|---|---|---|---|"]
     L += [f"| {w['key']} | " + " | ".join(w["gate_options"][o] for o in GATE_OPTIONS) + " |"
@@ -1347,6 +1352,8 @@ def _run(a, t0, head, gate, not_registered, specs, folder):
                 "runtime_s": time.time() - t0, "log_output_errors": K._LOG["output_errors"]}
     result = {"manifest": manifest, "outcome": outcome, "stops": stops,
               "gate_ulp_split_count": sum(GATE_ULP_SPLIT in w["flags"] for w in worlds),
+              "ceil_1_ulp_split_count": sum("CEIL_1_ULP_SPLIT" in w["flags"] for w in worlds),
+              "cert_ulp_split_count": sum("CERT_ULP_SPLIT" in w["flags"] for w in worlds),
               "worlds": [{k: x for k, x in w.items() if k != "ev"} | {
                   "planted": str(w["planted"]), "rows": w["ev"]["rows"],
                   "U_reasons": w["ev"]["U_reasons"]} for w in worlds],
@@ -1360,7 +1367,9 @@ def _run(a, t0, head, gate, not_registered, specs, folder):
               f"ceil_1 {v(s['ceil_1']['exact'])} (tau {v(s['ceil_1']['tau'])}); ceil_1_float "
               f"{v(s['ceil_1_float']['exact'])}; ceil_lambda_c_float "
               f"{v(s['ceil_lambda_c_float']['exact'])} at lambda_c {v(s['lambda_c'])}; "
-              f"ceil_1_starts100 {v(s['ceil_1_starts100']['exact'])}; reads: {s['reading']}; "
+              f"ceil_lambda_c_float_tau {v(s['ceil_lambda_c_float']['tau'])}; "
+              f"ceil_1_starts100 {v(s['ceil_1_starts100']['exact'])}; ceil_1_starts100_quantised "
+              f"{v(s['ceil_1_starts100_quantised']['exact'])}; reads: {s['reading']}; "
               f"flags {w['flags'] or '-'}; gate options {w['gate_options']}")
     K.log(f"OUTCOME: {', '.join(outcome['labels'])}; {outcome}")
     if stops:

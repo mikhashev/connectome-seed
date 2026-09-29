@@ -382,7 +382,21 @@ def test_A3_cert_below_planted_stops_before_any_fit(tmp_path, monkeypatch):
     assert not (tmp_path / "run" / "SHA256SUMS.txt").exists()
 
 
+def fit_tripwire(monkeypatch):
+    """Any fit in a refusal test is a failure: no refusal test may reach the registered form.
+    The run body (_run) and every process pool (run_groups) are trapped too: the cert phase runs
+    in a pool of workers BEFORE any fit, and a monkeypatch of fit_task does not reach worker
+    processes, so trapping fit_task alone would not have stopped the 2026-09-29 incident."""
+    def no_fit(*a, **k):
+        raise AssertionError("a fit was made")
+    monkeypatch.setattr(C, "fit_task", no_fit)
+    monkeypatch.setattr(K, "degree_terms", no_fit)
+    monkeypatch.setattr(C, "run_groups", no_fit)
+    monkeypatch.setattr(C, "_run", no_fit)
+
+
 def test_gate_refusals_leave_no_folder(tmp_path, monkeypatch):
+    fit_tripwire(monkeypatch)
     # The pin is forced to None here: with the real pin set and a clean tree mocked, the first
     # call below would be the registered run itself (it happened once, 2026-09-29, when the pin
     # was first set; CC stopped it). No test may reach the registered form unrefused.
@@ -409,6 +423,7 @@ def test_gate_refusals_leave_no_folder(tmp_path, monkeypatch):
 
 
 def test_out_inside_a_reference_is_refused(tmp_path, monkeypatch):
+    fit_tripwire(monkeypatch)
     ref = tmp_path / "refB"
     monkeypatch.setattr(K, "PRERUN_DIR", ref)
     with pytest.raises(SystemExit) as e:
@@ -417,11 +432,34 @@ def test_out_inside_a_reference_is_refused(tmp_path, monkeypatch):
 
 
 def test_dry_run_writes_nothing(tmp_path, monkeypatch):
+    fit_tripwire(monkeypatch)
     monkeypatch.setattr(C, "REGISTRATION_SHA256_LF_PINNED", None)
     monkeypatch.setattr(K, "tree_state", lambda: "")
     r = C.main(["--dry-run", "--out", str(tmp_path / "x")])
     assert r["dry_run"] and not (tmp_path / "x").exists()
     assert any("not pinned" in s for s in r["gate"]["refusals_of_a_run"])
+
+
+def test_pairs_and_flag_counts_in_every_carrier(tmp_path, monkeypatch):
+    """Both float/quantised pairs are printed side by side in CALIBRATION.md and worlds.csv, and
+    the three ULP_SPLIT flags are counted under their own names in calibration.json and the
+    report."""
+    out, res = run_flow(tmp_path, monkeypatch.setattr)
+    md = (out / "CALIBRATION.md").read_text(encoding="utf-8")
+    table = next(l for l in md.splitlines() if l.startswith("| world | seed"))
+    cols = [c.strip() for c in table.strip("|").split("|")]
+    assert cols.index("ceil_lambda_c_float_tau") == cols.index("ceil_lambda_c_float") + 1
+    assert cols.index("ceil_1_starts100_quantised") == cols.index("ceil_1_starts100") + 1
+    header = (out / "worlds.csv").read_text(encoding="utf-8").splitlines()[0].split(",")
+    assert header.index("ceil_lambda_c_float_tau") == header.index("ceil_lambda_c_float") + 1
+    assert header.index("ceil_1_starts100_tau") == header.index("ceil_1_starts100") + 1
+    js = json.loads((out / "calibration.json").read_text(encoding="utf-8"))
+    for name, key in (("GATE_ULP_SPLIT", "gate_ulp_split_count"),
+                      ("CEIL_1_ULP_SPLIT", "ceil_1_ulp_split_count"),
+                      ("CERT_ULP_SPLIT", "cert_ulp_split_count")):
+        assert js[key] == sum(name in w["flags"] for w in js["worlds"]) == res[key]
+        assert f"{name} rows: {js[key]}" in md
+    assert C.CERT_BUDGET_REGISTERED["status"] == "fixed in registration rev 1.9 section 6"
 
 
 # ------------------------------------------------------------------------------------------
