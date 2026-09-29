@@ -1,0 +1,1528 @@
+{
+ "VX1": {
+  "passed": true,
+  "n_runs": 2,
+  "extension_digest": "abce449f49a6983187d6a9e3ac588844eeba4d61de797aabda19125d0c709979",
+  "composition_identity": {
+   "composition": "abce449f49a6983187d6a9e3ac588844eeba4d61de797aabda19125d0c709979",
+   "script": {
+    "lobe": null,
+    "module": "knockout_regrow_block_b"
+   },
+   "world": "8533c590708e9cbde508cbf4983db370895ad0dc37fac5b490f98bdf2066298a"
+  },
+  "stamps_equal": true,
+  "run1_vs_run2": {
+   "compared": 180,
+   "differ": 0,
+   "differing": [],
+   "differing_by_field": {
+    "U": 0,
+    "V": 0,
+    "lambda": 0,
+    "p": 0
+   },
+   "keys_differ": false
+  }
+ },
+ "VX2": {
+  "outcome": 1,
+  "outcome_text": "EQUIVALENT (outcome 1): E1 and E2-II (0 flipped pairs) hold",
+  "reference": {
+   "arm": "B",
+   "which": "pinned",
+   "path": "C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed-data\\knockout_regrow\\synthetic_blockB_prerun_20260927T211052Z_5f9cc51b9a24\\raw_fits.json.gz",
+   "sha256": "5d08f6e697c3c06182bbe5e18543fb8838575d0ea8a0b5f0bee0f97b9fb0dbd5"
+  },
+  "n_fits": 180,
+  "e3": "E3 not applicable: no continuous column reads a block or ko1 record (block -> ceiling_block = auc, regrown_share_block from exact AUCs, lambda_block; ko1 -> auc_fixed_lambda1, p_P_fixed_lambda1)",
+  "e1_failures": [],
+  "flipped_pairs": [],
+  "n_flipped_pairs": 0,
+  "at_risk": [],
+  "census_reference": {
+   "scope": "reference: arm B block-mask BF fits (180 fits, 45 base views)",
+   "n_fits": 180,
+   "families": {
+    "auc family, present x absent pairs, every fit in scope": {
+     "fits": 180,
+     "fits_with_tie": 0,
+     "tied_pairs": 0,
+     "pairs_denominator_sum": 72000,
+     "smallest_gap": 0.654716701428136,
+     "smallest_gap_at": "world:No:0||block||BF:2",
+     "fits_gap_below_band": 0
+    },
+    "auc_null family, all pairs, the base-view ko/ko1 fits in scope": {
+     "fits": 0,
+     "fits_with_tie": 0,
+     "tied_pairs": 0,
+     "pairs_denominator_sum": 0,
+     "smallest_gap": null,
+     "smallest_gap_at": null,
+     "fits_gap_below_band": 0
+    },
+    "S(f), every fit in scope": {
+     "fits": 180,
+     "fits_with_tie": 0,
+     "tied_pairs": 0,
+     "pairs_denominator_sum": 72000,
+     "smallest_gap": 0.654716701428136,
+     "smallest_gap_at": "world:No:0||block||BF:2",
+     "fits_gap_below_band": 0
+    }
+   }
+  },
+  "census_gpu": {
+   "scope": "GPU run: arm B block-mask BF fits (180 fits, 45 base views)",
+   "n_fits": 180,
+   "families": {
+    "auc family, present x absent pairs, every fit in scope": {
+     "fits": 180,
+     "fits_with_tie": 0,
+     "tied_pairs": 0,
+     "pairs_denominator_sum": 72000,
+     "smallest_gap": 0.654716701428136,
+     "smallest_gap_at": "world:No:0||block||BF:2",
+     "fits_gap_below_band": 0
+    },
+    "auc_null family, all pairs, the base-view ko/ko1 fits in scope": {
+     "fits": 0,
+     "fits_with_tie": 0,
+     "tied_pairs": 0,
+     "pairs_denominator_sum": 0,
+     "smallest_gap": null,
+     "smallest_gap_at": null,
+     "fits_gap_below_band": 0
+    },
+    "S(f), every fit in scope": {
+     "fits": 180,
+     "fits_with_tie": 0,
+     "tied_pairs": 0,
+     "pairs_denominator_sum": 72000,
+     "smallest_gap": 0.654716701428136,
+     "smallest_gap_at": "world:No:0||block||BF:2",
+     "fits_gap_below_band": 0
+    }
+   }
+  },
+  "n_not_bit_equal": 5,
+  "not_bit_equal_by_rank_and_reuse": [
+   {
+    "rank": 1,
+    "reused_from_ko_ref": false,
+    "not_bit_equal": 0,
+    "denominator": 45
+   },
+   {
+    "rank": 2,
+    "reused_from_ko_ref": false,
+    "not_bit_equal": 0,
+    "denominator": 45
+   },
+   {
+    "rank": 3,
+    "reused_from_ko_ref": false,
+    "not_bit_equal": 0,
+    "denominator": 45
+   },
+   {
+    "rank": 4,
+    "reused_from_ko_ref": false,
+    "not_bit_equal": 5,
+    "denominator": 45
+   }
+  ],
+  "differing_fits": [
+   {
+    "key": "world:No:0||block||BF:4",
+    "max_abs_dp": 1.774679481147956e-08,
+    "cell": 0,
+    "p_ref_at_cell": 0.8523633760050189,
+    "s_p": 5.960464477539063e-08,
+    "lam": 1.0,
+    "bf_active": true
+   },
+   {
+    "key": "world:No:1||block||BF:4",
+    "max_abs_dp": 1.774679481147956e-08,
+    "cell": 0,
+    "p_ref_at_cell": 0.8523633760050189,
+    "s_p": 5.960464477539063e-08,
+    "lam": 1.0,
+    "bf_active": true
+   },
+   {
+    "key": "world:No:2||block||BF:4",
+    "max_abs_dp": 1.774679481147956e-08,
+    "cell": 0,
+    "p_ref_at_cell": 0.8523633760050189,
+    "s_p": 5.960464477539063e-08,
+    "lam": 1.0,
+    "bf_active": true
+   },
+   {
+    "key": "world:No:3||block||BF:4",
+    "max_abs_dp": 1.774679481147956e-08,
+    "cell": 0,
+    "p_ref_at_cell": 0.8523633760050189,
+    "s_p": 5.960464477539063e-08,
+    "lam": 1.0,
+    "bf_active": true
+   },
+   {
+    "key": "world:No:4||block||BF:4",
+    "max_abs_dp": 1.774679481147956e-08,
+    "cell": 0,
+    "p_ref_at_cell": 0.8523633760050189,
+    "s_p": 5.960464477539063e-08,
+    "lam": 1.0,
+    "bf_active": true
+   }
+  ],
+  "bf_active": {
+   "bf_active": 180,
+   "p_equals_n1": 0,
+   "no_n1": 0
+  },
+  "records_other_fields_differ": [],
+  "per_fit": [
+   {
+    "key": "world:R:0||block||BF:1",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:R:1||block||BF:1",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:R:2||block||BF:1",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:R:3||block||BF:1",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:R:4||block||BF:1",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:Nf:0||block||BF:1",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:Nf:1||block||BF:1",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:Nf:2||block||BF:1",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:Nf:3||block||BF:1",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:Nf:4||block||BF:1",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:No:0||block||BF:1",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:No:1||block||BF:1",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:No:2||block||BF:1",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:No:3||block||BF:1",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:No:4||block||BF:1",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:W:0||block||BF:1",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:W:1||block||BF:1",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:W:2||block||BF:1",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:W:3||block||BF:1",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:W:4||block||BF:1",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.5:0||block||BF:1",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.5:1||block||BF:1",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.5:2||block||BF:1",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.5:3||block||BF:1",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.5:4||block||BF:1",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M1.0:0||block||BF:1",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M1.0:1||block||BF:1",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M1.0:2||block||BF:1",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M1.0:3||block||BF:1",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M1.0:4||block||BF:1",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.6:0||block||BF:1",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.6:1||block||BF:1",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.6:2||block||BF:1",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.6:3||block||BF:1",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.6:4||block||BF:1",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.75:0||block||BF:1",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.75:1||block||BF:1",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.75:2||block||BF:1",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.75:3||block||BF:1",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.75:4||block||BF:1",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.85:0||block||BF:1",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.85:1||block||BF:1",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.85:2||block||BF:1",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.85:3||block||BF:1",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.85:4||block||BF:1",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:R:0||block||BF:2",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:R:1||block||BF:2",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:R:2||block||BF:2",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:R:3||block||BF:2",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:R:4||block||BF:2",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:Nf:0||block||BF:2",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:Nf:1||block||BF:2",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:Nf:2||block||BF:2",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:Nf:3||block||BF:2",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:Nf:4||block||BF:2",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:No:0||block||BF:2",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:No:1||block||BF:2",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:No:2||block||BF:2",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:No:3||block||BF:2",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:No:4||block||BF:2",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:W:0||block||BF:2",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:W:1||block||BF:2",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:W:2||block||BF:2",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:W:3||block||BF:2",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:W:4||block||BF:2",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.5:0||block||BF:2",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.5:1||block||BF:2",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.5:2||block||BF:2",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.5:3||block||BF:2",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.5:4||block||BF:2",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M1.0:0||block||BF:2",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M1.0:1||block||BF:2",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M1.0:2||block||BF:2",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M1.0:3||block||BF:2",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M1.0:4||block||BF:2",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.6:0||block||BF:2",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.6:1||block||BF:2",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.6:2||block||BF:2",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.6:3||block||BF:2",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.6:4||block||BF:2",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.75:0||block||BF:2",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.75:1||block||BF:2",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.75:2||block||BF:2",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.75:3||block||BF:2",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.75:4||block||BF:2",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.85:0||block||BF:2",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.85:1||block||BF:2",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.85:2||block||BF:2",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.85:3||block||BF:2",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.85:4||block||BF:2",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:R:0||block||BF:3",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:R:1||block||BF:3",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:R:2||block||BF:3",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:R:3||block||BF:3",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:R:4||block||BF:3",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:Nf:0||block||BF:3",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:Nf:1||block||BF:3",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:Nf:2||block||BF:3",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:Nf:3||block||BF:3",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:Nf:4||block||BF:3",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:No:0||block||BF:3",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:No:1||block||BF:3",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:No:2||block||BF:3",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:No:3||block||BF:3",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:No:4||block||BF:3",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:W:0||block||BF:3",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:W:1||block||BF:3",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:W:2||block||BF:3",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:W:3||block||BF:3",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:W:4||block||BF:3",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.5:0||block||BF:3",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.5:1||block||BF:3",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.5:2||block||BF:3",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.5:3||block||BF:3",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.5:4||block||BF:3",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M1.0:0||block||BF:3",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M1.0:1||block||BF:3",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M1.0:2||block||BF:3",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M1.0:3||block||BF:3",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M1.0:4||block||BF:3",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.6:0||block||BF:3",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.6:1||block||BF:3",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.6:2||block||BF:3",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.6:3||block||BF:3",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.6:4||block||BF:3",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.75:0||block||BF:3",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.75:1||block||BF:3",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.75:2||block||BF:3",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.75:3||block||BF:3",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.75:4||block||BF:3",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.85:0||block||BF:3",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.85:1||block||BF:3",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.85:2||block||BF:3",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.85:3||block||BF:3",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.85:4||block||BF:3",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:R:0||block||BF:4",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:R:1||block||BF:4",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:R:2||block||BF:4",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:R:3||block||BF:4",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:R:4||block||BF:4",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:Nf:0||block||BF:4",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:Nf:1||block||BF:4",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:Nf:2||block||BF:4",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:Nf:3||block||BF:4",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:Nf:4||block||BF:4",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:No:0||block||BF:4",
+    "bit_equal": false,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:No:1||block||BF:4",
+    "bit_equal": false,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:No:2||block||BF:4",
+    "bit_equal": false,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:No:3||block||BF:4",
+    "bit_equal": false,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:No:4||block||BF:4",
+    "bit_equal": false,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:W:0||block||BF:4",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:W:1||block||BF:4",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:W:2||block||BF:4",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:W:3||block||BF:4",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:W:4||block||BF:4",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.5:0||block||BF:4",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.5:1||block||BF:4",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.5:2||block||BF:4",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.5:3||block||BF:4",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.5:4||block||BF:4",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M1.0:0||block||BF:4",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M1.0:1||block||BF:4",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M1.0:2||block||BF:4",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M1.0:3||block||BF:4",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M1.0:4||block||BF:4",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.6:0||block||BF:4",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.6:1||block||BF:4",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.6:2||block||BF:4",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.6:3||block||BF:4",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.6:4||block||BF:4",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.75:0||block||BF:4",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.75:1||block||BF:4",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.75:2||block||BF:4",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.75:3||block||BF:4",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.75:4||block||BF:4",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.85:0||block||BF:4",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.85:1||block||BF:4",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.85:2||block||BF:4",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.85:3||block||BF:4",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   },
+   {
+    "key": "world:M0.85:4||block||BF:4",
+    "bit_equal": true,
+    "e1": true,
+    "n_flips": 0,
+    "at_risk": false
+   }
+  ],
+  "reused_cells_with_a_difference": [],
+  "cpu_path_checks_first": [],
+  "direct_recount": {
+   "agrees": true,
+   "comparator_not_bit_equal": 5,
+   "direct_not_bit_equal": 5,
+   "direct_e1": [],
+   "comparator_e1": [],
+   "unexplained_comparator_e1": [],
+   "uninformative": false
+  },
+  "gpu_run": "..\\..\\..\\..\\..\\connectome-seed-data\\gpu_instrument\\VX1_B_block_20260929T134837Z_5d65baf16803",
+  "gpu_label": "VX1",
+  "gpu_head": "5d65baf168032eca67f337e10080fc87436de5a5",
+  "mask": "block",
+  "arm": "B",
+  "reference_census": {
+   "mask": "block",
+   "scope": "arm B block-mask BF_1-BF_4 fits of the 45 base views (180 fits)",
+   "n_fits": 180,
+   "lambda_by_rank": {
+    "BF:1": {
+     "1.0": 45
+    },
+    "BF:2": {
+     "1.0": 45
+    },
+    "BF:3": {
+     "1.0": 45
+    },
+    "BF:4": {
+     "1.0": 45
+    }
+   },
+   "bf_active": {
+    "bf_active": 180,
+    "p_equals_n1": 0,
+    "no_n1": 0
+   },
+   "reused_from_ko": 0,
+   "census": {
+    "scope": "arm B block-mask BF_1-BF_4 fits of the 45 base views (180 fits)",
+    "n_fits": 180,
+    "families": {
+     "auc family, present x absent pairs, every fit in scope": {
+      "fits": 180,
+      "fits_with_tie": 0,
+      "tied_pairs": 0,
+      "pairs_denominator_sum": 72000,
+      "smallest_gap": 0.654716701428136,
+      "smallest_gap_at": "world:No:0||block||BF:2",
+      "fits_gap_below_band": 0
+     },
+     "auc_null family, all pairs, the base-view ko/ko1 fits in scope": {
+      "fits": 0,
+      "fits_with_tie": 0,
+      "tied_pairs": 0,
+      "pairs_denominator_sum": 0,
+      "smallest_gap": null,
+      "smallest_gap_at": null,
+      "fits_gap_below_band": 0
+     },
+     "S(f), every fit in scope": {
+      "fits": 180,
+      "fits_with_tie": 0,
+      "tied_pairs": 0,
+      "pairs_denominator_sum": 72000,
+      "smallest_gap": 0.654716701428136,
+      "smallest_gap_at": "world:No:0||block||BF:2",
+      "fits_gap_below_band": 0
+     }
+    }
+   },
+   "at_risk": [],
+   "n_cells": 40
+  }
+ }
+}
