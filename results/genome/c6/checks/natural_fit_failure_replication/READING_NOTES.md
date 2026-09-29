@@ -61,3 +61,14 @@ board 41, in addition to j = 49 of the seen set.
   world. It is recorded as a property of the class, not a gate.
 - The (iii-b) diagnostic on these recorded fits is in docs/prereg-scripts/2026-09-29-iiib-diagnostic/
   (post-data; any (iii-b) registration is not blind to it).
+
+## 6. (iii-b) closed as a diagnostic; the lambda law (Mike's choice "1 then 2", 2026-09-29)
+
+(iii-b) stays a diagnostic (option 1). Ark (15:56:11 UTC) read iiib_diag_boards.csv and CC
+re-checked it: on all 414 boards lambda_c takes only 1 and 100. The 247 boards at lambda_c = 100
+carry |u.v| <= 1.31e-15 (R3 = 0.5000 under TAU on every one) and read 229 U, 18 G. The 167 boards
+at lambda_c = 1 carry |u.v| >= 1.079 and all 167 pass. The verdict follows the lambda choice;
+at lambda = 100 the additive part decides (Johnny, 16:10:00). Block A passed at block lambda 1.0
+(knockout_regrow/RESULT.md:17, 1.0000); block B failed at 100 (knockout_regrow_block_b/RESULT.md:31,
+0.7744). Option 2 becomes text only: declare the structural class "a verdict taken at lambda_c =
+100 with u.v = 0 is not evidence about the rule" in a registration.
