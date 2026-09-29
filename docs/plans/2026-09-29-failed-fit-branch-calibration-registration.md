@@ -1,5 +1,23 @@
 ---
-**Status: draft rev 1.4, text only, not reviewed.** Revision 1.4 (2026-09-29 UTC, CC subagent)
+**Status: draft rev 1.5, text only, not reviewed.** Revision 1.5 (2026-09-29 UTC, CC subagent)
+applies **Johnny's second review** (DPC Research chat, 2026-09-29 05:41:19 UTC). He wrote it on rev
+1.3, so each point was checked against rev 1.4:
+- **§7:** a plain statement of what this run witnesses (FF-sel only), so that no reader over-claims
+  (the V4 defect class). New.
+- **§3:** the claim C6 and `cert` rest on is weakened from "equals" to **inclusion** of the free class
+  in rule #2.1's class. The column-effect claim is marked as read from the code, and C6 does not
+  depend on it. New.
+- **§16:** the BF_1 citation (`RESULT.md` line 32: `ceiling_block` 0.9649, λ block 1.0; BF_r a
+  float32 cast, not quantised) is recorded as checked by CC. New.
+- **S-C11:** the seed assert takes this registration's own ranges as literals. New.
+- **§15:** Q-J1's trade-off becomes Mike's **M6**, with Johnny's recommendation: uniform. New.
+- **§8:** Johnny asked for the BF_4 claim to be marked "not verified". Rev 1.4 already added the
+  carrier, so it now reads "verified by construction", with the capacity-not-fit caveat kept.
+  Updated.
+
+Nothing was run. No bank was read.
+
+**Revision 1.4's status, as it stood:** "draft rev 1.4, text only, not reviewed." Revision 1.4 (2026-09-29 UTC, CC subagent)
 applies the reviews of rev 1.3 (`1b6b6ad`). All four reviewers said "yes, with edits" in the DPC
 Research chat on 2026-09-29. Nothing ran on any bank. Two design checks on constructed boards were
 added to SURVEY: `bf4_check.py` and `fc_anchor.py`, with their outputs.
@@ -282,8 +300,15 @@ row), no rank-limit world below the gate is known.**
 - **On block B's 13 types, W is a column effect.** L1–L5 are `stride_u` 1 with role "intermediate".
   Mi1, Mi4 and Mi9 are "intermediate"; Tm1, Tm2, Tm3, Tm4 and Tm9 are "output"
   (`results/genome/bank/types.csv`). `groups` sets G = role code when `stride_u` ≤ 1 (fit.py:82–88).
-- **So on this shape, rule #2.1's class equals the free class of §2a**: additive terms plus one rank-1
-  term, with the column effect absorbed into b.
+- **What C6 and `cert` rest on: inclusion, not equality** (rev 1.5; Johnny, 05:41:19 UTC).
+  - The free class of §2a, `a_s + b_t + u_s v_t`, is **included** in rule #2.1's class on any block:
+    set W = 0, and c is absorbed into a.
+  - So `cap(rule #2.1) ≥ cap(free)`. A free-class member at ≥ 0.90 is a witness that rule #2.1's class
+    holds the block. That is all that `cert`'s soundness (§6) and C6 (§7) need.
+- **Equality on this shape is read from the code and is not relied on.** The column-effect item above
+  was read from `types.csv` and `groups()`. Given it, the two classes coincide on block B's shape
+  (W's column effect is absorbed into b). **C6 does not depend on it.** On a block where W is not a
+  column effect, rule #2.1's class is larger, and `cert` remains a valid lower bound.
 - **BF_1's class (`fit_bf`) is not the same object.** It is N1's fixed additive offset plus `U V^T`,
   with the additive part not free.
 
@@ -604,6 +629,12 @@ The informative part is **the sub-kind**:
 
 The class side of the test has no world on this shape (C6).
 
+**Witnessed by this run** (rev 1.5; Johnny, 05:41:19 UTC; stated so that no reader over-claims, the
+V4 defect class):
+- **FF-sel only.** FC forces it. FN shows it if the nested choice collapses.
+- **FF-struct, FF-opt and FF-quant are not witnessed.** No world is built to produce them. When they
+  occur, the separator names them as **residuals**, not as witnessed causes.
+
 | family | decidable? |
 |---|---|
 | FC | yes (exact certificate, asserted; `ceil_1` measured). **One gate measurement**, not five (Warren) |
@@ -642,9 +673,12 @@ world can break the fit side of the test when every FF certificate is exact.)
 | **(v-d)** family, every member | every member ≥ 0.90 | strictest |
 
 **(v) re-derived without a rank-limit family on 5 × 8 (revision 1.2).**
-- **BF_4 can reach AUC 1 on every 5 × 8 pattern** (algebra, rev 1.1; carrier added in rev 1.4 on
-  Johnny's request, 05:35:45 UTC: SURVEY `bf4_capacity.md`, checked by `bf4_check.py`, output
-  `bf4_check_out.txt`, hashes in the README).
+- **BF_4 can reach AUC 1 on every 5 × 8 pattern: verified by construction** (rev 1.5; Johnny,
+  05:41:19 UTC, had asked for "not verified", written before the carrier existed).
+  - **Carrier:** SURVEY `bf4_capacity.md`, with the argument written out, and `bf4_check.py` with its
+    output `bf4_check_out.txt` (hashes in the README).
+  - **The check:** 824 boards, 0 failures, exact counting.
+  - **The check covers capacity, not the fit.**
   - **The class, as fitted.** BF_r is N1's fixed additive offset O plus `U Vᵀ` at rank r
     (`fit_bf`, `harness.py:710–733`; `bf_decode.py`).
   - **The construction.** Choose U (5 × 4) spanning w⊥, with w ∈ {±1}^5 and ±w outside the board's
@@ -809,7 +843,7 @@ and FF-opt remain (§3).
 | S-C8 | the permuted-board reference (seeds 93200–93298) |
 | S-C9 | (§8) the four gate options computed and printed per world; only the registered one sets the label |
 | S-C10 | (§13, if taken) AD and the (iii) objects |
-| S-C11 | seeds of §4 asserted disjoint; callers read from the Orbit graph and confirmed by grep at the script's review (B §3.9) |
+| S-C11 | seeds of §4 asserted disjoint. **The assert takes this registration's own ranges as literals** (rev 1.5; Johnny, 05:41:19 UTC), since they are in no `.py` file yet and a grep-based check would miss them: worlds 93100–93104, 93110–93114, 93120–93124; the permuted reference 93200–93298; the `cert` seeds 93300–93307. It checks them against one another and against `reserved_seeds` (B script lines 1031–1043: A's, the male arm's, the untouched list, the shuffles and the ALS starts) and B's own seeds. Callers are read from the Orbit graph and confirmed by grep at the script's review (B §3.9) |
 
 ## 15. Open questions
 
@@ -823,7 +857,7 @@ answer.
   rows, `ceiling_block` 1.0 (§2).
 - **Q-A5 (Ark, Johnny).** The label does not change. The sub-kind is printed with the reading line
   that holds both views (§3). `ceil_1_float` and the pair at λ_c are mandatory (§3, §6).
-- **Q-J1 (Johnny, 05:35:45).** Uniform swaps (§4).
+- **Q-J1 (Johnny, 05:35:45).** Uniform swaps (§4). The trade-off is Mike's (M6, rev 1.5).
 - **Q-J2 (Johnny).** No constructed control for FF-struct or FF-opt; the separator is enough.
 - **Q-W1 (Warren, 05:23, 05:36:49).** FC is 1 gate measurement × 5 external draws; FN1/FN2 measure
   the gate's robustness (§4, §6). There is no (v-a)/(v-d) family in this run; it is an optional,
@@ -853,6 +887,13 @@ answer.
   side per block; (b) a synthetic rank-limit family on a larger shape; (c) both. *Recommendation:
   (a).* The certificate answers "fit or class?" for any given 5 × 8 block. (b) calibrates a different
   mask, folds and N1 view, with unproved membership, and does not calibrate block B's shape.
+- **Q-M6: FN's swap rule** (rev 1.5; Johnny, 05:41:19 UTC: this choice is Mike's).
+  - **Uniform swaps** (§4, as registered): FN may never reach the branch, which leaves the forced FC
+    as the only witness (C2).
+  - **Swaps aimed at the single-cell inner fold:** more likely to give a natural witness, but that
+    witness would be confounded with block B, since it copies one post-data finding (RN §9).
+  - The certificate is the same either way; it depends only on k (§4).
+  - *Johnny's recommendation: uniform.*
 
 ## 16. Not verified at drafting; findings about the survey; one post-data observation
 
@@ -886,7 +927,11 @@ them against the rerun, reading all of SURVEY's top-level files.
 
 **A post-data observation, deciding nothing (narrowed in rev 1.2).**
 - By §3 and §2a, the free class holds block B's real labels at ≥ 0.9649. BF_1's float fit (`RESULT.md`
-  line 32) is a member of that class on this shape. So **a rank limit of the class is excluded for
+  line 32) is a member of that class on this shape.
+  - **Checked by CC** (rev 1.5, on Johnny's point, 05:41:19 UTC): `RESULT.md` line 32 is the BF_1 row,
+    with `ceiling_block` 0.9649 and λ block 1.0.
+  - BF_r is not quantised: its decode is a float32 cast (`bf_decode.py`; `harness.py:273–278`).
+  - The citation holds. So **a rank limit of the class is excluded for
   block B**.
 - Rev 1.1 went further and said the failed fit is "of the FF-sel kind or the optimiser". That was too
   narrow: FF-struct and **FF-quant** are also open.
