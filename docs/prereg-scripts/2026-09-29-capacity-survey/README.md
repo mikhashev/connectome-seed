@@ -1,7 +1,7 @@
 # Capacity survey of the class a_s + b_t + u_s v_t on small boards
 
 **What this is.** A design computation on constructed 0/1 boards, cited by
-`docs/plans/2026-09-29-failed-fit-branch-calibration-registration.md` (rev 1.4: §2a, §4, §5b, §6, §8, §16).
+`docs/plans/2026-09-29-failed-fit-branch-calibration-registration.md` (rev 1.6: §2, §2a, §4, §5b, §6, §6a, §8, §16).
 It is **not a value of any registered run**. It reads no bank, neither flyvis-65 nor any world of a
 registered arm, and it decides no label.
 
@@ -112,13 +112,22 @@ These files are design computations on constructed boards; none is a value of an
   - The λ grid is forced to [100], forced to [1], or left as registered.
   - **No fit reads the real bank.** Importing `harness` loads the bank's files and checks their pins
     at import, as every harness user does, but nothing is fitted or scored on them.
+  - **Rev 1.6: every AUC is now taken on the B script's decode path.** That is `P.decode` →
+    `p_exist` → float64 → `auc`, and N1 goes through its own decoder. Each value is printed exact and
+    with |d| ≤ `TAU` = 1e-9 counted as a tie, and `ULP_SENSITIVE` marks a difference. The rev 1.4
+    version took N1 and the float fit from logits; those two values (0.600 and 0.555) are withdrawn.
   - Result on board z:
-    - forced to [100]: 0.600000 (240 of 400 pairs: 162 wins, 156 ties); the float fit before
-      quantisation 0.555; max |u·v| 1.4e-20;
+    - forced to [100]: **0.600000 exact and under `TAU`** (162 wins, 156 ties; not ulp-sensitive);
+      the float fit is 0.480 exact against 0.600 under `TAU` (ulp-sensitive); max |u·v| 1.4e-20;
     - [1]: 1.000000;
     - registered grid: λ 1 and 1.000000.
-  - Board z′: 0.600000, 1.000000, and λ 1 with 1.000000.
-  - N1 alone on the block view: 0.600000 on both boards.
+  - Board z′: 0.600000, 1.000000, and λ 1 with 1.000000. None is ulp-sensitive.
+  - N1, decoded: **0.720 exact and 0.600 under `TAU` on z** (3 levels, reproducing Ark's pin), and
+    0.600 on z′.
+  - Four illustrative FN boards (design seed 20260929, not the registered world seeds), at the
+    forced grids only:
+    - the quantised path is not ulp-sensitive on any;
+    - the float fit and N1 are ulp-sensitive on one board.
 
 ## Files (sha256 of the bytes as stored; `.gitattributes` holds `* -text`, so git stores them as written)
 
@@ -127,8 +136,8 @@ These files are design computations on constructed boards; none is a value of an
 | `bf4_capacity.md` | `e8c37a1a6916867bc9ca402608ddbe5f8bccc81447e76bac804e35136591faf7` |
 | `bf4_check.py` | `8a747563bbdfc740da6d076947be5cf63378f9de1ad4e00a4d56f74d245257ea` |
 | `bf4_check_out.txt` | `986529a3c88565d7e921af37b63bb0c7eb1824cf2cd2299b705c2529cb0e337d` |
-| `fc_anchor.py` | `716dad6005a88b9fbebaa98ce081beaddfa76a7c2addae4f9219b15a7881cab4` |
-| `fc_anchor_out.txt` | `9983738639be7bac3788aaf06c89803356185d74b1110470ca4d7238c5d91caf` |
+| `fc_anchor.py` | `171a2bbff2e37a6fa22d0b112b3c904519e8e81344ae2828f02ca2fa68fd49f3` |
+| `fc_anchor_out.txt` | `17cec83f557946bc2db587060fae5e2ad6ff3248b2998e1faaf9fcdc606bd0c8` |
 | `.gitattributes` | `705fd4d6451a31d36b3df7de96f83f30ac976c9b4a6d1e51671d8e2f33e2d0da` |
 | `auc_search.py` | `c605a6555afec91af311d39e4ae4e5a4fa9ac4db403204d6bcad34764518899e` |
 | `auc_search_members.json` | `6f188ae856f8135d681930f40c77bd443bd86fe0fdf1b96f14cf921e767b73f9` |

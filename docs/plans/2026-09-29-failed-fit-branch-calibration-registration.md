@@ -1,5 +1,68 @@
 ---
-**Status: draft rev 1.5, text only, not reviewed.** Revision 1.5 (2026-09-29 UTC, CC subagent)
+**Status: draft rev 1.7, text only, not reviewed.** Revision 1.7 (2026-09-29 UTC, CC subagent) sits
+on top of the uncommitted rev 1.6 in the working tree (CC's commit of rev 1.6 was refused:
+permission denied). Nothing was run. It applies:
+- **Ark (06:31:47 UTC).**
+  - Rev 1.6's open item in §16 is **done, by Ark, read-only, and negative**: a recount of block B's
+    registered block-mask numbers from the stored raw fits, with no fits. No gate number in any
+    registered run is ulp-sensitive.
+  - His refinement of the note on A:459–460: that line is true of board A and fails only as a
+    general statement (§16).
+  - A5 is confirmed on B's record: rule #2.1's `block` fit has λ = 100, BF_1–BF_4 have λ = 1 (§3).
+- **Johnny (06:34:23 UTC).** A second argument for M7: an exact reading of the gate is not
+  reproducible across machines, while `TAU` is machine-stable. He votes yes on M7 (§15).
+- **§15.** Mike's M1–M7 are marked as the only open items, each with its recommendation.
+- **Rev 1.7, addendum: Ark 06:46:05 UTC** (with Johnny, 06:48:10 UTC).
+  - The design seed 20260929 of `fc_anchor.py` is declared in the design-side seed list, so that
+    S-C11 sees it explicitly (§4).
+  - The illustrative FN values are marked as a sanity check, not a prediction (§4).
+  - §5 adds that the ladder 1.0 / 0.95 / 0.90 is a ladder of guarantees, not of capacities, together
+    with Ark's point on M6 (§5, §15).
+
+**Revision 1.6's status, as it stood:** "draft rev 1.6, text only, not reviewed." Revision 1.6 (2026-09-29 UTC, CC subagent)
+applies two answers from the DPC Research chat. Nothing ran on any bank. `fc_anchor.py` was rerun on
+constructed boards only.
+- **Johnny (06:02:41 UTC)** voted yes on rev 1.5 and confirmed Q-J3: the §6 form stands. Q-J3 is
+  closed (§15).
+- **Ark (05:56:37, repeated at 05:58:36 UTC)** answered Q-A6, from read-only probes of the pinned
+  pre-run fits. The pinned N1 `p` on board z has **three exact levels**:
+  - 12 cells at 0.55545374982507911;
+  - 8 cells at 0.555453749825079;
+  - 20 cells at 0.44454625017492083.
+
+  The top two differ by 1 ulp, and the split falls along `y`. The registered `auc` (B script
+  lines 791–801) compares exactly, so 96 pairs that must be ties count as wins: 288/400 = 0.72. With
+  a tolerance of 1e-12 or more they give 240/400 = 0.60. Board z′ has two levels and 0.60. Ark
+  withdraws his 0.72.
+
+  Rev 1.4's 0.600 came from the logit grid, which is exact within a column. The pin goes through the
+  decoder, which adds the ulp.
+
+What changes in revision 1.6:
+- Q-A6 is closed with the finding (§2, §15).
+- **A new §6a, the tie rule at the gate:**
+  - the registered objects keep the exact `auc`;
+  - a `*_tau` value (|d| ≤ `TAU` = 1e-9 counted as a tie) and an `ulp_sensitive` flag are printed
+    beside every AUC-based object;
+  - an exact/TAU split across 0.90 is a flag row, with the label following the exact value;
+  - Mike's **M7** on the future gate;
+  - a statement on `cert`.
+- **`fc_anchor.py` now takes every AUC through the B script's decode path** (`P.decode` →
+  `p_exist` → float64 → `auc`; N1 through its own decoder). Rev 1.4 had taken N1's value and the
+  float fit from logits, which is not the B path.
+  - Rerun result: **FC's registered value is 0.600000 exact and 0.600000 under TAU (162 wins,
+    156 ties both ways), not ulp-sensitive.**
+  - The float fit at λ = 100 is ulp-sensitive: 0.480 exact against 0.600 under TAU. Rev 1.4's
+    "0.555" (from the logit) is withdrawn.
+  - N1 reproduces Ark's 0.72 exact / 0.60 TAU.
+  - Illustrative FN boards were run at the forced grids only (§4).
+- **§16:**
+  - A's line 459–460 ("N1's rows are 0.5 by construction") is recorded as false for block B's 5 × 8
+    board (Ark). A is not edited.
+  - Block B's registered 0.7744 (and N1's 0.7882) gets an open item for Mike: a read-only recount
+    under TAU, **not run**.
+
+**Revision 1.5's status, as it stood:** "draft rev 1.5, text only, not reviewed." Revision 1.5 (2026-09-29 UTC, CC subagent)
 applies **Johnny's second review** (DPC Research chat, 2026-09-29 05:41:19 UTC). He wrote it on rev
 1.3, so each point was checked against rev 1.4:
 - **§7:** a plain statement of what this run witnesses (FF-sel only), so that no reader over-claims
@@ -234,12 +297,22 @@ row), no rank-limit world below the gate is known.**
      - The pinned `ceiling_block` is 1.0 for rule #2.1 and BF_1–BF_4 on both boards.
      - The outside density varies from 0.130 to 0.306 across worlds while the block `p` does not
        move.
-     - Ark gives N1's block values as 0.72 (z) and 0.60 (z′). **One discrepancy, not resolved
-       here:** `fc_anchor.py` (SURVEY) fits N1 on a constructed block-only view of each board and
-       gets 0.600000 on both (240 of 400 pairs). Boards z and z′ are the same pattern up to a
-       relabelling of rows and columns, and N1's ridge treats every type alike, so N1's AUC should
-       be equal on the two. Q-A6 asks Ark which object his 0.72 is. Nothing in this file depends
-       on N1's block value.
+     - **N1's block values: resolved in rev 1.6** (Q-A6; Ark, 05:56:37 and 05:58:36 UTC, read-only
+       probes of the pinned fits).
+       - Rev 1.4 set Ark's 0.72 (z) against `fc_anchor.py`'s 0.600. Both were right about
+         different objects.
+       - The pinned N1 `p` on z has three exact levels: 12 cells at 0.55545374982507911, 8 at
+         0.555453749825079 (1 ulp lower) and 20 at 0.44454625017492083. The ulp split falls along
+         `y`.
+       - The registered exact `auc` counts the 96 ulp-separated pairs as wins: 288/400 = 0.72.
+         Under a tolerance of 1e-12 or more they are ties: 240/400 = 0.60.
+       - Board z′ has two levels: 0.60 either way.
+       - Rev 1.4's 0.600 was taken on the logit grid, which is exact within a column. The decoder's
+         sigmoid adds the ulp.
+       - `fc_anchor.py`, now on the B decode path, reproduces both: 0.720 exact and 0.600 under
+         `TAU` on z, 0.600 on z′ (SURVEY `fc_anchor_out.txt`).
+       - Ark withdraws the 0.72 as N1's value. It is the registered `auc`'s reading of a 1-ulp
+         split. §6a draws the consequence.
      - This meets Johnny's objection 1.
    - Consequence for this file: a family whose board is the same in every world gives one gate
      measurement, not five (§4).
@@ -381,14 +454,21 @@ B script lines 1239–1266):
   - at the chosen λ_c: `ceil_λc_float` (the same float AUC at the λ that `_lambda_of` reads from
     `LAST_FIT`, B script lines 1205–1210) beside `ceiling_block`, the quantised value at λ_c.
 
-  **Why both.** The normal failure is a chosen λ_c ≠ 1: on block B it was λ = 100. **Zcode's caveat 4
+  **Why both.** The normal failure is a chosen λ_c ≠ 1: on block B it was λ = 100. **Confirmed on
+  the record** (rev 1.7; Ark, 06:31:47 UTC): in block B's stored raw fits, the rule's `block` record
+  has `lam` = 100.0 and BF_1–BF_4's have 1.0, so on block B `ceil_λc_float` would read the rule at
+  λ = 100. **Zcode's caveat 4
   (05:35:21 UTC):** `ceil_λc_float` inherits the nested choice by design, so the one-class-fold
   confirmation of §6 does not carry over to it.
 - **Still a diagnostic:** `ceil_1_starts100` (step 3 at λ = 1 with 100 starts) can show FF-opt but
   cannot prove FF-struct. It is a lower bound only.
-- **What `fc_anchor.py` found on the z board at λ = 100** (SURVEY): the float fit gives 0.555, the
-  quantised path 0.600. At the collapsed λ, quantisation *raised* the AUC. So the float/quantised pair
-  can move in either direction.
+- **What `fc_anchor.py` found on the z board at λ = 100** (SURVEY; rev 1.6, on the B decode path,
+  with the float fit's `p` taken as the sigmoid of its logit):
+  - the quantised path gives 0.600 both exact and under `TAU`;
+  - the float fit gives 0.480 exact but 0.600 under `TAU`, so it is **ulp-sensitive** (§6a).
+
+  Rev 1.4's "0.555" was taken on the logit and is withdrawn. So the float/quantised pair can differ
+  by ulps alone, and every float object is printed with its `_tau` value.
 - **FF-quant, the reading line** (rev 1.4; Johnny 05:35:45 and Ark 05:29:40 UTC, both views
   recorded): *"FF-quant: fit side (the class holds the block); the registered quantised
   representation cannot express the float fit."*
@@ -443,10 +523,26 @@ at the cut: the inclusiveness case of "≥ 0.90".
 - **The object.** It is rule #2.1's registered block-only path (train + decode) on board z with the
   grid forced to [100]: the fit at λ = 100. It is **not** "additive-only": u·v is not exactly 0 there
   (max |u·v| on the block 1.4e-20), and the W term and the quantisation also act.
-- **Value: 0.600000**, which is 240 of 400 pairs (162 wins, 156 ties). The float fit before
-  quantisation gives 0.555 (222 of 400).
+- **Value: 0.600000**, which is 240 of 400 pairs (162 wins, 156 ties), taken on the B script's
+  decode path (`P.decode` → `p_exist` → `auc`).
+  - **Not ulp-sensitive** (rev 1.6): under `TAU` it is the same 0.600000, with the same 156 ties.
+    Quantisation makes the ties exact.
+  - The float fit before quantisation gives 0.480 exact against 0.600 under `TAU` (ulp-sensitive;
+    §6a). Rev 1.4's 0.555 is withdrawn.
 - **Ark's anchors, for comparison.** His a_s + b_t search found nothing above 0.71 on z. N1's block
-  value is 0.600 on the constructed view (see §2 for the discrepancy with Ark's 0.72).
+  value is 0.720 exact and 0.600 under `TAU` (§2, Q-A6 closed).
+- **Illustrative FN boards** (rev 1.6; SURVEY `fc_anchor_out.txt`).
+  - Two boards per FN family were drawn with a design seed (20260929), not the registered world
+    seeds, and fitted **only at the forced grids [100] and [1]**. The registered nested grid was not
+    run, so nothing previews whether FN's nested choice collapses.
+  - The quantised path is not ulp-sensitive on any of them. At [100] it gives 0.6875, 0.710, 0.6625
+    and 0.6375. At [1] it gives 1.0, 0.9975, 0.985 and 0.985.
+  - The float fit at [100] is ulp-sensitive on one board (FN1-illustrative-0: 0.6575 exact against
+    0.6875 under `TAU`). N1 is ulp-sensitive on the same board (0.75125 against 0.6875).
+  - **A sanity check on constructed boards, not a prediction** (rev 1.7 addendum; Ark 06:46:05,
+    Johnny 06:48:10 UTC). The values at forced λ (0.985–1.0 at λ = 1; the [100] values above) are
+    not predictions for the registered FN worlds, which use other seeds (93110–93124) and the full
+    nested choice. No text may cite them as a prediction.
 - **The margin.** 0.600 is 120 pairs below the gate (0.90 = 360 of 400). FC's stop (b) of §6 is
   therefore not expected to fire.
 
@@ -486,7 +582,11 @@ reference, 93010–93108, overlapped the worlds 93100–93104.
   - survey boards `default_rng(2026)`;
   - search stage 1 seed 11, refinement 100–104, deep pass 200–201;
   - `auc_search.py` surrogate starts, seeds 0–2 (logistic 0–1; the discrete search `default_rng(0)`);
-  - `bf4_check.py` `default_rng(20260929)`.
+  - `bf4_check.py` `default_rng(20260929)`;
+  - `fc_anchor.py`'s illustrative FN boards, **design seed 20260929** (`default_rng(20260929)`;
+    rev 1.7 addendum, Ark 06:46:05 UTC). It is declared here so that S-C11's assert sees it
+    explicitly: the new script lists it among the design-side seeds, and it is disjoint from every
+    seed of this registration.
 
 ## 5. Certificates fixed before any fit
 
@@ -497,6 +597,15 @@ reference, 93010–93108, overlapped the worlds 93100–93104.
     branch has a fitter cause by construction.
   - The value depends only on k, not on which cells were swapped (§4).
   - **FN2 sits exactly at the cut and is kept** as the ladder's inclusiveness rung (Q-A2, answered).
+  - **A ladder of guarantees, not of capacities** (rev 1.7 addendum; Ark, 06:46:05 UTC).
+    - FC → FN1 → FN2 (1.0 / 0.95 / 0.90) are lower bounds from the planted member, not the boards'
+      actual capacities.
+    - On the illustrative boards (§4) the fit at λ = 1 reached about 0.985. So FN2 is not a
+      knife-edge world: the class holds it comfortably.
+    - The predictions do not change.
+  - **Ark's point for M6.** The only witness of "the class holds the block, and the forced fit
+    fails" is FC: class 1.0, forced fit 0.60. FN witnesses only a natural collapse, and only if one
+    happens.
 - **The fit at λ = 100 on each board** (rev 1.4 renames rev 1.3's "additive-only AUC"; Ark, A1): the
   registered path with the grid forced to [100]. It is printed per world. **For FC's board z it is
   registered now: 0.600000** (§4; SURVEY `fc_anchor.py`).
@@ -590,6 +699,60 @@ by a one-class inner fold.
 | < 0.90 | < 0.90 | any | any | any | **not separated: rank limit or fit** (no witness either way) |
 
 Every FF-quant row is printed with Johnny's and Ark's reading line (§3).
+
+## 6a. The tie rule at the gate (revision 1.6; Ark, 05:56:37 and 05:58:36 UTC)
+
+**The fact.**
+- Neither the registered gate (`ceiling_block >= 0.90`; A:1327, B script line 1620) nor the
+  registered `auc` (B script lines 791–801) names a tolerance. `auc` compares exactly.
+- The project's declared tie band is `TAU` = 1e-9 (`harness.py:66`). B uses it in the legs
+  (B script line 287), not in `auc`.
+- A 1-ulp difference in `p` can therefore move an AUC by whole steps. N1 on board z reads 0.72 exact
+  and 0.60 under `TAU` (§2).
+
+**What this calibration does.**
+- **It calibrates the gate as registered.** Every registered object (`ceiling_block`, the label, the
+  gate) keeps the exact `auc`, the same as B.
+- **Beside every AUC-based object it prints a second value, `*_tau`**, in which a score difference
+  with |d| ≤ `TAU` counts as a tie. This covers `ceiling_block`, `ceil_1`, `ceil_1_float`,
+  `ceil_λc_float` and `cert`, for rule #2.1 and for each BF_r where printed.
+- **It prints a flag `ulp_sensitive`** whenever the exact and `_tau` values differ.
+
+**The split row, named before values.** When the exact value and the `_tau` value of `ceiling_block`
+fall on opposite sides of 0.90:
+- **the label follows the registered exact value**;
+- the `_tau` value is printed beside it as a caveat;
+- the world is marked **`GATE_ULP_SPLIT`**, a flag row that is counted and reported under its own
+  name in the outcome, never passed silently.
+
+In a planted world, a split of this kind is a finding about the gate, not about the world. The same
+row applies to `ceil_1` and `cert` against their 0.90 cut.
+
+**What the rerun shows so far** (§4; SURVEY `fc_anchor_out.txt`, constructed boards):
+- The **quantised** registered path was not ulp-sensitive on any board tried: z, z′, and four
+  illustrative FN boards, at every grid run. The 5-bit symbols give exactly equal values.
+- **N1 and the float fits** were ulp-sensitive on some boards. `ceil_1_float` and `ceil_λc_float` are
+  float objects, so their `_tau` values matter.
+
+**`cert` and ulps.**
+- `cert` is counted on a stored float64 member, and recounted with `fractions.Fraction` from the
+  stored floats (§6).
+- **The Fraction count of an exact member is a true value.** It is the AUC of those exact parameters,
+  with ties only where the rational scores are equal. So it is not an ulp artefact, and a Fraction
+  `cert` ≥ 0.90 remains a valid witness that the class holds the block.
+- The **float64** recount by the registered `auc` can differ from it by ulps, since
+  a_s + b_t + u_s v_t is rounded. S-C6's rule that the three counts agree stays. A disagreement is
+  printed as `ulp_sensitive`, and **the Fraction value is the certificate**.
+- `cert_tau` is printed as the conservative reading. It counts near-ties within `TAU` as ties, so it
+  can be lower than the Fraction value.
+
+**On the registered runs** (rev 1.7; Ark, 06:31:47 UTC; §16). No gate number in block A's or block
+B's registered run is ulp-sensitive: the smallest gap between distinct `p` values is 1.8e-5, far
+above `TAU`. On the real runs the flag would fire zero times. In the pre-run it fires exactly once,
+on N1 on board z. The ulp split is a property of synthetic board z through the decoder, not of the
+instrument's registered results.
+
+**For later registrations: M7** (§15). Whether a future gate should read the `TAU` band.
 
 **Direction of soundness.** A "fit failure" row is sound: a stored member passes the gate. The last
 row is not a rank-limit reading.
@@ -843,6 +1006,7 @@ and FF-opt remain (§3).
 | S-C8 | the permuted-board reference (seeds 93200–93298) |
 | S-C9 | (§8) the four gate options computed and printed per world; only the registered one sets the label |
 | S-C10 | (§13, if taken) AD and the (iii) objects |
+| S-C12 | (rev 1.6, §6a) an `auc_tau` beside the registered exact `auc`; `*_tau` for `ceiling_block`, `ceil_1`, `ceil_1_float`, `ceil_λc_float` and `cert`; the `ulp_sensitive` flag; the `GATE_ULP_SPLIT` flag row counted in the outcome; the float objects' `p` taken as the sigmoid of the float logit, the same transform the decoders use |
 | S-C11 | seeds of §4 asserted disjoint. **The assert takes this registration's own ranges as literals** (rev 1.5; Johnny, 05:41:19 UTC), since they are in no `.py` file yet and a grep-based check would miss them: worlds 93100–93104, 93110–93114, 93120–93124; the permuted reference 93200–93298; the `cert` seeds 93300–93307. It checks them against one another and against `reserved_seeds` (B script lines 1031–1043: A's, the male arm's, the untouched list, the shuffles and the ALS starts) and B's own seeds. Callers are read from the Orbit graph and confirmed by grep at the script's review (B §3.9) |
 
 ## 15. Open questions
@@ -867,13 +1031,28 @@ answer.
 - **Q-Z2 (Zcode).** Confirmed by code for `ceil_1` and `cert` (§6), made structural by S-C4b. It does
   not extend to `ceil_λc_float` (Zcode's caveat 4, §3).
 
-**Two small items raised by this revision** (not reopening the answers above):
-- **Q-A6 (Ark).** Which object is "N1 gives 0.72 (z)"? `fc_anchor.py` gets 0.600 on both boards,
-  and the boards are isomorphic (§2). Nothing depends on it.
-- **Q-J3 (Johnny).** Confirm the FN rows' wording in §6. FF-sel is `ceil_1` ≥ 0.90, so "FF-sel …
-  and ceil_1 < 0.90" was read as "failed fit if it collapses, sub-kind by the separator".
+**Two items raised in rev 1.4, now closed** (rev 1.6):
+- **Q-A6 (Ark, 05:56:37 and 05:58:36 UTC). Closed.** The 0.72 is the registered exact `auc`'s reading
+  of a 1-ulp split in N1's decoded `p` on board z (three levels; 96 pairs counted as wins). Under a
+  tolerance of 1e-12 or more it is 0.60. Ark withdraws the 0.72, and §6a draws the consequence (§2).
+- **Q-J3 (Johnny, 06:02:41 UTC). Closed.** Johnny confirmed that "the §6 form stands": G if the
+  nested choice does not collapse; U, failed fit if it collapses, with the sub-kind read by the
+  separator.
 
-**For Mike (each with what it affects; recommendation last).**
+**For Mike: the only open items** (rev 1.7). Every reviewer question above is answered. What
+remains is M1–M7, each with its recommendation:
+
+| item | recommendation |
+|---|---|
+| M1: which items | (i) + (v) first |
+| M2: instrument | CPU |
+| M3: block B's own table as a world | no (post-data) |
+| M4: the (v) option | choose after the values |
+| M5: the rank-limit side | (a): 5 × 8, fit side only; `cert` closes the rank side per block |
+| M6: FN's swap rule | uniform (Johnny) |
+| M7: the tie rule of a future gate | `TAU`, for future registrations only (Ark; Johnny votes yes) |
+
+Details, each with what it affects:
 - **Q-M1: which items.** (i) + (v) only, or with (iii). *Recommendation: (i) + (v) first.*
   - **Zcode and Ark** note that (iii-a)'s data comes free with (i): at λ = 1 it is `ceil_1`, which
     (i) prints anyway.
@@ -887,12 +1066,32 @@ answer.
   side per block; (b) a synthetic rank-limit family on a larger shape; (c) both. *Recommendation:
   (a).* The certificate answers "fit or class?" for any given 5 × 8 block. (b) calibrates a different
   mask, folds and N1 view, with unproved membership, and does not calibrate block B's shape.
+- **Q-M7: the tie rule of a future gate** (rev 1.6; §6a).
+  - (a) Keep the exact `auc` at the gate: 1-ulp splits in a decoded `p` can move the gate's AUC by
+    whole steps.
+  - (b) Read the gate with the `TAU` band (|d| ≤ 1e-9 counted as a tie), the project's declared tie
+    band.
+  - **This calibration keeps the gate exact in either case, because it calibrates the registered
+    gate.** It prints both values and the `GATE_ULP_SPLIT` flag.
+  - **The two arguments for (b):**
+    - **Ulp steps.** A 1-ulp split can move an exact AUC by whole steps: N1 on synthetic board z
+      reads 0.72 exact and 0.60 under `TAU` (Ark, §2, §6a).
+    - **Reproducibility across machines** (Johnny, 06:34:23 UTC). An exact reading of the gate is not
+      reproducible from machine to machine, because the BLAS picks its kernels at run time
+      (DYNAMIC_ARCH), while a reading with the `TAU` band is machine-stable. Block B's verdict from
+      0.7744 is stable; the last bits of that number are not.
+  - **Cost now** (Ark, 06:31:47 UTC): none. No gate number in any registered run is ulp-sensitive
+    (§16), so choosing `TAU` changes no registered reading.
+  - *Recommendation: (b) `TAU`, for future registrations only.* Ark recommends `TAU`; Johnny votes
+    yes.
 - **Q-M6: FN's swap rule** (rev 1.5; Johnny, 05:41:19 UTC: this choice is Mike's).
   - **Uniform swaps** (§4, as registered): FN may never reach the branch, which leaves the forced FC
     as the only witness (C2).
   - **Swaps aimed at the single-cell inner fold:** more likely to give a natural witness, but that
     witness would be confounded with block B, since it copies one post-data finding (RN §9).
   - The certificate is the same either way; it depends only on k (§4).
+  - Ark's point (06:46:05 UTC): FC is the only witness of "the class holds it, and the forced fit
+    fails" (class 1.0, forced fit 0.60). FN witnesses only a natural collapse, if one happens (§5).
   - *Johnny's recommendation: uniform.*
 
 ## 16. Not verified at drafting; findings about the survey; one post-data observation
@@ -924,6 +1123,41 @@ them against the rerun, reading all of SURVEY's top-level files.
 7. **New (rev 1.3).** `auc_search_out.txt` line 11 is a numpy overflow warning (from `exp` in the
    logistic-loss gradient; harmless to the counts) that prints the local scratchpad path. It is
    recorded in the README (remark 6).
+
+**A note on registration A, refined in rev 1.7** (Ark, 06:31:47 UTC; rev 1.6 had called the line
+false). A is a registered file and is **not edited**.
+- A:459–460 says, of the pre-run's `ceiling_block`, "N1's rows are 0.5 by construction".
+- **It is true of board A.** There N1's block-mask `p` has one level, so its AUC is exactly 0.5 (Ark's
+  recount of block A's registered run).
+- **It fails only as a general statement.** On block B's real block, N1's block-mask `p` has 16
+  levels and gives 0.7882. On block B's synthetic boards, N1 gives 0.60 as a column effect.
+- The 0.72 / 0.60 on board z (§2) is a property of **synthetic board z through the decoder**, not of
+  the instrument.
+- Any later text that carries A's sentence to another block's shape should cite this note.
+
+**Rev 1.6's open item: done by Ark, read-only, negative** (Ark, 06:31:47 UTC; probes
+`probe_qA7_real.py`, `probe_qA7_gaps.py`, `probe_qA7_a.py`, read-only, no fits). Ark recounted block
+B's registered block-mask numbers from
+`connectome-seed-data/knockout_regrow/flyvis65_blockB_20260928T143258Z_7a10d88ec95e/raw_fits_real.json.gz`
+(637 records), exact and at tolerances of 1e-12 and 1e-9.
+
+| predictor | exact AUC on the block mask | distinct `p` levels | smallest gap | at 1e-12 / 1e-9 |
+|---|---|---|---|---|
+| rule #2.1 | 309/399 = 0.7744 | 24 | 3.2e-3 | same |
+| BF_1 | 385/399 = 0.9649 | 35 | 4.0e-4 | same |
+| BF_2–BF_4 | 399/399 | 35 | 3.9e-4 | same |
+| N1 | 629/798 = 0.7882 (one tie) | 16 | 6.2e-4 | same |
+
+- **The rule's `ceiling_full`** is 252/399 = 0.6316, matching `verdict.json`. The 25 permuted `full`
+  records give 0.5677 to 0.8647, and 0.6316 ranks 9th of 26.
+- **Block A:** the block-mask N1 has one level and AUC exactly 0.5; rule #2.1 and BF sit at 1.0 with
+  2 levels.
+- **The smallest gap across both registered runs** is 1.8e-5 (block A, `full`), far above `TAU`.
+- **Ark's conclusion.** No gate number in any registered run is ulp-sensitive. `GATE_ULP_SPLIT` would
+  fire zero times on the real runs and exactly once in the pre-run (N1 on board z). Block B's verdict
+  sits 0.126 below 0.90, about 100 pair steps.
+- Block B's label stands as registered. This registration only records the recount; it was not run
+  under it.
 
 **A post-data observation, deciding nothing (narrowed in rev 1.2).**
 - By §3 and §2a, the free class holds block B's real labels at ≥ 0.9649. BF_1's float fit (`RESULT.md`
