@@ -339,7 +339,7 @@ def test_flow_completes_C1_with_sums(tmp_path, monkeypatch):
     ({("FC", "block_lam"): 3.0, ("FC", "block_p"): lambda y: y.astype(float) * 0 + 0.5},
      "(a) LAST_FIT lambda != 100"),
     ({("FC", "block_p"): lambda y: y.astype(float)}, "FC does not read failed fit"),
-    ({("FC", "block_p"): lambda y: low_block_p(y, 5)}, "(c) not named by the registration"),
+    ({("FC", "block_p"): lambda y: low_block_p(y, 5)}, "(c) the forcing acted"),
     ({("FC", "ceil1_p"): lambda y: low_block_p(y)}, "reproduction (A2) failed"),
     ({("FC", "reg_p"): lambda y: low_block_p(y, 5)}, "SCRIPT DEFECT")])
 def test_section6_FC_stop_rows(tmp_path, monkeypatch, ov, needle):

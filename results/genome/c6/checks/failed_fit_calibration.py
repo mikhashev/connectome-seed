@@ -909,9 +909,9 @@ def read_world(w, F, n_sh, n_pc, certs):
             else:
                 # REG-AMBIGUITY A-2: section 6 names branches (a) lambda != 100 and (b) value >=
                 #   0.90 only; lambda = 100 with a value below 0.90 and != 0.600000 is a stop in
-                #   an unnamed branch (c)
-                br = ("(c) not named by the registration: the forcing acted, the value is below "
-                      "0.90 and differs from 0.600000")
+                #   branch (c), resolved as a stop in registration rev 1.9 section 14a
+                br = ("(c) the forcing acted, the value is below 0.90 and differs from the registered "
+                      "0.600000 (registration rev 1.9, section 14a A-2)")
             stops.append(f"{key}: ceiling_block {cb['exact']!r} != 0.600000 (240 of 400); {br}")
         if sep["ceil_1"]["exact"] != FC_CEIL_1_EXPECTED:
             stops.append(f"{key}: ceil_1 = {sep['ceil_1']['exact']!r} != 1.0: the registered "
