@@ -383,6 +383,10 @@ def test_A3_cert_below_planted_stops_before_any_fit(tmp_path, monkeypatch):
 
 
 def test_gate_refusals_leave_no_folder(tmp_path, monkeypatch):
+    # The pin is forced to None here: with the real pin set and a clean tree mocked, the first
+    # call below would be the registered run itself (it happened once, 2026-09-29, when the pin
+    # was first set; CC stopped it). No test may reach the registered form unrefused.
+    monkeypatch.setattr(C, "REGISTRATION_SHA256_LF_PINNED", None)
     monkeypatch.setattr(K, "tree_state", lambda: "")
     out = tmp_path / "reg"
     with pytest.raises(SystemExit) as e:              # registered form, registration not pinned
@@ -413,6 +417,7 @@ def test_out_inside_a_reference_is_refused(tmp_path, monkeypatch):
 
 
 def test_dry_run_writes_nothing(tmp_path, monkeypatch):
+    monkeypatch.setattr(C, "REGISTRATION_SHA256_LF_PINNED", None)
     monkeypatch.setattr(K, "tree_state", lambda: "")
     r = C.main(["--dry-run", "--out", str(tmp_path / "x")])
     assert r["dry_run"] and not (tmp_path / "x").exists()

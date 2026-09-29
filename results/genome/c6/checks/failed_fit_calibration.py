@@ -64,11 +64,11 @@ C6 = K.C6
 # ------------------------------------------------------------------------------------------
 # Identity of this run's inputs.
 REGISTRATION = "docs/plans/2026-09-29-failed-fit-branch-calibration-registration.md"
-REGISTRATION_REVISION = "1.8"
-# The registration is under review; its LF sha256 is pinned by the revision that closes the review.
-# While None, the registered form refuses (gate_refusals). The value at rev 1.8 (commit 10e806c) is
-# recorded for information only.
-REGISTRATION_SHA256_LF_PINNED = None
+REGISTRATION_REVISION = "1.9"
+# Pinned at rev 1.9 (commit 99e4d4b), after the reviewers' yes on rev 1.8 and their edits applied
+# in 1.9; Mike ordered the run (DPC Research chat, 2026-09-29 09:34:38 UTC). The value at rev 1.8
+# (commit 10e806c) is kept for information only.
+REGISTRATION_SHA256_LF_PINNED = "7aa53ec97ca617d7343dcc38bb933119405b5aa7023242cdf617e3e7f0f9896c"
 REGISTRATION_SHA256_LF_AT_REV_1_8 = (
     "28666be9b9aa80d1ad405dc23c6e3d02d8ef4fb9a08f5879b8eedb3faef947ba")
 # The B script this file imports, byte-unchanged (LF sha256 at commit 10e806c).
