@@ -1,0 +1,85 @@
+registration: docs/plans/2026-09-29-failed-fit-branch-calibration-registration.md, revision 1.9; LF sha256 7aa53ec97ca617d7343dcc38bb933119405b5aa7023242cdf617e3e7f0f9896c (pinned: 7aa53ec97ca617d7343dcc38bb933119405b5aa7023242cdf617e3e7f0f9896c); k = 10; workers = 30; CPU (M2)
+checks passed: pins and versions, block and mask, AUC function, B script LF sha256 e650e47e5f66, survey copy, seeds (worlds 93100-93104, 93110-93114, 93120-93124; permuted reference 93200-93298; cert 93300-93307)
+planted values (section 5, exact): FC:0 1, FC:1 1, FC:2 1, FC:3 1, FC:4 1, FN1:0 19/20, FN1:1 19/20, FN1:2 19/20, FN1:3 19/20, FN1:4 19/20, FN2:0 9/10, FN2:1 9/10, FN2:2 9/10, FN2:3 9/10, FN2:4 9/10
+[cert (before any fit)] 110 groups, 110 tasks, workers = 30
+[cert (before any fit)] 5/110 groups, 26s elapsed, about 541s left
+[cert (before any fit)] 10/110 groups, 26s elapsed, about 262s left
+[cert (before any fit)] 15/110 groups, 27s elapsed, about 169s left
+[cert (before any fit)] 20/110 groups, 27s elapsed, about 123s left
+[cert (before any fit)] 25/110 groups, 28s elapsed, about 95s left
+[cert (before any fit)] 30/110 groups, 30s elapsed, about 80s left
+[cert (before any fit)] 35/110 groups, 51s elapsed, about 108s left
+[cert (before any fit)] 40/110 groups, 51s elapsed, about 90s left
+[cert (before any fit)] 45/110 groups, 53s elapsed, about 76s left
+[cert (before any fit)] 50/110 groups, 54s elapsed, about 65s left
+[cert (before any fit)] 55/110 groups, 56s elapsed, about 56s left
+[cert (before any fit)] 60/110 groups, 66s elapsed, about 55s left
+[cert (before any fit)] 65/110 groups, 73s elapsed, about 51s left
+[cert (before any fit)] 70/110 groups, 77s elapsed, about 44s left
+[cert (before any fit)] 75/110 groups, 82s elapsed, about 38s left
+[cert (before any fit)] 80/110 groups, 83s elapsed, about 31s left
+[cert (before any fit)] 85/110 groups, 86s elapsed, about 25s left
+[cert (before any fit)] 90/110 groups, 92s elapsed, about 21s left
+[cert (before any fit)] 95/110 groups, 94s elapsed, about 15s left
+[cert (before any fit)] 100/110 groups, 95s elapsed, about 9s left
+[cert (before any fit)] 105/110 groups, 96s elapsed, about 5s left
+[cert (before any fit)] 110/110 groups, 97s elapsed, about 0s left
+[cert (before any fit)] done in 97s
+A3 (cert >= planted value on every FC and FN board): passed; FC:0 1/1, FC:1 1/1, FC:2 1/1, FC:3 1/1, FC:4 1/1, FN1:0 1/1, FN1:1 1/1, FN1:2 1/1, FN1:3 1/1, FN1:4 1/1, FN2:0 1/1, FN2:1 1/1, FN2:2 1/1, FN2:3 1/1, FN2:4 1/1
+[worlds and permuted boards] 2058 groups, 10050 tasks, workers = 30
+[worlds and permuted boards] 102/2058 groups, 161s elapsed, about 3091s left
+[worlds and permuted boards] 204/2058 groups, 304s elapsed, about 2760s left
+[worlds and permuted boards] 306/2058 groups, 451s elapsed, about 2579s left
+[worlds and permuted boards] 408/2058 groups, 579s elapsed, about 2340s left
+[worlds and permuted boards] 510/2058 groups, 714s elapsed, about 2167s left
+[worlds and permuted boards] 612/2058 groups, 867s elapsed, about 2049s left
+[worlds and permuted boards] 714/2058 groups, 1023s elapsed, about 1925s left
+[worlds and permuted boards] 816/2058 groups, 1154s elapsed, about 1757s left
+[worlds and permuted boards] 918/2058 groups, 1295s elapsed, about 1609s left
+[worlds and permuted boards] 1020/2058 groups, 1446s elapsed, about 1471s left
+[worlds and permuted boards] 1122/2058 groups, 1577s elapsed, about 1316s left
+[worlds and permuted boards] 1224/2058 groups, 1738s elapsed, about 1185s left
+[worlds and permuted boards] 1326/2058 groups, 1890s elapsed, about 1043s left
+[worlds and permuted boards] 1428/2058 groups, 2024s elapsed, about 893s left
+[worlds and permuted boards] 1530/2058 groups, 2153s elapsed, about 743s left
+[worlds and permuted boards] 1632/2058 groups, 2294s elapsed, about 599s left
+[worlds and permuted boards] 1734/2058 groups, 2448s elapsed, about 457s left
+[worlds and permuted boards] 1836/2058 groups, 2600s elapsed, about 314s left
+[worlds and permuted boards] 1938/2058 groups, 2662s elapsed, about 165s left
+[worlds and permuted boards] 2040/2058 groups, 2714s elapsed, about 24s left
+[worlds and permuted boards] 2058/2058 groups, 2722s elapsed, about 0s left
+[worlds and permuted boards] done in 2722s
+[fixed lambda = 1 (ko1)] 15 groups, 75 tasks, workers = 30
+[fixed lambda = 1 (ko1)] 1/15 groups, 5s elapsed, about 70s left
+[fixed lambda = 1 (ko1)] 2/15 groups, 5s elapsed, about 33s left
+[fixed lambda = 1 (ko1)] 3/15 groups, 5s elapsed, about 20s left
+[fixed lambda = 1 (ko1)] 4/15 groups, 5s elapsed, about 14s left
+[fixed lambda = 1 (ko1)] 5/15 groups, 5s elapsed, about 10s left
+[fixed lambda = 1 (ko1)] 6/15 groups, 5s elapsed, about 8s left
+[fixed lambda = 1 (ko1)] 7/15 groups, 5s elapsed, about 6s left
+[fixed lambda = 1 (ko1)] 8/15 groups, 5s elapsed, about 5s left
+[fixed lambda = 1 (ko1)] 9/15 groups, 5s elapsed, about 3s left
+[fixed lambda = 1 (ko1)] 10/15 groups, 5s elapsed, about 3s left
+[fixed lambda = 1 (ko1)] 11/15 groups, 5s elapsed, about 2s left
+[fixed lambda = 1 (ko1)] 12/15 groups, 5s elapsed, about 1s left
+[fixed lambda = 1 (ko1)] 13/15 groups, 5s elapsed, about 1s left
+[fixed lambda = 1 (ko1)] 14/15 groups, 5s elapsed, about 0s left
+[fixed lambda = 1 (ko1)] 15/15 groups, 5s elapsed, about 0s left
+[fixed lambda = 1 (ko1)] done in 5s
+cal:FC:0 (seed 93100): label U: failed fit: rule #2.1 cannot hold the block even when trained on it alone; ceiling_block 0.600000 (tau 0.600000, lambda 100.000000); cert 1/1 (tau 1.000000); ceil_1 1.000000 (tau 1.000000); ceil_1_float 1.000000; ceil_lambda_c_float 0.480000 at lambda_c 100.000000; ceil_1_starts100 1.000000; reads: fit failure, FF-sel; flags -; gate options {'v-a': 'U, failed fit', 'v-b': 'U (the D1 candidates disagree on the gate)', 'v-c': 'G', 'v-d': 'U, failed fit'}
+cal:FC:1 (seed 93101): label U: failed fit: rule #2.1 cannot hold the block even when trained on it alone; ceiling_block 0.600000 (tau 0.600000, lambda 100.000000); cert 1/1 (tau 1.000000); ceil_1 1.000000 (tau 1.000000); ceil_1_float 1.000000; ceil_lambda_c_float 0.480000 at lambda_c 100.000000; ceil_1_starts100 1.000000; reads: fit failure, FF-sel; flags -; gate options {'v-a': 'U, failed fit', 'v-b': 'U (the D1 candidates disagree on the gate)', 'v-c': 'G', 'v-d': 'U, failed fit'}
+cal:FC:2 (seed 93102): label U: failed fit: rule #2.1 cannot hold the block even when trained on it alone; ceiling_block 0.600000 (tau 0.600000, lambda 100.000000); cert 1/1 (tau 1.000000); ceil_1 1.000000 (tau 1.000000); ceil_1_float 1.000000; ceil_lambda_c_float 0.480000 at lambda_c 100.000000; ceil_1_starts100 1.000000; reads: fit failure, FF-sel; flags -; gate options {'v-a': 'U, failed fit', 'v-b': 'U (the D1 candidates disagree on the gate)', 'v-c': 'G', 'v-d': 'U, failed fit'}
+cal:FC:3 (seed 93103): label U: failed fit: rule #2.1 cannot hold the block even when trained on it alone; ceiling_block 0.600000 (tau 0.600000, lambda 100.000000); cert 1/1 (tau 1.000000); ceil_1 1.000000 (tau 1.000000); ceil_1_float 1.000000; ceil_lambda_c_float 0.480000 at lambda_c 100.000000; ceil_1_starts100 1.000000; reads: fit failure, FF-sel; flags -; gate options {'v-a': 'U, failed fit', 'v-b': 'U (the D1 candidates disagree on the gate)', 'v-c': 'G', 'v-d': 'U, failed fit'}
+cal:FC:4 (seed 93104): label U: failed fit: rule #2.1 cannot hold the block even when trained on it alone; ceiling_block 0.600000 (tau 0.600000, lambda 100.000000); cert 1/1 (tau 1.000000); ceil_1 1.000000 (tau 1.000000); ceil_1_float 1.000000; ceil_lambda_c_float 0.480000 at lambda_c 100.000000; ceil_1_starts100 1.000000; reads: fit failure, FF-sel; flags -; gate options {'v-a': 'U, failed fit', 'v-b': 'U (the D1 candidates disagree on the gate)', 'v-c': 'G', 'v-d': 'U, failed fit'}
+cal:FN1:0 (seed 93110): label G (its text needs block B's limits, which this run does not measure); ceiling_block 0.997500 (tau 0.997500, lambda 1.000000); cert 1/1 (tau 1.000000); ceil_1 0.997500 (tau 0.997500); ceil_1_float 0.997500; ceil_lambda_c_float 0.997500 at lambda_c 1.000000; ceil_1_starts100 0.997500; reads: gate passed; flags -; gate options {'v-a': 'G', 'v-b': 'G', 'v-c': 'G', 'v-d': 'G'}
+cal:FN1:1 (seed 93111): label G (its text needs block B's limits, which this run does not measure); ceiling_block 0.997500 (tau 0.997500, lambda 1.000000); cert 1/1 (tau 1.000000); ceil_1 0.997500 (tau 0.997500); ceil_1_float 0.997500; ceil_lambda_c_float 0.997500 at lambda_c 1.000000; ceil_1_starts100 0.997500; reads: gate passed; flags -; gate options {'v-a': 'G', 'v-b': 'G', 'v-c': 'G', 'v-d': 'G'}
+cal:FN1:2 (seed 93112): label G (its text needs block B's limits, which this run does not measure); ceiling_block 0.997500 (tau 0.997500, lambda 1.000000); cert 1/1 (tau 1.000000); ceil_1 0.997500 (tau 0.997500); ceil_1_float 0.997500; ceil_lambda_c_float 0.997500 at lambda_c 1.000000; ceil_1_starts100 0.997500; reads: gate passed; flags -; gate options {'v-a': 'G', 'v-b': 'G', 'v-c': 'G', 'v-d': 'G'}
+cal:FN1:3 (seed 93113): label G (its text needs block B's limits, which this run does not measure); ceiling_block 0.997500 (tau 0.997500, lambda 1.000000); cert 1/1 (tau 1.000000); ceil_1 0.997500 (tau 0.997500); ceil_1_float 0.997500; ceil_lambda_c_float 0.997500 at lambda_c 1.000000; ceil_1_starts100 0.997500; reads: gate passed; flags -; gate options {'v-a': 'G', 'v-b': 'G', 'v-c': 'G', 'v-d': 'G'}
+cal:FN1:4 (seed 93114): label G (its text needs block B's limits, which this run does not measure); ceiling_block 0.997500 (tau 0.997500, lambda 1.000000); cert 1/1 (tau 1.000000); ceil_1 0.997500 (tau 0.997500); ceil_1_float 0.997500; ceil_lambda_c_float 0.997500 at lambda_c 1.000000; ceil_1_starts100 0.997500; reads: gate passed; flags -; gate options {'v-a': 'G', 'v-b': 'G', 'v-c': 'G', 'v-d': 'G'}
+cal:FN2:0 (seed 93120): label G (its text needs block B's limits, which this run does not measure); ceiling_block 0.995000 (tau 0.995000, lambda 1.000000); cert 1/1 (tau 1.000000); ceil_1 0.995000 (tau 0.995000); ceil_1_float 0.992500; ceil_lambda_c_float 0.992500 at lambda_c 1.000000; ceil_1_starts100 0.992500; reads: gate passed; flags -; gate options {'v-a': 'G', 'v-b': 'G', 'v-c': 'G', 'v-d': 'G'}
+cal:FN2:1 (seed 93121): label G (its text needs block B's limits, which this run does not measure); ceiling_block 0.985000 (tau 0.985000, lambda 1.000000); cert 1/1 (tau 1.000000); ceil_1 0.985000 (tau 0.985000); ceil_1_float 0.985000; ceil_lambda_c_float 0.985000 at lambda_c 1.000000; ceil_1_starts100 0.985000; reads: gate passed; flags -; gate options {'v-a': 'G', 'v-b': 'G', 'v-c': 'G', 'v-d': 'G'}
+cal:FN2:2 (seed 93122): label G (its text needs block B's limits, which this run does not measure); ceiling_block 0.985000 (tau 0.985000, lambda 1.000000); cert 1/1 (tau 1.000000); ceil_1 0.985000 (tau 0.985000); ceil_1_float 0.985000; ceil_lambda_c_float 0.985000 at lambda_c 1.000000; ceil_1_starts100 0.985000; reads: gate passed; flags -; gate options {'v-a': 'G', 'v-b': 'G', 'v-c': 'G', 'v-d': 'G'}
+cal:FN2:3 (seed 93123): label G (its text needs block B's limits, which this run does not measure); ceiling_block 0.997500 (tau 0.997500, lambda 1.000000); cert 1/1 (tau 1.000000); ceil_1 0.997500 (tau 0.997500); ceil_1_float 0.997500; ceil_lambda_c_float 0.997500 at lambda_c 1.000000; ceil_1_starts100 0.997500; reads: gate passed; flags -; gate options {'v-a': 'G', 'v-b': 'G', 'v-c': 'G', 'v-d': 'G'}
+cal:FN2:4 (seed 93124): label G (its text needs block B's limits, which this run does not measure); ceiling_block 0.992500 (tau 0.992500, lambda 1.000000); cert 1/1 (tau 1.000000); ceil_1 0.992500 (tau 0.992500); ceil_1_float 0.992500; ceil_lambda_c_float 0.992500 at lambda_c 1.000000; ceil_1_starts100 0.992500; reads: gate passed; flags -; gate options {'v-a': 'G', 'v-b': 'G', 'v-c': 'G', 'v-d': 'G'}
+OUTCOME: C2, C6; {'labels': ['C2', 'C6'], 'fc_reads_ff_sel_all': True, 'fn_worlds_meeting_branch': '0 of 10', 'fn_met_keys': [], 'c3_worlds': []}
+done in 2857s
