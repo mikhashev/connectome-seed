@@ -42,3 +42,22 @@ The registered outcome stands as RP1 (Warren 14:47:29 and Ark 14:49:16 UTC agree
 DECODER_SPLIT_AT_LC flags fresh:145 and 161 (quantised passes at 0.90125, float fails) and
 fresh:266 (quantised fails at 0.89875, float exactly 0.9000): natural mirrors of the calibration's
 board 41, in addition to j = 49 of the seen set.
+
+## 4. Johnny's three points (14:55:20 UTC)
+
+- The P1 sensitivity is a finding about the decision rule, not a footnote: the label flips with the
+  choice between two criteria the team proposed, while the substantive result (collapse near 57 %,
+  FF-sel dominant) holds under both. Read against the seen rate it is not a shift (section 2, Ark).
+- P4' failing is material for (iii), not a weakness of the replication: the 15 passes at
+  lambda = 100 are additive-dominated boards (the board 41 class).
+- Process rule: when two criteria are proposed, the author chooses one explicitly and records the
+  choice in the prediction commit.
+
+## 5. (iii-a) and (iii-b) after the run (DPC Research chat, 15:00-15:18 UTC)
+
+- (iii-a) as a gate is withdrawn (Ark 15:00:23; Johnny, Warren, Zcode agree; CC's earlier
+  recommendation withdrawn): on all 414 boards (300 fresh, 99 seen, 15 worlds) no board passes at
+  the chosen lambda and fails at lambda = 1, while lambda = 1 passes 98 % and passes FC's forced
+  world. It is recorded as a property of the class, not a gate.
+- The (iii-b) diagnostic on these recorded fits is in docs/prereg-scripts/2026-09-29-iiib-diagnostic/
+  (post-data; any (iii-b) registration is not blind to it).
