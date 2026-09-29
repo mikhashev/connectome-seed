@@ -157,6 +157,29 @@ These files are design computations on constructed boards; none is a value of an
   default encoding. That is harmless here, because the file is ASCII. The file is kept as committed,
   since its hash and output are recorded. New scripts open every file with `encoding="utf-8"`.
 
+## Added for the natural fit-failure replication registration's rev 1.1 (2026-09-29, by a CC subagent): j = 89
+
+- **`j89_read.py`, `j89_read_out.txt`: the read of permuted board j = 89** (seed 93289) of the
+  failed-fit calibration's registered run (Q-A2, Ark and Zcode; cited by
+  `docs/plans/2026-09-29-natural-fit-failure-replication-registration.md` rev 1.1, section 1).
+  - **Read only.** It fits nothing and writes nothing. It opens the run's `raw_fits.json.gz` (its
+    sha256 is checked against the run's `SHA256SUMS.txt`), `cert_members.json` and
+    `permuted_reference.csv`, and recomputes every AUC from the stored p and y: an exact count, a
+    `Fraction` count (asserted equal) and the `_tau` count (TAU = 1e-9, asserted against
+    `harness.py`).
+  - **Result.** `ceiling_block` 0.730 at lambda_c = 100; `ceil_1`, `ceil_1_float`,
+    `ceil_1_starts100` (float) and `ceil_1_starts100_quantised` all 0.895 (358 wins, 0 ties of 400);
+    `cert` 0.9875 (79/80, recounted from the stored member); the four BF_r `ceiling_block` 0.725 at
+    lambda 100. Nothing is ulp-sensitive. The CAL section 6 row is **"fit failure, FF-struct or
+    FF-opt, not separated"**.
+  - **Run.** `tools/.venv`, `PYTHONUTF8=1`, stdout redirected, in seconds. Both files are ASCII with
+    LF line ends.
+
+| file | sha256 |
+|---|---|
+| `j89_read.py` | `9d9a245e1ae43b06127e8e44398b100cce94ea13c7c2e1375c53cbd91d846975` |
+| `j89_read_out.txt` | `868f22750ded105f6709ae36910b8c1d6b7562ab6b4ace17a7ae70094db775fb` |
+
 ## Files (sha256 of the bytes as stored; `.gitattributes` holds `* -text`, so git stores them as written)
 
 | file | sha256 |

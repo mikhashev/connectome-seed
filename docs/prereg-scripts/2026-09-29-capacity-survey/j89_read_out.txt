@@ -1,0 +1,20 @@
+raw_fits.json.gz sha256 3b053b705eb7dddc7b98e92685585f18906a7bd1a115bab9a3af247f213afd04; listed in the run's SHA256SUMS.txt: True
+board j = 89, seed 93289, key perm:89: present 20 of 40
+  rule #2.1 separator record: grid [1, 3, 10, 30, 100], lambda_c 100.0
+  ceiling_block (reg_p)          exact 0.730000 (73/100)  tau 0.730000  wins 277 ties 30 / 400  levels 15  <  0.90
+  ceil_lambda_c_float            exact 0.730000 (73/100)  tau 0.730000  wins 277 ties 30 / 400  levels 15  <  0.90
+  ceil_1 (quantised)             exact 0.895000 (179/200)  tau 0.895000  wins 358 ties 0 / 400  levels 40  <  0.90
+  ceil_1_float                   exact 0.895000 (179/200)  tau 0.895000  wins 358 ties 0 / 400  levels 40  <  0.90
+  ceil_1_starts100 (float)       exact 0.895000 (179/200)  tau 0.895000  wins 358 ties 0 / 400  levels 40  <  0.90
+  ceil_1_starts100_quantised     exact 0.895000 (179/200)  tau 0.895000  wins 358 ties 0 / 400  levels 40  <  0.90
+  BF block fits (K._fit_one, block mask, nested lambda):
+  BF:1 ceiling_block, lambda 100.0 exact 0.725000 (29/40)  tau 0.725000  wins 271 ties 38 / 400  levels 12  <  0.90
+  BF:2 ceiling_block, lambda 100.0 exact 0.725000 (29/40)  tau 0.725000  wins 271 ties 38 / 400  levels 12  <  0.90
+  BF:3 ceiling_block, lambda 100.0 exact 0.725000 (29/40)  tau 0.725000  wins 271 ties 38 / 400  levels 12  <  0.90
+  BF:4 ceiling_block, lambda 100.0 exact 0.725000 (29/40)  tau 0.725000  wins 271 ties 38 / 400  levels 12  <  0.90
+  (BF ceil_1 at lambda = 1 was not fitted for permuted boards: plan_perm_ref)
+  cert (cert_members.json key fd2d6b9dac30f329): stored exact 0.9875 (79/80), tau 0.9875, rerun spread 5.0, counts_agree True
+  cert recounted from member     exact 0.987500 (79/80)  tau 0.987500  wins 395 ties 0 / 400  levels 40  >= 0.90
+  permuted_reference.csv row: ceiling_block 0.730000, ceil_1 0.895000, ceil_1_float 0.895000, ceil_lambda_c_float 0.730000, cert 0.987500
+  the recomputed values equal the CSV row on its four separator columns
+CAL section 6 row for j = 89: fit failure, FF-struct or FF-opt, not separated
