@@ -625,6 +625,8 @@ def test_script_pins_refuse(tmp_path, monkeypatch):
 
 def test_dry_run_writes_nothing_and_lists_the_refusals(tmp_path, monkeypatch):
     tripwire(monkeypatch)
+    monkeypatch.setattr(R, "REGISTRATION_SHA256_LF_PINNED", None)
+    monkeypatch.setattr(R, "PREDICTION_COMMIT_PINNED", None)
     monkeypatch.setattr(K, "tree_state", lambda: "")
     r = R.main(["--dry-run", "--out", str(tmp_path / "x")])
     assert r["dry_run"] and not (tmp_path / "x").exists()
@@ -634,8 +636,15 @@ def test_dry_run_writes_nothing_and_lists_the_refusals(tmp_path, monkeypatch):
     assert any("prediction commit is not pinned" in s for s in refs)
 
 
-def test_pins_are_unset_in_this_revision():
-    assert R.REGISTRATION_SHA256_LF_PINNED is None and R.PREDICTION_COMMIT_PINNED is None
+def test_pins_match_the_registration_and_the_prediction_commit():
+    # Pinned for the registered run (rev 1.2): the pin equals the file's LF sha256, and the
+    # prediction commit is an ancestor of HEAD.
+    import subprocess
+    assert R.REGISTRATION_SHA256_LF_PINNED == K.sha256_lf(R.ROOT / R.REGISTRATION)
+    assert R.PREDICTION_COMMIT_PINNED == "b5513e3fd50c32caf9a1a30c01f6fb4423d4fa7b"
+    rc = subprocess.run(["git", "merge-base", "--is-ancestor", R.PREDICTION_COMMIT_PINNED, "HEAD"],
+                        cwd=R.ROOT).returncode
+    assert rc == 0
 
 
 # ------------------------------------------------------------------------------------------

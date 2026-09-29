@@ -55,8 +55,8 @@ ROOT = C.ROOT
 
 REGISTRATION = "docs/plans/2026-09-29-natural-fit-failure-replication-registration.md"
 REGISTRATION_REVISION = "1.2"
-REGISTRATION_SHA256_LF_PINNED = None
-PREDICTION_COMMIT_PINNED = None
+REGISTRATION_SHA256_LF_PINNED = "0739ac5d1d1a7b20a93f08304e697c92033c324d111447410e8594bb6a1eb76c"  # rev 1.2; Mike's order for A: DPC Research chat 2026-09-29 11:04:22 UTC
+PREDICTION_COMMIT_PINNED = "b5513e3fd50c32caf9a1a30c01f6fb4423d4fa7b"  # rev 1.1, the prediction commit
 CAL_SCRIPT = "results/genome/c6/checks/failed_fit_calibration.py"
 CAL_SCRIPT_SHA256_LF = "220201c229800097aed62afba242a7e3593d9f7205274fc015207ab795d3af43"
 B_SCRIPT = C.B_SCRIPT
