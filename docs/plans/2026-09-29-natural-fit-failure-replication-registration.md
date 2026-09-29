@@ -1,6 +1,6 @@
 ---
-**Status: rev 1.1, reviewed: all four yes; prediction section to be committed on its own before the
-script is pinned.** Rev 1 was drafted 2026-09-29 UTC by a CC subagent on Mike's choice of option A
+**Status: rev 1.2, a consistency-only revision of rev 1.1 (reviewed: all four yes). Rev 1.1 is the
+prediction commit `b5513e3`, an ancestor of rev 1.2; it stays the pinned prediction commit.** Rev 1 was drafted 2026-09-29 UTC by a CC subagent on Mike's choice of option A
 (DPC Research chat, 2026-09-29): a replication registration of the natural fit failure seen on the
 permuted boards of the failed-fit calibration. Nothing was run, fitted or committed by the drafting
 agents. The only reads of data were the calibration's committed outputs, the `secs` timing field of
@@ -25,6 +25,28 @@ boards; `bf_block.csv` holds the worlds only).
   in Warren's wording (§6, §4).
 - **Johnny (Q-J1, Q-J2):** fresh `cert` seeds 94500–94507 by a scoped swap of the CAL module
   globals, with two tests (§8, S-R3); the §4 timing carrier made exact.
+
+**Rev 1.2 (2026-09-29 UTC), consistency only, written while the script was drafted and before any
+value of a fresh board.** No prediction, threshold or label condition of §6–§7 changes. Each item
+either restates what the §6 table row already says or defines what the text left undefined:
+- **P2b (§6 note, §8 tests).** At the prediction commit `b5513e3`, the §6 table row named 10 as the
+  decision line ("if > 10, the prediction is refuted", Warren, Q-W2, 14:01:36 UTC), while the §6
+  note ended "the verdict is the test's" and §8's tests put P2b's boundary at 15/16. The
+  contradiction is resolved in favour of the table row: 10 is the decision line (10 holds, 11
+  fails); the one-sided 5 % test (15 does not reject, 16 rejects) is printed and decides nothing.
+- **RP6, "`cert` counts void" (§7).** Undefined at rev 1.1. It follows the calibration's resolution
+  (CAL §6a; CAL §14a, A-3): the exact `Fraction` count is the certificate, and a disagreement between
+  the search's three counts is printed as the flag `CERT_COUNTS_DISAGREE`, not a stop. RP6 is
+  restated as the stops only (§7).
+- **The cut on `cert` (§2).** Stated as applied: exact `Fraction` ≥ 9/10, with the float route
+  asserted equal.
+- **What the script does that §8 and §10 did not name:** the S-R6 refit task, N1's block fit for
+  §10, a third table for passes at another λ, and empty denominators read "n/a" (§8, §10).
+- **`raw_fits.json.gz`** stays in the `--out` folder under `connectome-seed-data`; CC copies only the
+  small outputs into the repo, as with the calibration (§8, S-R8).
+- **Seen patterns (§3):** block B's 20 permuted-ceiling boards added to the list.
+- **The prediction commit's content (§6):** `b5513e3` touches only this file; "this file only" is
+  checked from git by the blind review.
 
 # Registration: replicating the natural fit failure of rule #2.1 on fresh permuted boards
 
@@ -130,6 +152,13 @@ does not print a separator row for permuted boards (§8, item 1).
 CAL §14a item 6, CAL:1260). **The board counts only if its class capacity is certified:** `cert` ≥
 0.90 as an exact `Fraction` count of a stored member (CAL §6, CAL:843–867; `cert_search`, CAL script
 393–431).
+- **The cut is applied as exact `Fraction` ≥ 9/10** (rev 1.2), and the float route that
+  `separator_reading` takes (`cert` as a float against the float cut 0.90) is asserted equal on
+  every board. A `Fraction` must not be passed to the float cut itself: in Python,
+  `Fraction(9, 10) < 0.9` holds, since the float 0.9 lies just above 9/10.
+- **The three counts of the search** (search, `Fraction`, registered AUC) are printed. A
+  disagreement raises the flag `CERT_COUNTS_DISAGREE` and is not a stop; the `Fraction` count is the
+  certificate (CAL §6a; CAL §14a, A-3; rev 1.2).
 - A board with `cert` < 0.90 is **not dropped**: it is printed, counted under its own name
   (`CERT_BELOW_CUT`) and excluded from the denominators of every prediction of §6. On the 99 seen
   boards this never happened (min 0.975), so it is not expected.
@@ -209,7 +238,8 @@ S-C11 does (CAL:1244; `assert_seeds_cal`, CAL script 267–290). It asserts:
   indices, **93200–93298** and 93300–93307, imported from the CAL script rather than retyped), and
   from the design seeds;
 - **no fresh board's pattern equals any seen pattern**: board z, z′, the 10 FN boards and the 99
-  permuted boards of the calibration. This is a pattern check, not a seed check. A collision has
+  permuted boards of the calibration, and block B's 20 permuted-ceiling boards (seeds 91010–91029,
+  `K.permute_block` of board z; added in rev 1.2). This is a pattern check, not a seed check. A collision has
   probability about 1/C(40, 20) ≈ 7e-12 per pair, but the check makes "fresh" structural.
 
 A failure stops the run before any folder exists.
@@ -287,7 +317,8 @@ script is pinned and before the registered run. **The prediction commit's hash i
 script as a literal** (Warren, Q-W1). The script refuses the registered form unless
 `git merge-base --is-ancestor <pinned> HEAD` holds and the registration's LF sha256 equals its pin.
 Every run, `--estimate` included, is launched from the repo root, and the script refuses otherwise.
-The blind review checks the order from git.
+The blind review checks the order from git. **Rev 1.2:** the prediction commit `b5513e3` touches only
+this file; "this file only" is checked from git by the blind review.
 
 Denominators:
 - N_c is the number of boards with `cert` ≥ 0.90.
@@ -314,8 +345,10 @@ Notes written before values:
   fail only through a script defect. **The predictive weight sits in P2b** (Zcode).
 - **P2b (Warren, Q-W2).** At the seen rate of 1/99, N = 300 expects about 3 such boards (SD 1.7),
   so 10 is about 4 SD above the mean, and the one-sided 5% test at 1/30 (cut 16) is conservative.
-  The count is printed beside the verdict, with the ≤ 10 statement marked as met or not; the
-  verdict is the test's.
+  The count is printed beside the verdict. **The verdict is the table row's decision line: ≤ 10
+  holds, > 10 fails** (rev 1.2; at rev 1.1 this note ended "the verdict is the test's", which
+  contradicted the table row, and the table row prevails, Warren 14:01:36 UTC). The one-sided 5 %
+  test (cut ≥ 16) is printed beside it and decides nothing.
 - **P4 withdrawn; P4′ registered (Zcode, the author).** P4 as posted, "every passing board chooses
   λ = 1", is withdrawn in the author's words above. Ark and Johnny had proposed keeping P4 with an
   "expected to fail" note; the author's withdrawal prevails, and their view is recorded here. P4′
@@ -339,10 +372,12 @@ Notes written before values:
 | **RP3: kind not replicated** | P2a holds, P2b fails | failures are fit-side, but not dominantly FF-sel; the sub-kind mix is reported |
 | **RP4: not replicated** | failures < 30 of 300 (rate < 0.10) | the seen 53 of 99 is not reproduced on fresh seeds; the seen reference is read as a property of those 99 seeds, or of a difference between the runs (examined before any reading) |
 | **RP5: class-side finding** | any board with `cert` < 0.90, or any failure reading "not separated" | a permuted board below the certificate: a design finding for CAL §2a and C6's scope, reported by board |
-| **RP6: stop** | a stop of §8 fires (seed or pattern assert, prediction commit not an ancestor, script-defect refit mismatch, `cert` counts void) | a design error; nothing is read |
+| **RP6: stop** | a stop of §8 fires: before any folder, the seed or pattern assert or the prediction commit not an ancestor of HEAD (the run refuses and writes nothing); after the fits, the script-defect stop (the separator's refit not bit-equal to the registered block fit, or its λ_c not equal to that fit's λ). Rev 1.2: a disagreement of `cert`'s counts is a flag, not a stop (§2); no stop compares `cert` with a planted value, since a permuted board has none | a design error; nothing is read; when RP6 holds it is the only label |
 
 P3, P4′ and P5 are reported as **hold / fail** lines beside the labels. They enter no label, because
-none is needed to name what replicated. The withdrawn P4 is not evaluated; its count (passes with
+none is needed to name what replicated. **Empty denominators (rev 1.2):** a prediction whose
+denominator is 0 (for example P4′ with no passes, or P5 (i) with no λ_c = 100 board) is printed
+"n/a" and does not hold wherever a label reads it. The withdrawn P4 is not evaluated; its count (passes with
 λ_c ≠ 1) is printed as part of P4′. P2a enters RP1–RP3 as the design check it is (§6).
 
 **Secondary outcome: does the j = 89 class reproduce?** (restated in rev 1.1 after the read of §1)
@@ -384,11 +419,11 @@ none is needed to name what replicated. The withdrawn P4 is not evaluated; its c
 | S-R1 | `fresh_y(j)`: `default_rng(94000 + j).permutation(40)` on board z's labels. `perm_ref_y` hard-wires `SEED_PERM_REF` (CAL script 366–369), so the construction is repeated with the seed as an argument, and a test asserts it equals `perm_ref_y(j)` when given 93200 + j |
 | S-R2 | seed and pattern asserts (§3), literals in the file, the calibration's literals imported |
 | S-R3 | `cert` per pattern at CAL's registered budget (`CERT_BUDGET_REGISTERED`, CAL script 117–119), with this file's **fresh** seeds 94500–94507 (Q-J2: 94500 stage 1, 94501–94505 refinement, 94506–94507 deep). `cert_search` takes its seeds from module globals (`SEED_CERT_STAGE1`, `SEED_CERT_REFINE`, `SEED_CERT_DEEP`, CAL script 91–93, read at 399–413), so **the call runs under a scoped swap of the CAL module's globals, reusing its `swapped_globals` pattern** (439–448); no search code is copied (Q-J1, Johnny). The swap is made inside the worker that calls `cert_search`, since a swap in the parent does not reach a worker process |
-| S-R4 | per board: `sep` (CAL `separator_fits`: the registered block path, `ceil_1`, `ceil_1_starts100`, float and quantised); BF_1–BF_4 block fits by `K._fit_one`; BF_1–BF_4 `ceil_1` by `bf_block_lambda1` (new for permuted boards) |
+| S-R4 | per board: `sep` (CAL `separator_fits`: the registered block path, `ceil_1`, `ceil_1_starts100`, float and quantised); BF_1–BF_4 block fits by `K._fit_one`; BF_1–BF_4 `ceil_1` by `bf_block_lambda1` (new for permuted boards). **Rev 1.2, as implemented:** also rule #2.1's registered block fit by `K._fit_one` (the fit that S-R6's refit is compared with; `ceiling_block` and λ_c are read from it) and N1's block fit by `K._fit_one` (for §10) |
 | S-R5 | per board: the rule's CAL §6 row (`separator_reading`), the BF row (§2), every AUC object exact and `_tau` with `ulp_sensitive`, the flags `GATE_/CEIL_1_/CERT_ULP_SPLIT`, `DECODER_SPLIT_AT_LC` and `CERT_BELOW_CUT`, λ_c for the rule and each BF_r |
-| S-R6 | the script-defect stop of CAL (a refit not bit-equal to the registered block fit, CAL:975–978) |
+| S-R6 | the script-defect stop of CAL (a refit not bit-equal to the registered block fit, CAL:975–978). Rev 1.2: the separator's first fit is the refit; it is compared bit for bit with the registered block fit of S-R4, and its λ_c with that fit's λ; either mismatch stops (RP6) |
 | S-R7 | P1, P2a, P2b, P3, P4′ and P5 evaluated by the thresholds of §6 (the withdrawn P4 is not evaluated); P2b's count printed beside the ≤ 10 statement and the test's verdict; P5's FF-sel count printed beside it; the labels of §7 as a list; the secondary outcome; the (iii) population table (§10) |
-| S-R8 | outputs: `boards.csv` (one row per board, every column of S-R5), `replication.json`, `cert_members.json`, `raw_fits.json.gz` (to the data folder, as CAL), `REPLICATION.md`, `stdout.log`, `SHA256SUMS.txt` last and only on a completed run; `stop_record.json` and exit 1 on a stop (CAL:981–984) |
+| S-R8 | outputs: `boards.csv` (one row per board, every column of S-R5, with the flag `CERT_COUNTS_DISAGREE` beside those of S-R5), `replication.json`, `cert_members.json`, `raw_fits.json.gz` (rev 1.2: it stays in the `--out` folder, which lives under `connectome-seed-data`; CC copies only the small outputs into the repo, as with the calibration), `REPLICATION.md`, `stdout.log`, `SHA256SUMS.txt` last and only on a completed run; `stop_record.json` and exit 1 on a stop (CAL:981–984) |
 | S-R9 | refusals before any folder: the CAL script's and the B script's LF sha256 pinned; this registration's pin; **the prediction commit's hash pinned as a literal, and `git merge-base --is-ancestor <pinned> HEAD` must hold** (Warren, Q-W1); **the working directory is the repo root, for every run including `--estimate` and `--dry-run`**; a clean tree; `--out` new; CPU only |
 | S-R10 | `--estimate` (times one board's tasks and one `cert`, scales to N) and `--dry-run`, as the CAL script has them (1159–1207, 1265–1273) |
 
@@ -398,8 +433,12 @@ none is needed to name what replicated. The withdrawn P4 is not evaluated; its c
 - `separator_reading` rows reproduced on synthetic inputs, including the at-the-cut case.
 - The BF row table.
 - The flags, including `DECODER_SPLIT_AT_LC` on j = 49's seen values.
-- P1, P2b, P3, P4′ and P5 and every label at their boundaries: 119, 120, 180 and 181 for P1; 15
-  and 16 for P2b (and 10, 11 for the printed ≤ 10 statement); P4′ at exactly 90 % and just below.
+- P1, P2b, P3, P4′ and P5 and every label at their boundaries: 119, 120, 180 and 181 for P1; **10
+  and 11 for P2b's decision line (10 holds, 11 fails), and 15 and 16 for the printed 5 % test, which
+  decides nothing** (rev 1.2; at rev 1.1 this line had the two swapped, against the §6 table row);
+  P4′ at exactly 90 % and just below.
+- Rev 1.2: a `cert` count disagreement is flagged `CERT_COUNTS_DISAGREE` and the run completes; the
+  S-R6 stop fires on a refit mismatch and on a λ_c mismatch.
 - **The `cert` seed swap restores the CAL module's globals** (`SEED_CERT_STAGE1`,
   `SEED_CERT_REFINE`, `SEED_CERT_DEEP` equal 93300, 93301–93305, 93306–93307 after the call, also
   when the call raises) (Johnny, Q-J1).
@@ -445,6 +484,10 @@ This population is **printed and decides nothing here.** It is material for a la
 registration, and no label, prediction or stop reads it. Passes at λ = 100, like the seen j = 15,
 49 and 76, are printed in a separate table, since there the gate may be passed on the additive part
 (compare CAL's board 41, CAL:735–742).
+
+**As implemented (rev 1.2).** N1's block AUC is that of N1's own block fit by `K._fit_one` (S-R4).
+Passes at a λ other than 1 and 100 are printed in a third table when any exist. All three tables
+count certified boards only.
 
 ## 11. Open questions (each with a recommendation; rev 1.1 marks those resolved)
 
