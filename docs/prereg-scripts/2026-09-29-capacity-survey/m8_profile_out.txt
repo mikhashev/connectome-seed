@@ -1,0 +1,69 @@
+board  0: cert 399.0/399 = 1.0000 (tau 1.0000; reruns 399-399); N1 0.8108/0.8108; lambda=100 quantised 0.8083/0.8083, float 0.8033/0.8033; ceil_1 0.9499/0.9499, float 0.9524/0.9524  (exact/tau)
+board  1: cert 397.0/399 = 0.9950 (tau 0.9950; reruns 397-397); N1 0.7957/0.7957; lambda=100 quantised 0.7995/0.7995, float 0.7995/0.7995; ceil_1 0.9599/0.9599, float 0.9674/0.9674  (exact/tau)
+board  2: cert 396.0/399 = 0.9925 (tau 0.9925; reruns 396-396); N1 0.7243/0.7243; lambda=100 quantised 0.7318/0.7318, float 0.7343/0.7343; ceil_1 0.9248/0.9248, float 0.9273/0.9273  (exact/tau)
+board  3: cert 396.0/399 = 0.9925 (tau 0.9925; reruns 396-396); N1 0.7519/0.7519; lambda=100 quantised 0.7531/0.7531, float 0.7556/0.7556; ceil_1 0.9599/0.9599, float 0.9649/0.9649  (exact/tau)
+board  4: cert 399.0/399 = 1.0000 (tau 1.0000; reruns 399-399); N1 0.8446/0.8446; lambda=100 quantised 0.8383/0.8383, float 0.8409/0.8409; ceil_1 0.9624/0.9624, float 0.9599/0.9599  (exact/tau)
+board  5: cert 399.0/399 = 1.0000 (tau 1.0000; reruns 399-399); N1 0.8822/0.8822; lambda=100 quantised 0.8835/0.8835, float 0.8847/0.8847; ceil_1 0.9900/0.9900, float 0.9875/0.9875  (exact/tau)
+board  6: cert 394.0/399 = 0.9875 (tau 0.9875; reruns 393-394); N1 0.8095/0.8095; lambda=100 quantised 0.8033/0.8033, float 0.8008/0.8008; ceil_1 0.9449/0.9449, float 0.9449/0.9449  (exact/tau)
+board  7: cert 399.0/399 = 1.0000 (tau 1.0000; reruns 399-399); N1 0.8070/0.8070; lambda=100 quantised 0.8070/0.8070, float 0.8070/0.8070; ceil_1 0.9461/0.9461, float 0.9348/0.9348  (exact/tau)
+board  8: cert 397.0/399 = 0.9950 (tau 0.9950; reruns 397-397); N1 0.8434/0.8434; lambda=100 quantised 0.8308/0.8308, float 0.8333/0.8333; ceil_1 0.9799/0.9799, float 0.9674/0.9674  (exact/tau)
+board  9: cert 397.0/399 = 0.9950 (tau 0.9950; reruns 397-397); N1 0.7957/0.7957; lambda=100 quantised 0.7982/0.7982, float 0.7957/0.7957; ceil_1 0.9323/0.9323, float 0.9323/0.9323  (exact/tau)
+board 10: cert 399.0/399 = 1.0000 (tau 1.0000; reruns 399-399); N1 0.7782/0.7782; lambda=100 quantised 0.7782/0.7782, float 0.7832/0.7832; ceil_1 0.9699/0.9699, float 0.9674/0.9674  (exact/tau)
+board 11: cert 399.0/399 = 1.0000 (tau 1.0000; reruns 399-399); N1 0.8095/0.8095; lambda=100 quantised 0.8120/0.8120, float 0.8145/0.8145; ceil_1 0.9424/0.9424, float 0.9424/0.9424  (exact/tau)
+board 12: cert 399.0/399 = 1.0000 (tau 1.0000; reruns 399-399); N1 0.7794/0.7794; lambda=100 quantised 0.7769/0.7769, float 0.7694/0.7694; ceil_1 0.9925/0.9925, float 0.9900/0.9900  (exact/tau)
+board 13: cert 399.0/399 = 1.0000 (tau 1.0000; reruns 399-399); N1 0.8283/0.8283; lambda=100 quantised 0.8296/0.8296, float 0.8296/0.8296; ceil_1 0.9474/0.9474, float 0.9398/0.9398  (exact/tau)
+board 14: cert 392.0/399 = 0.9825 (tau 0.9825; reruns 392-392); N1 0.7594/0.7594; lambda=100 quantised 0.7669/0.7669, float 0.7669/0.7669; ceil_1 0.9123/0.9123, float 0.9123/0.9123  (exact/tau)
+board 15: cert 399.0/399 = 1.0000 (tau 1.0000; reruns 399-399); N1 0.7895/0.7895; lambda=100 quantised 0.8045/0.8045, float 0.8095/0.8095; ceil_1 0.9900/0.9900, float 0.9850/0.9850  (exact/tau)
+board 16: cert 393.0/399 = 0.9850 (tau 0.9850; reruns 393-393); N1 0.7356/0.7356; lambda=100 quantised 0.7368/0.7368, float 0.7368/0.7368; ceil_1 0.9424/0.9424, float 0.9449/0.9449  (exact/tau)
+board 17: cert 399.0/399 = 1.0000 (tau 1.0000; reruns 399-399); N1 0.7243/0.7243; lambda=100 quantised 0.7218/0.7218, float 0.7293/0.7293; ceil_1 0.9223/0.9223, float 0.9198/0.9198  (exact/tau)
+board 18: cert 399.0/399 = 1.0000 (tau 1.0000; reruns 399-399); N1 0.8672/0.8672; lambda=100 quantised 0.8647/0.8647, float 0.8722/0.8722; ceil_1 0.9799/0.9799, float 0.9749/0.9749  (exact/tau)
+board 19: cert 397.0/399 = 0.9950 (tau 0.9950; reruns 397-397); N1 0.7957/0.7957; lambda=100 quantised 0.7945/0.7945, float 0.7970/0.7970; ceil_1 0.9699/0.9699, float 0.9649/0.9649  (exact/tau)
+board 20: cert 395.0/399 = 0.9900 (tau 0.9900; reruns 394-395); N1 0.8170/0.8170; lambda=100 quantised 0.8145/0.8145, float 0.8195/0.8195; ceil_1 0.9474/0.9474, float 0.9474/0.9474  (exact/tau)
+board 21: cert 396.0/399 = 0.9925 (tau 0.9925; reruns 395-396); N1 0.7268/0.7268; lambda=100 quantised 0.7218/0.7218, float 0.7243/0.7243; ceil_1 0.9649/0.9649, float 0.9674/0.9674  (exact/tau)
+board 22: cert 396.0/399 = 0.9925 (tau 0.9925; reruns 396-396); N1 0.7895/0.7895; lambda=100 quantised 0.7895/0.7895, float 0.7845/0.7845; ceil_1 0.9449/0.9449, float 0.9449/0.9449  (exact/tau)
+board 23: cert 399.0/399 = 1.0000 (tau 1.0000; reruns 399-399); N1 0.8847/0.8847; lambda=100 quantised 0.8910/0.8910, float 0.8897/0.8897; ceil_1 1.0000/1.0000, float 1.0000/1.0000  (exact/tau)
+board 24: cert 399.0/399 = 1.0000 (tau 1.0000; reruns 399-399); N1 0.7732/0.7732; lambda=100 quantised 0.7782/0.7782, float 0.7682/0.7682; ceil_1 0.9499/0.9499, float 0.9524/0.9524  (exact/tau)
+board 25: cert 397.0/399 = 0.9950 (tau 0.9950; reruns 397-397); N1 0.7268/0.7268; lambda=100 quantised 0.7293/0.7293, float 0.7293/0.7293; ceil_1 0.9574/0.9574, float 0.9574/0.9574  (exact/tau)
+board 26: cert 399.0/399 = 1.0000 (tau 1.0000; reruns 399-399); N1 0.7694/0.7694; lambda=100 quantised 0.7694/0.7694, float 0.7719/0.7719; ceil_1 0.9699/0.9699, float 0.9674/0.9674  (exact/tau)
+board 27: cert 399.0/399 = 1.0000 (tau 1.0000; reruns 399-399); N1 0.7782/0.7782; lambda=100 quantised 0.7832/0.7832, float 0.7857/0.7857; ceil_1 0.9724/0.9724, float 0.9699/0.9699  (exact/tau)
+board 28: cert 399.0/399 = 1.0000 (tau 1.0000; reruns 399-399); N1 0.8596/0.8596; lambda=100 quantised 0.8446/0.8446, float 0.8421/0.8421; ceil_1 0.9574/0.9574, float 0.9574/0.9574  (exact/tau)
+board 29: cert 397.0/399 = 0.9950 (tau 0.9950; reruns 397-397); N1 0.8409/0.8409; lambda=100 quantised 0.8321/0.8321, float 0.8333/0.8333; ceil_1 0.9449/0.9449, float 0.9449/0.9449  (exact/tau)
+board 30: cert 399.0/399 = 1.0000 (tau 1.0000; reruns 399-399); N1 0.7719/0.7719; lambda=100 quantised 0.7694/0.7694, float 0.7594/0.7594; ceil_1 0.9436/0.9436, float 0.9348/0.9348  (exact/tau)
+board 31: cert 393.0/399 = 0.9850 (tau 0.9850; reruns 392-393); N1 0.7256/0.7256; lambda=100 quantised 0.7281/0.7281, float 0.7281/0.7281; ceil_1 0.9323/0.9323, float 0.9373/0.9373  (exact/tau)
+board 32: cert 397.0/399 = 0.9950 (tau 0.9950; reruns 397-397); N1 0.8622/0.8622; lambda=100 quantised 0.8596/0.8596, float 0.8596/0.8596; ceil_1 0.9875/0.9875, float 0.9875/0.9875  (exact/tau)
+board 33: cert 397.0/399 = 0.9950 (tau 0.9950; reruns 397-397); N1 0.8221/0.8221; lambda=100 quantised 0.8195/0.8195, float 0.8195/0.8195; ceil_1 0.9687/0.9687, float 0.9674/0.9674  (exact/tau)
+board 34: cert 399.0/399 = 1.0000 (tau 1.0000; reruns 399-399); N1 0.8935/0.8935; lambda=100 quantised 0.8910/0.8910, float 0.8960/0.8960; ceil_1 1.0000/1.0000, float 0.9950/0.9950  (exact/tau)
+board 35: cert 399.0/399 = 1.0000 (tau 1.0000; reruns 399-399); N1 0.8496/0.8496; lambda=100 quantised 0.8371/0.8371, float 0.8271/0.8271; ceil_1 0.9574/0.9574, float 0.9424/0.9424  (exact/tau)
+board 36: cert 399.0/399 = 1.0000 (tau 1.0000; reruns 399-399); N1 0.8396/0.8396; lambda=100 quantised 0.8396/0.8396, float 0.8396/0.8396; ceil_1 0.9774/0.9774, float 0.9749/0.9749  (exact/tau)
+board 37: cert 399.0/399 = 1.0000 (tau 1.0000; reruns 399-399); N1 0.7895/0.7895; lambda=100 quantised 0.7895/0.7895, float 0.7895/0.7895; ceil_1 0.9850/0.9850, float 0.9825/0.9825  (exact/tau)
+board 38: cert 399.0/399 = 1.0000 (tau 1.0000; reruns 399-399); N1 0.8546/0.8546; lambda=100 quantised 0.8471/0.8471, float 0.8471/0.8471; ceil_1 0.9624/0.9624, float 0.9599/0.9599  (exact/tau)
+board 39: cert 399.0/399 = 1.0000 (tau 1.0000; reruns 399-399); N1 0.8434/0.8434; lambda=100 quantised 0.8421/0.8421, float 0.8383/0.8383; ceil_1 0.9987/0.9987, float 1.0000/1.0000  (exact/tau)
+board 40: cert 397.0/399 = 0.9950 (tau 0.9950; reruns 397-397); N1 0.7719/0.7719; lambda=100 quantised 0.7682/0.7682, float 0.7682/0.7682; ceil_1 0.9373/0.9373, float 0.9323/0.9323  (exact/tau)
+board 41: cert 399.0/399 = 1.0000 (tau 1.0000; reruns 399-399); N1 0.9098/0.9098; lambda=100 quantised 0.9048/0.9048, float 0.8997/0.8997; ceil_1 0.9649/0.9649, float 0.9624/0.9624  (exact/tau)
+board 42: cert 397.0/399 = 0.9950 (tau 0.9950; reruns 397-397); N1 0.8070/0.8070; lambda=100 quantised 0.8045/0.8045, float 0.8095/0.8095; ceil_1 0.9825/0.9825, float 0.9825/0.9825  (exact/tau)
+board 43: cert 397.0/399 = 0.9950 (tau 0.9950; reruns 397-397); N1 0.8095/0.8095; lambda=100 quantised 0.8120/0.8120, float 0.8170/0.8170; ceil_1 0.9586/0.9586, float 0.9499/0.9499  (exact/tau)
+board 44: cert 397.0/399 = 0.9950 (tau 0.9950; reruns 397-397); N1 0.7694/0.7694; lambda=100 quantised 0.7657/0.7657, float 0.7732/0.7732; ceil_1 0.9474/0.9474, float 0.9474/0.9474  (exact/tau)
+board 45: cert 399.0/399 = 1.0000 (tau 1.0000; reruns 399-399); N1 0.8221/0.8221; lambda=100 quantised 0.8221/0.8221, float 0.8221/0.8221; ceil_1 0.9649/0.9649, float 0.9624/0.9624  (exact/tau)
+board 46: cert 399.0/399 = 1.0000 (tau 1.0000; reruns 399-399); N1 0.8609/0.8609; lambda=100 quantised 0.8659/0.8659, float 0.8634/0.8634; ceil_1 0.9975/0.9975, float 1.0000/1.0000  (exact/tau)
+board 47: cert 399.0/399 = 1.0000 (tau 1.0000; reruns 399-399); N1 0.7669/0.7669; lambda=100 quantised 0.7644/0.7644, float 0.7694/0.7694; ceil_1 0.9900/0.9900, float 0.9875/0.9875  (exact/tau)
+board 48: cert 399.0/399 = 1.0000 (tau 1.0000; reruns 399-399); N1 0.7068/0.7068; lambda=100 quantised 0.7005/0.7005, float 0.7005/0.7005; ceil_1 0.9373/0.9373, float 0.9398/0.9398  (exact/tau)
+board 49: cert 395.0/399 = 0.9900 (tau 0.9900; reruns 394-394); N1 0.7707/0.7707; lambda=100 quantised 0.7682/0.7682, float 0.7657/0.7657; ceil_1 0.9398/0.9398, float 0.9449/0.9449  (exact/tau)
+
+boards 50; pairs per board 399; cert search 203s; total 379s
+  cert_exact: min 0.9825, p25 0.9950, median 1.0000, p75 1.0000, max 1.0000
+  cert_tau: min 0.9825, p25 0.9950, median 1.0000, p75 1.0000, max 1.0000
+  N1_exact: min 0.7068, p25 0.7710, median 0.8014, p75 0.8427, max 0.9098
+  N1_tau: min 0.7068, p25 0.7710, median 0.8014, p75 0.8427, max 0.9098
+  q100_exact: min 0.7005, p25 0.7685, median 0.8039, p75 0.8358, max 0.9048
+  q100_tau: min 0.7005, p25 0.7685, median 0.8039, p75 0.8358, max 0.9048
+  f100_exact: min 0.7005, p25 0.7685, median 0.8020, p75 0.8333, max 0.8997
+  f100_tau: min 0.7005, p25 0.7685, median 0.8020, p75 0.8333, max 0.8997
+  q1_exact: min 0.9123, p25 0.9449, median 0.9599, p75 0.9793, max 1.0000
+  q1_tau: min 0.9123, p25 0.9449, median 0.9599, p75 0.9793, max 1.0000
+  f1_exact: min 0.9123, p25 0.9449, median 0.9599, p75 0.9737, max 1.0000
+  f1_tau: min 0.9123, p25 0.9449, median 0.9599, p75 0.9737, max 1.0000
+fit-side prediction (Ark): median of lambda=100 quantised in [0.60, 0.80] -> median 0.8039: FAILS; no board >= 0.90 -> 1 boards exact, 1 under tau: FAILS
+  boards >= 0.90: [41]
+class-side prediction (Zcode): every cert >= 0.90 -> min 0.9825, 0 below: HOLDS
+ceil_1 (registered path at lambda = 1): 0 of 50 below 0.90
+done

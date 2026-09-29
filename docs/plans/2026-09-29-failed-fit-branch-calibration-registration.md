@@ -1,5 +1,23 @@
 ---
-**Status: draft rev 1.7, text only, not reviewed.** Revision 1.7 (2026-09-29 UTC, CC subagent) sits
+**Status: draft rev 1.8, not reviewed.** Revision 1.8 (2026-09-29 UTC, CC subagent) records **Mike's
+decisions on M1–M8** (DPC Research chat, 2026-09-29 08:14:45 UTC: "I agree", translated from Russian)
+and **runs the M8 design computation**, which Mike approved. M8 combines Ark's proposal (07:09:00 UTC)
+and Zcode's (07:43:37 UTC). It ran on the CPU, on constructed boards only, in 379 s (the recorded
+run); no bank was involved.
+
+What changes in revision 1.8:
+- **§4:** the M8 predictions, written into §4 before the run; Ark's line that FC's 0.600 belongs to
+  the 4-per-row board; the M8 design seeds added to the design-side seed list.
+- **New §4a:** the M8 outcome.
+  - **Zcode's class-side prediction holds:** every `cert` ≥ 0.9825.
+  - **Ark's fit-side prediction fails on both parts.** The median forced-λ = 100 value is 0.8039,
+    just above 0.80. **Board 41 reaches 0.9048 ≥ 0.90.** That is a finding: a collapsed fit passes the
+    registered gate on an additive-dominated board of the real row profile.
+- **§15:** the decisions are recorded, and the decided sections are closed. §5b's option table is
+  deleted (M5 = (a)), and §15's option details are deleted (all decided). §13 stays, marked "not
+  taken in this registration (M1)".
+
+**Revision 1.7's status, as it stood:** "draft rev 1.7, text only, not reviewed." Revision 1.7 (2026-09-29 UTC, CC subagent) sits
 on top of the uncommitted rev 1.6 in the working tree (CC's commit of rev 1.6 was refused:
 permission denied). Nothing was run. It applies:
 - **Ark (06:31:47 UTC).**
@@ -587,6 +605,82 @@ reference, 93010–93108, overlapped the worlds 93100–93104.
     rev 1.7 addendum, Ark 06:46:05 UTC). It is declared here so that S-C11's assert sees it
     explicitly: the new script lists it among the design-side seeds, and it is disjoint from every
     seed of this registration.
+  - M8 (rev 1.8): the boards reuse 20260929 (the same 50 boards as `bf4_check.py`); the `cert`
+    search uses **2026092901** (stage 1) and **2026092902–2026092906** (reruns). These are design
+    seeds, disjoint from every seed of this registration.
+
+**M8, a design computation on block B's real row profile (rev 1.8; predictions written before the
+run).** Proposed by Ark (07:09:00 UTC) and Zcode (07:43:37 UTC) and approved by Mike (M8, 08:14:45 UTC).
+**It is a design computation, not a world:** it decides no label and enters no requirement.
+
+- **Boards.** The 50 boards of 5 × 8 with the row profile 2, 6, 4, 4, 3 (19 present) that
+  `bf4_check.py` built. They are reproduced exactly from its design seed 20260929 by the same draws
+  in the same order. Rows map to L1–L5 and columns to the eight targets in B's order.
+- **Design seeds** (listed below with the others). The boards use 20260929. The `cert` search uses
+  2026092901 for stage 1 and 2026092902–2026092906 for the reruns.
+- **Printed per board**, each AUC exact and under `TAU`:
+  - `cert` (the free-class search, with an exact `Fraction` recount of the stored member);
+  - N1 through its decoder;
+  - the fit at forced λ = 100, float and quantised, through the B decode path (as `fc_anchor.py`
+    does);
+  - `ceil_1`, the registered path at λ = 1 (and its float value).
+- **Predictions, written before the run:**
+  - **Fit side (Ark):** the median of the forced-λ = 100 quantised value lies in 0.60–0.80, and no
+    board reaches ≥ 0.90.
+  - **Class side (Zcode):** every `cert` ≥ 0.90.
+- The outcome is recorded in §4a against both predictions.
+
+**FC's 0.600 belongs to the 4-per-row board** (Ark; rev 1.8). On the real row profile the collapsed
+value is higher: in M8 the forced-λ = 100 quantised value ranges 0.7005–0.9048, with median 0.8039
+(§4a). FC's number is registered for board z and is not transferred to any other row profile.
+
+## 4a. The M8 outcome (revision 1.8; run 2026-09-29, after the predictions of §4 were written)
+
+**Run.** `m8_profile_check.py` (SURVEY), under `tools/.venv` with `PYTHONUTF8=1`.
+- 50 boards; 399 pairs per board (19 present × 21 absent).
+- The recorded run took 379 s, of which the `cert` search took 203 s.
+- A first run (428 s) was made before the script's file writes were given an explicit
+  `encoding="utf-8"` (Mike's encoding rule, 2026-09-29). The rerun reproduced its CSV and JSON byte
+  for byte; only the timing line of the printout differs.
+- Outputs: `m8_profile_out.txt`, `m8_profile_boards.csv` (per board) and `m8_profile_members.json`
+  (the `cert` members). Hashes are in the SURVEY README.
+- Every stored member's `Fraction` recount equals its search count (asserted).
+- **No AUC on any board is ulp-sensitive:** exact equals `TAU` everywhere.
+
+| object (50 boards) | min | p25 | median | p75 | max |
+|---|---|---|---|---|---|
+| `cert` (Fraction) | 0.9825 | 0.9950 | 1.0000 | 1.0000 | 1.0000 |
+| N1, decoded | 0.7068 | 0.7710 | 0.8014 | 0.8427 | 0.9098 |
+| forced λ = 100, quantised (registered path) | 0.7005 | 0.7685 | 0.8039 | 0.8358 | **0.9048** |
+| forced λ = 100, float | 0.7005 | 0.7685 | 0.8020 | 0.8333 | 0.8997 |
+| `ceil_1`, quantised (registered path) | 0.9123 | 0.9449 | 0.9599 | 0.9793 | 1.0000 |
+| λ = 1, float | 0.9123 | 0.9449 | 0.9599 | 0.9737 | 1.0000 |
+
+**Against the predictions:**
+- **Class side (Zcode): holds.** Every `cert` is ≥ 0.90; the minimum is 0.9825. So C6's "no
+  rank-limit board" extends, for these 50 boards, from the 4-per-row survey to block B's real row
+  profile. This is a lower-bound statement on 50 boards, not a proof.
+- **Fit side (Ark): fails, on both parts.**
+  - The median of the forced-λ = 100 quantised value is **0.8039**, just above the predicted range
+    0.60–0.80. 26 of 50 boards are above 0.80, and 7 are at 0.85 or more.
+  - **One board reaches ≥ 0.90: board 41,** with 0.9048 exact and under `TAU`. Its rows are L1 {1, 7},
+    L2 {1, 2, 3, 4, 5, 6}, L3 {1, 2, 4, 7}, L4 {1, 4, 6, 7}, L5 {2, 4, 7}. Its float fit gives 0.8997,
+    and N1 alone gives 0.9098.
+
+**Finding (board 41), named as such.** On block B's real row profile, a fit whose rank term has
+collapsed (λ = 100) can pass the registered gate when the board's additive structure is strong. N1
+alone gives 0.9098 there.
+- On such a board the gate reads "the rule can hold the block" from the additive part alone. That is
+  Zcode's point for (iii): the registered gate does not measure the interaction.
+- Quantisation lifted the float 0.8997 across the cut to 0.9048.
+- **What it changes here:** nothing in the predictions for FC and FN, which stand on the 4-per-row
+  board z and its swaps. It is recorded for the (iii) question that M1 left out of this registration
+  (§13), and for any later gate.
+- **`ceil_1`** was ≥ 0.90 on all 50 boards (minimum 0.9123).
+
+**An observation, deciding nothing.** Block B's registered 0.7744 lies inside M8's forced-λ = 100
+range. It is a post-data comparison with constructed boards and is not read as evidence about block
+B.
 
 ## 5. Certificates fixed before any fit
 
@@ -635,22 +729,11 @@ All counts are out of the 20 × 20 = 400 present × absent pairs, with a tie wor
 - **The rev 1.1 lesson.** A rank-limit family needs a lower-bound check before any upper bound is
   sought. A hand check is not enough: the search raised F from 0.815 to 0.945.
 
-### 5b. The rank-limit side: options for Mike and the reviewers (not chosen)
+### 5b. The rank-limit side: decided (M5 = (a), Mike, 2026-09-29 08:14:45 UTC)
 
-| option | what it does | what it changes | what it cannot do |
-|---|---|---|---|
-| **(a)** 5 × 8, fit-failure side only | FC + FN on block B's shape. The rank side of a failed fit is closed **per block** by the certificate (§6): `cert ≥ 0.90` excludes a rank limit for that block | nothing beyond §§4–14 | it gives the branch no rank-limit witness; C6 stands |
-| **(b)** a synthetic-only rank-limit family on a larger block shape (for example 13 × 13 circulant boards: 12 of 101 boards ≤ 0.85 best-found, all circulant; the lowest non-circulant board is 0.8629) | worlds whose class capacity is plausibly below the gate | **a different block:** a new mask of 169 cells on 26 types; the fixed folds of `folds.csv` restricted to those cells (a different fold composition, perhaps new single-class folds); N1 fitted on a different view; other leg-P arithmetic and `smallest_passing_auc` grid; a new seed set. **W is not a column effect in general:** if the 26 types span several field groups, rule #2.1's class adds `W[G(s), G(t)]` interactions that the survey's class lacks, so the survey does not bound it unless the types are chosen with one group on one side. **The RL membership still rests on best-found values**, which moved by up to 104 of 7,098 between reruns (9 of the 13 × 13 boards flagged unstable), and no upper bound is proved | **it does not calibrate block B's shape:** the gate's behaviour on a 169-cell block with other folds says nothing about how a 40-cell block fails |
-| **(c)** both | (a) now; (b) as its own registration | as (a), then as (b) | as each |
-
-**Recommendation: (a).**
-- The question the branch leaves open on block B's shape is "fit or class?". On this shape the
-  class side is excluded by certificate on every board tried. The certificate answers the question
-  for any given block directly, which a synthetic rank-limit world on another shape could not.
-- (b) would witness the rank side of a different instrument configuration, with a membership that
-  is not proved.
-- Take (b) up only when a block of that size is proposed for a knockout, as part of that block's
-  own registration (Q-M5).
+This registration calibrates block B's shape on the fit-failure side only. The rank side of a failed
+fit is closed per block by `cert` (§6). The option table and its recommendation were deleted in
+rev 1.8 (§15).
 
 ## 6. The separator and the predictions (written before values)
 
@@ -946,9 +1029,11 @@ world can break the fit side of the test when every FF certificate is exact.)
 - **Rule #2.1 at λ = 1 on block B's own labels** is not part of this file and is not computed under
   it (§16).
 
-## 13. Separate section, optional: (iii) a gate that measures the interaction
+## 13. Separate section, optional: (iii) a gate that measures the interaction (not taken in this registration, M1)
 
-**Take or drop as a whole; §§0–12 do not depend on it.**
+**Not taken in this registration (M1, Mike, 2026-09-29 08:14:45 UTC).** The section is kept as a
+record. The (iii-a) material is `ceil_1` from the same run. M8's board 41 (§4a) is a further instance
+of its motive. §§0–12 do not depend on it.
 
 **Motive (RN §9; DIAG §5).**
 - On block B's inner folds the registered grid did not separate λ = 1 from "no interaction" robustly.
@@ -1009,7 +1094,7 @@ and FF-opt remain (§3).
 | S-C12 | (rev 1.6, §6a) an `auc_tau` beside the registered exact `auc`; `*_tau` for `ceiling_block`, `ceil_1`, `ceil_1_float`, `ceil_λc_float` and `cert`; the `ulp_sensitive` flag; the `GATE_ULP_SPLIT` flag row counted in the outcome; the float objects' `p` taken as the sigmoid of the float logit, the same transform the decoders use |
 | S-C11 | seeds of §4 asserted disjoint. **The assert takes this registration's own ranges as literals** (rev 1.5; Johnny, 05:41:19 UTC), since they are in no `.py` file yet and a grep-based check would miss them: worlds 93100–93104, 93110–93114, 93120–93124; the permuted reference 93200–93298; the `cert` seeds 93300–93307. It checks them against one another and against `reserved_seeds` (B script lines 1031–1043: A's, the male arm's, the untouched list, the shuffles and the ALS starts) and B's own seeds. Callers are read from the Orbit graph and confirmed by grep at the script's review (B §3.9) |
 
-## 15. Open questions
+## 15. Decisions and closed questions
 
 **Answered in the reviews of rev 1.3** (DPC Research chat, 2026-09-29 UTC). Each is kept with its
 answer.
@@ -1039,60 +1124,22 @@ answer.
   nested choice does not collapse; U, failed fit if it collapses, with the sub-kind read by the
   separator.
 
-**For Mike: the only open items** (rev 1.7). Every reviewer question above is answered. What
-remains is M1–M7, each with its recommendation:
+**Mike's decisions** (DPC Research chat, 2026-09-29 08:14:45 UTC: "I agree", translated from
+Russian). They approve every recommendation, M1–M8. No item remains open.
 
-| item | recommendation |
-|---|---|
-| M1: which items | (i) + (v) first |
-| M2: instrument | CPU |
-| M3: block B's own table as a world | no (post-data) |
-| M4: the (v) option | choose after the values |
-| M5: the rank-limit side | (a): 5 × 8, fit side only; `cert` closes the rank side per block |
-| M6: FN's swap rule | uniform (Johnny) |
-| M7: the tie rule of a future gate | `TAU`, for future registrations only (Ark; Johnny votes yes) |
+| item | decision | where |
+|---|---|---|
+| M1: which items | (i) + (v), without (iii). The (iii-a) material is `ceil_1`, from the same run | §13 marked "not taken" |
+| M2: instrument | CPU | §11 |
+| M3: block B's own table as a world | no | §10 |
+| M4: the (v) option | chosen after the values | §8 |
+| M5: the rank-limit side | (a): 5 × 8, fit side only; `cert` closes the rank side per block | §5b |
+| M6: FN's swap rule | uniform | §4 |
+| M7: the tie rule of the gate | `TAU` for future gates only. This calibration keeps the exact gate, because it calibrates the registered one (arguments: ulp steps, Ark; machine reproducibility, Johnny) | §6a |
+| M8: the real-row-profile check | a design computation, not a world; run in rev 1.8 | §4, §4a |
 
-Details, each with what it affects:
-- **Q-M1: which items.** (i) + (v) only, or with (iii). *Recommendation: (i) + (v) first.*
-  - **Zcode and Ark** note that (iii-a)'s data comes free with (i): at λ = 1 it is `ceil_1`, which
-    (i) prints anyway.
-  - **Johnny** votes (i) + (v) without (iii).
-  - Either way, run (i) collects the material. The choice is only whether a gate of (iii) is
-    registered for later arms.
-- **Q-M2: instrument.** *Recommendation: CPU* (§11).
-- **Q-M3: block B's own table as a world.** *Recommendation: no* (post-data).
-- **Q-M4: (v).** *Recommendation: choose after the values.*
-- **Q-M5: the rank-limit side (§5b).** (a) 5 × 8 fit side only, with the certificate closing the rank
-  side per block; (b) a synthetic rank-limit family on a larger shape; (c) both. *Recommendation:
-  (a).* The certificate answers "fit or class?" for any given 5 × 8 block. (b) calibrates a different
-  mask, folds and N1 view, with unproved membership, and does not calibrate block B's shape.
-- **Q-M7: the tie rule of a future gate** (rev 1.6; §6a).
-  - (a) Keep the exact `auc` at the gate: 1-ulp splits in a decoded `p` can move the gate's AUC by
-    whole steps.
-  - (b) Read the gate with the `TAU` band (|d| ≤ 1e-9 counted as a tie), the project's declared tie
-    band.
-  - **This calibration keeps the gate exact in either case, because it calibrates the registered
-    gate.** It prints both values and the `GATE_ULP_SPLIT` flag.
-  - **The two arguments for (b):**
-    - **Ulp steps.** A 1-ulp split can move an exact AUC by whole steps: N1 on synthetic board z
-      reads 0.72 exact and 0.60 under `TAU` (Ark, §2, §6a).
-    - **Reproducibility across machines** (Johnny, 06:34:23 UTC). An exact reading of the gate is not
-      reproducible from machine to machine, because the BLAS picks its kernels at run time
-      (DYNAMIC_ARCH), while a reading with the `TAU` band is machine-stable. Block B's verdict from
-      0.7744 is stable; the last bits of that number are not.
-  - **Cost now** (Ark, 06:31:47 UTC): none. No gate number in any registered run is ulp-sensitive
-    (§16), so choosing `TAU` changes no registered reading.
-  - *Recommendation: (b) `TAU`, for future registrations only.* Ark recommends `TAU`; Johnny votes
-    yes.
-- **Q-M6: FN's swap rule** (rev 1.5; Johnny, 05:41:19 UTC: this choice is Mike's).
-  - **Uniform swaps** (§4, as registered): FN may never reach the branch, which leaves the forced FC
-    as the only witness (C2).
-  - **Swaps aimed at the single-cell inner fold:** more likely to give a natural witness, but that
-    witness would be confounded with block B, since it copies one post-data finding (RN §9).
-  - The certificate is the same either way; it depends only on k (§4).
-  - Ark's point (06:46:05 UTC): FC is the only witness of "the class holds it, and the forced fit
-    fails" (class 1.0, forced fit 0.60). FN witnesses only a natural collapse, if one happens (§5).
-  - *Johnny's recommendation: uniform.*
+The option texts for M1–M7 were deleted in rev 1.8 because the decisions closed them. The earlier
+revisions keep them in git.
 
 ## 16. Not verified at drafting; findings about the survey; one post-data observation
 

@@ -1,7 +1,7 @@
 # Capacity survey of the class a_s + b_t + u_s v_t on small boards
 
 **What this is.** A design computation on constructed 0/1 boards, cited by
-`docs/plans/2026-09-29-failed-fit-branch-calibration-registration.md` (rev 1.6: §2, §2a, §4, §5b, §6, §6a, §8, §16).
+`docs/plans/2026-09-29-failed-fit-branch-calibration-registration.md` (rev 1.8: §2, §2a, §4, §4a, §5b, §6, §6a, §8, §16).
 It is **not a value of any registered run**. It reads no bank, neither flyvis-65 nor any world of a
 registered arm, and it decides no label.
 
@@ -129,10 +129,42 @@ These files are design computations on constructed boards; none is a value of an
     - the quantised path is not ulp-sensitive on any;
     - the float fit and N1 are ulp-sensitive on one board.
 
+## Added for the registration's rev 1.8 (2026-09-29, by a CC subagent): M8
+
+- **`m8_profile_check.py`, `m8_profile_out.txt`, `m8_profile_boards.csv`,
+  `m8_profile_members.json`: M8, the design check on block B's real row profile.** Mike approved it
+  (DPC Research chat, 2026-09-29 08:14:45 UTC). It is a design computation, not a world, and not a
+  value of any registered run.
+  - **Boards.** 50 boards of 5 × 8 with rows 2, 6, 4, 4, 3, the same boards `bf4_check.py` draws. They
+    are reproduced by the same `default_rng(20260929)` calls, and `bf4_check.py` is imported by
+    neither script and not modified.
+  - **Printed per board.**
+    - `cert`: the free-class search from `survey.py`, with design seeds 2026092901 (stage 1) and
+      2026092902–2026092906 (reruns). The stored member is recounted with `Fraction`.
+    - N1 decoded.
+    - Rule #2.1's registered path at forced lambda = 100 (quantised and float) and at lambda = 1.
+    - Every AUC exact and with |d| <= TAU as ties.
+  - **Results.**
+    - `cert` min 0.9825, median 1.0.
+    - Forced lambda = 100, quantised: min 0.7005, median 0.8039, max 0.9048 (board 41 >= 0.90).
+    - `ceil_1` min 0.9123.
+    - No AUC is ulp-sensitive.
+  - **Run.** `tools/.venv`, `PYTHONUTF8=1`, stdout redirected; 379 s for the recorded run. A first
+    run (428 s) came before the script's file writes got `encoding="utf-8"`. The rerun reproduced
+    its CSV and JSON byte for byte. Every output is ASCII with LF line ends; the hashes below were
+    recomputed from the bytes on disk.
+- **Encoding note on `bf4_check.py` (not changed).** It opens `survey_boards.csv` with the platform
+  default encoding. That is harmless here, because the file is ASCII. The file is kept as committed,
+  since its hash and output are recorded. New scripts open every file with `encoding="utf-8"`.
+
 ## Files (sha256 of the bytes as stored; `.gitattributes` holds `* -text`, so git stores them as written)
 
 | file | sha256 |
 |---|---|
+| `m8_profile_check.py` | `82b1dfd0cb97d4edb786f4b7f1d0d8719b9c898d1fa2783d834842bb69d0e147` |
+| `m8_profile_out.txt` | `e22f641d9e02cd0b0a679f58ee6f0253eeba410d041de11834531d29a62631e7` |
+| `m8_profile_boards.csv` | `716fbabd7e27d081690ea0f75c2d4beaf93899b995c8ce45824f1c49e77f3e88` |
+| `m8_profile_members.json` | `c5f3cb513b28ef3e7027856882394c1ca56ff4b338d493f95176ffc3d89c220f` |
 | `bf4_capacity.md` | `e8c37a1a6916867bc9ca402608ddbe5f8bccc81447e76bac804e35136591faf7` |
 | `bf4_check.py` | `8a747563bbdfc740da6d076947be5cf63378f9de1ad4e00a4d56f74d245257ea` |
 | `bf4_check_out.txt` | `986529a3c88565d7e921af37b63bb0c7eb1824cf2cd2299b705c2529cb0e337d` |
