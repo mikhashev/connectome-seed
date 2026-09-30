@@ -1,0 +1,32 @@
+INPUTS {
+ "raw_store": "C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed-data\\knockout_regrow\\flyvis65_blockB_20260928T143258Z_7a10d88ec95e\\raw_fits_real.json.gz",
+ "raw_store_sha256": "2461d921048b39479926878a9761aaf34bb4c5bedfc8a9e1c17882fd4ee398c6",
+ "raw_store_pinned": "2461d921048b39479926878a9761aaf34bb4c5bedfc8a9e1c17882fd4ee398c6",
+ "files_sha256_lf": {
+  "results/genome/bank/offsets.csv": "8c45e8508d8f6ae45e9ab3f9d95d58e4521894ccfa51954f6d77d41e550fa5f0",
+  "results/genome/bank/types.csv": "237a195a36f62ce182fee8486394c27d2beb9825bc029cb215c39c0fa323a477",
+  "results/genome/c6/folds.csv": "fb6f153b67fe1785a76c3823911e6fbb91cdda57ec952b36c40b4c95f1e213b8",
+  "results/genome/c6/harness.py": "6fc809527c69ee84aadebfc15c0ba755c189ddc93c80c05c0fa11d969a8d7297",
+  "results/genome/c6/rules/second_rule_v21/fit.py": "92eb6ab1524bb22379b2d21184d10f493ff4c803a41918be8ee16f389a58d16c",
+  "results/genome/c6/rules/second_rule_v21/decode.py": "39a049013af18a1e89e534d9d378a5f59a772b894d7fab5b79f82f702723a15a",
+  "results/genome/c6/decoders/bf_decode.py": "6404210c5e78bbaaa14c6cddc6df7fc41ce958e6ff957c062cc956faad59c1de",
+  "results/genome/c6/decoders/n1_decode.py": "e9eb00e174fa3454046f8cc92439f2132f27697d5b7467bd3f22b64a37c8db96",
+  "docs/plans/2026-09-30-block-b-ceil1-registration.md": "bea61287c426dd893deb1a331a8e24f4d525b22a2299b121b1f061d055ed2e5b",
+  "results/genome/c6/checks/knockout_regrow_block_b.py": "e650e47e5f6660500eca10fcb08f48ad68f41a25838892d3148fcc4616bb887b",
+  "results/genome/c6/checks/failed_fit_calibration.py": "220201c229800097aed62afba242a7e3593d9f7205274fc015207ab795d3af43",
+  "results/genome/c6/checks/natural_fit_failure_replication.py": "a802afa984c95345a5efd69fd8df2016df25edc1b90d6d76130549544f0f2fee",
+  "docs/prereg-scripts/2026-09-29-capacity-survey/survey.py": "0bbdd15cc5f1c9a2bc5b31b33cf36c7650eb8100d71b6535510e8d930b77c000"
+ },
+ "this_script_sha256_lf": "e4b85ff168f33614c8bb7c9132267054024153752bac26dc50d1263d6355391b",
+ "registration_sha256_lf": "bea61287c426dd893deb1a331a8e24f4d525b22a2299b121b1f061d055ed2e5b",
+ "registration_pinned": "bea61287c426dd893deb1a331a8e24f4d525b22a2299b121b1f061d055ed2e5b"
+}
+gate checks passed: pins, block and mask, AUC function, script hashes, survey copy, raw store
+CONTROL (lambda = 100): ceiling_block 0.7744360902255639 (tau 0.7744360902255639); expected 0.7744360902255639; min gap between p levels 0.0032461317507782583; p bit-equal to the store: True
+CONTROL passed
+cert: 132/133 = 0.992481 (tau 0.992481); counts agree: True; rerun spread 0.0
+ceil_1 (quantised) 0.962406 (tau 0.962406); ceil_1_float 0.959900 (tau 0.959900)
+ceil_1_starts100 (diagnostic, decides nothing) float 0.959900 (tau 0.959900); quantised 0.962406 (tau 0.962406)
+BRANCH: (c) FF-sel on the real block; flags: -
+cert >= 0.90, ceil_1 >= 0.90 and ceil_1_float >= 0.90: FF-sel on the real block; the U is the lambda choice; the word 'cannot' in B's label is wider than the measurement.
+done

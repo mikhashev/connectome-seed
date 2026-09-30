@@ -195,3 +195,13 @@ Ark and Zcode, 19:52–19:56 UTC; run on Mike's word, DPC Research chat 20:00 UT
   fold 9 reverses; the chosen fit has no rank term, the model family does. (2) Read m as
   `margin_top_over_low` = total(100) − total(1) for both predictors; `margin_tied_over_rest` equals m for rule
   #2.1 but has the opposite sign for BF_1 (T = {1}), and it is never negative, so it carries no sign.
+
+## 10. Rule #2.1 at a fixed lambda = 1 on the real block (2026-09-30, post-data; changes no label)
+
+Registered in `docs/plans/2026-09-30-block-b-ceil1-registration.md` (prediction commit 86238a6),
+run from b8a8575; carrier `results/genome/c6/checks/block_b_ceil1/RESULT.md`. The control
+reproduced the registered block fit at lambda = 100 bit for bit (309/399, every p equal to the
+store). Branch **(c), FF-sel on the real block**: `cert` 132/133, `ceil_1` 0.9624 (float 0.9599),
+no flag, outside the +-0.02 band, the same branch under TAU. Read beside the verdict: block B's U
+is the lambda choice; rule #2.1 holds the block at lambda = 1, so the word "cannot" in the label is
+wider than the measurement. The registered label is not edited.
