@@ -1,4 +1,10 @@
-# Blind review: block B ceil_1 and cert, registered run from b8a8575
+# Independent recomputation (not blind): block B ceil_1 and cert, registered run from b8a8575
+
+**Status (2026-09-30, after review by Ark and Zcode):** this is an independent recomputation, not a blind
+review. The reviewer saw the branch and the values in the subject of commit 69d44c0 before starting;
+the recomputation is arithmetic and bypasses the script's functions, so it stands, but the label
+"blind" does not. The reviewer's raw output is kept beside as BLIND_REVIEW_raw.md; this file is CC's
+condensation of it.
 
 Reviewer: a separate agent session (model Fable), 2026-09-30, briefed by CC with the allowed sources
 only: the registration (rev 1) and the prediction commit 86238a6, the calibration registration
@@ -76,8 +82,9 @@ there.
      399 pairs equals 0.9, so it has no edge case here.
 6. **Predictions.**
    - **Ark (5.1, 5.2):** holds; the value lies in 0.93-0.97 and the rider is not triggered.
-   - **Zcode (5.3):** `cert` ≥ 0.9649 holds; `ceil_1` in 0.93-0.97 holds; no decoder split holds;
-     the exact/TAU pairs are present.
+   - **Zcode (5.3):** `cert` ≥ 0.9649 holds; no decoder split holds; the exact/TAU pairs are present.
+     Zcode's `ceil_1` band 0.93-0.97 is a co-signature of Ark's band, not a separate prediction
+     (Zcode, 2026-09-30 15:49 UTC).
    - **CC (5.4):** holds.
    - **Johnny (5.5):** a labelling requirement, carried by the registration text.
    - **Ark (5.6):** `cert` = 132/133 does **not** measure the equality of the free class with rule

@@ -202,6 +202,12 @@ Registered in `docs/plans/2026-09-30-block-b-ceil1-registration.md` (prediction 
 run from b8a8575; carrier `results/genome/c6/checks/block_b_ceil1/RESULT.md`. The control
 reproduced the registered block fit at lambda = 100 bit for bit (309/399, every p equal to the
 store). Branch **(c), FF-sel on the real block**: `cert` 132/133, `ceil_1` 0.9624 (float 0.9599),
-no flag, outside the +-0.02 band, the same branch under TAU. Read beside the verdict: block B's U
-is the lambda choice; rule #2.1 holds the block at lambda = 1, so the word "cannot" in the label is
-wider than the measurement. The registered label is not edited.
+no flag, outside the +-0.02 band, the same branch under TAU. Read beside the verdict, narrowed after review (Ark 15:47, Zcode 15:49 UTC): the block's ceiling
+holds at lambda = 1, so the `ceiling_block` clause stops being a cause of the U and the word
+"cannot" in the label is wider than the measurement. The other objects of B's verdict (p_P, the
+knockout AUC, n_ge) were computed at lambda = 100 and were not recomputed at lambda = 1, so this is
+not a statement about B's whole verdict at lambda = 1. The registered label is not edited.
+
+Status of the check: an independent recomputation that bypasses the script's functions
+(`block_b_ceil1/BLIND_REVIEW.md`, raw output beside it); not blind, because the reviewer saw the
+branch in a commit subject before starting.
