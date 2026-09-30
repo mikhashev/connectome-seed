@@ -19,6 +19,28 @@ language_cutoff: 2026-09-13
 
 
 
+
+### RUN-SCRIPTS-MUST-CAPTURE-THEIR-OWN-STDOUT-AND-NO-RESULT-GOES-IN-A-COMMIT-SUBJECT-BEFORE-THE-BLIND-REVIEW: run records have small process gaps: stdout is captured outside the script, and a result in a commit subject spoils the blind review that follows (LOW, open, 2026-09-30 — CC: process lessons from block B ceil_1 (1a50322) and the symmetric lambda pair (bc833d2), 2026-09-30)
+
+- **Observed.** run.log is captured outside the script and copied in; it has CRLF line endings and is not gitignored. Block B ceil_1 result appeared in a commit subject, so its review (1a50322) had to be relabelled an independent recomputation, not blind.
+- **First step:** Run scripts capture stdout themselves; keep recording git HEAD; no result in commit subjects before the owner's blind review; the owner launches blind reviews in a separate session.
+- **axis:** honesty
+- **filed:** CC · 2026-09-30
+
+### THE-GPU-INSTRUMENT-REVISION-REGISTERING-EXTENSION-X-STILL-CARRIES-THREE-STALE-HASHED-TEXTS: extension X is validated but unregistered, and three texts that the instrument hashes or cites are stale, so they can only be fixed inside the registering revision (MEDIUM, open, 2026-09-30 — CC: residue found while recording extension X, 2026-09-30)
+
+- **Observed.** VX6 help text at ext_compare.py:291-292; prose drift at ext_gpu_stage.py:23 (12,526 should read 12,550); results/genome/c6/gpu_instrument/README.md still carries the line 'Status (2026-09-26): not reviewed'. That README is hashed by instrument.py, so it changes only through a revision.
+- **First step:** One GPU instrument revision registering extension X that carries the three fixes; review it before any registered arm names the instrument. No run.
+- **axis:** honesty, reach
+- **filed:** CC · 2026-09-30
+
+### THE-COLLAPSED-LAMBDA-VERDICT-CLASS-IS-NOT-DECLARED-AROUND-LAMBDA-C-100: the verdict class for a block whose interaction fit collapses to the additive model must be declared around lambda_c = 100, with u.v = 0 as a consequence, before any further knockout block is read (HIGH, open, 2026-09-30 — CC: next step after the symmetric lambda pair (f8e11db, bc833d2), 2026-09-30)
+
+- **Observed.** Draft docs/plans/2026-09-29-collapsed-lambda-verdict-class-registration.md (1e9fc9a) predates the symmetric lambda pair and is to be rewritten. The pair (registration e7d973f, outputs f8e11db, review bc833d2) shows both real blocks collapse at lambda 100: A falls to the 0.5 all-ties floor because its marginals are balanced; B sits at 0.7744. Three regimes on the gate clause: additive part null gives the 0.5 floor (block A); moderate additive part gives 0.7744 (block B); additive part alone at 0.90 or more passes the gate (board-41 class, 18 natural instances). Population figure: U on 57% of boards the class holds. The verdict mixes lambdas across clauses: BF_3/BF_4 p_P come from lambda 3 knockout fits, leg S from shuffle fits mostly at lambda 100.
+- **First step:** Rewrite the draft (text only, no run) around lambda_c = 100 with u.v = 0 as a consequence; include both real blocks, the three-regime table, the population figure and the mixed-lambda note; state explicitly what is NOT shown: fitter behaviour on block A, and the selection mechanism on block A. Review before any run.
+- **axis:** honesty, knowledge
+- **filed:** CC · 2026-09-30
+
 ### THE-FAILED-FIT-BRANCH-HAS-NO-SYNTHETIC-WITNESS-AND-THE-GATE-DOES-NOT-MEASURE-THE-INTERACTION: the knockout reading sends a ceiling_block below the gate to "failed fit", but no synthetic world has ever met that branch, and the block-only gate as registered reads the additive part of the fit, not the interaction the rule is meant to express (HIGH, open, 2026-09-29 — Ark (calibration, item i) and Zcode (interaction gate, item iii), DPC Research chat 2026-09-28 after block B read U, failed fit; listed for Mike, not chosen (results/genome/c6/checks/knockout_regrow_block_b/READING_NOTES.md section 8))
 
 - **Observed.** Block B registered run (7a10d88, ce48577): verdict U, failed fit; no synthetic world met the branch (ceiling_block 1 and lambda_block 1 in all rule #2.1 and BF rows of the run and of the reference; READING_NOTES.md section 3a). The fit diagnostic (3be7824, READING_NOTES.md section 9) read (c) carried by few folds: on block B inner folds the registered lambda grid does not separate lambda = 1 from no interaction robustly for either predictor.
@@ -26,6 +48,8 @@ language_cutoff: 2026-09-13
 - **2026-09-29, CC:** Registration for items (i)+(v) drafted in docs/plans/2026-09-29-failed-fit-branch-calibration-registration.md, rev 1 -> 1.7. Commits: 1b6b6ad (rev 1.3 plus the capacity survey), ee38b6c (1.4), a8423fc (1.5), 5709b71 (1.6 + 1.7). Reviewed by Ark, Johnny, Warren and Zcode; each reviewer voted yes. Capacity survey (docs/prereg-scripts/2026-09-29-capacity-survey/): the free class a_s+b_t+u_s v_t reaches at least 0.9425 on every one of 571 5x8 boards with 4 cells per row; no rank-limit world below the 0.90 gate is known on that shape (outcome C6, declared before values); families: FC (forced lambda = 100 control, 0.600 exact and TAU), FN1, FN2. Ulp finding (Ark): the gate auc compares exactly, and N1 on synthetic board z reads 0.72 exact vs 0.60 under TAU; Ark read-only recount found no gate number in the registered A and B runs that is ulp-sensitive (smallest gap 1.8e-5). Open: Mike decisions M1-M8. M8 = a design computation on boards with row profile 2,6,4,4,3 (cert, N1, the fit at lambda = 100 float and quantised, ceil_1), agreed by Ark, Johnny and Zcode. Next: the script (S-C1..S-C12) and tests.
 - **2026-09-29, CC:** 2026-09-29, CC: Registered calibration run (registration rev 1.9, 99e4d4b; pinned in 255a03d; Mike's order, DPC Research chat 09:34:38 UTC) ran 09:47-10:35 UTC; outputs in results/genome/c6/checks/failed_fit_calibration/ (8f46ff2). Outcome C2 + C6: FC reads U, failed fit, FF-sel in 5 of 5 (0.600000 exact, ceil_1 1.0); FN1/FN2 0 of 10 meet the branch (G, 0.985-0.9975). The branch now has a forced witness only. Blind review (BLIND_REVIEW.md): the recorded outcome follows; two diagnostic reporting gaps (FN forced-lambda fit not printed; CEIL_1/CERT_ULP_SPLIT counts not named). Post-data, decides nothing: on 53 of 99 permuted boards the registered ceiling_block is below 0.90 while cert >= 0.90 on all 99 (natural fit failure on arbitrary patterns). Board 41 (M8): the gate is passed by a zero-interaction model, a finding for (iii). Open: (iii) gate on the interaction; the permuted-board observation as a possible registration.
 - **2026-09-29, CC:** 2026-09-29, CC: Replication of the natural fit failure (registration docs/plans/2026-09-29-natural-fit-failure-replication-registration.md rev 1.2; predictions b5513e3; run a9f1c82, 14:31-14:42 UTC; outputs results/genome/c6/checks/natural_fit_failure_replication/, 29a70db): RP1, 171 of 300 fresh certified boards fail the gate, all fit-side (165 FF-sel, 5 FF-struct/opt not separated, 1 FF-quant); BF family 166/139/144/144; P4' failed (15 of 129 passes at lambda 100); j=89 class reproduced on 5 boards. Blind review: follows. Disclosed: Warren's 14:11 stricter P1 criterion (136-164) was missed before the prediction commit; under it the label would be RP2 (rate 0.57 above the band). GPU extension X validated (29548f1): block and ko1 equivalent to CPU; VX8 still required for the tie regime. Next: (iii) gate at fixed lambda = 1.
+- **2026-09-30, CC:** 2026-09-30 UTC, CC: DONE, block B ceil_1 measurement (registration 86238a6, run b8a8575, outputs 69d44c0; carrier results/genome/c6/checks/block_b_ceil1/). Branch (c) FF-sel on the real block, recorded in RESULT.md; ceiling clause only. Independent recomputation record 1a50322: not a blind review, because the result was already in a commit subject.
+- **2026-09-30, CC:** 2026-09-30 UTC, CC: DONE, symmetric lambda pair (registration e7d973f, script b44d383, outputs f8e11db; owner's blind review verbatim plus reading notes bc833d2; carrier results/genome/c6/checks/symmetric_lambda_pair/). At lambda 1 both block A and block B read G; at lambda 100 both read U on the gate clause. A's fall at 100 is forced by its balanced marginals (0.5 all-ties floor). No label edited.
 - **axis:** knowledge, honesty
 - **filed:** CC · 2026-09-29
 
@@ -464,6 +488,13 @@ language_cutoff: 2026-09-13
 - **filed:** CC · 2026-09-23
 
 ## BLOCKED ON DECISION
+
+### BLOCK-B-FULL-VERDICT-AT-FIXED-LAMBDA-1-IS-A-LONG-RUN-THAT-WAITS-ON-MIKES-YES: block B's full verdict at lambda = 1 (knockout, full and shuffle legs at fixed lambda) would take over 30 minutes and is needed only if the collapsed-lambda declaration leaves the lambda-1 reading open (MEDIUM, open, 2026-09-30 — CC: decision for Mike, 2026-09-30)
+
+- **Observed.** The symmetric lambda pair (f8e11db) read both blocks at lambda 1 and at lambda 100 on the gate clause only. The other legs at fixed lambda were not run. A run over 30 minutes needs Mike's yes first, subagents included.
+- **First step:** Decide after the collapsed-lambda declaration is reviewed; ask Mike for a yes only if it is still needed.
+- **axis:** knowledge
+- **filed:** CC · 2026-09-30
 
 ### THE-PERTURBATION-LADDER-MEASURES-HOW-FAST-AN-INDIVIDUAL-FORGETS-ITS-INITIAL-CONDITION: under deterministic training, one seed with one parameter nudged by a controlled amount answers a question the authorised night could not, and it waits on Mike's word (HIGH, open, 2026-09-20 — CC and Ark, after both concluded the authorised night 6 shape is vacuous; Mike, owner, 2026-09-20 10:02 UTC: he does not want to spend the night)
 

@@ -1,5 +1,15 @@
 # Closed entries
 
+## 2026-09-30 — closed by CC
+
+### THE-README-AND-GLOSSARY-NOW-OPEN-ON-ONE-SCREEN-AND-A-READ-THESE-FIRST-LIST: a newcomer could not find the state of the work from the README or the glossary (LOW, closed, 2026-09-30 — CC: orientation rewrite, 2026-09-30)
+
+**Closed:** S2026-09-30.1 · 2026-09-30 · fixed · fd53e7a, dc52690: README on one screen; GLOSSARY Read these first and section 11; origin in docs/history/2026-09-13-origin.md · closed by CC
+
+- **Observed.** README was rewritten to one screen and GLOSSARY gained a Read these first list and section 11 (fd53e7a, dc52690); the origin text moved to docs/history/2026-09-13-origin.md.
+- **axis:** knowledge
+- **filed:** CC · 2026-09-30
+
 ## 2026-09-29 — closed by CC
 
 ### BLOCK-B-ON-FLYVIS-65-WAITS-ON-A-REGISTRATION-REVISION-THAT-CARRIES-THE-MALE-ARMS-DEBTS: block B on flyvis-65 is the next registered run of knock out and regrow, and its registration must be revised to carry block A's pins after Amendment 1, the script changes S1-S22 and the script debts the male CNS arm exposed, before any script is run (HIGH, closed, 2026-09-27 — Ark 14:01 and Zcode 14:04 UTC, DPC Research group, 2026-09-27: Q1 next, Q3 deferred for lack of power; the order is for Mike to confirm)
