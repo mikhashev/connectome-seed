@@ -211,3 +211,15 @@ not a statement about B's whole verdict at lambda = 1. The registered label is n
 Status of the check: an independent recomputation that bypasses the script's functions
 (`block_b_ceil1/BLIND_REVIEW.md`, raw output beside it); not blind, because the reviewer saw the
 branch in a commit subject before starting.
+
+## 11. B's verdict with the block lambda at 1, and the symmetric pair (2026-09-30, post-data; changes no label)
+
+Registered in `docs/plans/2026-09-30-symmetric-lambda-pair-registration.md` (prediction commit
+e7d973f), run from b44d383; carrier `results/genome/c6/checks/symmetric_lambda_pair/RESULT.md`; blind
+review by the owner's separate session: follows (`BLIND_REVIEW_raw.md` there). Of rule #2.1's three
+fits only the block-only fit chose lambda = 100 (ko/full/block 1/1/100); B's own `read_label` on its
+stored rows with only `ceiling_block` := `ceil_1` (384/399) reads **G** by the G clause. Block A with its
+block-only fit forced to lambda = 100 reads U (ceiling 0.5000). On the gate clause the two blocks behave
+alike: both pass at lambda 1 and both fail at lambda 100. Scope: BF_3/BF_4's p_P come from knockout fits
+at lambda 3, and leg S rests on 99 shuffle fits that mostly chose 100; neither is read by the G clause
+here (review, precision note). The registered label is not edited.
