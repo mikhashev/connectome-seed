@@ -1,68 +1,8 @@
 # connectome-seed — a lineage of artificial organisms grown from a real connectome
 
-**What this folder is.** The record of one idea and one day of examining it, saved on Mike's
-word (DPC Research group, 2026-09-13 06:22 UTC: "save everything here, in a new folder" —
-translated from Russian). It is a
-**file under a condition, not a project** — that is the verdict of the three agent readers
-(Johnny, Ark, CC), and the condition is stated below, precisely enough to be tested.
-
-**Reviewed 2026-09-13** by Johnny (reviewer, DPC Research group, 2026-09-13 06:39 UTC) and Ark
-(reviewer, DPC Research group, 2026-09-13 06:41 UTC); corrections applied in place on Mike's word
-(Mike, owner, DPC Research group, 2026-09-13 06:42 UTC). Every change carries the reviewer's name where it lands.
-
-**Status:** the idea of 2026-09-13 as it was first written; this file has not been rewritten
-since. What happened after it is not here — the pre-registration, the runs and their records
-live in `docs/` and `results/`, and the current state of the condition is in
-[ADR-002](docs/decisions/002-file-under-condition.md) § "Status of the condition". Which part of
-the idea is being worked on now is stated in "The goal, in the owner's own words" below.
-
-## State at 2026-09-24
-
-*Dated block, kept short on purpose. The only status that is not typed by hand is the generated
-block at the bottom of [ROADMAP.md](ROADMAP.md). No result value appears here — where a finding
-is numerical, the file that carries the number is named.*
-
-- **Goal and documents.** The goal is the five points of [idea.md](idea.md) plus the evolutionary
-  tree. The grammar track is the main line; measuring the fly is its instrument and stays
-  **paused, not cancelled** — [ADR-004](docs/decisions/004-grammar-is-the-main-line.md).
-- **The C6 exam exists and has been run.** The specification and harness are committed
-  ([docs/plans/2026-09-23-c6-control-specification.md](docs/plans/2026-09-23-c6-control-specification.md),
-  [results/genome/c6/harness.py](results/genome/c6/harness.py)). Rule #1 ran and failed
-  (`results/genome/c6/rule_runs/first_rule_k12/RESULT.md`). Rule #2 stopped at its gates and
-  never reached C6 ([docs/notes/2026-09-23-second-rule-stopped-at-gates.md](docs/notes/2026-09-23-second-rule-stopped-at-gates.md)).
-  Rule #2.1 passed gates and ran once: verdict FAIL, on the offset field only — existence passed
-  P1, P2, P3 and P4 (P4 against BF_1 only, the lowest reference point)
-  ([docs/notes/2026-09-23-rule-2-1-c6-what-it-showed.md](docs/notes/2026-09-23-rule-2-1-c6-what-it-showed.md)).
-- **BF_1 alone, on P3:** the rank-1 term alone separates the real bank from its degree-preserving
-  shuffles on existence (branch A) —
-  [docs/notes/2026-09-24-bf1-p3-what-it-showed.md](docs/notes/2026-09-24-bf1-p3-what-it-showed.md).
-- **The bank** is the flyvis FIB-25/FIB-19 type-level template, not hemibrain —
-  [docs/notes/2026-09-23-where-our-bank-comes-from.md](docs/notes/2026-09-23-where-our-bank-comes-from.md).
-- **A second brain (FlyWire right optic lobe), on P3:** registered and run once. The registered
-  joint reading at the headline rank (rank 1) is a flag — "read as a flag to re-examine both fits,
-  not as a substantive finding on its own". On the FlyWire-30 arm the rank-r term separates the
-  real bank from all of its degree-preserving shuffles at every rank tested —
-  [docs/notes/2026-09-24-flywire-p3-what-it-showed.md](docs/notes/2026-09-24-flywire-p3-what-it-showed.md).
-- **Next:** question (ii), transfer — is the structure found in one brain the same structure in the
-  other? It was not tested, and it needs its own registration
-  ([docs/briefs/2026-09-24-next-session-handover.md](docs/briefs/2026-09-24-next-session-handover.md)).
-- **The measurement track** has been paused since 2026-09-20 (ADR-004); its state has not changed
-  since. See ROADMAP.md's generated block for the live status.
-
----
-
-## The idea in one paragraph
-
-Instead of emulating a fly and calling it an elephant, take the *heritable grammar* out of a
-real connectome (cell types, E/I balance, recurring motifs, sensorimotor loops), let body and
-nervous system grow together along a curriculum (fly → beetle → hexapod → quadruped), apply
-USPEX-style operators on the living graph (heredity of modules, soft mutation where the
-controller is plastic, permutation of roles, a diversity archive), give every offspring a short
-"youth" of limited plasticity before measuring it, and select on a multi-objective fitness in
-closed arenas. The main artefact is the **evolutionary tree**, not one video. Full text as
-posted in the thread (Mike, owner, DPC Research group, 2026-09-13 05:57 UTC); a clean copy of the five points:
-[idea.md](idea.md) (English; the Russian original of 2026-09-12 is in git history at
-`2488ecb`).
+Grow a lineage of artificial organisms from a real fly connectome — "to learn to make an elephant
+out of a fly". The first step is writing down the "genome": the heritable grammar that generates
+the wiring instead of copying it. The five points of the idea are in [idea.md](idea.md).
 
 ## The goal, in the owner's own words
 
@@ -110,162 +50,63 @@ production over a lookup table that is not generative, and an individual is an i
 wiring identical in every individual — not a genome in the generative sense
 ([docs/notes/2026-09-20-what-is-the-genome-here.md](docs/notes/2026-09-20-what-is-the-genome-here.md)).
 
-**Why the measurement line below is not a detour.** Point 4 *is* the cheap-and-expensive pair: the
-short youth is the cheap evaluation, the fitness measured after it is the expensive one. The idea's
-own annotation says so — the short "youth" of point 4 is exactly the mechanism arXiv 2508.17464
-measured as the source of mis-ranking. And the main artefact is a tree, so a selection instrument
-that cannot tell one individual from another would grow a tree of noise. The grammar is the main
-line, and measuring the fly is its instrument — confirmed by Mike, owner, 2026-09-20 09:27 UTC.
-Later the same day the owner paused the measurement line (10:15 UTC: "Pause the fly → grammar
-(point 1)"): no new night runs and no reading of it extends until it is resumed; the instruments
-and records stand as they are. See
-[ADR-004](docs/decisions/004-grammar-is-the-main-line.md).
+## Where things stand
 
-**Two annotations the idea carries about itself**, recorded on 2026-09-13 and repeated here so this
-section cannot be read without them: **"first" is not true** — OpenWorm since 2011, C. elegans
-whole-body simulators, whole-fly-brain emulation on Loihi 2, and a connectome-as-controller fly in
-2026 ([literature.md](literature.md)); and the point-4 note above. Neither kills the idea; both
-change where it starts.
+The current state of the condition is in [ADR-002](docs/decisions/002-file-under-condition.md)
+§ "Status of the condition"; the only status that is not typed by hand is the generated block at
+the bottom of [ROADMAP.md](ROADMAP.md). No result value appears here — where a finding is
+numerical, the file that carries the number is named. The condition itself ("show that a cheap
+evaluation of an individual is consistent with an expensive one") is stated in the
+[origin file](docs/history/2026-09-13-origin.md).
 
-Owners of the open track: Ark — the design around S2 with label provenance; CC — the note "what is
-the genome here" (delivered) and the extraction; Zcode — the C6 control specification
-([docs/briefs/2026-09-19-genome-track-handover.md](docs/briefs/2026-09-19-genome-track-handover.md)).
-The track needs no GPU and is not blocked by the nightly accrual.
+The main findings, each as the question it answers and the file that carries it:
 
-## What the readers found — the shape, not the retelling
+- **Rule #1 on the C6 exam** (does a first regenerating rule pass the C6 exam?) — [RESULT](results/genome/c6/rule_runs/first_rule_k12/RESULT.md), 2026-09-23.
+- **Rule #2.1 on the C6 exam** (does the second rule pass P1–P4?) — [note](docs/notes/2026-09-23-rule-2-1-c6-what-it-showed.md), 2026-09-23.
+- **BF_1 alone on P3** (does one rank-1 term separate the real bank from shuffles?) — [note](docs/notes/2026-09-24-bf1-p3-what-it-showed.md), 2026-09-24.
+- **A second brain, FlyWire, on P3** (does the same test hold on another fly's wiring?) — [note](docs/notes/2026-09-24-flywire-p3-what-it-showed.md), 2026-09-24.
+- **Knock out and regrow, block A** (does a rule regrow a removed 64-cell block it was not shown?) — [RESULT](results/genome/c6/checks/knockout_regrow/RESULT.md), 2026-09-26.
+- **Knock out and regrow, block B** (the same question for a second, 40-cell block) — [RESULT](results/genome/c6/checks/knockout_regrow_block_b/RESULT.md), 2026-09-28; reading under review, see [READING_NOTES.md §6](results/genome/c6/checks/natural_fit_failure_replication/READING_NOTES.md).
+- **Failed-fit branch calibration** (can the reading tell a failed fit from a rank limit?) — [CALIBRATION](results/genome/c6/checks/failed_fit_calibration/CALIBRATION.md), 2026-09-29.
+- **Natural fit-failure replication** (does the failed fit recur on fresh boards?) — [REPLICATION](results/genome/c6/checks/natural_fit_failure_replication/REPLICATION.md), [notes](results/genome/c6/checks/natural_fit_failure_replication/READING_NOTES.md), 2026-09-29.
+- **GPU instrument** (a separate, faster fitter for the synthetic worlds) — [README](results/genome/c6/gpu_instrument/README.md), 2026-09-26.
 
-Three agent readers, one thread, kept locally under `chat/` (gitignored, never in history). The findings that survived
-cross-check:
+## Map of the repository
 
-- **It is not a project yet, and the author says why himself.** The next step the author names
-  — *formalising the genome representation* — is not a next task but the condition of the
-  project's existence. Johnny (reviewer, DPC Research group, 2026-09-13 06:01 UTC).
-- **Why that representation is a hole and not a detail.** Three requirements pull in three
-  directions — *compression* (the genome must be orders of magnitude smaller than the
-  phenotype), *composability* (a module cut from one parent must mean the same thing in the
-  other), *expressivity* (one grammar must grow a fly and, after mutation, a beetle) — and
-  under them sit interfaces, the absence of a cheap validity oracle, and pleiotropy. A
-  connectome is the *product* of development; the genome is the *process*; inverting one
-  product into a process is underdetermined. Ark (reviewer, DPC Research group, 2026-09-13 06:11 UTC).
-- **The USPEX analogy breaks in three load-bearing places** — DFT enthalpy is a physical
-  quantity nobody chooses, fitness here is written by the author; DFT relaxation converges to
-  something physical, "youth" minimises a training loss; and the paper both critics cite
-  measures exactly the failure a *short* youth would produce. Ark (reviewer, DPC Research group, 2026-09-13 06:02 UTC).
-- **Two claims in the thread did not survive checking.** The compute estimate ("this is an HPC
-  project") was off by two orders of magnitude on its own inputs and counted the wrong cost
-  (neuron ODEs instead of body physics and the youth phase); on this card it fits. And the
-  paper cited as the counterexample, arXiv 2508.17464, is **two-sided**: its second half shows
-  brain–body co-optimisation reaching morphology–controller pairs a fixed body cannot. Only one
-  half had entered the thread. CC_windows (executor, DPC Research group, 2026-09-13 06:05 UTC).
-- **The data are not the blocker.** The male fly CNS (brain + ventral nerve cord, Cell,
-  2026-09-03) pairs with FlyWire (female); zebrafish adds structure + activity. Ark (reviewer, DPC Research group, 2026-09-13 06:11 UTC, same message as above).
-
-## The condition, stated so it can be tested
-
-> **Show that a cheap evaluation of an individual is consistent with an expensive one.**
-
-Not "when a genome representation exists" — its absence is the symptom. arXiv 2508.17464
-measured the disease on 1,305,840 morphologies: *"it requires more controller optimization to
-estimate their fitness well"*, and evolutionary algorithms *"regularly undervalue individuals
-with newly mutated bodies and eliminate promising morphologies"*. Their landscape was built with
-**300 generations × population 20** per body (§3, Table 1), and their co-optimisation runs go to
-**10,000 generations** (§4.1). **Inferred:** that 300 × 20 is "the number a short youth has to
-beat" is this team's reading, not the paper's claim — the paper states its budget, not a
-threshold. It is still one experiment.
-
-The condition now has a **second, independent ground** (Ark): the PNAS codec below was
-demonstrated only where the inner loop is differentiable, and its authors call the
-gradient-free path "slow and inefficient" — see [literature.md §F](literature.md). Two papers,
-two sides, one sentence: the cheap step in the middle of the loop is the unproven step.
-
-## What already exists — the literature answer
-
-Nobody has solved all three requirements at once. **Each one has a solved instance in a
-different field, and two of them are on this very fly.** Verified at source, with numbers, in
-[literature.md](literature.md). The short form:
-
-| requirement | solved where | what it gives us |
+| Path | What is there | Where it lives |
 |---|---|---|
-| compression — **the storage half only** (ids → weights) | Shuvaev/Koulakov/Zador, PNAS 2024 — the *genomic bottleneck* is literally a codec: a small network maps (pre, post) neuron identities → connection strength | 322× at 94 % innate accuracy; up to ~3 500×; transfer unchanged at 92× fewer parameters. **Shown with gradients through the genome (Lamarckian, the authors' word); not reproduced in a gradient-free loop.** Decompression is *"analogous"* to development — no growth, no body |
-| validity by construction | SELFIES (Krenn 2020, chemistry) — every string is a valid molecule, built for genetic algorithms | validity moves out of the fitness oracle and into the decoder |
-| the seed circuit, already built | flyvis (Lappalainen, Nature 2024) — 64 cell types wired from the connectome, unknowns optimised on a task, matches 24 experiments; code public | the T4/T5 falsifier Ark proposed is on GitHub |
-| connectome → body | Jin et al., arXiv 2602.17997 — whole fly connectome instantiated as the controller of a biomechanical fly via RL | "fly → body" is a starting point, not a hypothesis |
-| modules + bottleneck | arXiv 2606.28380 — hypernetwork generates a modular reservoir, "functional modules upon birth" | requirement 2 **only in first approximation: whether the modules are cuttable and re-attachable between two genomes is not claimed in the abstract** |
-| youth as an evolved parameter | arXiv 2604.03386 — 50 000 grown controllers, plasticity parameters in the genome | the "youth" step becomes heritable |
-| encodings compared | Miras, Frontiers 2021 — CPPN vs L-systems | no encoding dominates; the three-way pull is real on real robots |
+| `GLOSSARY.md` | one meaning per term, with the file that defines it | repo |
+| `LICENSE` | CC BY 4.0 | repo |
+| `ROADMAP.md` | phases ordered by what blocks them; generated status block at the bottom | repo |
+| `VISION.md` | what we are trying to find out, and why | repo |
+| `idea.md` | the owner's five points, verbatim, in English | repo |
+| `literature.md` | every source, how it was verified, numbers and quotes | repo |
+| `atlas.html` | one self-contained page of where the project is, built by `tools/atlas/build.py` | gitignored (regenerated) |
+| `backlog.md`, `backlog_closed.md` | open and closed tasks; edited only through the shared backlog tool of dpc-messenger, never by hand | repo |
+| `backlog.html`, `graph.html`, `graph.json` | board view, entry graph and its data, built from `backlog.md` | gitignored (regenerated) |
+| `chat/` | the group-chat thread, one file per message | gitignored, local only |
+| `docs/` | `plans/` registrations, `notes/` what each run showed, `decisions/` ADRs, `briefs/` handovers, `experiments/` and `retrospectives/` records, `prereg-scripts/` scripts committed before a reading, `history/` moved-out old text | repo |
+| `research/` | notes imported from Ark's sandbox (AlphaGenome atlas, the cheap-step analysis, USPEX analogue) | repo |
+| `results/` | committed run outputs: `night1`–`night6` (measurement line), `genome/` (the C6 exam, rules, checks, GPU instrument), `diagnostics/` | repo |
+| `sources/` | two full-text source copies and the open-access Shuvaev PDF; `sources/local/` holds copies with no redistribution licence | repo; `sources/local/` gitignored |
+| `tools/` | `atlas/` page builder, `night/` overnight run launcher, `reachability/` and `viz/` (reading harness; Blender explanatory figures and film), `contamination_scan.py`, `venv_manifest.py`, `.venv/` | repo; `.venv/` and raw `night/` logs gitignored |
+| `../connectome-seed-data/` | raw connectomes (FlyWire, Hemibrain, Janelia male CNS), Sintel data, raw outputs of runs, renderings | outside the repo |
 
-One result cuts *against* the idea: the genomic bottleneck gives innate ability but
-*"did not affect the learning trajectory"* — decompression makes the newborn competent, it does
-not make its youth cheaper.
+## How to read a result
 
-## The cheapest next step — proposed, then cut down by review, still Inferred
+- **Predictions are committed before the run**, in a separate commit — once they sat uncommitted in the working tree, and once a reviewer's criterion arrived during writing and was missed.
+- **Every load-bearing number has a carrier file and a pinned hash** of its inputs and registration — a number without a carrier cannot be checked.
+- **A post-data registration says "not blind to X" in its first line, and the blind review is separate** — post-data readings were once read as blind.
 
-The first version of this section said: glue the PNAS g-network keyed on **cell types** to
-SELFIES-style validity and start from flyvis. Two of its three pieces survived review; the
-first did not survive intact, and the way it failed is the useful part:
+## How to run
 
-- **Keying on cell type buys composability with resolution** (Ark). Unique tags cost
-  *H log N* bits and give single-neuron specificity; type tags make every neuron of a type
-  interchangeable — a type → type block model, which is precisely what the male/female
-  connectome comparison was built to see past. The honest label is (type + developmental
-  coordinate), and then the grammar must say where the coordinate comes from. The original
-  problem is back, one level down.
-- **The codec's demonstrated regime is Lamarckian** (Ark, PNAS p. 9). Its 322× came from
-  gradients reaching the genome every generation; the idea's loop is gradient-free heredity
-  and mutation, and its main artefact — an annotated lineage — cannot exist under a genome
-  rewritten from the phenotype. The paper's own counterweight ("net effect similar to
-  Darwinian evolution", Baldwin effect) says the *outcome* may transfer; the *mechanism* the
-  idea specifies does not, as shown.
+- Python is `tools/.venv/Scripts/python.exe` (Windows); scripts run from the repository root.
+- Set `PYTHONUTF8=1` — a cp1252 console encoding once killed a registered run.
+- Raw data and raw run outputs are in `../connectome-seed-data/`, not in the repo.
 
-What still stands: validity by construction (SELFIES) as the design rule for whatever the
-grammar is; flyvis as the circuit to start from; and Ark's one-run test on composition.
+## Read next
 
-**Corrected after the second review (Ark, 07:16 UTC).** An earlier version of this paragraph
-said the composition test "doubles as the check on the condition". It does not. There are two
-hypotheses and they are registered separately: **(a)** a spliced module behaves predictably;
-**(b)** a cheap evaluation agrees with an expensive one. A negative on (a) says nothing about
-(b), and the reverse. And a splice of two *identical* copies is a control that can only pass —
-if the copies do not interact the composite is trivially "predictable", the same shape as a
-zero-initialised adapter — so the test splices two *different* things (two ensemble members, or
-two cell types) and names its prediction before it runs. What is spliced, and the numbers
-for (b), live in the pre-registration file, not here. Marked **Inferred** — a synthesis, not a
-paper, and thinner than it was this morning.
-
-**Project files, added 2026-09-13 on Mike's word:** [VISION.md](VISION.md) (what we are trying
-to find out), [ROADMAP.md](ROADMAP.md) (phases, ordered by what blocks them),
-[docs/decisions/](docs/decisions/) (ADR-001 publication shape, ADR-002 file under a condition),
-[backlog.md](backlog.md) (tasks, validated with the shared backlog tool). Roles as of that day:
-CC executes everything, Ark, Johnny and Warren review. **Experiment record, added 2026-09-14:**
-[docs/experiments/001-run0-and-replicate.md](docs/experiments/001-run0-and-replicate.md) (run 0
-and its replicate, against the pre-registration); next session:
-[docs/next-session-plan.md](docs/next-session-plan.md).
-
-Start here for the rules this repository learned the hard way:
-[docs/CHECKLIST-research-repo.md](docs/CHECKLIST-research-repo.md).
-
-The words this repository uses, one meaning each, with the file that defines each one:
-[GLOSSARY.md](GLOSSARY.md).
-
-## Files
-
-```
-README.md          this
-idea.md            the five points, verbatim, in English translation (the Russian
-                   original of 2026-09-12 is in git history at 2488ecb)
-literature.md      every source, what was verified how, numbers and quotes
-chat/              the thread, one file per message, 67 → 84, UTC timestamps
-                   (79–84 = the review round: Johnny 81, Ark 82, Mike's "finish it" 83,
-                   translated from Russian)
-sources/           shuvaev-2024-genomic-bottleneck-pnas.pdf (open-access, 7.5 MB)
-```
-
-**Clocks.** Chat timestamps are UTC; this machine is UTC+07. The thread ran 05:57–06:43 UTC
-on 2026-09-13, which is 12:57–13:43 local.
-
-**Not done, deliberately — as of 2026-09-13.** No repository initialised, no backlog entry, no
-card in `autoresearch-win-rtx/docs/articles/` — those were Mike's calls and none had been given
-that day. A repository and a board exist since; this paragraph is kept as the record of the day,
-not as a statement about now.
+[GLOSSARY.md](GLOSSARY.md) · [ROADMAP.md](ROADMAP.md) · [VISION.md](VISION.md) · [docs/CHECKLIST-research-repo.md](docs/CHECKLIST-research-repo.md) · [docs/history/2026-09-13-origin.md](docs/history/2026-09-13-origin.md) — the origin day: readers' findings with names and timestamps, the condition, the literature answer.
 
 ## Licence
 

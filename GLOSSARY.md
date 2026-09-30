@@ -4,6 +4,8 @@
 (owner, DPC Research group, 2026-09-23 07:04 UTC: "create GLOSSARY.md here with proper English
 terms, so none of you invent words", translated from Russian). The terms reviewers asked for come
 from Ark, Johnny and Zcode (DPC Research group, 2026-09-23 07:26–07:38 UTC).
+**Updated 2026-09-30:** the table "Read these first" and section 11 were added (paraphrases only; the
+definitions stay in the registrations they name). Nothing above section 11 was changed except that table.
 
 **One term per concept, one meaning per term.** Each row gives the term this repository uses, what
 it means, what it must not be confused with, and the file that defines it or first uses it. The
@@ -28,6 +30,30 @@ defining source yet** instead of inventing one.
 The format follows `docs/GLOSSARY.md` of the dpc-messenger repository: one table row per term,
 the term in bold in the first column, sources as relative links. Its checker,
 `tools/backlog/glossary_check.py` there, verifies that every source link lands on a file.
+
+---
+
+## Read these first
+
+*Added 2026-09-30. A one-sentence paraphrase per term, in the order a new reader meets them; the
+defining section named in the last column wins whenever the two disagree. Terms that already have
+a row below point to it.*
+
+| Term | In one sentence | Defined in |
+|---|---|---|
+| **λ** (lambda) | The regularisation knob of rule #2.1's fit: how strongly the interaction term is shrunk; chosen from {1, 3, 10, 30, 100} by nested inner folds, ties going to the larger. | [failed-fit calibration](docs/plans/2026-09-29-failed-fit-branch-calibration-registration.md) §3 (the fitter, step 2); [block A](docs/plans/2026-09-24-knockout-regrow-registration.md) §3.8 |
+| **ceiling_block** | Rule #2.1 trained on the block's own cells alone, then scored on them: can the rule hold the block at all? A G verdict needs it at or above the gate cut 0.90. | [block A](docs/plans/2026-09-24-knockout-regrow-registration.md) §2.4, §4 |
+| **FF-sel / FF-struct / FF-opt / FF-quant** | The four sub-kinds of a failed fit: the λ choice picked a bad λ (sel); the class can hold the block but the fitter's optimum passes at no λ of the grid (struct); a better optimum exists that the starts miss (opt); the float fit passes but the 5-bit quantised model does not (quant). | [failed-fit calibration](docs/plans/2026-09-29-failed-fit-branch-calibration-registration.md) §3 (the FF table), §6 |
+| **ceil_1** | `ceiling_block` with λ forced to 1: what the registered fit reaches when the λ choice cannot go wrong. It is the number that separates FF-sel from the other three. | [failed-fit calibration](docs/plans/2026-09-29-failed-fit-branch-calibration-registration.md) §6 item 2 |
+| **cert** | The capacity search certificate: the best AUC found by searching the model class directly on a block's pattern, before any fit; at or above 0.90 it proves the class can hold the block. | [failed-fit calibration](docs/plans/2026-09-29-failed-fit-branch-calibration-registration.md) §6 item 1 |
+| **N1** (the additive anchor) | The type-marginal null: source and target effects only, no interaction. In BF_r and rule #2.1 it is fitted first and then held fixed as an offset. See the row **N1** in §4. | [failed-fit calibration](docs/plans/2026-09-29-failed-fit-branch-calibration-registration.md) §3 (the fitter, step 1); [C6 spec](docs/plans/2026-09-23-c6-control-specification.md) §3 |
+| **block** (block A / block B) | The set of cells removed from the bank in a knock-out-and-regrow test. Block A: 8 medulla motion inputs × 8 direction-selective cells (64 cells). Block B: L1–L5 × the same 8 medulla inputs (40 cells). Each block is read on its own. | [block A](docs/plans/2026-09-24-knockout-regrow-registration.md) §0; [block B](docs/plans/2026-09-25-knockout-regrow-block-b-registration.md) §0, §1.2 |
+| **rule #2.1** | The second rule, with its gate G-e+ judged on the fold mean (S1) and a larger offset library (W1); the only rule that passed its gates and ran on C6. | [rule #2.1 registration](docs/plans/2026-09-23-rule-2-1-registration.md) §0 |
+| **BF_1–BF_4** | The trained bilinear-factorisation opponents at rank 1 to 4. See the row **BF_r** in §4. | [C6 spec](docs/plans/2026-09-23-c6-control-specification.md); [block A](docs/plans/2026-09-24-knockout-regrow-registration.md) §2.2 |
+| **TAU** | The registered tie tolerance (1e-9) used when two scores are compared; a tie policy, not the instrument's resolution. | [block A](docs/plans/2026-09-24-knockout-regrow-registration.md) §3.8; [TAU note](docs/notes/2026-09-23-c6-harness-tau-in-p3-p4.md) |
+| **pin** (a pinned hash) | A sha256 of a file's bytes recorded elsewhere, so the file cannot change silently; a pinned or registered file is written in English from the start and, if it must change, the change is dated beside the old hash. | [CHECKLIST](docs/CHECKLIST-research-repo.md) § Language, "Pinned files from here on" |
+| **C6** | The exam a regenerating rule must pass. See the row **C6** in §6. | [C6 spec](docs/plans/2026-09-23-c6-control-specification.md) §0, §7 |
+| **P1–P4** | The four pass conditions of C6. See the row **P1–P4** in §6. | [C6 spec](docs/plans/2026-09-23-c6-control-specification.md) §5.1 |
 
 ---
 
@@ -199,3 +225,23 @@ the term in bold in the first column, sources as relative links. Its checker,
 | **N…** (collision) | **null N0, N1, N_EB**; **criterion N1–N3**; **N** = number of individuals; **N** in L = ln(1 + N) = the synapse-count matrix; **N32** = raw float counts. | — | [C6 spec](docs/plans/2026-09-23-c6-control-specification.md) §3; [acceptance](docs/plans/2026-09-23-c6-amendment-acceptance.md) (a); [REGULARITY-READING.md](results/genome/bank/REGULARITY-READING.md) §2, §4 |
 | **R1…**, **S2**, **C3**, **L1** (collision) | **R1–R3**: acceptance criteria. **R1–R4**: the checklist's numbered rules. **S2**: the S2 genome design (`docs/plans/2026-09-20-genome-design-around-s2.md`) and criterion S2 of acceptance part 3; `S` is also the sign matrix and Clune's regularity knob. **C3**: a cell type and a checkpoint rung (25,000). **L1**, **L2**: cell types, offset-pattern levels, and L is the log-count matrix. Always qualify. | — | [acceptance](docs/plans/2026-09-23-c6-amendment-acceptance.md); [CHECKLIST](docs/CHECKLIST-research-repo.md) items 8–11; [acceptance, part 3](docs/plans/2026-09-23-c6-amendment-acceptance-3.md) § "Criteria"; [REGULARITY-DECLARATION.md](results/genome/bank/REGULARITY-DECLARATION.md) |
 | **α, λ, ρ** (collision) | **α**: N_EB's smoothing; `alpha` is the json sign; α_s is N1's source effect on counts. **λ**: N1's penalty (1); BF_r's penalty (nested CV); `lambda_mult` in the json. **ρ**: PL's planted strength; Spearman's ρ (profiles, critical ρ). | — | [acceptance](docs/plans/2026-09-23-c6-amendment-acceptance.md); [C6 spec](docs/plans/2026-09-23-c6-control-specification.md) A4; [type_pairs.csv](results/genome/bank/type_pairs.csv); [PROFILES-READING.md](results/night5/diagnostics/rowB/PROFILES-READING.md) §0(d) |
+
+## 11. Knockout-and-regrow, the failed-fit branch and replication (added 2026-09-30)
+
+Every definition lives in the registration section named in the last column; a row paraphrases it
+in one sentence and adds nothing. No result value is carried here.
+
+| Term | Meaning | Not to be confused with | Source |
+|---|---|---|---|
+| **knock out and regrow** | A test of generation: remove every cell of a block from the bank, train the rule on the rest, and ask whether its predictions for the removed cells tell the present ones from the absent ones better than in shuffled banks and than in the block's own permuted labels. | fitting the block (the rule never sees it). | [block A](docs/plans/2026-09-24-knockout-regrow-registration.md) §0 |
+| **leg S / leg P** | The two comparisons of the test. **Leg S**: the real block's AUC margin over N1 against the same knockout in the 99 degree-preserving shuffles. **Leg P**: the predictions scored against the block's labels permuted within the block. | P3 or P4 of C6 (§6). | [block A](docs/plans/2026-09-24-knockout-regrow-registration.md) §3.2; [block B](docs/plans/2026-09-25-knockout-regrow-block-b-registration.md) §0 |
+| **R / W / G / U** (block verdicts) | The four branches of the reading rule, tested in order: R regrows, W the rule is weaker than the information available, G not detected at the R level, U cannot be separated. U is the remainder. Block B adds one U kind that precedes the four. | the C6 verdict PASS/FAIL (§5). | [block A](docs/plans/2026-09-24-knockout-regrow-registration.md) §4; [block B](docs/plans/2026-09-25-knockout-regrow-block-b-registration.md) §4 |
+| **GATE_CUT** | The constant 0.90: below it on `ceiling_block`, a G is not read and the verdict goes to U. | the mechanism cut (a separate constant, split from it in revision 3.2). | [block A](docs/plans/2026-09-24-knockout-regrow-registration.md) §4 |
+| **failed-fit branch** | The U text "failed fit: rule #2.1 cannot hold the block even when trained on it alone", given when `ceiling_block` is below the gate cut. It cannot by itself separate a failed fit from a rank limit. | a threshold U (on the detection threshold). | [failed-fit calibration](docs/plans/2026-09-29-failed-fit-branch-calibration-registration.md) §0 |
+| **λ_c** | The λ that the block-only fit actually chose (or was forced to) and that set `ceiling_block`. | λ of the bank fits (§4); `LAMBDA_MAX`. | [failed-fit calibration](docs/plans/2026-09-29-failed-fit-branch-calibration-registration.md) §3, §6 |
+| **`ceil_1_float`, `ceil_λc_float`, `ceil_1_starts100`** | The separator's diagnostic ceilings: `ceil_1` and the ceiling at λ_c read before quantisation, and `ceil_1` with 100 starts (a named FF-opt when it reaches the gate). Printed beside the registered objects; they decide no label. | `ceiling_block`, the registered gate variable. | [failed-fit calibration](docs/plans/2026-09-29-failed-fit-branch-calibration-registration.md) §6 |
+| **FC / FN1 / FN2** (synthetic worlds) | The calibration's worlds of known cause on block B's shape: FC forces the FF-sel cause; FN1 and FN2 swap one or two present and absent cells of the z board and expect it naturally. | the natural boards of the replication (below). | [failed-fit calibration](docs/plans/2026-09-29-failed-fit-branch-calibration-registration.md) §4 |
+| **read at a collapsed interaction** | A declared class of verdicts: the block-only fit was taken at λ_c = 100 and its \|u·v\| is at or below `UV_FLOOR`, so the verdict is not evidence about the rule's interaction structure. Adds a reading line; changes no label. **Draft, rev 1; to be restated with λ_c = 100 as the defining condition and \|u·v\| as its consequence (review, DPC Research chat, 2026-09-29 16:15 UTC).** | an FF sub-kind (a cause, not a class of verdict). | [collapsed-lambda registration](docs/plans/2026-09-29-collapsed-lambda-verdict-class-registration.md) §2 |
+| **natural fit-failure replication** (**RP1–RP6**) | The registered replication of the natural FF-sel collapse of rule #2.1 on 300 fresh permuted boards of block B's shape; its outcome is the list of labels RP1–RP6 that hold, beside hold/fail lines P1–P5. | the calibration's 99-board reference. | [replication registration](docs/plans/2026-09-29-natural-fit-failure-replication-registration.md) §0, §6, §7 |
+| **male CNS arm** | The animal control of block A: the same test on the Janelia male CNS bank, per optic lobe, read jointly with flyvis-65. | block B (a second block, same bank as A). | [male arm registration](docs/plans/2026-09-26-knockout-regrow-male-cns-arm-registration.md) §0, §4.2, §5 |
+| **GPU instrument** | A separate batched float64 PyTorch/CUDA re-implementation of the BF_r fits, used beside the pinned CPU harness in a hybrid synthetic step; not a rewrite of the CPU instrument. | the registered CPU path of block A and block B. | [GPU instrument registration](docs/plans/2026-09-26-gpu-instrument-registration.md) §0; [README](results/genome/c6/gpu_instrument/README.md) |
