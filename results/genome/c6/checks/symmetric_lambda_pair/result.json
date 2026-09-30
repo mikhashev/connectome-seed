@@ -1,0 +1,393 @@
+{
+ "registration": "docs/plans/2026-09-30-symmetric-lambda-pair-registration.md",
+ "revision": "1",
+ "inputs": {
+  "raw_store": "C:\\Users\\mikha\\Documents\\dpc-research\\connectome-seed-data\\knockout_regrow\\flyvis65_20260925T171656Z_74de0401a21f\\raw_fits_real.json.gz",
+  "raw_store_sha256": "3c20e837d07ebba10db20963712bf87a8633c410e8a483ac4b10d65c737e6006",
+  "raw_store_pinned": "3c20e837d07ebba10db20963712bf87a8633c410e8a483ac4b10d65c737e6006",
+  "files_sha256_lf": {
+   "results/genome/bank/offsets.csv": "8c45e8508d8f6ae45e9ab3f9d95d58e4521894ccfa51954f6d77d41e550fa5f0",
+   "results/genome/bank/types.csv": "237a195a36f62ce182fee8486394c27d2beb9825bc029cb215c39c0fa323a477",
+   "results/genome/c6/folds.csv": "fb6f153b67fe1785a76c3823911e6fbb91cdda57ec952b36c40b4c95f1e213b8",
+   "results/genome/c6/harness.py": "6fc809527c69ee84aadebfc15c0ba755c189ddc93c80c05c0fa11d969a8d7297",
+   "results/genome/c6/rules/second_rule_v21/fit.py": "92eb6ab1524bb22379b2d21184d10f493ff4c803a41918be8ee16f389a58d16c",
+   "results/genome/c6/rules/second_rule_v21/decode.py": "39a049013af18a1e89e534d9d378a5f59a772b894d7fab5b79f82f702723a15a",
+   "results/genome/c6/decoders/bf_decode.py": "6404210c5e78bbaaa14c6cddc6df7fc41ce958e6ff957c062cc956faad59c1de",
+   "results/genome/c6/decoders/n1_decode.py": "e9eb00e174fa3454046f8cc92439f2132f27697d5b7467bd3f22b64a37c8db96",
+   "docs/plans/2026-09-30-symmetric-lambda-pair-registration.md": "8865753ee1c7d9c946d434e08d7227c1f29ae0500fef6339f1b22e55fe507808",
+   "results/genome/c6/checks/knockout_regrow.py": "113c4526000f77d773b5db57890554e8a8797587683ce3f31f991d9cc77bb9dc",
+   "results/genome/c6/checks/knockout_regrow_block_b.py": "e650e47e5f6660500eca10fcb08f48ad68f41a25838892d3148fcc4616bb887b",
+   "results/genome/c6/checks/failed_fit_calibration.py": "220201c229800097aed62afba242a7e3593d9f7205274fc015207ab795d3af43",
+   "results/genome/c6/checks/natural_fit_failure_replication.py": "a802afa984c95345a5efd69fd8df2016df25edc1b90d6d76130549544f0f2fee",
+   "results/genome/c6/checks/block_b_ceil1.py": "e4b85ff168f33614c8bb7c9132267054024153752bac26dc50d1263d6355391b",
+   "docs/prereg-scripts/2026-09-29-capacity-survey/survey.py": "0bbdd15cc5f1c9a2bc5b31b33cf36c7650eb8100d71b6535510e8d930b77c000",
+   "results/genome/c6/checks/knockout_regrow/summary.json": "1337c57728bb54ed27a1413e78a0107bc6b874dbf96a61d5c25fc2fe7760a82c",
+   "results/genome/c6/checks/knockout_regrow_block_b/summary.json": "a43e0319bf040d421e6a7d1ef5f7e34131bb4d862b34cf4fa4e1441c2592f520",
+   "results/genome/c6/checks/block_b_ceil1/result.json": "3c1e6d32a7a0aca60a482f0621d47d1bbecfe9706ae64b97250a691ea6aa0249"
+  },
+  "this_script_sha256_lf": "1a084350251ce7ad212d45d26c7447471ec693c3e7f34f8d3121714ab99486da",
+  "registration_sha256_lf": "8865753ee1c7d9c946d434e08d7227c1f29ae0500fef6339f1b22e55fe507808",
+  "registration_pinned": "8865753ee1c7d9c946d434e08d7227c1f29ae0500fef6339f1b22e55fe507808",
+  "git_head": "b44d3836973602f32f7bd021d9f399ab5763b150",
+  "git_status_porcelain": "",
+  "gate": {
+   "pins": {
+    "pins": {
+     "results/genome/bank/offsets.csv": "8c45e8508d8f6ae45e9ab3f9d95d58e4521894ccfa51954f6d77d41e550fa5f0",
+     "results/genome/bank/types.csv": "237a195a36f62ce182fee8486394c27d2beb9825bc029cb215c39c0fa323a477",
+     "results/genome/c6/folds.csv": "fb6f153b67fe1785a76c3823911e6fbb91cdda57ec952b36c40b4c95f1e213b8",
+     "results/genome/c6/harness.py": "6fc809527c69ee84aadebfc15c0ba755c189ddc93c80c05c0fa11d969a8d7297",
+     "results/genome/c6/rules/second_rule_v21/fit.py": "92eb6ab1524bb22379b2d21184d10f493ff4c803a41918be8ee16f389a58d16c",
+     "results/genome/c6/rules/second_rule_v21/decode.py": "39a049013af18a1e89e534d9d378a5f59a772b894d7fab5b79f82f702723a15a",
+     "results/genome/c6/decoders/bf_decode.py": "6404210c5e78bbaaa14c6cddc6df7fc41ce958e6ff957c062cc956faad59c1de",
+     "results/genome/c6/decoders/n1_decode.py": "e9eb00e174fa3454046f8cc92439f2132f27697d5b7467bd3f22b64a37c8db96"
+    },
+    "python": "3.10.20",
+    "numpy": "2.2.6",
+    "rule_name": "second_rule_v21_r1",
+    "rule_rank": 1,
+    "a_registration_sha256_lf": "fc41505690365ff6d82fa618b00b482cc992bb36d708ed3b6fbbe6f54f96dbec",
+    "a_registration_pinned_amended": "fc41505690365ff6d82fa618b00b482cc992bb36d708ed3b6fbbe6f54f96dbec",
+    "a_registration_flyvis65_text": "409184dead0a8f9b971bd4b480043725d4a0d1a3c53c20c35734a944a63facd6",
+    "passed": true
+   },
+   "block_and_mask_A": {
+    "cells": 64,
+    "sources": 8,
+    "targets": 8,
+    "training_cells": 4161,
+    "ceiling_block_cells": 64,
+    "passed": true
+   },
+   "auc_function": {
+    "hand_cases": [
+     1.0,
+     0.0,
+     0.5,
+     0.875,
+     0.9
+    ],
+    "got": [
+     1.0,
+     0.0,
+     0.5,
+     0.875,
+     0.9
+    ],
+    "rank_path": [
+     1.0,
+     0.0,
+     0.5,
+     0.875,
+     0.9
+    ],
+    "passed": true
+   },
+   "b_script_sha256_lf": "e650e47e5f6660500eca10fcb08f48ad68f41a25838892d3148fcc4616bb887b",
+   "a_script_sha256_lf": "113c4526000f77d773b5db57890554e8a8797587683ce3f31f991d9cc77bb9dc",
+   "cal_script_sha256_lf": "220201c229800097aed62afba242a7e3593d9f7205274fc015207ab795d3af43",
+   "rep_script_sha256_lf": "a802afa984c95345a5efd69fd8df2016df25edc1b90d6d76130549544f0f2fee",
+   "b1_script_sha256_lf": "e4b85ff168f33614c8bb7c9132267054024153752bac26dc50d1263d6355391b",
+   "b_summary_sha256_lf": "a43e0319bf040d421e6a7d1ef5f7e34131bb4d862b34cf4fa4e1441c2592f520",
+   "a_summary_sha256_lf": "1337c57728bb54ed27a1413e78a0107bc6b874dbf96a61d5c25fc2fe7760a82c",
+   "b_ceil1_result_sha256_lf": "3c1e6d32a7a0aca60a482f0621d47d1bbecfe9706ae64b97250a691ea6aa0249",
+   "survey_copy": {
+    "survey_py": "docs/prereg-scripts/2026-09-29-capacity-survey/survey.py",
+    "sha256_lf": "0bbdd15cc5f1c9a2bc5b31b33cf36c7650eb8100d71b6535510e8d930b77c000",
+    "pinned": "0bbdd15cc5f1c9a2bc5b31b33cf36c7650eb8100d71b6535510e8d930b77c000",
+    "copy_is_substring": true,
+    "passed": true
+   },
+   "raw_store_sha256": "3c20e837d07ebba10db20963712bf87a8633c410e8a483ac4b10d65c737e6006",
+   "stored_control": {
+    "exact": 1.0,
+    "twice": 2048,
+    "n_pairs": 1024,
+    "lam": 1.0,
+    "levels": 2
+   },
+   "reading_control_B": {
+    "passed": true,
+    "stored_ceiling_block": 0.7744360902255639,
+    "label": "U",
+    "stored_label": "U",
+    "text_equal": true,
+    "p_P_rows_present": true
+   },
+   "reading_control_A": {
+    "passed": true,
+    "stored_ceiling_block": 1.0,
+    "label": "G",
+    "stored_label": "G",
+    "text_equal": true,
+    "p_P_rows_present": true
+   }
+  }
+ },
+ "git_head": "b44d3836973602f32f7bd021d9f399ab5763b150",
+ "git_status_porcelain": "",
+ "result": {
+  "control": {
+   "lambda": 1.0,
+   "ceiling_block": {
+    "exact": 1.0,
+    "tau": 1.0,
+    "wins": 1024,
+    "ties": 0,
+    "twice": 2048,
+    "wins_tau": 1024,
+    "ties_tau": 0,
+    "n_pairs": 1024,
+    "ulp_sensitive": false,
+    "levels": 2
+   },
+   "expected": 1.0,
+   "min_gap_p": 0.7500000437558088,
+   "p_bit_equal_to_store": true,
+   "stored_lambda": 1.0,
+   "passed": true,
+   "reasons": []
+  },
+  "cert_A": {
+   "exact": 1.0,
+   "fraction": "1/1",
+   "tau": 1.0,
+   "counts_agree": true,
+   "ulp_sensitive": false,
+   "rerun_spread": 0.0,
+   "n_pairs": 1024,
+   "count_search": 1024.0,
+   "count_fraction": 1024.0,
+   "count_registered_auc": 1024.0
+  },
+  "ceil_100_A": {
+   "exact": 0.5,
+   "tau": 0.5,
+   "wins": 0,
+   "ties": 1024,
+   "twice": 1024,
+   "wins_tau": 0,
+   "ties_tau": 1024,
+   "n_pairs": 1024,
+   "ulp_sensitive": false,
+   "levels": 1
+  },
+  "ceil_100_A_float": {
+   "exact": 0.5,
+   "tau": 0.5,
+   "wins": 0,
+   "ties": 1024,
+   "twice": 1024,
+   "wins_tau": 0,
+   "ties_tau": 1024,
+   "n_pairs": 1024,
+   "ulp_sensitive": false,
+   "levels": 1
+  },
+  "uv_max_diagnostic": 3.289222246986234e-19,
+  "reading": {
+   "branch": "(b) A would fail at lambda = 100 as B did",
+   "branch_tau": "(b) A would fail at lambda = 100 as B did",
+   "at_the_cut": false,
+   "qualified": false,
+   "flags": [],
+   "text": "cert_A >= 0.90 and ceil_100_A < 0.90: A would fail at lambda = 100 as B did: the A/B pair differs by the lambda choice, not shown to differ by the block.",
+   "cert_ok": true,
+   "ceil_100_A_side": false,
+   "ceil_100_A_float_side": false,
+   "decoder_direction": null,
+   "uv_max_diagnostic": 3.289222246986234e-19
+  },
+  "object2": {
+   "B_at_lambda_1": {
+    "label": "G",
+    "text": "G: not detected at the R level above gamma_R (gate: rule #2.1's ceiling_block = 0.9624 >= 0.90; gamma_R = 0.75 (bracket (0.6, 0.75]); leg P from gamma*_P = 0.75 (bracket (0.6, 0.75]); family limit = 0.75 (set by rule #2.1, BF_1, BF_2, BF_3, BF_4); transition band empty: the two limits coincide (0 grid steps, 0 in gamma); per gamma seen/n, R/n: 0.5: 1/5, 1/5; 0.6: 1/5, 1/5; 0.75: 4/5, 4/5; 0.85: 5/5, 5/5; 1.0: 5/5, 5/5; M-world units; instrument: BF_LAMBDAS [1, 3, 10, 30, 100], ties within 1e-9 go to the larger lambda (harness.py:727-728), STARTS = 10)",
+    "U_reasons": [],
+    "mechanism_description": "orthogonal (rule #2.1's ceiling_full = 0.6316 < 0.90)",
+    "reading_A_rule": {
+     "primary": "rule #2.1",
+     "letter": "-",
+     "W_ranks": []
+    },
+    "reading_B_BF1": {
+     "primary": "BF_1",
+     "letter": "-",
+     "W_ranks": []
+    },
+    "ceiling_block_used": 0.9624060150375939,
+    "deciding_clause": "G clause: not R and not W (rule #2.1 -> -, BF_1 -> -); every p_P > 0.10 (smallest: BF_4 0.2442); the gate is passed (rule #2.1's ceiling_block = 0.9624 >= 0.90).",
+    "expected_label": "G",
+    "as_expected": true
+   },
+   "A_at_lambda_100": {
+    "label": "U",
+    "text": "U: failed fit: rule #2.1 cannot hold the block even when trained on it alone",
+    "U_reasons": [
+     "rule #2.1's ceiling_block = 0.5000 is below 0.90: the rule cannot hold the block even when trained on it alone"
+    ],
+    "mechanism_description": null,
+    "reading_A_rule": {
+     "primary": "rule #2.1",
+     "letter": "-",
+     "W_ranks": []
+    },
+    "reading_B_BF1": {
+     "primary": "BF_1",
+     "letter": "-",
+     "W_ranks": []
+    },
+    "ceiling_block_used": 0.5,
+    "deciding_clause": "U clause: rule #2.1's ceiling_block = 0.5000 is below 0.90: the rule cannot hold the block even when trained on it alone. (The gate reads rule #2.1's ceiling_block = 0.5000; every p_P: rule #2.1 0.3288, BF_1 0.3837, BF_2 0.4912, BF_3 0.5119, BF_4 0.5042.)"
+   },
+   "pair_table": [
+    {
+     "block": "A",
+     "lambda_block": 1,
+     "ceiling_block": 1.0,
+     "gate_passed": true,
+     "label": "G",
+     "label_text": "G: not detected at the R level above gamma_R (gate: rule #2.1's ceiling_block = 1.0000 >= 0.90; gamma_R = 0.75 (bracket (0.6, 0.75]); leg P from gamma*_P = 0.6 (bracket (0.5, 0.6]); family limit = 0.75 (set by BF_2, BF_3, BF_4); transition band [0.6, 0.75): 1 grid step(s), 0.15 in gamma; per gamma seen/n, R/n: 0.5: 1/5, 1/5; 0.6: 3/5, 2/5; 0.75: 5/5, 5/5; 0.85: 5/5, 5/5; 1.0: 5/5, 5/5; M-world units; instrument: BF_LAMBDAS [1, 3, 10, 30, 100], ties within 1e-9 go to the larger lambda (harness.py:727-728), STARTS = 10)"
+    },
+    {
+     "block": "A",
+     "lambda_block": 100,
+     "ceiling_block": 0.5,
+     "gate_passed": false,
+     "label": "U",
+     "label_text": "U: failed fit: rule #2.1 cannot hold the block even when trained on it alone"
+    },
+    {
+     "block": "B",
+     "lambda_block": 1,
+     "ceiling_block": 0.9624060150375939,
+     "gate_passed": true,
+     "label": "G",
+     "label_text": "G: not detected at the R level above gamma_R (gate: rule #2.1's ceiling_block = 0.9624 >= 0.90; gamma_R = 0.75 (bracket (0.6, 0.75]); leg P from gamma*_P = 0.75 (bracket (0.6, 0.75]); family limit = 0.75 (set by rule #2.1, BF_1, BF_2, BF_3, BF_4); transition band empty: the two limits coincide (0 grid steps, 0 in gamma); per gamma seen/n, R/n: 0.5: 1/5, 1/5; 0.6: 1/5, 1/5; 0.75: 4/5, 4/5; 0.85: 5/5, 5/5; 1.0: 5/5, 5/5; M-world units; instrument: BF_LAMBDAS [1, 3, 10, 30, 100], ties within 1e-9 go to the larger lambda (harness.py:727-728), STARTS = 10)"
+    },
+    {
+     "block": "B",
+     "lambda_block": 100,
+     "ceiling_block": 0.7744360902255639,
+     "gate_passed": false,
+     "label": "U",
+     "label_text": "U: failed fit: rule #2.1 cannot hold the block even when trained on it alone"
+    }
+   ],
+   "lambda_provenance_B": {
+    "per_predictor_ko_full_block": {
+     "rule": {
+      "ko": 1.0,
+      "full": 1.0,
+      "block": 100.0
+     },
+     "BF:1": {
+      "ko": 1.0,
+      "full": 1.0,
+      "block": 1.0
+     },
+     "BF:2": {
+      "ko": 1.0,
+      "full": 3.0,
+      "block": 1.0
+     },
+     "BF:3": {
+      "ko": 3.0,
+      "full": 3.0,
+      "block": 1.0
+     },
+     "BF:4": {
+      "ko": 3.0,
+      "full": 3.0,
+      "block": 1.0
+     },
+     "N1": {
+      "ko": null,
+      "full": null,
+      "block": null
+     }
+    },
+    "leg_S_shuffle_fits_selected_lambda": {
+     "rule": {
+      "100": 97,
+      "3": 2
+     },
+     "BF:1": {
+      "100": 97,
+      "3": 2
+     },
+     "BF:2": {
+      "100": 99
+     },
+     "BF:3": {
+      "100": 99
+     },
+     "BF:4": {
+      "100": 98,
+      "3": 1
+     }
+    }
+   },
+   "lambda_provenance_A": {
+    "per_predictor_ko_full_block": {
+     "rule": {
+      "ko": 1.0,
+      "full": 1.0,
+      "block": 1.0
+     },
+     "BF:1": {
+      "ko": 1.0,
+      "full": 1.0,
+      "block": 1.0
+     },
+     "BF:2": {
+      "ko": 1.0,
+      "full": 3.0,
+      "block": 1.0
+     },
+     "BF:3": {
+      "ko": 3.0,
+      "full": 3.0,
+      "block": 1.0
+     },
+     "BF:4": {
+      "ko": 3.0,
+      "full": 3.0,
+      "block": 1.0
+     },
+     "N1": {
+      "ko": null,
+      "full": null,
+      "block": null
+     }
+    },
+    "leg_S_shuffle_fits_selected_lambda": {
+     "rule": {
+      "100": 99
+     },
+     "BF:1": {
+      "100": 99
+     },
+     "BF:2": {
+      "100": 99
+     },
+     "BF:3": {
+      "100": 99
+     },
+     "BF:4": {
+      "100": 98,
+      "3": 1
+     }
+    }
+   }
+  },
+  "n_present": 32,
+  "n_pairs": 1024,
+  "levels": {
+   "ceil_100_A": 1,
+   "ceil_100_A_float": 1
+  },
+  "ceil_1_B_used": 0.9624060150375939
+ },
+ "stop": null,
+ "utc": "2026-09-30T16:10:35Z"
+}
