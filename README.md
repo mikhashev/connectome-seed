@@ -66,7 +66,7 @@ The main findings, each as the question it answers and the file that carries it:
 - **BF_1 alone on P3** (does one rank-1 term separate the real bank from shuffles?) — [note](docs/notes/2026-09-24-bf1-p3-what-it-showed.md), 2026-09-24.
 - **A second brain, FlyWire, on P3** (does the same test hold on another fly's wiring?) — [note](docs/notes/2026-09-24-flywire-p3-what-it-showed.md), 2026-09-24.
 - **Knock out and regrow, block A** (does a rule regrow a removed 64-cell block it was not shown?) — [RESULT](results/genome/c6/checks/knockout_regrow/RESULT.md), 2026-09-26.
-- **Knock out and regrow, block B** (the same question for a second, 40-cell block) — [RESULT](results/genome/c6/checks/knockout_regrow_block_b/RESULT.md), 2026-09-28; reading under review, see [READING_NOTES.md §6](results/genome/c6/checks/natural_fit_failure_replication/READING_NOTES.md).
+- **Knock out and regrow, block B** (the same question for a second, 40-cell block) — [RESULT](results/genome/c6/checks/knockout_regrow_block_b/RESULT.md), 2026-09-28; reading under review: [block B notes](results/genome/c6/checks/knockout_regrow_block_b/READING_NOTES.md) §1, §7, §9 carry it; the λ continuation is in [replication notes](results/genome/c6/checks/natural_fit_failure_replication/READING_NOTES.md) §6.
 - **Failed-fit branch calibration** (can the reading tell a failed fit from a rank limit?) — [CALIBRATION](results/genome/c6/checks/failed_fit_calibration/CALIBRATION.md), 2026-09-29.
 - **Natural fit-failure replication** (does the failed fit recur on fresh boards?) — [REPLICATION](results/genome/c6/checks/natural_fit_failure_replication/REPLICATION.md), [notes](results/genome/c6/checks/natural_fit_failure_replication/READING_NOTES.md), 2026-09-29.
 - **GPU instrument** (a separate, faster fitter for the synthetic worlds) — [README](results/genome/c6/gpu_instrument/README.md), 2026-09-26.
@@ -85,11 +85,12 @@ The main findings, each as the question it answers and the file that carries it:
 | `backlog.md`, `backlog_closed.md` | open and closed tasks; edited only through the shared backlog tool of dpc-messenger, never by hand | repo |
 | `backlog.html`, `graph.html`, `graph.json` | board view, entry graph and its data, built from `backlog.md` | gitignored (regenerated) |
 | `chat/` | the group-chat thread, one file per message | gitignored, local only |
-| `docs/` | `plans/` registrations, `notes/` what each run showed, `decisions/` ADRs, `briefs/` handovers, `experiments/` and `retrospectives/` records, `prereg-scripts/` scripts committed before a reading, `history/` moved-out old text | repo |
+| `docs/` | `plans/` registrations, `notes/` what each run showed, `decisions/` ADRs, `briefs/` handovers, `experiments/` and `retrospectives/` records, `prereg-scripts/` scripts committed before a reading, `proposals/` design proposals, `history/` moved-out old text | repo |
 | `research/` | notes imported from Ark's sandbox (AlphaGenome atlas, the cheap-step analysis, USPEX analogue) | repo |
 | `results/` | committed run outputs: `night1`–`night6` (measurement line), `genome/` (the C6 exam, rules, checks, GPU instrument), `diagnostics/` | repo |
 | `sources/` | two full-text source copies and the open-access Shuvaev PDF; `sources/local/` holds copies with no redistribution licence | repo; `sources/local/` gitignored |
 | `tools/` | `atlas/` page builder, `night/` overnight run launcher, `reachability/` and `viz/` (reading harness; Blender explanatory figures and film), `contamination_scan.py`, `venv_manifest.py`, `.venv/` | repo; `.venv/` and raw `night/` logs gitignored |
+| `.claude/` | agents' working trees: a second copy of the tree; searches of the repo must exclude it | excluded locally (`.git/info/exclude`), never committed |
 | `../connectome-seed-data/` | raw connectomes (FlyWire, Hemibrain, Janelia male CNS), Sintel data, raw outputs of runs, renderings | outside the repo |
 
 ## How to read a result
