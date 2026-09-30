@@ -69,6 +69,8 @@ The main findings, each as the question it answers and the file that carries it:
 - **Knock out and regrow, block B** (the same question for a second, 40-cell block) — [RESULT](results/genome/c6/checks/knockout_regrow_block_b/RESULT.md), 2026-09-28; reading under review: [block B notes](results/genome/c6/checks/knockout_regrow_block_b/READING_NOTES.md) §1, §7, §9 carry it; the λ continuation is in [replication notes](results/genome/c6/checks/natural_fit_failure_replication/READING_NOTES.md) §6.
 - **Failed-fit branch calibration** (can the reading tell a failed fit from a rank limit?) — [CALIBRATION](results/genome/c6/checks/failed_fit_calibration/CALIBRATION.md), 2026-09-29.
 - **Natural fit-failure replication** (does the failed fit recur on fresh boards?) — [REPLICATION](results/genome/c6/checks/natural_fit_failure_replication/REPLICATION.md), [notes](results/genome/c6/checks/natural_fit_failure_replication/READING_NOTES.md), 2026-09-29.
+- **Rule #2.1 on the real block B at a fixed λ = 1** (was B's failure the λ choice or a limit of the rule?) — [RESULT](results/genome/c6/checks/block_b_ceil1/RESULT.md), [review record](results/genome/c6/checks/block_b_ceil1/BLIND_REVIEW.md), 2026-09-30.
+- **The symmetric λ pair** (do blocks A and B differ when both are read at the same λ?) — [RESULT](results/genome/c6/checks/symmetric_lambda_pair/RESULT.md), [blind review](results/genome/c6/checks/symmetric_lambda_pair/BLIND_REVIEW_raw.md), 2026-09-30.
 - **GPU instrument** (a separate, faster fitter for the synthetic worlds) — [README](results/genome/c6/gpu_instrument/README.md), 2026-09-26.
 
 ## Map of the repository
