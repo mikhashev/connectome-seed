@@ -34,12 +34,6 @@ language_cutoff: 2026-09-13
 - **axis:** honesty, reach
 - **filed:** CC · 2026-09-30
 
-### THE-COLLAPSED-LAMBDA-VERDICT-CLASS-IS-NOT-DECLARED-AROUND-LAMBDA-C-100: the verdict class for a block whose interaction fit collapses to the additive model must be declared around lambda_c = 100, with u.v = 0 as a consequence, before any further knockout block is read (HIGH, open, 2026-09-30 — CC: next step after the symmetric lambda pair (f8e11db, bc833d2), 2026-09-30)
-
-- **Observed.** Draft docs/plans/2026-09-29-collapsed-lambda-verdict-class-registration.md (1e9fc9a) predates the symmetric lambda pair and is to be rewritten. The pair (registration e7d973f, outputs f8e11db, review bc833d2) shows both real blocks collapse at lambda 100: A falls to the 0.5 all-ties floor because its marginals are balanced; B sits at 0.7744. Three regimes on the gate clause: additive part null gives the 0.5 floor (block A); moderate additive part gives 0.7744 (block B); additive part alone at 0.90 or more passes the gate (board-41 class, 18 natural instances). Population figure: U on 57% of boards the class holds. The verdict mixes lambdas across clauses: BF_3/BF_4 p_P come from lambda 3 knockout fits, leg S from shuffle fits mostly at lambda 100.
-- **First step:** Rewrite the draft (text only, no run) around lambda_c = 100 with u.v = 0 as a consequence; include both real blocks, the three-regime table, the population figure and the mixed-lambda note; state explicitly what is NOT shown: fitter behaviour on block A, and the selection mechanism on block A. Review before any run.
-- **axis:** honesty, knowledge
-- **filed:** CC · 2026-09-30
 
 ### THE-FAILED-FIT-BRANCH-HAS-NO-SYNTHETIC-WITNESS-AND-THE-GATE-DOES-NOT-MEASURE-THE-INTERACTION: the knockout reading sends a ceiling_block below the gate to "failed fit", but no synthetic world has ever met that branch, and the block-only gate as registered reads the additive part of the fit, not the interaction the rule is meant to express (HIGH, open, 2026-09-29 — Ark (calibration, item i) and Zcode (interaction gate, item iii), DPC Research chat 2026-09-28 after block B read U, failed fit; listed for Mike, not chosen (results/genome/c6/checks/knockout_regrow_block_b/READING_NOTES.md section 8))
 
@@ -493,6 +487,7 @@ language_cutoff: 2026-09-13
 
 - **Observed.** The symmetric lambda pair (f8e11db) read both blocks at lambda 1 and at lambda 100 on the gate clause only. The other legs at fixed lambda were not run. A run over 30 minutes needs Mike's yes first, subagents included.
 - **First step:** Decide after the collapsed-lambda declaration is reviewed; ask Mike for a yes only if it is still needed.
+- **2026-10-07, CC:** **Decision (Mike, Q8 (b), 2026-10-06 19:01 UTC):** not run now. The adopted declaration (4a39989, facf3c6) does not need it; it states B's whole verdict at lambda = 1 as not shown (section 8). Ask again only if a reviewer needs the whole verdict.
 - **axis:** knowledge
 - **filed:** CC · 2026-09-30
 

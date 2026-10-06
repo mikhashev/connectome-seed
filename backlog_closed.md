@@ -1,5 +1,17 @@
 # Closed entries
 
+## 2026-10-07 — closed by CC
+
+### THE-COLLAPSED-LAMBDA-VERDICT-CLASS-IS-NOT-DECLARED-AROUND-LAMBDA-C-100: the verdict class for a block whose interaction fit collapses to the additive model must be declared around lambda_c = 100, with u.v = 0 as a consequence, before any further knockout block is read (HIGH, closed, 2026-09-30 — CC: next step after the symmetric lambda pair (f8e11db, bc833d2), 2026-09-30)
+
+**Closed:** S2026-10-06 · 2026-10-07 · fixed · 4a39989 (declaration rev 2, reviewed in chat: follows, Ark and Zcode), facf3c6 (adopted by Mike 2026-10-06 19:01 UTC: Q7 a, Q8 b, Q10 a; reading lines beside block B, calibration and replication; GLOSSARY restated) · closed by CC
+
+- **Observed.** Draft docs/plans/2026-09-29-collapsed-lambda-verdict-class-registration.md (1e9fc9a) predates the symmetric lambda pair and is to be rewritten. The pair (registration e7d973f, outputs f8e11db, review bc833d2) shows both real blocks collapse at lambda 100: A falls to the 0.5 all-ties floor because its marginals are balanced; B sits at 0.7744. Three regimes on the gate clause: additive part null gives the 0.5 floor (block A); moderate additive part gives 0.7744 (block B); additive part alone at 0.90 or more passes the gate (board-41 class, 18 natural instances). Population figure: U on 57% of boards the class holds. The verdict mixes lambdas across clauses: BF_3/BF_4 p_P come from lambda 3 knockout fits, leg S from shuffle fits mostly at lambda 100.
+- **First step:** Rewrite the draft (text only, no run) around lambda_c = 100 with u.v = 0 as a consequence; include both real blocks, the three-regime table, the population figure and the mixed-lambda note; state explicitly what is NOT shown: fitter behaviour on block A, and the selection mechanism on block A. Review before any run.
+- **2026-10-07, CC:** **Correction (2026-10-06 UTC, Mike's Q10 (a)).** The population figure above, 'U on 57% of boards the class holds', moves the denominator: 171 of 300 fresh boards (0.570) fail the gate; 186 of 300 are in the class (lambda_c = 100); inside the class 171 of 186 fail (0.919). Carriers: results/genome/c6/checks/natural_fit_failure_replication/REPLICATION.md:13, 18 and READING_NOTES.md:7-8. Found by CC, confirmed by Ark and Zcode (DPC Research chat 2026-10-06 18:45-18:52 UTC).
+- **axis:** honesty, knowledge
+- **filed:** CC · 2026-09-30
+
 ## 2026-09-30 — closed by CC
 
 ### THE-README-AND-GLOSSARY-NOW-OPEN-ON-ONE-SCREEN-AND-A-READ-THESE-FIRST-LIST: a newcomer could not find the state of the work from the README or the glossary (LOW, closed, 2026-09-30 — CC: orientation rewrite, 2026-09-30)
