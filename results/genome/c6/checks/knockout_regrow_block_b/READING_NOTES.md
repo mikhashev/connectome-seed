@@ -208,6 +208,18 @@ holds at lambda = 1, so the `ceiling_block` clause stops being a cause of the U 
 knockout AUC, n_ge) were computed at lambda = 100 and were not recomputed at lambda = 1, so this is
 not a statement about B's whole verdict at lambda = 1. The registered label is not edited.
 
+**Scope correction (2026-10-06 UTC, after review by Ark and Zcode).** The sentence above saying p_P,
+the knockout AUC and n_ge "were computed at lambda = 100" is wrong: of rule #2.1's three fits only
+the block-only fit chose lambda = 100; its knockout and full fits chose lambda = 1 (ko/full/block
+1/1/100, `RESULT.md` §3.5 and `symmetric_lambda_pair/RESULT.md`), as §11 below states. The rest of
+the paragraph stands.
+
+**Reading line (collapsed-lambda verdict class, adopted 2026-10-06 UTC, Mike's Q7 (a)):** B's U is
+**"read at a collapsed interaction: not evidence about the rule's interaction structure."** Its
+block-only fit was taken at lambda_c = 100; sub-kind FF-sel (`cert` 0.992481, `ceil_1` 0.9624).
+Declaration: `docs/plans/2026-09-29-collapsed-lambda-verdict-class-registration.md` §1, §7. The
+registered label is not edited.
+
 Status of the check: an independent recomputation that bypasses the script's functions
 (`block_b_ceil1/BLIND_REVIEW.md`, raw output beside it); not blind, because the reviewer saw the
 branch in a commit subject before starting.

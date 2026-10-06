@@ -2,8 +2,8 @@
 
 **Status: rev 2, text only, reviewed in chat: follows (Ark 18:45:51, Zcode 18:52:53, DPC Research
 chat 2026-10-06 UTC; Warren 18:46:55 and Johnny 18:55:49 in support). The review's citation and
-wording fixes are applied in this text (§12 records the answers). Mike's decisions on Q7, Q8 and
-Q10 are pending.**
+wording fixes are applied in this text (§12 records the answers). Adopted: Mike, 2026-10-06
+19:01:25 UTC, Q7 (a), Q8 (b), Q10 (a) (§12).**
 
 **Revision note.**
 - **Rev 2, 2026-10-06 UTC.** It replaces rev 1 (commit `1e9fc9a`, 2026-09-29), in place.
@@ -562,7 +562,11 @@ those fail (§4). The correction goes through the backlog tool only.
 - **Q3:** do not widen now (Zcode).
 - **Q6:** answered above.
 - **Q9:** text now; S-L7 extended to the three regimes of §3 (Ark, Zcode).
-- **Q7, Q8, Q10:** reviewers vote (a), (b), (a) (Ark, Warren, Zcode, Johnny). **Mike decides.**
+- **Q7, Q8, Q10:** reviewers vote (a), (b), (a) (Ark, Warren, Zcode, Johnny). **Mike decided
+  (a), (b), (a)** (2026-10-06 19:01:25 UTC). Q7: the line is placed in block B's reading notes (§10,
+  with the scope correction), the calibration's new `READING_NOTES.md` and the replication's
+  reading notes §7; `GLOSSARY.md` restated. Q8: B's full verdict at λ = 1 is not run. Q10: the
+  backlog entry carries the correction.
 
 **Superseded rev 1 questions.** Rev 1's Q5 (how B's line reads without `ceil_1`) and Q8 (measure
 B's `ceil_1` and `cert`) are closed by B1 (§5.2). Rev 1's Q1–Q4, Q6, Q7 and Q9 are kept above under

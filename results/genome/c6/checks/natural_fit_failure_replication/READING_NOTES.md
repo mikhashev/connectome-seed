@@ -72,3 +72,20 @@ at lambda = 100 the additive part decides (Johnny, 16:10:00). Block A passed at 
 (knockout_regrow/RESULT.md:17, 1.0000); block B failed at 100 (knockout_regrow_block_b/RESULT.md:31,
 0.7744). Option 2 becomes text only: declare the structural class "a verdict taken at lambda_c =
 100 with u.v = 0 is not evidence about the rule" in a registration.
+
+## 7. Reading line of the collapsed-lambda verdict class (adopted 2026-10-06 UTC, Mike's Q7 (a))
+
+Declaration: `docs/plans/2026-09-29-collapsed-lambda-verdict-class-registration.md` (§1, §4, §7).
+The class is defined by lambda_c = 100 alone; u.v = 0 is its consequence (this replaces the
+two-condition wording of section 6's last sentence).
+
+- The 186 fresh boards at lambda_c = 100 are in the class and carry the line **"read at a
+  collapsed interaction: not evidence about the rule's interaction structure."**
+- Of them, 171 are U: 165 read FF-sel, 1 FF-quant at lambda 1 (fresh:40), 5 FF-struct or FF-opt,
+  not separated. The 15 G read "additive-only pass (the board 41 class)".
+- The 56 seen boards at lambda_c = 100 read the same way: 3 G as additive-only passes; 52 of the
+  53 U FF-sel; perm:89 (`ceil_1` 0.895) keeps its row.
+- Denominators: "171 of 300 (0.570)" in section 1 is the failure rate over all fresh boards. Inside
+  the class the failure rate is 171 of 186 (0.919, arithmetic on REPLICATION.md P5).
+
+No label changes; the frozen outputs are not edited.
