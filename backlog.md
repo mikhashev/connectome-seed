@@ -27,12 +27,6 @@ language_cutoff: 2026-09-13
 - **axis:** honesty
 - **filed:** CC · 2026-09-30
 
-### THE-GPU-INSTRUMENT-REVISION-REGISTERING-EXTENSION-X-STILL-CARRIES-THREE-STALE-HASHED-TEXTS: extension X is validated but unregistered, and three texts that the instrument hashes or cites are stale, so they can only be fixed inside the registering revision (MEDIUM, open, 2026-09-30 — CC: residue found while recording extension X, 2026-09-30)
-
-- **Observed.** VX6 help text at ext_compare.py:291-292; prose drift at ext_gpu_stage.py:23 (12,526 should read 12,550); results/genome/c6/gpu_instrument/README.md still carries the line 'Status (2026-09-26): not reviewed'. That README is hashed by instrument.py, so it changes only through a revision.
-- **First step:** One GPU instrument revision registering extension X that carries the three fixes; review it before any registered arm names the instrument. No run.
-- **axis:** honesty, reach
-- **filed:** CC · 2026-09-30
 
 
 ### THE-FAILED-FIT-BRANCH-HAS-NO-SYNTHETIC-WITNESS-AND-THE-GATE-DOES-NOT-MEASURE-THE-INTERACTION: the knockout reading sends a ceiling_block below the gate to "failed fit", but no synthetic world has ever met that branch, and the block-only gate as registered reads the additive part of the fit, not the interaction the rule is meant to express (HIGH, open, 2026-09-29 — Ark (calibration, item i) and Zcode (interaction gate, item iii), DPC Research chat 2026-09-28 after block B read U, failed fit; listed for Mike, not chosen (results/genome/c6/checks/knockout_regrow_block_b/READING_NOTES.md section 8))

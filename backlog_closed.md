@@ -2,6 +2,15 @@
 
 ## 2026-10-07 — closed by CC
 
+### THE-GPU-INSTRUMENT-REVISION-REGISTERING-EXTENSION-X-STILL-CARRIES-THREE-STALE-HASHED-TEXTS: extension X is validated but unregistered, and three texts that the instrument hashes or cites are stale, so they can only be fixed inside the registering revision (MEDIUM, closed, 2026-09-30 — CC: residue found while recording extension X, 2026-09-30)
+
+**Closed:** S2026-10-07 · 2026-10-07 · fixed · 101ad5e (revision 1.6 in docs/plans/2026-10-06-gpu-instrument-revision-1.6-draft.md: extension X registered, three stale texts fixed; reviewed in chat: follows from Ark, Warren, Johnny, Zcode; Mike's yes; instrument CPU tests 176 passed, 16 skipped). Not merged into the registration: S.10 Q6 open. Note: the entry's 'README changes only through a revision' is a convention, not a code lock (revision 1.6 S.6). · closed by CC
+
+- **Observed.** VX6 help text at ext_compare.py:291-292; prose drift at ext_gpu_stage.py:23 (12,526 should read 12,550); results/genome/c6/gpu_instrument/README.md still carries the line 'Status (2026-09-26): not reviewed'. That README is hashed by instrument.py, so it changes only through a revision.
+- **First step:** One GPU instrument revision registering extension X that carries the three fixes; review it before any registered arm names the instrument. No run.
+- **axis:** honesty, reach
+- **filed:** CC · 2026-09-30
+
 ### THE-COLLAPSED-LAMBDA-VERDICT-CLASS-IS-NOT-DECLARED-AROUND-LAMBDA-C-100: the verdict class for a block whose interaction fit collapses to the additive model must be declared around lambda_c = 100, with u.v = 0 as a consequence, before any further knockout block is read (HIGH, closed, 2026-09-30 — CC: next step after the symmetric lambda pair (f8e11db, bc833d2), 2026-09-30)
 
 **Closed:** S2026-10-06 · 2026-10-07 · fixed · 4a39989 (declaration rev 2, reviewed in chat: follows, Ark and Zcode), facf3c6 (adopted by Mike 2026-10-06 19:01 UTC: Q7 a, Q8 b, Q10 a; reading lines beside block B, calibration and replication; GLOSSARY restated) · closed by CC
