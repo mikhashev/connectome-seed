@@ -20,12 +20,6 @@ language_cutoff: 2026-09-13
 
 
 
-### RUN-SCRIPTS-MUST-CAPTURE-THEIR-OWN-STDOUT-AND-NO-RESULT-GOES-IN-A-COMMIT-SUBJECT-BEFORE-THE-BLIND-REVIEW: run records have small process gaps: stdout is captured outside the script, and a result in a commit subject spoils the blind review that follows (LOW, open, 2026-09-30 — CC: process lessons from block B ceil_1 (1a50322) and the symmetric lambda pair (bc833d2), 2026-09-30)
-
-- **Observed.** run.log is captured outside the script and copied in; it has CRLF line endings and is not gitignored. Block B ceil_1 result appeared in a commit subject, so its review (1a50322) had to be relabelled an independent recomputation, not blind.
-- **First step:** Run scripts capture stdout themselves; keep recording git HEAD; no result in commit subjects before the owner's blind review; the owner launches blind reviews in a separate session.
-- **axis:** honesty
-- **filed:** CC · 2026-09-30
 
 
 

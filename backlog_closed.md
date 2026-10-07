@@ -2,6 +2,15 @@
 
 ## 2026-10-07 — closed by CC
 
+### RUN-SCRIPTS-MUST-CAPTURE-THEIR-OWN-STDOUT-AND-NO-RESULT-GOES-IN-A-COMMIT-SUBJECT-BEFORE-THE-BLIND-REVIEW: run records have small process gaps: stdout is captured outside the script, and a result in a commit subject spoils the blind review that follows (LOW, closed, 2026-09-30 — CC: process lessons from block B ceil_1 (1a50322) and the symmetric lambda pair (bc833d2), 2026-09-30)
+
+**Closed:** S2026-10-07 · 2026-10-07 · fixed · e6b69d6 (tools/runlog.py: RunLog tees stdout/stderr into run.log, UTF-8 LF, header/footer; check_tree() must pass before attach(); 17 tests pass; docs/CHECKLIST-research-repo.md section Run scripts: no result in commit subject, branch or folder name before the owner's blind review; reviewed in chat 2026-10-07 by Ark, Warren, Johnny, Zcode; Mike's go 07:18 UTC). Pinned scripts not retrofitted. · closed by CC
+
+- **Observed.** run.log is captured outside the script and copied in; it has CRLF line endings and is not gitignored. Block B ceil_1 result appeared in a commit subject, so its review (1a50322) had to be relabelled an independent recomputation, not blind.
+- **First step:** Run scripts capture stdout themselves; keep recording git HEAD; no result in commit subjects before the owner's blind review; the owner launches blind reviews in a separate session.
+- **axis:** honesty
+- **filed:** CC · 2026-09-30
+
 ### THE-GPU-INSTRUMENT-REVISION-REGISTERING-EXTENSION-X-STILL-CARRIES-THREE-STALE-HASHED-TEXTS: extension X is validated but unregistered, and three texts that the instrument hashes or cites are stale, so they can only be fixed inside the registering revision (MEDIUM, closed, 2026-09-30 — CC: residue found while recording extension X, 2026-09-30)
 
 **Closed:** S2026-10-07 · 2026-10-07 · fixed · 101ad5e (revision 1.6 in docs/plans/2026-10-06-gpu-instrument-revision-1.6-draft.md: extension X registered, three stale texts fixed; reviewed in chat: follows from Ark, Warren, Johnny, Zcode; Mike's yes; instrument CPU tests 176 passed, 16 skipped). Not merged into the registration: S.10 Q6 open. Note: the entry's 'README changes only through a revision' is a convention, not a code lock (revision 1.6 S.6). · closed by CC
