@@ -1,6 +1,6 @@
 ---
-**Status: ACCEPTED (not merged), revision 1.6 of the GPU instrument registration, 2026-10-06 UTC. Text only: no run, no
-test, no GPU call was made for it, and nothing is committed.** It registers extension X (the block
+**Status: ACCEPTED (not merged), revision 1.6 of the GPU instrument registration, 2026-10-06 UTC. Text only: no fit and no GPU call
+was made for it; the instrument's CPU tests ran once before the commit, on Mike's word (S.7).** It registers extension X (the block
 mask and the fixed-lambda `ko1` fit) on the strength of the validation runs VX0, VX1, VX2, VX6 and VX7
 of 2026-09-29 (committed in `29548f1`), and it carries the three stale texts that
 `backlog.md` (entry `THE-GPU-INSTRUMENT-REVISION-REGISTERING-EXTENSION-X-STILL-CARRIES-THREE-STALE-HASHED-TEXTS`)
