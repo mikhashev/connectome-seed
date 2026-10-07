@@ -70,6 +70,45 @@ reading the incidents below, not by re-deriving the principles.
     exact equality, then one quantisation step over a 10-pair floor; Ark 20:23Z, Zcode 20:24Z;
     records in results/diagnostics/gray/.)
 
+## Run scripts
+
+(Since 2026-10-07; the backlog entry RUN-SCRIPTS-MUST-CAPTURE-THEIR-OWN-STDOUT-AND-NO-RESULT-GOES-IN-A-COMMIT-SUBJECT-BEFORE-THE-BLIND-REVIEW,
+from the block B ceil_1 and symmetric lambda pair runs of 2026-09-30; reviewed in the DPC Research
+chat 2026-10-07 by Ark, Warren, Johnny and Zcode. There is no run-script template in the
+repository, so this section is the convention. Scripts already pinned by a registration are not
+retrofitted; the rule applies to scripts written from now on.)
+
+- **A run script captures its own stdout and stderr** into `<output folder>/run.log` with
+  `tools/runlog.py` (`RunLog`, tests in `tools/test_runlog.py`). The log is UTF-8 with LF endings
+  whatever the console, starts with the command line, UTC start time and `git rev-parse HEAD`,
+  and ends with the UTC end time and exit status, also after an exception. No shell redirect
+  copies a log into the folder. The name is `run.log` from this date on; older folders carry
+  `stdout.log` (the calibration, the replication) or a shell-captured `run.log` with CRLF endings.
+- **Order inside the script, enforced by the helper:** refusals (pins, working directory, output
+  folder absent), then `rl.check_tree(SCOPE)`, then `rl.attach(out_dir)`. `check_tree()` refuses
+  on a non-empty `git status --porcelain`; `attach()` refuses unless `check_tree()` passed. Until
+  `attach()` the helper keeps everything in memory, so a refusal leaves no file and no folder.
+- **The scope of the check** is the part of the tree that holds the output folder and everything
+  the run reads or writes. Both forms are in use: the whole repository
+  (`symmetric_lambda_pair.py`) and `-- results/genome/c6 docs/plans` (`knockout_regrow.py`). Name
+  the scope in the registration.
+- **The outputs record the snapshot `check_tree()` returned** (HEAD and porcelain text, in
+  `result.json` and `RESULT.md`), never a second `git status`: after `attach()` the output folder
+  itself shows as untracked.
+- **Multiprocessing workers are not captured.** Their stdout bypasses the parent's tee. A worker
+  returns its text and the parent prints it; otherwise the log is partial and must not be read as
+  complete.
+- **`run.log` is committed with the run's outputs** (it is the record of the run, not scratch).
+  `attach()` writes a `.gitattributes` with `* -text` into an output folder that has none, so the
+  bytes are not rewritten by line-ending conversion; an existing `.gitattributes` is kept (five
+  of the six existing folders carry `* -text`; `knockout_regrow_block_b/` carries `*.csv -text`
+  on purpose).
+- **No result value goes into a commit subject, a branch name or a run-folder name before the
+  owner's blind review.** The output commit says "outputs of run X", not what X read. (Broken
+  once, in 69d44c0; that review had to be relabelled an independent recomputation.)
+- **The owner launches every blind review, in a separate session.** The agent that ran the script
+  writes the brief, keeps it outside the repository, and never spawns the reviewer.
+
 ## Language
 
 **The repository is in English.** Every tracked file — prose, code comments, UI strings, board
