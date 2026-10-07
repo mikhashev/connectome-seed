@@ -20,7 +20,7 @@ The checks it keeps from the registered driver: G1 (gpu_env first), G8 (v1, v2 a
 refused: gpu_stage is imported, which installs the import refusal), R1 (the registered stamp, or
 R2, R3, R7 (a clean tree, or --allow-dirty, which
 marks the run NOT FROM A COMMITTED HEAD), G11 (extended), D10 (degree-term digest in every
-worker), the VRAM preflight against the registered need at row_chunk (12,526 MiB at 40,000;
+worker), the VRAM preflight against the registered need at row_chunk (12,550 MiB at 40,000;
 too little stops the run, no fallback). Labels: VX0 (smoke, one world), VX1 (the V1 scheme: run
 three times), VX6 (--bf-tol 1e-5, the comparator's negative control), VX7 (--poison-real-block).
 

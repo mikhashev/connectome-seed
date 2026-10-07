@@ -289,7 +289,7 @@ def main():
     ap.add_argument("--json", default=None)
     ap.add_argument("--vx6", action="store_true",
                     help="VX6 (a --bf-tol 1e-5 run): passes if the comparator equals the direct "
-                         "recount; its outcome is expected to be a refusal")
+                         "recount; its outcome is not prescribed (B ko1 read outcome 1)")
     a = ap.parse_args()
     out = {"VX1": self_stability(a.runs) if len(a.runs) > 1 else None,
            "VX2": compare_run(a.runs[0], a.arm, a.reference)}

@@ -1,9 +1,9 @@
-**Status (2026-09-26): not reviewed. A separate instrument; the registered knockout-and-regrow run does not use it.**
+**Status (2026-10-06 UTC): a separate instrument, validated, with the registration's revisions reviewed in `docs/plans/`; no registered arm names it (D11), and the registered knockout-and-regrow runs do not use it. Revision 1.6 (draft) registers extension X.**
 **Registration:** `docs/plans/2026-09-26-gpu-instrument-registration.md` (revision 1.4, `e2fab47`;
-section 15.5 added in `a0e16b6`). Its code changes G1-G16 and tests T-G1-T-G10 are implemented in the
-files of the section "The registered path" below; the validation runs V0-V8 are launched by
-`validation.py`. Everything above that section describes the unregistered engines v1-v3 as
-measured before the registration.
+section 15.5 added in `a0e16b6`; revisions 1.5.1 and 1.6 are drafts in `docs/plans/`, not merged into it).
+Its code changes G1-G16 and tests T-G1-T-G10 are implemented in the files of the section "The
+registered path" below; the runs V0-V8 are launched by `validation.py`, extension X's runs VX0-VX7 by
+`run_ext.py`. Everything above that section describes the engines v1-v3 as measured before the registration.
 
 # GPU instrument for BF_r and rule #2.1 fits (knockout-and-regrow synthetic worlds)
 
@@ -341,21 +341,21 @@ pool. It could take the BF share off it.
 - **Rule #2.1 beyond its existence fit.** Quantisation, descent and the offset library run as
   the rule's own CPU code, by design.
 - **float32.** Not attempted.
-- **Review.** None of this has been reviewed.
+- **Review.** None of this had been reviewed when this section was written (2026-09-26); the reviews are in the registration's §15 and in the revision drafts of `docs/plans/`.
 
-# The registered path (2026-09-26; registration revision 1.4, not yet validated)
+# The registered path (2026-09-26; registration revision 1.4; V0-V8 have run since)
 
 The code changes G1-G16 and the tests T-G1-T-G10 of
 `docs/plans/2026-09-26-gpu-instrument-registration.md` (revision 1.4, `e2fab47`; section 15.5 added
 in `a0e16b6`); Ark's review of revision 1.3 (chat 12:09 UTC, points 1-3), first applied in the code
-ahead of revision 1.4, is part of revision 1.4 (section 15.4). Nothing here has been through V1-V8.
+ahead of revision 1.4, is part of revision 1.4 (section 15.4). V0-V8 ran on 2026-09-26 (`validation/`).
 
 | file | what | registration |
 |---|---|---|
 | `gpu_env.py` | imported first: thread preamble, `CUBLAS_WORKSPACE_CONFIG=:4096:8` before torch (another value refuses), deterministic algorithms (no `warn_only`), TF32 off, cuDNN deterministic, no benchmark; settings read back; the environment record and the stamp | G1, G2, R1-R3, D6 (a), D7 (i) |
 | `gpu_common.py` | `DEVICE`, `DTYPE`, `H`, `_perturb_draws`, copied verbatim from `gpu_bf.py` / `gpu_bf2.py`, so that engine v3 loads without v1 and v2; `gpu_bf3.py:27` imports from it | G8, D2 |
 | `run_registered.py`, `gpu_stage.py` | the registered driver (engine v3 only; refuses to import `gpu_bf`, `gpu_bf2`, `gpu_rule`): the GPU stage of the hybrid, writing BF ko records in A's schema, per-fit hashes, the census and the manifest | G2-G8, G11, G15, G16, R1-R7, D8 (I2), D10 |
-| `instrument.py` | torch-free: key refusals, the composition digest, the stamp comparison (`REGISTERED_STAMP` is `None` until V1's stamp is registered), the output guard, hashes, the degree-term digest | R1, R4, R6, G3, G11, D10 |
+| `instrument.py` | torch-free: key refusals, the composition digest, the stamp comparison (`REGISTERED_STAMP` holds V1's stamp since `8faea07`, G17), the output guard, hashes, the degree-term digest | R1, R4, R6, G3, G11, D10 |
 | `census.py` | the tie census: S(f), tied pairs, smallest gap, flipped pairs, the at-risk list (2^-23), per column family with per-fit denominators | G16, E2 |
 | `gpu_equivalence.py` | the comparator: E1, E2-II, E2-III, E3, diagnostics, the BF-active classification | G9 |
 | `hybrid_store.py` | the hybrid store for V3 | G10 |
@@ -380,9 +380,9 @@ cd results/genome/c6/gpu_instrument
 A GPU run writes to `connectome-seed-data/gpu_instrument/<tag>_<UTC>_<head 12>/`: `raw_fits_gpu.json.gz`
 (A's store schema; `secs` apportioned), `fit_hashes.json` (sha256 of the raw float64 U, V, λ and
 of the decoded p), `census.json.gz`, `manifest.json`, `SHA256SUMS.txt`. Validation aggregates go to
-`validation/` beside this file. Until the revision that registers V1's results, the stamp is not
-registered: validation runs pass `--stamp-unregistered` and their manifests say "STAMP NOT YET
-REGISTERED"; an arm run refuses.
+`validation/` beside this file. V1's stamp is registered in code since `8faea07` (G17): `--stamp-unregistered`
+is refused, a different field refuses (R1), and an arm run refuses every arm module (G19: none registered).
+The V0-V8 manifests of 2026-09-26 say "STAMP NOT YET REGISTERED"; they are not edited.
 
 # Engine v1 (2026-09-25), as written then
 
